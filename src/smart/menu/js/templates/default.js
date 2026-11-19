@@ -119,7 +119,12 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
               data-sf-menu-toggle=${own(item.id)}><span class="sf-icon" aria-hidden="true">${glyph}</span></button>
     </div>`;
   }
+  // «Ещё» holding the current page (keep-current false, or a current
+  // section too wide to stay beside it) says so in its name as well as by
+  // its mark: «Ещё, содержит текущую страницу» (C371).
+  const named = holds && item.id === context.moreId && context.holdsCurrentName ? context.holdsCurrentName(item.label) : nothing;
   return html`<button class=${classes} type="button" aria-expanded=${open ? 'true' : 'false'} aria-controls=${own(submenuId)}
+                      aria-label=${own(named)}
                       ?disabled=${item.disabled} data-sf-menu-toggle=${own(item.id)}>${renderWrap(context, item)}${renderTrailing(glyph)}</button>`;
 }
 

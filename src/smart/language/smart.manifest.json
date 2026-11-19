@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "title": "Language",
   "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -30,8 +30,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.link",
       "component.tooltip",
       "smart.button",
+      "smart.button-icon",
       "smart.dropdown",
       "smart.icon",
       "smart.menu-context",
@@ -120,6 +122,16 @@
           "1",
           "2",
           "3"
+        ]
+      },
+      "trigger": {
+        "type": "string",
+        "default": "code",
+        "description": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). name, the glyph and the current language's own name («Русский», «Deutsch») in the link role (component link, owner decisions C381, C186: the navigation form, the ink and size of its place, no fill in any state, the line under the name on hover, press, keyboard focus and while open, the link's focus ring), as wide as the name, no tooltip (the name is shown), still named «Язык: Русский». The menu is the same. Core holds the trigger's box before the code arrives (--sf-language--trigger: the code's width, the icon's square, the name's line)",
+        "enum": [
+          "code",
+          "icon",
+          "name"
         ]
       },
       "apply": {
@@ -347,19 +359,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "326c80f5016ec9cdec4fddde64ff7ac2a686e910ff08a653ddd08b01e3a3d7ee"
+        "sha256": "5b658ed37ad92a0b4eafd7c8dd6c07012245b65bde0e28e9d9ac689ca2911cf0"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "c42ef62341a36f27990f2cff2a6adea65abef4e6cc226e304b685c8fa6a670d0"
+        "sha256": "4d6db4d5f4bc95e8ea028b27ec9d0c45c4b8d21f7c1dba52beb8dea60d3876c7"
       },
       {
         "path": "src/smart/language/rule.js",
-        "sha256": "0eacb6755dc8360b9f48e3efdad0d335c8c2cac76ccecf944b449aee4dd0de90"
+        "sha256": "ed63ab34755f05936b88f1e43a1f9c263ecb6c2b4c9e0eb1180cd63cec9b3804"
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "85416bb58a017a37e0095c8d750a23b102d296fcc8637f09a56a4d35e6338837"
+        "sha256": "f287661df598cfc5df0e6abbee03b491a884c3086d577e1a18b0bbe4a529746e"
       }
     ],
     "generated_runtime": []

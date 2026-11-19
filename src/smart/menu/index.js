@@ -20,7 +20,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {BREAKPOINTS, breakpointMedia} from '../../core/js/breakpoints.js';
-import {rowRoom} from '../../core/js/overflow-row.js';
+import {layoutRowRoom, layoutWidth} from '../../core/js/overflow-row.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
@@ -96,6 +96,7 @@ class SfSmartMenu extends MenuElement {
       collapse: {default: 'auto', values: MENU_COLLAPSE},
       overflow: {default: 'collapse', values: MENU_OVERFLOW},
       moreLabel: {attribute: 'more-label', default: ''},
+      keepCurrent: {attribute: 'keep-current', type: Boolean, default: true},
       openOn: {attribute: 'open-on', default: 'hover', values: MENU_OPEN_ON},
       indicator: {default: 'line', values: MENU_INDICATORS},
       label: {default: ''},
@@ -1121,11 +1122,27 @@ class SfSmartMenu extends MenuElement {
     this.measureFit();
   }
 
-  measureFit() {
+  // The bar the row stands in, when it lays the row out itself: an
+  // sf-header-site with collapse auto (C371, C372) measures its own row and
+  // gives way in its order -- tools, then this row's items into «Ещё», then
+  // the menu button -- so the row's measure goes through it, and it asks the
+  // row back with the room it has decided (measureFit({driven: true})). One
+  // decision, before the paint, in the observer that saw the width change.
+  rowHost() {
+    const host = this._frame?.parentElement;
+    return host && typeof host.drivesRow === 'function' && host.drivesRow(this) ? host : null;
+  }
+
+  measureFit({driven = false} = {}) {
     const nav = this._observed;
     if (!nav?.isConnected) return;
     if (this.moreActive) {
-      this.measureOverflow(nav);
+      const host = driven ? null : this.rowHost();
+      if (host) {
+        host.fitRow();
+        return;
+      }
+      this.measureOverflow(nav, {driven});
       return;
     }
     if (this._overflowHidden.length) this.setOverflowHidden([]);
@@ -1151,21 +1168,23 @@ class SfSmartMenu extends MenuElement {
     }
   }
 
-  // overflow more (priority+, C30): each first-level item's width is measured
-  // as the row draws it -- every item and «Ещё» shown for the measure, in the
-  // same task, so nothing is painted -- and the items that do not fit leave
-  // the row from its end; the section that holds the current page stays
-  // while it fits beside «Ещё». sf-menu-overflow says which left, each time
-  // that changes.
-  measureOverflow(nav) {
-    const list = nav.querySelector(':scope > ul.sf-menu');
+  // The row as it would be drawn whole: each first-level item's width --
+  // every item and «Ещё» shown for the measure, in the same task, so nothing
+  // is painted -- the gap, the room, the item that must stay (the section
+  // that holds the current page, unless keep-current is false) and the
+  // width of the whole row with the nav's own edges. null when the row has
+  // no list or no «Ещё» yet.
+  measureRow(nav) {
+    const list = nav?.querySelector(':scope > ul.sf-menu');
     const more = list?.querySelector(':scope > .sf-menu-item--more');
-    if (!list || !more) return;
+    if (!list || !more) return null;
     const tops = Array.from(list.children).filter((li) => li !== more && li.matches('[data-sf-menu-item], [data-sf-menu-placeholder]'));
     const was = [...tops, more].map((li) => li.hidden);
     for (const li of [...tops, more]) li.hidden = false;
-    const widths = tops.map((li) => li.getBoundingClientRect().width);
-    const moreWidth = more.getBoundingClientRect().width;
+    // Layout boxes (layoutWidth): a row under a transformed ancestor (a
+    // scaled preview) reads the widths it is laid out at, not its screen's.
+    const widths = tops.map((li) => layoutWidth(li));
+    const moreWidth = layoutWidth(more);
     [...tops, more].forEach((li, at) => {
       li.hidden = was[at];
     });
@@ -1173,11 +1192,44 @@ class SfSmartMenu extends MenuElement {
     const ids = tops.map((li) => li.dataset.sfMenuItem || li.dataset.sfMenuPlaceholder);
     const currentId = this.currentId;
     const above = currentId ? [currentId, ...(pathTo(this.menuItems, currentId) || [])] : [];
-    const keep = ids.findIndex((id) => above.includes(id));
+    // keep-current false: the current section leaves the row in its turn,
+    // and «Ещё» holding it says so (its mark and its name).
+    const keep = this.keepCurrent === false ? -1 : ids.findIndex((id) => above.includes(id));
     // The room in fractional pixels (the row engine's rowRoom; clientWidth
     // is a whole pixel, the C54 return), the arithmetic the shared engine's
     // (fitRow, owner decision C155 (1)).
-    const room = rowRoom(nav);
+    const room = layoutRowRoom(nav);
+    const edges = layoutWidth(nav) - room;
+    const whole = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, widths.length - 1) + edges;
+    // The narrowest row that still is a row: the item that stays (the
+    // current section, else the first) beside «Ещё», with the nav's edges.
+    // Narrower than that, nothing but «Ещё» is left: the bar's menu button
+    // is the place then (sf-header-site collapse auto, C371).
+    const first = widths.length ? widths[keep >= 0 ? keep : 0] : 0;
+    const least = widths.length > 1 ? first + gap + moreWidth + edges : whole;
+    return {widths, moreWidth, gap, ids, keep, room, whole, least};
+  }
+
+  // What the row asks of the place it stands in: whole, the width of every
+  // item side by side; least, the narrowest row with one item and «Ещё». The
+  // bar that lays the row out (rowHost) reads it, in the same task as its
+  // own measure. null while the row is not drawn as a row with «Ещё».
+  rowNeeds() {
+    const nav = this._observed;
+    if (!this.moreActive || !nav?.isConnected) return null;
+    const row = this.measureRow(nav);
+    return row ? {whole: row.whole, least: row.least} : null;
+  }
+
+  // overflow more (priority+, C30, C371): the items that do not fit leave
+  // the row from its end; the section that holds the current page stays
+  // while it fits beside «Ещё» -- it changes places with the last shown one.
+  // sf-menu-overflow says which left, and whether any item is left (fits),
+  // each time that changes.
+  measureOverflow(nav, {driven = false} = {}) {
+    const row = this.measureRow(nav);
+    if (!row) return;
+    const {widths, moreWidth, gap, ids, keep, room, whole} = row;
     // The width of the whole row, every item shown and no «Ещё», with the
     // nav's own edges: the room the row asks. The nav's width is the room it
     // is given (contain: inline-size), so as content it is nothing; a place
@@ -1185,32 +1237,34 @@ class SfSmartMenu extends MenuElement {
     // reads this instead (--sf-menu--row-size) and gives the row that much
     // while it fits. It does not change with the items that left, so the
     // row's own measure stays the room it is given (Docara, 2026-11-18).
-    const whole = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, widths.length - 1) + (nav.getBoundingClientRect().width - room);
     const rowSize = `${Math.ceil(whole)}px`;
     if (nav.style.getPropertyValue('--sf-menu--row-size') !== rowSize) nav.style.setProperty('--sf-menu--row-size', rowSize);
     const stays = new Set(fitRow(widths, moreWidth, room, gap, keep));
-    this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)), nav.clientWidth);
+    this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)), nav.clientWidth, driven);
   }
 
-  setOverflowHidden(hidden, width) {
+  setOverflowHidden(hidden, width, driven = false) {
     if (hidden.length === this._overflowHidden.length && hidden.every((id, at) => id === this._overflowHidden[at])) return;
     // A row in a box that takes its width from its content (a header not yet
     // drawn, a shrink-to-fit cell) gets wider when items leave it and
     // narrower when they come back: going straight back to the set it just
     // left, sooner than a frame or two, is that loop -- the row keeps the
     // set with more items under «Ещё» until its width changes on its own.
+    // A row its bar lays out (driven) is given its room by the bar's own
+    // decision, never by its content: no loop to guard, and the guard would
+    // keep a set the bar has already left.
     const key = hidden.join('\u0000');
     const now = typeof performance === 'undefined' ? Date.now() : performance.now();
     const flip = this._overflowFlip;
-    if (flip && flip.back === key && now - flip.at < 100 && hidden.length < this._overflowHidden.length) return;
+    if (!driven && flip && flip.back === key && now - flip.at < 100 && hidden.length < this._overflowHidden.length) return;
     // The other way round: a set with fewer items under «Ещё» that bounced
     // straight back (the row narrowed once they were shown) does not hold at
     // the width it was measured at; a later measure at that same width (a
     // panel opening re-draws the row) keeps the row as it is, and the open
     // panel stays.
     const loop = this._overflowLoop;
-    if (loop && loop.key === key && width !== undefined && loop.width === width) return;
-    if (flip && flip.back === key && now - flip.at < 100 && hidden.length > this._overflowHidden.length) {
+    if (!driven && loop && loop.key === key && width !== undefined && loop.width === width) return;
+    if (!driven && flip && flip.back === key && now - flip.at < 100 && hidden.length > this._overflowHidden.length) {
       this._overflowLoop = {key: this._overflowHidden.join('\u0000'), width: flip.width};
     }
     this._overflowFlip = {back: this._overflowHidden.join('\u0000'), at: now, width};
@@ -1218,7 +1272,8 @@ class SfSmartMenu extends MenuElement {
     if (this.flyouts) this.closeFlyouts('method');
     this._overflowHidden = hidden;
     this.requestComponentUpdate('overflow');
-    this.sfEmit('overflow', {hidden: [...hidden]});
+    const all = withoutGroups(this.menuItems).length;
+    this.sfEmit('overflow', {hidden: [...hidden], fits: hidden.length < all || all === 0});
   }
 
   afterRender(callback) {
@@ -1260,6 +1315,9 @@ class SfSmartMenu extends MenuElement {
       moreItem: moreActive ? tree[tree.length - 1] : null,
       moreShown: moreActive && this._overflowHidden.length > 0,
       moreId: MORE_ID,
+      // «Ещё» holding the current page says so in its name (C371, with
+      // keep-current false or a current section too wide to stay).
+      holdsCurrentName: (label) => `${label}, ${this.sfWord('holds-current')}`,
       regionContent: (name) => this.regionNodes(name),
       // collapse narrow: the button is a selector showing the current item.
       selector,

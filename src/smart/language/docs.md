@@ -264,6 +264,33 @@ same height as the theme switch beside it:
 </sf-header-site>
 ```
 
+A header short of room writes `trigger="icon"` (owner decision C369, the
+documentation header): the trigger is the translate glyph alone, a square
+icon button of the element's size, ghost, named «Язык: Русский» and showing
+that name as the Framework's tooltip. The menu is the same. `trigger="code"`
+(the default) is the glyph, the current code and the arrow, «RU ▾». Core
+holds the trigger's box before the code arrives for both, so the tools beside
+it do not move.
+
+```html
+<sf-language slot="tools" languages="ru en" trigger="icon"></sf-language>
+```
+
+Beside a form or in a quiet row, `trigger="name"` (owner decision C381, the
+sign-in screen) is the glyph and the current language's own name,
+«Русский», «Deutsch», in the link role: the words take the size and the ink
+of their place, nothing is filled in any state, the name is underlined on
+hover, press, keyboard focus and while the menu is open, and the focus ring
+is the link's. The trigger is as wide as the name and has no tooltip, since
+the name is shown; it is still named «Язык: Русский». Before its code core
+holds one line of its place for it; its width comes with the name.
+
+```html
+<p class="text-1/2">
+  <sf-language languages="ru en de" mode="menu" trigger="name" apply="none"></sf-language>
+</p>
+```
+
 ## Sizes
 
 `size` is a rung of the shared ladder: `1/3`, `1/2`, `1` (the default), `2`,

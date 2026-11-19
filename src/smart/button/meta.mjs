@@ -268,6 +268,15 @@ const sfButtonMeta = {
       "default": "false",
       "description": "The button listens to its shortcut on the page and is pressed by it, as by a click. A combination without mod, ctrl, alt or meta is not heard while focus is in an editable field"
     },
+    "shrink": {
+      "kind": "enum",
+      "values": [
+        "none",
+        "icon"
+      ],
+      "default": "none",
+      "description": "How the button gives way when the bar it stands in asks it to (owner decision C370): icon, its glyph only -- a square of its height, ghost -- keeping its name (its text, unless aria-label names it), its aria-keyshortcuts and the Framework's tooltip with its text and keys («Поиск ⌘K», C160); none, never. sf-header-site collapse auto asks first, before its nav gives way (C372), by the host state data-shrunk; a button needs an icon to give way to"
+    },
     "expanded": {
       "kind": "boolean",
       "values": [

@@ -3,6 +3,7 @@
   "runtime": {
     "toggle-label": "Menu",
     "more-label": "More",
+    "holds-current": "holds the current page",
     "status-success": "all good",
     "status-warning": "needs attention",
     "status-error": "error",

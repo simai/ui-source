@@ -85,6 +85,41 @@ export function rowRoom(list) {
   return list.getBoundingClientRect().width - edges.reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
 }
 
+// The width an element is laid out at, in fractional CSS pixels, before any
+// transform of it or of an ancestor (its border box). getBoundingClientRect is
+// a screen box: inside scale(.7) a 90 px tab reads 63, inside rotate() it reads
+// the width of its rotated bounding box, and a row that compares such widths
+// with its padding, a text measured in canvas or a ResizeObserver size mixes
+// screen and layout pixels (docs hero study 2026-11-19, section 9). The used
+// width of the computed style is the layout's own, with its fractions; a box
+// without one (an inline box, an element not drawn) gives offsetWidth.
+export function layoutWidth(element) {
+  if (!element) return 0;
+  const style = getComputedStyle(element);
+  const width = parseFloat(style.width);
+  if (!Number.isFinite(width)) return element.offsetWidth || 0;
+  if (style.boxSizing === 'border-box') return width;
+  return ['paddingLeft', 'paddingRight', 'borderLeftWidth', 'borderRightWidth'].reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), width);
+}
+
+// The block size of the same box (layoutWidth's other axis).
+export function layoutHeight(element) {
+  if (!element) return 0;
+  const style = getComputedStyle(element);
+  const height = parseFloat(style.height);
+  if (!Number.isFinite(height)) return element.offsetHeight || 0;
+  if (style.boxSizing === 'border-box') return height;
+  return ['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'].reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), height);
+}
+
+// rowRoom in layout pixels: the row's content box before any transform, for a
+// row whose items are measured with layoutWidth.
+export function layoutRowRoom(list) {
+  const style = getComputedStyle(list);
+  const edges = ['borderInlineStartWidth', 'borderInlineEndWidth', 'paddingInlineStart', 'paddingInlineEnd'];
+  return layoutWidth(list) - edges.reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
+}
+
 // A text measurer in an element's own face, or null without a canvas: the
 // width «Ещё (7)» will have before its button draws it.
 let measureCanvas = null;

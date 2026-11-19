@@ -75,8 +75,48 @@ function renderCode(context) {
   })}</span>`;
 }
 
+// trigger icon (owner decision C369, docs header 2026-11-19): the glyph
+// alone, a square icon button of the element's size -- ghost on-surface, as
+// the code trigger -- named «Язык: Русский», which shows that name as the
+// Framework's tooltip by itself (C160 (1)); the menu is the same.
+function renderIconTrigger(context) {
+  return html`<sf-button-icon
+      class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
+      icon="translate"
+      appearance="ghost"
+      scheme="on-surface"
+      size=${context.size}
+      aria-label=${context.triggerLabel}
+      aria-haspopup="menu"
+      ?disabled=${context.disabled}
+      @click=${() => context.component.toggleMenu()}
+    ></sf-button-icon>`;
+}
+
+// trigger name (owner decision C381 with C369, the sign-in screen
+// 2026-11-19): the glyph and the current language's own name («Русский»,
+// «Deutsch») in the link role (component link, C186) in its navigation
+// form: the words in the ink and the size of their place, no fill in any
+// state, the line under the name on hover, press, keyboard focus and while
+// the menu is open, the link's focus ring; the glyph a line high (C107 (5)),
+// 4 from the words. A native button: it opens a menu, it goes nowhere. Its
+// width is the name's; the name is shown, so no tooltip. Its accessible name
+// stays «Язык: Русский», the name in the language's own lang.
+function renderNameTrigger(context) {
+  const current = context.current;
+  return html`<button
+      type="button"
+      class=${['sf-link', 'sf-link--navigation', 'sf-language-name', context.rootClass].filter(Boolean).join(' ')}
+      aria-label=${context.triggerLabel}
+      aria-haspopup="menu"
+      aria-expanded="false"
+      ?disabled=${context.disabled}
+      @click=${() => context.component.toggleMenu()}
+    ><sf-icon class="sf-link-icon" icon="translate" aria-hidden="true"></sf-icon><span class="sf-link-content" lang=${current?.code || nothing}>${current?.native ?? context.label}</span></button>`;
+}
+
 function renderMenu(context) {
-  return html`<sf-button
+  return html`${context.name ? renderNameTrigger(context) : context.icon ? renderIconTrigger(context) : html`<sf-button
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
       icon-start="translate"
       icon-end="expand_more"
@@ -88,7 +128,7 @@ function renderMenu(context) {
       aria-haspopup="menu"
       ?disabled=${context.disabled}
       @click=${() => context.component.toggleMenu()}
-    >${renderCode(context)}</sf-button>
+    >${renderCode(context)}</sf-button>`}
     <sf-menu-context
       popup
       size=${context.menuSize}

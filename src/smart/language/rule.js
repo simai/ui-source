@@ -7,6 +7,10 @@ SF.RuleLoader['cl-language'] = {
   relation: [
     { name: 'cl-segmented' },
     { name: 'cl-button' },
+    // trigger icon (C369): the glyph alone is sf-button-icon, which shows its own name tooltip (C160 (1)).
+    { name: 'cl-button-icon' },
+    // trigger name (C381): the trigger is a native button in the link role, drawn by the link sheet.
+    { name: 'link' },
     { name: 'cl-icon' },
     { name: 'cl-menu-context', lazy: true },
     { name: 'cl-dropdown', lazy: true },

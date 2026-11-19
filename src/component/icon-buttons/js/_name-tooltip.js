@@ -37,7 +37,21 @@ function hasTitle(button) {
   }
   return false;
 }
-let made = 0;
+// The surfaces' numbers are counted on the page, not in this file, and under
+// a name of their own: every bundle that carries this file has its own copy
+// of it (sf-button since C370, the icon buttons), and <sf-button-icon>
+// numbers its own tooltips «sf-icon-button-tooltip-N» from 1 too; two
+// counters from 1 made a second «sf-icon-button-tooltip-1», and the language
+// glyph in the docs header showed the shrunk search's «Поиск ⌘K».
+const MADE = Symbol.for('sf.icon-button.name-tooltip.made');
+function nextTipId(doc) {
+  let id = '';
+  do {
+    globalThis[MADE] = (globalThis[MADE] || 0) + 1;
+    id = `sf-name-tooltip-${globalThis[MADE]}`;
+  } while (doc.getElementById(id));
+  return id;
+}
 
 function tooltipController() {
   return globalThis.SF?.ComponentRegistry?.Tooltip || globalThis.SF?.Loader?.ComponentRegistry?.Tooltip || null;
@@ -68,11 +82,22 @@ function hasVisibleLabel(button) {
 }
 
 function nameOf(button) {
-  return String(button.getAttribute('aria-label') || '').replace(/\s+/gu, ' ').trim();
+  return String(button.getAttribute('data-sf-shrink-tip') || button.getAttribute('aria-label') || '').replace(/\s+/gu, ' ').trim();
 }
+
+// An sf-button drawn as its glyph by its bar (shrink="icon", data-shrunk;
+// owner decision C370): its words are hidden, so it shows its text and keys
+// as this tooltip, «Поиск ⌘K» (data-sf-shrink-tip), as an icon button shows
+// its name. Whole again, it shows none.
+const SHRUNK = 'sf-button[shrink="icon"][data-shrunk="true"] > .sf-button[data-sf-shrink-tip]';
 
 // The button a name tooltip is for, or null.
 function nameTarget(node) {
+  const shrunk = node instanceof Element ? node.closest(SHRUNK) : null;
+  if (shrunk) {
+    if (shrunk.hasAttribute('data-tooltip') || hasTitle(shrunk) || shrunk.matches(':disabled, [aria-disabled="true"]')) return null;
+    return nameOf(shrunk) ? shrunk : null;
+  }
   const button = node instanceof Element ? node.closest('.sf-icon-button') : null;
   if (!button || !nameOf(button)) return null;
   if (!(button.localName === 'button' || (button.localName === 'a' && button.hasAttribute('href')) || button.getAttribute('role') === 'button')) return null;
@@ -97,7 +122,7 @@ function syncMadeTip(button) {
 
 function wake(event) {
   const origin = event.target;
-  if (origin instanceof Element) syncMadeTip(origin.closest('.sf-icon-button[data-tooltip]'));
+  if (origin instanceof Element) syncMadeTip(origin.closest('.sf-icon-button[data-tooltip], .sf-button[data-sf-shrink-tip][data-tooltip]'));
   if (event.type === 'pointerdown' && event.pointerType !== 'touch') return;
   if (event.type === 'pointerover' && event.pointerType === 'touch') return;
   const button = nameTarget(origin);
@@ -110,7 +135,7 @@ function wake(event) {
   const doc = button.ownerDocument;
   const tip = doc.createElement('span');
   tip.className = `sf-tooltip sf-tooltip--dark ${NAME_TIP}`;
-  tip.id = button.id ? `${button.id}--tooltip` : `${NAME_TIP}-${++made}`;
+  tip.id = button.id ? `${button.id}--tooltip` : nextTipId(doc);
   tip.hidden = true;
   const content = doc.createElement('span');
   content.className = 'sf-tooltip-content';
@@ -148,4 +173,16 @@ if (typeof document !== 'undefined' && !globalThis[BOUND]) {
   }
 }
 
-export {nameTarget};
+// A name tooltip this file made for a button is taken away (an sf-button
+// whole again, shrink="icon"): the button no longer names it, and the
+// surface goes.
+function unlinkNameTip(button) {
+  const id = button?.getAttribute?.('data-tooltip');
+  if (!id) return;
+  const tip = button.ownerDocument.getElementById(id);
+  if (!tip?.classList.contains(NAME_TIP)) return;
+  button.removeAttribute('data-tooltip');
+  tip.remove();
+}
+
+export {nameTarget, unlinkNameTip};

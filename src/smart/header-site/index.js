@@ -24,6 +24,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {layoutHeight, layoutRowRoom, layoutWidth} from '../../core/js/overflow-row.js';
 import {closeLayer, focusablesIn, isTopLayer, openLayer, returnLayerFocus, landmarksAround} from '../../core/js/layer-stack';
 import {renderSiteHeaderTemplate} from './js/templates/default';
 import manifest from './component.json';
@@ -124,6 +125,12 @@ class SfSiteHeader extends SiteHeaderElement {
     // fits, or it was never measured too wide).
     this._fitNeed = 0;
     this._fitFrame = 0;
+    // collapse auto (C371, C372): the tools that give way first (sf-button
+    // shrink="icon") and the width each drew whole, read while it was whole,
+    // so the bar knows the row's width with them whole while they are glyphs.
+    this._toolsCompact = false;
+    this._wholeWidths = new WeakMap();
+    this._fitting = false;
     this._onFonts = () => this.queueFit();
     this._outsideSwitch = false;
     this._switchFrame = 0;
@@ -254,11 +261,30 @@ class SfSiteHeader extends SiteHeaderElement {
     if (!header || header === this._observedHeader || typeof ResizeObserver === 'undefined') return;
     this._sizeObserver?.disconnect();
     this._sizeObserver = new ResizeObserver(() => {
+      if (this.collapse === 'auto') {
+        this.fitRow();
+        return;
+      }
       this.syncCollapsed();
       this.syncFit();
     });
     this._sizeObserver.observe(header);
     this._observedHeader = header;
+    this.observeParts();
+  }
+
+  // collapse auto: the brand and the tools are watched too -- a face that
+  // arrives, a word that changes, a tool that draws late change the room the
+  // nav has without changing the bar's width.
+  observeParts() {
+    if (!this._sizeObserver || this.collapse !== 'auto') return;
+    const header = this.header();
+    for (const part of header?.querySelectorAll(':scope > .sf-site-header-row > :is(.sf-site-header-brand, .sf-site-header-tools)') ?? []) {
+      if (this._observedParts?.has(part)) continue;
+      this._observedParts ??= new WeakSet();
+      this._observedParts.add(part);
+      this._sizeObserver.observe(part);
+    }
   }
 
   // The bar crossed its step: the host says so, a horizontal sf-menu in the
@@ -322,6 +348,10 @@ class SfSiteHeader extends SiteHeaderElement {
   }
 
   syncFit() {
+    if (this.collapse === 'auto') {
+      this.fitRow();
+      return;
+    }
     const header = this.header();
     if (!header || this.collapse === 'none' || this.collapse === 'always' || typeof document === 'undefined') {
       if (this._fitNeed) this.setFit(0);
@@ -347,6 +377,141 @@ class SfSiteHeader extends SiteHeaderElement {
     if (over <= 0.5 || !room.height) return;
     this.setFit(Math.ceil(width + spread.width - room.width) + 1);
     this.syncCollapsed();
+  }
+
+  // collapse auto (owner decisions C371, C372, 2026-11-19): the bar measures
+  // its own row and gives way in one order -- first the tools that can
+  // (sf-button shrink="icon" draws its glyph only), then the nav's sf-menu
+  // moves its sections one by one into «Ещё» (overflow more), and only when
+  // not even one section beside «Ещё» fits, the menu button and the side
+  // panel. Every width change is decided here, in the observer that saw it,
+  // before the paint and in one step: the tools' state is written first, so
+  // the nav has its final room when the menu is asked for its row in the same
+  // task (measureFit({driven: true})); nothing in between is drawn.
+  //
+  // The widths: the row's content box; the brand, the actions and the tools
+  // as they stand; a shrinking tool whole (the width it drew whole, read
+  // while it was) and as a glyph (a square of its own height); the menu's
+  // whole row and its narrowest row (rowNeeds, one item and «Ещё»). A nav
+  // without such a menu asks its content's width and moves whole.
+  drivesRow(menu) {
+    return this.collapse === 'auto' && !this.collapsed && this.navMenus().includes(menu);
+  }
+
+  shrinkingTools() {
+    const tools = this.header()?.querySelector(':scope > .sf-site-header-row > .sf-site-header-tools');
+    return tools ? Array.from(tools.querySelectorAll('[shrink="icon"]')) : [];
+  }
+
+  setToolsCompact(compact) {
+    for (const tool of this.shrinkingTools()) {
+      if (compact) tool.setAttribute('data-shrunk', 'true');
+      else tool.removeAttribute('data-shrunk');
+    }
+    if (compact === this._toolsCompact) return;
+    this._toolsCompact = compact;
+    this.sfHostState('data-tools-compact', compact);
+  }
+
+  // The nav's needs: the menu's own, else its content measured as it lies.
+  // null while a menu in it is not drawn as a row yet (its code not here,
+  // or a column turning back into a row): the menu asks the bar again once
+  // it has drawn (rowHost), and nothing is decided on a half-drawn nav.
+  navNeeds(nav) {
+    const menus = this.navMenus();
+    if (menus.some((element) => !element.matches(':defined'))) return null;
+    const menu = menus.find((element) => typeof element.rowNeeds === 'function' && element.moreActive);
+    if (menu) {
+      const needs = menu.rowNeeds();
+      return needs ? {...needs, menu} : null;
+    }
+    const range = document.createRange();
+    range.selectNodeContents(nav);
+    const whole = range.getBoundingClientRect().width;
+    return {whole, least: whole, menu: null};
+  }
+
+  fitRow() {
+    if (this.collapse !== 'auto' || this._fitting || typeof document === 'undefined') return;
+    const header = this.header();
+    const row = header?.querySelector(':scope > .sf-site-header-row');
+    if (!row) return;
+    this._fitting = true;
+    try {
+      this.fitRowNow(row);
+    } finally {
+      this._fitting = false;
+    }
+    this.sfHostState('data-fitted', true);
+  }
+
+  // Layout boxes, not screen boxes (layoutWidth, layoutRowRoom; the row
+  // engine's measures under a transformed ancestor, fix/segmented-transform):
+  // a bar in a scaled preview decides as it is laid out.
+  fitRowNow(row) {
+    const room = layoutRowRoom(row);
+    // Collapsed by this measure: the bar comes back when its row is again as
+    // wide as the narrowest row needed when it collapsed. The menu draws as a
+    // row again, measures and asks the bar back (rowHost), which then decides
+    // the row in full.
+    if (this._fitNeed) {
+      if (room + 0.5 < this._fitNeed) return;
+      this.setFit(0);
+      this.syncCollapsed();
+      return;
+    }
+    // Below the floor (the md step, a phone, until the nav's menu has drawn)
+    // the sheet collapses the bar; the floor lifted, the menu turns back into
+    // a row and asks the bar again.
+    this.syncCollapsed();
+    if (this.collapsed) {
+      this.setToolsCompact(this.shrinkingTools().length > 0);
+      return;
+    }
+    const nav = row.querySelector('.sf-site-header-nav');
+    const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+    const width = (element) => (element ? layoutWidth(element) : 0);
+    const brand = row.querySelector(':scope > .sf-site-header-brand');
+    const actions = row.querySelector('.sf-site-header-actions');
+    const tools = row.querySelector(':scope > .sf-site-header-tools');
+    const parts = [brand, nav, actions, tools].filter((part) => part && part.getClientRects().length);
+    const besides = width(brand) + width(actions) + gap * Math.max(0, parts.length - 1);
+    const toolsNow = width(tools);
+    let whole = 0;
+    let glyph = 0;
+    for (const tool of this.shrinkingTools()) {
+      const box = tool.querySelector(':scope > :is(button, a)') ?? tool;
+      const drawn = {width: layoutWidth(box), height: layoutHeight(box)};
+      if (!this._toolsCompact) this._wholeWidths.set(tool, drawn.width);
+      whole += this._wholeWidths.get(tool) ?? drawn.width;
+      glyph += this._toolsCompact ? drawn.width : drawn.height;
+    }
+    const shrinks = this.shrinkingTools().length > 0;
+    const toolsWhole = this._toolsCompact ? toolsNow - glyph + whole : toolsNow;
+    const toolsGlyph = this._toolsCompact ? toolsNow : toolsNow - whole + glyph;
+    if (!nav || !nav.firstElementChild) {
+      this.setToolsCompact(shrinks && besides + toolsWhole > room + 0.5);
+      return;
+    }
+    const needs = this.navNeeds(nav);
+    if (!needs) return;
+    const roomWhole = room - besides - toolsWhole;
+    const roomGlyph = room - besides - toolsGlyph;
+    if (needs.whole <= roomWhole + 0.5) {
+      this.setToolsCompact(false);
+    } else if (needs.least <= (shrinks ? roomGlyph : roomWhole) + 0.5) {
+      this.setToolsCompact(shrinks);
+    } else {
+      // Not even one section beside «Ещё»: the menu button and the panel,
+      // until the row is as wide as that row needs.
+      this.setToolsCompact(shrinks);
+      this.setFit(Math.ceil(room + needs.least - (shrinks ? roomGlyph : roomWhole)) + 1);
+      this.syncCollapsed();
+      return;
+    }
+    // The nav has its room now (the tools' state is drawn by the sheet at
+    // once): the menu decides its row in the same task.
+    needs.menu?.measureFit({driven: true});
   }
 
   // A sticky bar is the flat place while the page is at its top and the raised

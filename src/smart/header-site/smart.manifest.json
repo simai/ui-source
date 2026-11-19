@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.13.2",
+  "version": "1.14.0",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -56,13 +56,14 @@
       "collapse": {
         "type": "string",
         "default": "lg",
-        "description": "Below this step of the bar's own width (sm 32rem, md 44rem, lg 60rem, xl 72rem: the screen breakpoints' places on the container ladder, C181) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A container condition of the sheet, so the first paint is right without the script, and a bar narrower than the window collapses with its nav",
+        "description": "Below this step of the bar's own width (sm 32rem, md 44rem, lg 60rem, xl 72rem: the screen breakpoints' places on the container ladder, C181) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A container condition of the sheet, so the first paint is right without the script, and a bar narrower than the window collapses with its nav. auto (owner decisions C371, C372): the bar measures its own row at every width and gives way in one order -- first the tools that can (sf-button shrink=\"icon\" draws its glyph only), then the nav's sf-menu (overflow more) moves its sections one by one into «Ещё», and the menu button and the panel only when not even one section and «Ещё» fit; each width change is decided before the paint, in one step. Before its code the sheet draws auto as md; with it the bar measures itself before its first paint (host state data-fitted says it has)",
         "enum": [
           "none",
           "sm",
           "md",
           "lg",
           "xl",
+          "auto",
           "always"
         ]
       },
@@ -367,7 +368,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "8926ce113c7448d146deddcec87cfebfa7bb3607e766dde69b0c4a07dd8bcc3b"
+        "sha256": "7a415c0661be1d22674b43a920fef22754f34bd8b8735f5fa07f700689366143"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
@@ -375,7 +376,7 @@
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "ec207ae605c2c25ed6f3c949f8094a8f92bfbbcc438da329dfad79b773f28aa9"
+        "sha256": "474cd36392a344578035f6afde9b8f3a487a80bb4a9212c743c78e31cea4f812"
       },
       {
         "path": "src/smart/header-site/rule.js",
@@ -383,7 +384,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "b81a6d5cb9438903c99615edeaea616bb086e4b9de3934ecc0b8c18983ecaefa"
+        "sha256": "057a10678357e563dd49cdc2ba5394f3a0f1f90202b6f76a0e3cdb5b1c3f48b5"
       }
     ],
     "generated_runtime": []

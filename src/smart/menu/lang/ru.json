@@ -3,6 +3,7 @@
   "runtime": {
     "toggle-label": "Меню",
     "more-label": "Ещё",
+    "holds-current": "содержит текущую страницу",
     "status-success": "в порядке",
     "status-warning": "внимание",
     "status-error": "ошибка",

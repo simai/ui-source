@@ -46,7 +46,9 @@ useNames(names);
 
 // The parts it draws, found under their current names and their former ones.
 const MENU = `:scope > .sf-language-parts > ${tagSelector('sf-menu-context')}`;
-const TRIGGER = `:scope > .sf-language-parts > ${tagSelector('sf-button')}`;
+// The trigger: sf-button «文A RU ▾» (trigger code), or sf-button-icon, the
+// glyph alone (trigger icon, owner decision C369).
+const TRIGGER = `:scope > .sf-language-parts > :is(${tagSelector('sf-button')}, ${tagSelector('sf-button-icon')}, button.sf-language-name)`;
 const TRACK = `:scope > .sf-language-parts > ${tagSelector('sf-segmented')}`;
 const FIELD = `:scope > .sf-language-parts > ${tagSelector('sf-dropdown')}`;
 
@@ -303,7 +305,8 @@ class SfLanguage extends FormField(LanguageElement) {
     return this.querySelector(MENU);
   }
 
-  get trigger() {
+  // The drawn trigger button (the setting trigger is its form: code or icon).
+  get triggerButton() {
     return this.querySelector(TRIGGER);
   }
 
@@ -316,7 +319,7 @@ class SfLanguage extends FormField(LanguageElement) {
    */
   toggleMenu() {
     const menu = this.menu;
-    const host = this.trigger;
+    const host = this.triggerButton;
     if (!menu || !host || this.disabled) return;
     const anchor = host.querySelector('button') ?? host;
     const reset = Boolean(this._query);
@@ -458,7 +461,13 @@ class SfLanguage extends FormField(LanguageElement) {
       triggerLabel: current ? this.sfWord('trigger', {vars: {label, name: current.native}}) : label,
       // The trigger's name tooltip (C160 (1)): its surface's id, from the
       // element's path (§7.1.1).
-      tipId: look === 'menu' || look === 'search' ? partId(instancePath(this, {kind: 'sf-language'}), 'tooltip') : '',
+      // trigger icon (C369): the glyph alone, sf-button-icon, which shows
+      // its own name tooltip, so no surface is drawn here.
+      // trigger name (C381): the glyph and the current language's own name
+      // in the link role; the name is shown, so no tooltip either.
+      icon: this.getAttribute('trigger') === 'icon',
+      name: this.getAttribute('trigger') === 'name',
+      tipId: (look === 'menu' || look === 'search') && !['icon', 'name'].includes(this.getAttribute('trigger')) ? partId(instancePath(this, {kind: 'sf-language'}), 'tooltip') : '',
       entries: look === 'menu' || look === 'search' ? this.menuEntries(list, current, look === 'search' ? this._query : '') : [],
       search: look === 'search' ? this.searchOptions() : null,
       // The field look (C142 (8)): sf-dropdown of the same size -- it stands

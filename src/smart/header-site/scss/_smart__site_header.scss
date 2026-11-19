@@ -451,6 +451,20 @@
   min-inline-size: 0;
 }
 
+/* A nav menu whose code has not come yet is its plain list -- one section
+   under another -- and the bar grew to that column for the frames until the
+   menu drew its row (the page under it went down 116 px and back at 1440,
+   every collapse value, C372 acceptance CLS 0). Until it is defined it holds
+   one row of the bar's control height, unseen, as wide as the room it has. */
+.sf-site-header-nav > sf-menu:not(:defined) {
+  display: block;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: var(--sf-site-header--control-height);
+  overflow: clip;
+  visibility: hidden;
+}
+
 .sf-site-header-actions,
 .sf-site-header-tools {
   display: flex;
@@ -598,6 +612,22 @@
     }
   }
 }
+
+/* collapse auto (C371, C372): the bar measures its row and gives way itself
+   (index.js fitRow: tools, then the nav's sections into «Ещё», then the menu
+   button), at any width, and says so with data-nav-overflow above. Before its
+   code, or its nav menu's (the row it would measure is not there yet), it
+   draws as collapse md, the phone's step: a phone's first paint has its menu
+   button at once, and the bar measures itself as soon as the menu draws. */
+@container sf-site-header (width < #{mq.container-step(h1)}) {
+  :is(sf-header-site, sf-site-header):is(:not(:defined), :has(.sf-site-header-nav > sf-menu:not(:defined))) > .sf-site-header--collapse-auto {
+    @include collapsed;
+
+    .sf-site-header-row {
+      --sf-site-header--collapsed: 1;
+    }
+  }
+}
   @include paint.part(all);
 }
 
@@ -628,6 +658,11 @@
       .sf-site-header--collapse-#{$step} {
         @include collapsed;
       }
+    }
+  }
+  @container sf-site-header (width < #{mq.container-step(h1)}) {
+    :is(sf-header-site, sf-site-header):is(:not(:defined), :has(.sf-site-header-nav > sf-menu:not(:defined))) > .sf-site-header--collapse-auto {
+      @include collapsed;
     }
   }
   @include paint.part(all);

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
   "id": "smart.language",
   "tag": "sf-language",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "language",
   "settings": {
@@ -102,6 +102,16 @@
       ],
       "default": "1",
       "summary": "The ladder rung: the trigger is a button of that size, the switch a segmented control of that size; the menu's rows are 32 px up to 1/2 and 40 px from 1. 1/2 fits the tools slot of sf-header-site"
+    },
+    "trigger": {
+      "type": "enum",
+      "values": [
+        "code",
+        "icon",
+        "name"
+      ],
+      "default": "code",
+      "summary": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). name, the glyph and the current language's own name («Русский», «Deutsch») in the link role (component link, owner decisions C381, C186: the navigation form, the ink and size of its place, no fill in any state, the line under the name on hover, press, keyboard focus and while open, the link's focus ring), as wide as the name, no tooltip (the name is shown), still named «Язык: Русский». The menu is the same. Core holds the trigger's box before the code arrives (--sf-language--trigger: the code's width, the icon's square, the name's line)"
     },
     "apply": {
       "type": "enum",
@@ -242,6 +252,18 @@
       "name": "cl-button"
     },
     {
+      "name": "cl-button-icon",
+      "$comment": [
+        "trigger icon (C369): the glyph alone is sf-button-icon, which shows its own name tooltip (C160 (1))."
+      ]
+    },
+    {
+      "name": "link",
+      "$comment": [
+        "trigger name (C381): the trigger is a native button in the link role, drawn by the link sheet."
+      ]
+    },
+    {
       "name": "cl-icon"
     },
     {
@@ -329,7 +351,8 @@
     "version 1.5.2 (2026-11-17, feat/lang-file-c282; numbered above 1.5.1 on origin/fix/utilities-c264): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.5.3 (written on the branch as 1.5.1; 2026-11-17, owner decision C268; numbered above 1.5.0 on origin/fix/fields-sizes-e2): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.6.0 (2026-11-18): a minor (owner decision C278: languages of CIS countries other than Russian are not added and not named). The names table (data/names.json) no longer holds uk, be, uz, az, hy, ka, tt, ky, tg, ba and tk (54 languages ship, 65 before; tt and ba came back in 1.6.1), and the language file (core/js/lang/language-names) has no name-<code> word for them in any pack; removed with no dated alias (journal behaviour-cis-language-names-withdrawn). A product that lists such a code gets the browser's name for it (Intl.DisplayNames), as for any code the table does not hold. The examples and the twelve-language example say nl where they said uk. The menu entry (SfLanguage.menuEntry) reads its words through the registry aliases (core/lang/index.json aliases: a zh-CN, zh-SG or zh page takes the zh-hans words, a pt page the pt-br ones). Settings, values, events and keys unchanged.",
-    "version 1.6.1 (2026-11-18): a patch (dispatcher decision on C278: the decision removes languages of other CIS countries; Tatar and Bashkir are languages of regions of Russia). The names table holds tt and ba again (56 languages), with their name-<code> words in every pack and the Cyrillic font list; uk, be, uz, az, hy, ka, ky, tg and tk stay removed. Settings, values, events and keys unchanged."
+    "version 1.6.1 (2026-11-18): a patch (dispatcher decision on C278: the decision removes languages of other CIS countries; Tatar and Bashkir are languages of regions of Russia). The names table holds tt and ba again (56 languages), with their name-<code> words in every pack and the Cyrillic font list; uk, be, uz, az, hy, ka, ky, tg and tk stay removed. Settings, values, events and keys unchanged.",
+    "version 1.7.0 (2026-11-19, owner decision C369, docs header study ui-control control/research/2026-11-19-docs-header, DEV msg-d9c2e1640ee24748b154 item 1.3; numbered above 1.6.1 on origin/fix/lang-follow and origin/integration/pair-next-15): a minor, all additions. trigger=\"icon\": the menu's trigger is sf-button-icon with the translate glyph alone -- a square of the size's step, ghost on-surface, aria-haspopup menu, named «Язык: Русский» (the word trigger) -- which shows its name as the Framework's tooltip by itself (C160 (1)); the element draws no tooltip surface of its own then. The menu, the search, the sheet on a phone and the keys are the same. Core's first paint holds the square for it (core.styles, hash only: --sf-language--trigger is the box for sf-language[trigger=\"icon\"], and an undefined sf-button-icon in the parts holds it too), so the tools beside it do not move. Relation cl-button-icon. The element's former undocumented getter trigger (the drawn button) is triggerButton now; trigger is the setting. Settings otherwise, values, events and keys unchanged. trigger name (owner decision C381 with C369, the Larena Panel sign-in screen 2026-11-19, DEV msg-cfe379b5d6aa492c8ba6 item 1 a): the glyph and the current language's own name in the link role -- a native button with component link's classes sf-link sf-link--navigation (component.link 1.4.0: the navigation form, a link that is a button, the line kept while its menu is open) -- as wide as the name, no tooltip, named as the other triggers; relation link added; core holds its box at one line of its place before the code (its width is the name's, which no attribute gives)."
   ],
   "x-registry": {
     "capabilities": [

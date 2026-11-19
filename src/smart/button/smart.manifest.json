@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.17.2",
+  "version": "1.18.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation. Attributes it does not own go to the inner control; a `data-*` is moved there, not copied (the host is display: contents and has no box): select the inner button by it (`[data-action]`, `closest('sf-button')` for the host), and read what was written on the host with `element.dataAttributes`.",
   "kind": "smart",
@@ -23,6 +23,7 @@
   "composition": {
     "uses": [
       "component.buttons",
+      "component.icon-buttons",
       "component.kbd",
       "component.spinner",
       "component.tooltip",
@@ -68,6 +69,7 @@
         "rel",
         "shortcut",
         "shortcut-listen",
+        "shrink",
         "expanded",
         "pressed",
         "text-pressed",
@@ -338,6 +340,15 @@
         "type": "boolean",
         "default": false,
         "description": "The button listens to its shortcut on the page and is pressed by it, as by a click. A combination without mod, ctrl, alt or meta is not heard while focus is in an editable field"
+      },
+      "shrink": {
+        "type": "string",
+        "default": "none",
+        "description": "How the button gives way when the bar it stands in asks it to (owner decision C370): icon, its glyph only -- a square of its height, ghost -- keeping its name (its text, unless aria-label names it), its aria-keyshortcuts and the Framework's tooltip with its text and keys («Поиск ⌘K», C160); none, never. sf-header-site collapse auto asks first, before its nav gives way (C372), by the host state data-shrunk; a button needs an icon to give way to",
+        "enum": [
+          "none",
+          "icon"
+        ]
       },
       "expanded": {
         "type": "boolean",
@@ -753,7 +764,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "e635bdab2d17ccc9f55da69042207f61a4123908fdb3df04ac867ef6dfe7a47c"
+        "sha256": "5daa3febee36b5424029942294bef9b91dc522c9f3ac9d0a5cb3077b4102abde"
       }
     ],
     "generated_runtime": [
