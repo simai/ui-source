@@ -34,7 +34,7 @@ test('heading level 1 without a heading slot keeps the h1 literal; any other lev
 test('description and media are drawn only when given', () => {
   assert.match(template, /const name = description\s*\? html`<div class="sf-page-header-name flex flex-col min-w-0">/u);
   assert.match(template, /<div class="sf-page-header-title flex items-cross-center min-w-0">\s*\$\{hasHostSlot\('media'\) \? html`<div class="sf-page-header-media flex items-cross-center">\$\{hostSlot\('media'\)\}<\/div>` : nothing\}\$\{name\}/u);
-  assert.match(sheet, /\.sf-page-header-description \{\s*font-size: var\(--sf-text-size-1\\\/2\);\s*line-height: var\(--sf-text-height-1\\\/2\);/u);
+  assert.match(sheet, /\.sf-page-header-description \{\s*font-size: var\(--sf-text-size-1\\\/3\);\s*line-height: var\(--sf-text-height-1\\\/3\);/u);
   assert.match(sheet, /\.sf-page-header-description \{\s*color: var\(--sf-on-surface-variant\);/u);
 });
 
@@ -45,6 +45,6 @@ test('an avatar without a size takes the line rung; a size the page wrote stays'
 });
 
 test('core counts the description line and a written media size in the bare tag box', () => {
-  assert.match(core, /\[description\]:not\(\[description=""\]\) \{\s*--sf-page-header--box-line: max\(calc\(var\(--sf-heading-4--height\) \+ var\(--sf-text-height-1\\\/2\)\)/u);
+  assert.match(core, /\[description\]:not\(\[description=""\]\) \{\s*--sf-page-header--box-line: max\(calc\(var\(--sf-heading-4--height\) \+ var\(--sf-text-height-1\\\/3\)\)/u);
   assert.match(core, /max\(var\(--sf-page-header--box-line\), var\(--sf-page-header--box-actions\), var\(--sf-page-header--box-media\)\)/u);
 });

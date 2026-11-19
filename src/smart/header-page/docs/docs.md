@@ -25,8 +25,9 @@ Attributes:
   the page's own title. A head inside a page that has its own h1 (a
   conversation embedded in a page) says `2`. Only the tag changes; the look
   stays the fourth heading step.
-- `description` — a line under the heading in the small text step and the
-  secondary ink, one line ending in an ellipsis: between people the head of a
+- `description` — a line under the heading in the 1/3 text step (12/16)
+  and the secondary ink; with the heading it is as tall as the 1 rung (40),
+  so the head stands as tall as its «назад», avatar and actions, one line ending in an ellipsis: between people the head of a
   conversation says whether the person is online («в сети», «был(а) вчера»).
   Empty draws no line.
 - `count` — how many records the page holds, for a page without a table
