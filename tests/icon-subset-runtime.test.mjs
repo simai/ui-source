@@ -963,6 +963,59 @@ test('R074: a background request outrun by a newer answer is aborted and changes
   }
 });
 
+test('icon-ready: an answer whose face comes in after the full font took over with more names leaves the full font drawing', async () => {
+  const page = subsetPage();
+  try {
+    // Each subset face load waits until the test lets it in, in the order
+    // asked; the full font's loads are in at once.
+    const faces = new Map();
+    globalThis.document.fonts.load = (font) => (/Subset/u.test(font)
+      ? new Promise((resolve) => {
+        const at = faces.size;
+        faces.set(at, () => resolve([{}]));
+      })
+      : Promise.resolve([{}]));
+    const loader = new TestLoader();
+    loader.iconSubsetDeadlineMs = 30;
+    loader.syncStaticIconLoadedState = () => {};
+    // The header's menu is asked for first and answered at once; its face is slow.
+    loader.uniqueIcons.set('menu', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    const first = loader.loadIconSubsetFamily(outlinedRequest(['menu']));
+    await sleep(0);
+    page.answer(page.requests[0]);
+    assert.equal(await first, true, 'past the deadline, the answer in hand keeps its subset');
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+    // The chevrons turn up; the grown request is not answered by its deadline:
+    // the full font draws every name.
+    loader.uniqueIcons.set('keyboard_arrow_down', new Map([['loading', true], ['type', new Set(['outlined'])]]));
+    assert.equal(await loader.loadIconSubsetFamily(outlinedRequest(['menu', 'keyboard_arrow_down'])), true);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 1);
+    assert.ok(loader.isTrackedIconLoaded({icon: 'keyboard_arrow_down', attrs: {}}));
+
+    // The menu-only face comes in: it holds no chevron, so it must not take
+    // the full font away (the chevron would spell its name in a system font).
+    faces.get(0)();
+    await sleep(30);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 1,
+      'the full font keeps drawing');
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family')).length, 0,
+      'the incomplete subset leaves');
+    assert.equal(loader.getIconManifestForType('outlined'), null, 'no manifest of the dropped answer is kept');
+
+    // The grown answer holds every name: it takes over once its face is in.
+    page.answer(page.requests[1]);
+    await sleep(10);
+    faces.get(1)();
+    await sleep(30);
+    assert.equal(page.head.filter((node) => node.hasAttribute('data-sf-icons-fallback')).length, 0);
+    const subsets = page.head.filter((node) => node.hasAttribute('data-sf-icons-subset-family'));
+    assert.equal(subsets.length, 1);
+    assert.equal(subsets[0].getAttribute('data-sf-icons-subset'), 'menu,keyboard_arrow_down');
+  } finally {
+    page.restore();
+  }
+});
+
 test('D2: a Smart tag whose module failed to load lets the first request go at once, not at the cap', async () => {
   const {installPendingTags} = await import('../src/core/js/pending-tags.js');
   await withHeldTags(async ({listeners}) => {
