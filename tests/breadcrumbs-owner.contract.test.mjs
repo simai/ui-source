@@ -24,7 +24,10 @@ test('Breadcrumbs presentation uses role tokens and responsive logical geometry'
   assert.doesNotMatch(styles, /--sf-primary/);
   assert.match(styles, /--sf-on-surface/);
   assert.match(styles, /--sf-font-weight-medium/);
-  assert.match(styles, /sf-breadcrumbs-item--separator[\s\S]*scaleX\(-1\)/);
+  // Right to left the separator turns with the scale property the icons
+  // sheet turns a directional glyph with: one turn, never two (AM-39).
+  assert.match(styles, /sf-breadcrumbs-item--separator \.sf-icon:dir\(rtl\)\s*\{\s*scale: -1 1;/);
+  assert.doesNotMatch(styles, /sf-breadcrumbs-item--separator[^{]*\{[^}]*scaleX\(-1\)/);
   assert.match(styles, /:focus-visible/);
   assert.doesNotMatch(styles, /:focus(?:\s|,|\{)/);
   assert.doesNotMatch(styles, /#[0-9a-f]{3,8}\b|rgba?\(/i);

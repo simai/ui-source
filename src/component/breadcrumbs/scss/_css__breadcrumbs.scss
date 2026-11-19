@@ -199,9 +199,14 @@
     display: none;
   }
 
-  [dir="rtl"] .sf-breadcrumbs .sf-breadcrumbs-item--separator .sf-icon,
-  .sf-breadcrumbs[dir="rtl"] .sf-breadcrumbs-item--separator .sf-icon {
-    transform: scaleX(-1);
+  /* A separator points along the line, so right to left it points to the
+     start (AM-39). It is turned with the scale property, the one the icons
+     sheet turns a directional glyph with (C151 point 3): chevron_right is
+     such a glyph, and a transform here on top of the glyph's own scale turned
+     it twice, back to pointing right. One property, one turn, whatever the
+     separator's glyph is. */
+  .sf-breadcrumbs .sf-breadcrumbs-item--separator .sf-icon:dir(rtl) {
+    scale: -1 1;
   }
 }
 
