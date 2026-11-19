@@ -75,8 +75,8 @@ Main attributes:
   `--sf-on-primary-container`; the ring stays on hover
   (`--sf-primary-container-hover`) and press. Focus draws every button's ring
   outside. The ring is drawn inside the edge, so the button keeps its size.
-  The ring against the row: 6.48:1 in the light theme, 8.93:1 in the dark
-  (WCAG 1.4.11). Neutral whatever `scheme` or `status` say. The class is
+  The ring against the row: 6.48:1 in the light theme (page and card),
+  8.93:1 in the dark on a card and 11.13:1 on the dark page (WCAG 1.4.11). Neutral whatever `scheme` or `status` say. The class is
   `sf-icon-button--toggle`; `--sf-icon-button-pressed-background-color` and
   `--sf-icon-button-pressed-color` reach it as they reach the pressed look.
 

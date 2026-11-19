@@ -39,8 +39,8 @@ decorative and uses `aria-hidden="true"`.
   (`--sf-primary-container-hover`) and press (`-active`). Focus is every
   button's ring outside; disabled takes the disabled ink and an on toggle keeps
   its ring in `--sf-outline-variant`; forced colours draw a Highlight edge. The
-  ring stands 6.48:1 from the row in the light theme and 8.93:1 in the dark
-  (WCAG 1.4.11). Neutral whatever the scheme or the status classes say. The
+  ring stands 6.48:1 from the row in the light theme (page and card), 8.93:1
+  on a dark card and 11.13:1 on the dark page (WCAG 1.4.11). Neutral whatever the scheme or the status classes say. The
   pressed look of outline, ghost and default (the filled icon) is unchanged.
   `sf-button-icon` draws it with `appearance="toggle"`;
 - scheme: `primary`, `on-surface`, or `on-surface-variant`, one class each
