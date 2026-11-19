@@ -136,7 +136,8 @@ Roles on the steps: `--sf-popup-menu-min-width` 20, `--sf-popup-menu-max-width`
 `--sf-popup--window-wide-width` 96; the field widths
 `--sf-field--width-short` 20, `-medium` 28, `-long` 44. The former reading
 measures `--sf-text--measure`, `-wide`, `-narrow` (65, 80, 45ch) are aliases of
-80, 96 and 52 until 2027-01-01.
+80, 96 and 52 until 2027-01-01; they are contract roles too, so a density
+region redeclares them with the steps.
 
 ## Known gaps
 

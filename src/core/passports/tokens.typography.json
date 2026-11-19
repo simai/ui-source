@@ -28,7 +28,7 @@
     "src/core/scss/mix/_mix__card_title.scss",
     "src/core/scss/vars/_sf_var__link.scss"
   ],
-  "content_sha256": "405d5fa597c37a481fbfef15a8e1b9f02047ebd1f1787fc36c076787c842819e",
+  "content_sha256": "593d6a8b6ec4121dbd4e6bfe3d77163dfb54ac96991387a25c5c52143e8135f5",
   "dependencies": [
     {
       "id": "font.inter",
@@ -69,10 +69,6 @@
     },
     {
       "id": "utility.line-height",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "utility.text-max-width",
       "range": "^1.0.0"
     }
   ]

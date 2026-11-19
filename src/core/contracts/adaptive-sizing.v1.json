@@ -174,7 +174,10 @@
     "roles": {
       "field--width-short": 20,
       "field--width-medium": 28,
-      "field--width-long": 44
+      "field--width-long": 44,
+      "text--measure": 80,
+      "text--measure-wide": 96,
+      "text--measure-narrow": 52
     }
   },
   "controls": {

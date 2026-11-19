@@ -83,6 +83,15 @@ test('the popup, window, field and reading roles read their steps (C32, C159, C3
     ['--sf-text--measure-wide', '--sf-measure-96'],
     ['--sf-text--measure-narrow', '--sf-measure-52'],
   ]);
+  // The aliases are declared with the ladder (contract roles), so density regions redeclare them.
+  const ladder = read('src/core/figma_variables/figma_measure.scss');
+  const density = read('src/core/scss/_sf_css__density.scss');
+  for (const [from, to] of [['text--measure', 80], ['text--measure-wide', 96], ['text--measure-narrow', 52]]) {
+    assert.equal(json('src/core/contracts/adaptive-sizing.v1.json').measure.roles[from], to, from);
+    assert.ok(ladder.includes(`--sf-${from}: var(--sf-measure-${to});`), `${from} in the ladder file`);
+    assert.ok(density.split(`--sf-${from}: var(--sf-measure-${to});`).length >= 3, `${from} in both density regions`);
+  }
+  assert.doesNotMatch(read('src/core/scss/_sf_css__typograpy.scss'), /--sf-text--measure#\{/u);
   const record = json('contracts/changes/journal.json').records.find((one) => one.id === 'token-c396-text-measure');
   assert.equal(record?.remove_after, aliases.remove_after);
   // The utilities: w-, max-w- and min-w-measure-N for the eight steps.
