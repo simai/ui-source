@@ -16,6 +16,15 @@
 // to the end the glyph is drawn (width > 0) and is a glyph, not the
 // ligature's words (width at most 1.5 em). The swap asks for no new font:
 // the request that brought the chevrons brought their partners too.
+//
+// Since 2026-11-16 (first paint R222 open item 1) an icon the Loader has not
+// marked sf-icon-loaded keeps its glyph's box and is held unseen: its text
+// fill is transparent and it is clipped to that box (core.css). While held,
+// the name is laid out at full width (the range is 200+ px) but no letter is
+// painted; screencast frames of those moments show the place blank. So the
+// letters count only in a frame the icon is not held, and the glyph is
+// "drawn" from the first frame it is laid out and no longer held; from then
+// on a held frame is a blank one, as font-size 0 was before.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -52,14 +61,16 @@ const PAGE = `<!doctype html><html lang="ru"><head><meta charset="utf-8">
 </body></html>`;
 
 // The sampler: each frame, the glyph of each watched chevron. A chevron is
-// opened 50 ms after it is first drawn (inside the first 100 ms) and closed
-// 600 ms later, by a click on its button.
+// opened 50 ms after it is first laid out (inside the first 100 ms) and
+// closed 600 ms later, by a click on its button -- on a cold cache that is
+// while it is still held. Once it is seen (no longer held) it is opened and
+// closed once more the same way, so a swap of a seen glyph is watched too.
 const SAMPLER = () => {
   const watched = {
     row: '#row [data-sf-menu-toggle="catalog"]',
     column: '#column [data-sf-menu-toggle="c-pumps"]',
   };
-  const state = {frames: [], first: {}, opened: {}, closed: {}, start: performance.now()};
+  const state = {frames: [], first: {}, opened: {}, closed: {}, seen: {}, reopened: {}, start: performance.now()};
   window.__chevron = state;
   const glyph = (button) => {
     const icon = button?.querySelector('.sf-icon');
@@ -78,7 +89,10 @@ const SAMPLER = () => {
     const faces = [...document.fonts].filter((one) => one.family.replace(/["']/gu, '').trim() === family);
     const face = faces.length > 0 && faces.every((one) => one.status === 'loaded');
     return {name: icon.textContent.trim(), width: Math.round(width * 10) / 10, em: parseFloat(style.fontSize) || 0, loaded: icon.classList.contains('sf-icon-loaded'),
-      box: Math.round(icon.getBoundingClientRect().width * 10) / 10, face};
+      box: Math.round(icon.getBoundingClientRect().width * 10) / 10, face,
+      // Held unseen (the core.css hold): fill transparent, clipped, the box
+      // one glyph wide -- the same reading as icons-local-font.
+      held: /^(transparent|rgba\(0, 0, 0, 0\))$/u.test(style.webkitTextFillColor) && /clip|hidden/u.test(style.overflowX)};
   };
   const tick = () => {
     const now = performance.now();
@@ -96,6 +110,15 @@ const SAMPLER = () => {
             state.closed[key] = true;
             document.querySelector(selector).click();
           }, 600);
+        }, 50);
+      }
+      if (sample && sample.width > 0 && !sample.held && state.first[key] !== undefined && state.seen[key] === undefined
+        && state.closed[key]) {
+        state.seen[key] = now;
+        setTimeout(() => {
+          state.reopened[key] = Math.round(performance.now() - state.start);
+          document.querySelector(selector).click();
+          setTimeout(() => document.querySelector(selector).click(), 600);
         }, 50);
       }
     }
@@ -160,16 +183,25 @@ try {
         check(firstAt !== undefined, `${k} ${key}: the chevron is drawn`);
         if (firstAt === undefined) continue;
         check(state.opened[key] !== undefined && state.opened[key] < 100, `${k} ${key}: opened in the first 100 ms after it was drawn (${state.opened[key]} ms)`);
-        const frames = state.frames.filter((frame) => frame.t >= Math.round(firstAt - state.start) && frame[key]);
-        const blank = frames.filter((frame) => !(frame[key].width > 0));
+        // Drawn from the first frame it is laid out and not held.
+        const seenAt = state.frames.find((frame) => frame.t >= Math.round(firstAt - state.start) && frame[key]?.width > 0 && !frame[key].held)?.t;
+        check(seenAt !== undefined, `${k} ${key}: the chevron is seen (held unseen until ${seenAt ?? 'the end'})`);
+        const heldFrames = state.frames.filter((frame) => frame[key] && (seenAt === undefined || frame.t < seenAt) && frame[key].width > 0);
+        const shown = heldFrames.filter((frame) => !(frame[key].held && Math.abs(frame[key].box - frame[key].em) <= 1.5));
+        check(!shown.length, `${k} ${key}: before it is seen the name is held unseen in a glyph's box in each of ${heldFrames.length} frames${shown.length ? ` — not at ${shown.slice(0, 3).map((frame) => `${frame.t} ms ${frame[key].box}px`).join(', ')}` : ''}`);
+        const frames = state.frames.filter((frame) => frame.t >= (seenAt ?? Infinity) && frame[key]);
+        const blank = frames.filter((frame) => !(frame[key].width > 0) || frame[key].held);
         // The words are seen when the glyph's own box grows past a glyph, or
         // when the face is in and its text is still wider than one: while the
         // face is on its way the name is laid out at the fallback's width but
         // not drawn, and the icon's box holds a glyph's width (layout
-        // containment, component.icons 1.4.1).
-        const words = frames.filter((frame) => frame[key].box > frame[key].em * 1.5 || (frame[key].face && frame[key].width > frame[key].em * 1.5));
-        const names = [...new Set(frames.map((frame) => frame[key].name))];
-        check(names.includes(OPEN[key]) && frames.at(-1)[key].name !== OPEN[key], `${k} ${key}: the glyph swapped open and back (${names.join(' → ')})`);
+        // containment, component.icons 1.4.1). A held frame paints no letter.
+        const words = state.frames.filter((frame) => frame.t >= Math.round(firstAt - state.start) && frame[key] && !frame[key].held
+          && (frame[key].box > frame[key].em * 1.5 || (frame[key].face && frame[key].width > frame[key].em * 1.5)));
+        const names = [...new Set(state.frames.filter((frame) => frame.t >= Math.round(firstAt - state.start) && frame[key]).map((frame) => frame[key].name))];
+        check(names.includes(OPEN[key]) && state.frames.at(-1)[key]?.name !== OPEN[key], `${k} ${key}: the glyph swapped open and back (${names.join(' → ')})`);
+        const seenNames = state.frames.filter((frame) => frame.t >= (state.reopened[key] ?? Infinity) && frame[key]).map((frame) => frame[key].name);
+        check(seenNames.includes(OPEN[key]) && seenNames.at(-1) !== OPEN[key], `${k} ${key}: once seen, it swapped open and back again (at ${state.reopened[key] ?? '-'} ms)`);
         check(frames.length > 30 && !blank.length, `${k} ${key}: the glyph is drawn in every one of ${frames.length} frames${blank.length ? ` — blank at ${blank.slice(0, 5).map((frame) => `${frame.t} ms ${frame[key].name}`).join(', ')}` : ''}`);
         check(!words.length, `${k} ${key}: never the ligature's words, nor the name laid out as letters once its faces are in (${words.length ? `${words[0][key].width}px at ${words[0].t} ms` : 'ok'})`);
       }
