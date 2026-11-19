@@ -18,6 +18,7 @@
     "reject-empty": "«{name}» è vuoto",
     "reject-min-size": "«{name}» è di {size}; deve essere almeno {min}",
     "reject-one": "«{name}» non aggiunto: questo campo accetta un solo file",
+    "reject-folder": "Cartella «{name}» non aggiunta: questo campo accetta un solo file",
     "reject-size": "«{name}» è di {size}; il limite è {max}",
     "reject-total": "«{name}» non aggiunto: massimo {max} per tutti i file insieme",
     "reject-type": "«{name}» non accettato: consentiti {formats}",

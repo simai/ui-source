@@ -12,7 +12,22 @@ export const DRAW = {
   // anchored badge alone (simai/ui-source#12).
   badge: {css: ['badges'], js: 'badge', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
   // A pressed toggle beside the button: the pressed variables colour its resting look.
-  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button><sf-button text="Жирный" icon-start="format_bold" appearance="outline" scheme="on-surface" pressed size="1"></sf-button>'},
+  // A third with overflow="truncate" (C301 (2), sf-button 1.17.0) and a label
+  // longer than its ceiling: only a cut button reads --sf-button-max-width.
+  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button><sf-button text="Жирный" icon-start="format_bold" appearance="outline" scheme="on-surface" pressed size="1"></sf-button><sf-button text="Сохранить черновик и вернуться к списку документов раздела" overflow="truncate" size="1"></sf-button>',
+    // The ceiling drawn, not only computed: at rest (default 100%) the cut
+    // button is as wide as its label; at 213px it is 213 wide and its label cut.
+    proves: `(() => {
+      const button = document.querySelector('sf-button[overflow="truncate"] > button, sf-button[overflow="truncate"] .sf-button');
+      const label = button?.querySelector('.sf-button-text-container');
+      if (!button || !label) return {ok: false, said: 'no cut button drawn'};
+      const rest = button.getBoundingClientRect().width;
+      document.documentElement.style.setProperty('--sf-button-max-width', '213px');
+      const width = button.getBoundingClientRect().width;
+      const cut = label.scrollWidth > label.clientWidth;
+      document.documentElement.style.removeProperty('--sf-button-max-width');
+      return {ok: rest > 213 && Math.abs(width - 213) < 0.5 && cut, rest: Math.round(rest), width: Math.round(width * 10) / 10, cut};
+    })()`},
   // A variable of a state (standard 1.3.8 §6) is measured on an instance in
   // that state, drawn beside the one at rest.
   input: {css: ['inputs'], js: 'input', html: '<sf-input label="Имя" value="Текст" size="1"></sf-input><sf-input label="Ошибка" invalid size="1"></sf-input>'},
@@ -336,6 +351,10 @@ export const ROLES = {
   padding: {properties: ['padding-top', 'padding-left'], value: '17px'},
   // A width a panel fixes, so its text cannot widen it.
   'inline-size': {properties: ['inline-size', 'width'], value: '211px'},
+  // The widest a part grows (a cut button's ceiling, GB13 note 2): the computed
+  // value keeps a min() the sheet writes around it, so the value is looked for
+  // inside it.
+  'max-inline-size': {properties: ['max-inline-size', 'max-width'], value: '213px'},
   // The ring's line and gap are drawn from registered lengths (a bare 0 stays
   // a length): the public variable has to reach the length the drawing reads.
   // The painted geometry is the conformance probe's (src/smart/progress-ring).

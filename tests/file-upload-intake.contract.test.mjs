@@ -129,6 +129,28 @@ test('FU-6: extra files dropped on a single area are said, with reason count, no
   assert.equal(root.__sfFileUploadRejected.length, 2);
 });
 
+test('GB13 note 3: a folder dropped on a single area is refused whole, said once, and the held file stays', () => {
+  const api = load();
+  const root = area();
+  api.takeFiles(root, [file('Устав.pdf')], 'input');
+  const inFolder = (name) => ({...file(name), sfPath: `Документы/${name}`});
+  for (const files of [[inFolder('1.pdf'), inFolder('2.pdf')], [inFolder('1.pdf')]]) {
+    root.events.length = 0;
+    const added = api.takeFiles(root, files, 'drop');
+    assert.equal(added.length, 0);
+    assert.deepEqual(names(root), ['Устав.pdf']);
+    const reject = root.events.find((event) => event.type === 'sf-file-upload:reject');
+    assert.ok(reject, 'reject is sent');
+    assert.deepEqual(plain([...reject.detail.rejected].map((entry) => [entry.name, entry.reason])), files.map((one) => [one.name, 'count']));
+    assert.equal(reject.detail.rejected[0].message, 'Папка «Документы» не добавлена: сюда можно только один файл');
+    assert.equal(root.__sfFileUploadRejected.length, files.length);
+    assert.equal(root.events.filter((event) => event.type === 'sf-file-upload:file-add').length, 0);
+  }
+  // A multiple area takes a folder's files (FO1-5).
+  const many = area({attributes: {multiple: ''}});
+  assert.equal(api.takeFiles(many, [inFolder('1.pdf'), inFolder('2.pdf')], 'drop').length, 2);
+});
+
 test('FU-7: a wrong type is refused on a pick as on a drop, and the message names what is allowed', () => {
   const api = load();
   const root = area({attributes: {accept: '.pdf,image/*'}});

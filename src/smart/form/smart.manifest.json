@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.12.2",
+  "version": "1.12.3",
   "title": "Form",
   "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "kind": "smart",
@@ -413,7 +413,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "184154d797fef98c7a5048d6d2378dfa9bcdee0a776082bac38cf212e9f5d995"
+        "sha256": "38d2db59e9f529fe8bbaae23fa0306ecdf37608dff1f57a340d9dbdc86ca3668"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
@@ -429,7 +429,7 @@
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "1ec5cbf5e3b1afc3c84aa072c2871ac6090382f874ccd373d4b4d1a0915a0dbb"
+        "sha256": "5425ad9a7dba90638ba92afc9ab531bbd39979c7acd8b9f4592b4043d2f43886"
       }
     ],
     "generated_runtime": []

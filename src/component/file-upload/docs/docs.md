@@ -17,7 +17,10 @@ max-total-size (data-<name> or <name>, in bytes or files; FU-6..FU-8). Each is
 said in the polite status line under the area (.sf-file-upload-message, made
 after the area on its first rejection; C81) and in sf-file-upload:reject
 {files, rejected: [{file, name, reason, message}], accept, source}, reason
-type, count, duplicate, empty, size, min-size or total. accept stays a picker
+type, count, duplicate, empty, size, min-size or total. A folder dropped on
+a single area (its files read through core's files drop, FO1-5) is refused
+whole: no file of it is taken, each is in rejected with reason count, and one
+line names the folder (1.8.1, GB13 note 3). accept stays a picker
 hint, not security: the server checks again. An empty/cancelled selection
 preserves existing items. The picker is cleared after copying File objects so
 the same files can be selected again. Text/link drags are not intercepted.

@@ -11,6 +11,7 @@
     "not-added": "لم تُضف: {n}",
     "reject-type": "«{name}» غير مقبول: المسموح {formats}",
     "reject-one": "لم يُضف «{name}»: يقبل هذا الحقل ملفًا واحدًا",
+    "reject-folder": "لم يُضف المجلد «{name}»: يقبل هذا الحقل ملفًا واحدًا",
     "reject-duplicate": "«{name}» موجود في القائمة بالفعل",
     "reject-empty": "«{name}» فارغ",
     "reject-size": "حجم «{name}» هو {size}؛ والحد {max}",

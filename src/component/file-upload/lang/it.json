@@ -11,6 +11,7 @@
     "not-added": "Non aggiunti: {n}",
     "reject-type": "«{name}» non accettato: consentiti {formats}",
     "reject-one": "«{name}» non aggiunto: questo campo accetta un solo file",
+    "reject-folder": "Cartella «{name}» non aggiunta: questo campo accetta un solo file",
     "reject-duplicate": "«{name}» è già nell’elenco",
     "reject-empty": "«{name}» è vuoto",
     "reject-size": "«{name}» è di {size}; il limite è {max}",

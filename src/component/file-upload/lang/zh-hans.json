@@ -11,6 +11,7 @@
     "not-added": "未添加：{n}",
     "reject-type": "不接受“{name}”：允许 {formats}",
     "reject-one": "未添加“{name}”：此字段只接受一个文件",
+    "reject-folder": "未添加文件夹“{name}”：此字段只接受一个文件",
     "reject-duplicate": "“{name}”已在列表中",
     "reject-empty": "“{name}”为空",
     "reject-size": "“{name}”大小为 {size}；上限为 {max}",

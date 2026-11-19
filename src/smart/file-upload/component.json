@@ -2,7 +2,7 @@
   "$comment": "The source of sf-file-upload's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-upload (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/file-upload/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.file-upload",
   "tag": "sf-file-upload",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "kind": "leaf",
   "family": "file",
   "settings": {
@@ -630,7 +630,8 @@
     "version 1.5.5 (2026-11-17, defects-d12; smart.file-preview 1.5.4): a patch. Each row's sf-file-preview carries data-said-by=\"host\": the list says a failed file in its own status line (said-error-line), so the row does not say its reason a second time (sf-file-preview 1.5.4 says it by role alert elsewhere). Nothing is drawn differently; four first-paint snapshots carry the attribute.",
     "version 1.6.0 (2026-11-18, field orders FO-1 (ui-view property pages, view round 2); numbered above every origin branch): a minor, two settings. invalid: the drop zone's dashed edge in the error role (component.file-upload 1.8.0). error-message: while invalid, the sentence under the zone in the error role, the field's hint step (the line of the files left out keeps its own place), and the zone is described by it. A host sets them as on sf-input; sf-form gives them. Without them nothing changes.",
     "version 1.6.2 (written on the branch as 1.5.5; 2026-11-17, Framework order FO-1 of the view set study): a patch. The host's data-dragged-over and the area's class component read a drag through core's files drop (core/js/files-drop.js, filesDrop), the one reading of dataTransfer the file fields share: only a drag that carries files, the copy cursor, none while disabled, the files of a drop once. Behaviour unchanged.",
-    "version 1.6.3 (written on the branch as 1.6.1; written on the branch as 1.5.6; numbered above 1.6.0 on origin; 2026-11-18, FO1-1 return of the component study control/research/2026-11-18-framework-parts-fo): a patch. The host follows the drag its area takes (core files drop, follow): data-dragged-over stays while files are held over the area, which alone takes the files of a drop; with zones inside zones the host had seen the drag taken and said nothing."
+    "version 1.6.3 (written on the branch as 1.6.1; written on the branch as 1.5.6; numbered above 1.6.0 on origin; 2026-11-18, FO1-1 return of the component study control/research/2026-11-18-framework-parts-fo): a patch. The host follows the drag its area takes (core files drop, follow): data-dragged-over stays while files are held over the area, which alone takes the files of a drop; with zones inside zones the host had seen the drag taken and said nothing.",
+    "version 1.6.4 (2026-11-19, GB13 note 3, FO-R1 follow-up; numbered above 1.6.3 on origin): a patch, with component.file-upload 1.8.1. A folder dropped on a single area is refused whole, however many files it holds: no file of it is taken (its first file was only the order the browser read the folder in), each is in rejected with reason count, the file the area holds stays, and one line under the area says «Папка «…» не добавлена: сюда можно только один файл» (reject-folder, eleven languages). Several loose files on a single area keep FU-6: the first is taken, each other one is named under the area. The GB13 measurement «the second dropped without a message» read other selectors: the line under the area (.sf-file-upload-message) said it on GB13 too."
   ],
   "x-registry": {
     "ownership": {

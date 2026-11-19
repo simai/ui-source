@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 93,
-    "translated": 93,
+    "words": 95,
+    "translated": 95,
     "share": 100
   },
   "words": {
@@ -68,6 +68,7 @@
       "reject-empty": "“{name}” está vazio",
       "reject-min-size": "“{name}” tem {size}; o mínimo é {min}",
       "reject-one": "“{name}” não foi adicionado: este campo aceita um só arquivo",
+      "reject-folder": "A pasta “{name}” não foi adicionada: este campo aceita um só arquivo",
       "reject-size": "“{name}” tem {size}; o limite é {max}",
       "reject-total": "“{name}” não foi adicionado: todos os arquivos juntos até {max}",
       "reject-type": "“{name}” não é aceito: permitidos {formats}",

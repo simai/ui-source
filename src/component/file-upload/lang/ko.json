@@ -11,6 +11,7 @@
     "not-added": "추가되지 않음: {n}",
     "reject-type": "‘{name}’은(는) 허용되지 않습니다: 허용 형식 {formats}",
     "reject-one": "‘{name}’을(를) 추가하지 못했습니다: 이 필드는 파일 하나만 받습니다",
+    "reject-folder": "폴더 ‘{name}’을(를) 추가하지 못했습니다: 이 필드는 파일 하나만 받습니다",
     "reject-duplicate": "‘{name}’은(는) 이미 목록에 있습니다",
     "reject-empty": "‘{name}’이(가) 비어 있습니다",
     "reject-size": "‘{name}’은(는) {size}입니다. 한도는 {max}입니다",

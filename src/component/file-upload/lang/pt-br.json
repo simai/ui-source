@@ -11,6 +11,7 @@
     "not-added": "Não adicionados: {n}",
     "reject-type": "“{name}” não é aceito: permitidos {formats}",
     "reject-one": "“{name}” não foi adicionado: este campo aceita um só arquivo",
+    "reject-folder": "A pasta “{name}” não foi adicionada: este campo aceita um só arquivo",
     "reject-duplicate": "“{name}” já está na lista",
     "reject-empty": "“{name}” está vazio",
     "reject-size": "“{name}” tem {size}; o limite é {max}",

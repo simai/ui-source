@@ -76,10 +76,15 @@ try {
     const report = [];
     for (const entry of set.registry) {
       const reads = new Set();
-      for (const variant of [null, ...entry.variants.map((one) => one.id)]) {
+      // Every former variant, and every template the type lists (C303): a
+      // template is drawn by `template` (the boolean's checkbox and buttons
+      // have no former variant id; the buttons read required, GB13 note 1).
+      const picks = [{}, ...entry.variants.map((one) => ({variant: one.id})),
+        ...(entry.templates ?? []).filter((one) => !one.default).map((one) => ({template: one.id}))];
+      for (const pick of picks) {
         // {mask}: a masked string reads nullable, a key no other string reads (port 1.16.0).
         for (const extra of [{}, {required: true}, {readonly: true}, {multiple: true}, {mask: '00'}]) {
-          const field = new Proxy({key: 'k', label: 'L', propertyType: entry.type, ...(variant ? {variant} : {}), ...extra,
+          const field = new Proxy({key: 'k', label: 'L', propertyType: entry.type, ...pick, ...extra,
             options: [{value: 'a', label: 'A'}]}, {get(target, key) { if (typeof key === 'string') reads.add(key); return target[key]; }});
           for (const draw of [
             () => set.renderEditField(field, VALUES[entry.type], host),

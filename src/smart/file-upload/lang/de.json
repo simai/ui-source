@@ -17,6 +17,7 @@
     "reject-empty": "„{name}“ ist leer",
     "reject-min-size": "„{name}“ hat {size}; mindestens {min} erforderlich",
     "reject-one": "„{name}“ wurde nicht hinzugefügt: dieses Feld nimmt nur eine Datei",
+    "reject-folder": "Der Ordner „{name}“ wurde nicht hinzugefügt: dieses Feld nimmt nur eine Datei",
     "reject-size": "„{name}“ hat {size}; das Limit ist {max}",
     "reject-total": "„{name}“ wurde nicht hinzugefügt: alle Dateien zusammen höchstens {max}",
     "reject-type": "„{name}“ wird nicht akzeptiert: erlaubt sind {formats}",

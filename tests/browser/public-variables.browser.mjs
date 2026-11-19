@@ -73,6 +73,13 @@ try {
       }
       return {answers};
     }, {selector: entry.selector, variables: entry.variables, roles: ROLES});
+    // `proves`: a drawing the computed value cannot show (a ceiling the
+    // element reaches), on the first page only (GB13 note 2).
+    if (draw.proves && !merged) {
+      const proof = await page.evaluate(draw.proves);
+      results[`${entry.component}:proves`] = proof;
+      if (!proof?.ok) note({component: entry.component, said: 'the drawing does not prove the variable', got: proof});
+    }
     await page.close();
     if (!merged || measured.missing) merged = measured;
     else if (merged.answers && measured.answers) {
@@ -89,8 +96,8 @@ try {
 } finally {
   await browser.close();
 }
-const unmeasured = Object.entries(results).flatMap(([component, measured]) => (measured.answers ?? []).filter((answer) => answer.unmeasured).map((answer) => `${component}:${answer.name}`));
-const measuredCount = Object.values(results).reduce((sum, measured) => sum + (measured.answers ?? []).filter((answer) => !answer.unmeasured).length, 0);
+const unmeasured = Object.entries(results).filter(([name]) => !name.endsWith(':proves')).flatMap(([component, measured]) => (measured.answers ?? []).filter((answer) => answer.unmeasured).map((answer) => `${component}:${answer.name}`));
+const measuredCount = Object.entries(results).filter(([name]) => !name.endsWith(':proves')).map(([, one]) => one).reduce((sum, measured) => sum + (measured.answers ?? []).filter((answer) => !answer.unmeasured).length, 0);
 console.log(JSON.stringify({measured: measuredCount, unmeasured}));
 // PV_SHOW=<component,...> prints those components' answers (evidence runs).
 for (const name of (process.env.PV_SHOW ?? '').split(',').filter(Boolean)) console.log(JSON.stringify({[name]: results[name]}));

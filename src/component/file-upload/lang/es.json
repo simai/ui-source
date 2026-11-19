@@ -11,6 +11,7 @@
     "not-added": "No añadidos: {n}",
     "reject-type": "No se acepta «{name}»: se permiten {formats}",
     "reject-one": "No se añadió «{name}»: este campo admite un solo archivo",
+    "reject-folder": "No se añadió la carpeta «{name}»: este campo admite un solo archivo",
     "reject-duplicate": "«{name}» ya está en la lista",
     "reject-empty": "«{name}» está vacío",
     "reject-size": "«{name}» ocupa {size}; el límite es {max}",
