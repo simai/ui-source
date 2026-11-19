@@ -397,10 +397,17 @@ class SfSiteHeader extends SiteHeaderElement {
   }
 
   // The nav's needs: the menu's own, else its content measured as it lies.
+  // null while a menu in it is not drawn as a row yet (its code not here,
+  // or a column turning back into a row): the menu asks the bar again once
+  // it has drawn (rowHost), and nothing is decided on a half-drawn nav.
   navNeeds(nav) {
-    const menu = this.navMenus().find((element) => typeof element.rowNeeds === 'function' && element.moreActive);
-    const needs = menu?.rowNeeds();
-    if (needs) return {...needs, menu};
+    const menus = this.navMenus();
+    if (menus.some((element) => !element.matches(':defined'))) return null;
+    const menu = menus.find((element) => typeof element.rowNeeds === 'function' && element.moreActive);
+    if (menu) {
+      const needs = menu.rowNeeds();
+      return needs ? {...needs, menu} : null;
+    }
     const range = document.createRange();
     range.selectNodeContents(nav);
     const whole = range.getBoundingClientRect().width;
@@ -464,6 +471,7 @@ class SfSiteHeader extends SiteHeaderElement {
       return;
     }
     const needs = this.navNeeds(nav);
+    if (!needs) return;
     const roomWhole = room - besides - toolsWhole;
     const roomGlyph = room - besides - toolsGlyph;
     if (needs.whole <= roomWhole + 0.5) {

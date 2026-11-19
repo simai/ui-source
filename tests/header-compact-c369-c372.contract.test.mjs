@@ -52,13 +52,13 @@ test('C371, C372: a row its bar lays out is measured through the bar, before the
   assert.match(bar, /drivesRow\(menu\) \{\n\s+return this\.collapse === 'auto' && !this\.collapsed && this\.navMenus\(\)\.includes\(menu\);/u);
 });
 
-test('C372: sf-header-site collapse auto, its host states and its md floor before the first measure', () => {
+test('C372: sf-header-site collapse auto, its host states and its md floor before its code', () => {
   const header = json('src/smart/header-site/component.json');
   assert.deepEqual(header.settings.collapse.values, ['none', 'sm', 'md', 'lg', 'xl', 'auto', 'always']);
   assert.equal(header['host-states']['data-tools-compact'], 'boolean');
   assert.equal(header['host-states']['data-fitted'], 'boolean');
   const sheet = read('src/smart/header-site/scss/_smart__site_header.scss');
-  assert.match(sheet, /@container sf-site-header \(width < #\{mq\.container-step\(h1\)\}\) \{\n  :is\(sf-header-site, sf-site-header\):not\(\[data-fitted='true'\]\) > \.sf-site-header--collapse-auto \{\n    @include collapsed;/u);
+  assert.match(sheet, /@container sf-site-header \(width < #\{mq\.container-step\(h1\)\}\) \{\n  :is\(sf-header-site, sf-site-header\):not\(:defined\) > \.sf-site-header--collapse-auto \{\n    @include collapsed;/u);
 });
 
 test('C370: sf-button shrink icon draws its glyph square at once, keeps its name and keys, and tells its tooltip', () => {

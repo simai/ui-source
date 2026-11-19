@@ -601,11 +601,11 @@
 
 /* collapse auto (C371, C372): the bar measures its row and gives way itself
    (index.js fitRow: tools, then the nav's sections into «Ещё», then the menu
-   button), at any width, and says so with data-nav-overflow above. Until it
-   has measured once (data-fitted) -- the first paint before the script, a
-   page without ResizeObserver -- it draws as collapse md, the phone's step. */
+   button), at any width, and says so with data-nav-overflow above. Before its
+   code -- a bar printed as the first paint -- it draws as collapse md, the
+   phone's step; with its code it measures itself before its first paint. */
 @container sf-site-header (width < #{mq.container-step(h1)}) {
-  :is(sf-header-site, sf-site-header):not([data-fitted='true']) > .sf-site-header--collapse-auto {
+  :is(sf-header-site, sf-site-header):not(:defined) > .sf-site-header--collapse-auto {
     @include collapsed;
 
     .sf-site-header-row {
@@ -646,7 +646,7 @@
     }
   }
   @container sf-site-header (width < #{mq.container-step(h1)}) {
-    :is(sf-header-site, sf-site-header):not([data-fitted='true']) > .sf-site-header--collapse-auto {
+    :is(sf-header-site, sf-site-header):not(:defined) > .sf-site-header--collapse-auto {
       @include collapsed;
     }
   }

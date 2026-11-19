@@ -56,7 +56,7 @@
       "collapse": {
         "type": "string",
         "default": "lg",
-        "description": "Below this step of the bar's own width (sm 32rem, md 44rem, lg 60rem, xl 72rem: the screen breakpoints' places on the container ladder, C181) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A container condition of the sheet, so the first paint is right without the script, and a bar narrower than the window collapses with its nav. auto (owner decisions C371, C372): the bar measures its own row at every width and gives way in one order -- first the tools that can (sf-button shrink=\"icon\" draws its glyph only), then the nav's sf-menu (overflow more) moves its sections one by one into «Ещё», and the menu button and the panel only when not even one section and «Ещё» fit; each width change is decided before the paint, in one step. Until the bar has measured itself (host state data-fitted) it draws as md",
+        "description": "Below this step of the bar's own width (sm 32rem, md 44rem, lg 60rem, xl 72rem: the screen breakpoints' places on the container ladder, C181) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A container condition of the sheet, so the first paint is right without the script, and a bar narrower than the window collapses with its nav. auto (owner decisions C371, C372): the bar measures its own row at every width and gives way in one order -- first the tools that can (sf-button shrink=\"icon\" draws its glyph only), then the nav's sf-menu (overflow more) moves its sections one by one into «Ещё», and the menu button and the panel only when not even one section and «Ещё» fit; each width change is decided before the paint, in one step. Before its code the sheet draws auto as md; with it the bar measures itself before its first paint (host state data-fitted says it has)",
         "enum": [
           "none",
           "sm",
@@ -368,7 +368,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "e09315f533efb9b34633dfc9b63a08d6a56cec97f533d8389cc1f0a1e7347989"
+        "sha256": "b4118821e412be2b58d4f76b0344bebdb505c138abbe3ee8682d7e78ffab547f"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
@@ -376,7 +376,7 @@
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "a9ce5037e8a9fe4d6fe99e28b6abc4a818f60101c917cbcdfd688ac1ce449680"
+        "sha256": "a2918d84585661c1483ec55b66553868adddf49bf723842f648b7c43db7b5713"
       },
       {
         "path": "src/smart/header-site/rule.js",
@@ -384,7 +384,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "92718cafbbb529e184dfb11f9489eb899cb4db2fc7a082753402b1cd64d499b3"
+        "sha256": "057a10678357e563dd49cdc2ba5394f3a0f1f90202b6f76a0e3cdb5b1c3f48b5"
       }
     ],
     "generated_runtime": []
