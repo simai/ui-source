@@ -405,16 +405,16 @@ class SfPageHeader extends PageHeaderElement {
   // favourite's colour and says its state by its name (1.2.2). Checked on the
   // element sf-button-icon defines: until it is defined the star draws the
   // former look and is drawn again once it is.
-  starToggle() {
+  starLook() {
     const Button = globalThis.customElements?.get?.('sf-button-icon');
     if (!Button) {
       if (!this._starToggleWait && globalThis.customElements?.whenDefined) {
         this._starToggleWait = globalThis.customElements.whenDefined('sf-button-icon').then(() => this.requestComponentUpdate('star-look'));
       }
-      return false;
+      return null;
     }
     const values = Button.sfInterface?.settings?.appearance?.values;
-    return Array.isArray(values) && values.includes('toggle');
+    return Array.isArray(values) && values.includes('toggle') ? 'toggle' : null;
   }
 
   // The template's press: the request toggle {on}; not cancelled, the header
@@ -455,7 +455,7 @@ class SfPageHeader extends PageHeaderElement {
       count: this.count,
       level: this.level,
       star: this.star,
-      starToggle: this.star === undefined ? false : this.starToggle(),
+      starLook: this.star === undefined ? null : this.starLook(),
       rootClass: this.getRootClass(),
       overflow: this.overflowMore ? 'more' : 'wrap',
       moreSize: this.actionMoreSize(),

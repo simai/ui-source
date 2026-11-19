@@ -35,10 +35,11 @@ export function renderPageHeaderTemplate(context) {
           // It stands on its row's rung (C103, 1.7.0): the actions' size while
           // they keep the line beside it, else the start control's, else the
           // half step (index.js syncStarRung).
-          ? (context.starToggle
+          ? (context.starLook
             // The toggle look (VS-10, C393): one name and aria-pressed, the
-            // state on the plate, the glyph outline (index.js starToggle).
-            ? html`<sf-button-icon size=${context.starSize || '1/2'} appearance="toggle"
+            // state on the plate, the glyph outline. The look is the one
+            // index.js starLook found the icon button to declare.
+            ? html`<sf-button-icon size=${context.starSize || '1/2'} appearance=${context.starLook}
                 class=${on ? 'sf-page-header-star sf-page-header-star--toggle sf-page-header-star--on' : 'sf-page-header-star sf-page-header-star--toggle'}
                 icon="star"
                 pressed=${on ? 'true' : 'false'}

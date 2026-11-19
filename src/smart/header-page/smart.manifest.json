@@ -247,11 +247,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "c2bed15bd78fba7fb53393f557cd5c547103619cb70d2ecc39e7e5cea5054170"
+        "sha256": "3387688153c721312c0c39de7617c4b7927767568895bb732e916e40487870ba"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "6ccfd04f23196c5ef05dd42630b11881ee65b37faa51ea701a78757a6a83f56a"
+        "sha256": "aea221ce0da2a91494ce32371247b66c11f4fd4600b336cbdf42f8dec5819dea"
       }
     ],
     "generated_runtime": [
