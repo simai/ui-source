@@ -160,7 +160,9 @@ const report = {sweep: {}, study: {}, drag: {}, keys: {}, glyphs: {}, link: {}, 
 const browser = await chromium.launch({headless: true, channel: process.env.SF_PROBE_CHANNEL || undefined, ignoreDefaultArgs: ['--hide-scrollbars']});
 
 async function openHost(kind, theme = 'theme-light', width = 1440) {
-  const page = await browser.newPage({viewport: {width: 1700, height: 400}});
+  // The Loader sets the theme class from the device, so the device is the one
+  // asked for (a class written on html alone is replaced by theme-light).
+  const page = await browser.newPage({viewport: {width: 1700, height: 400}, colorScheme: theme === 'theme-dark' ? 'dark' : 'light'});
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(message.text()); });
@@ -171,7 +173,15 @@ async function openHost(kind, theme = 'theme-light', width = 1440) {
     && document.querySelector('#h nav.sf-smart-menu')
     // The icon font drawn: a glyph not yet in its font is its ligature's
     // words («keyboard_arrow_down»), many times wider than the glyph.
-    && [...document.querySelectorAll('#h .sf-site-header-row sf-icon i')].every((i) => { const r = i.getBoundingClientRect(); return !r.width || r.width <= r.height + 1; }), null, {timeout: 20000});
+    // A fixed-size glyph box holds the words overflowing it, so the words
+    // are measured, not the box.
+    && [...document.querySelectorAll('#h .sf-site-header-row :is(sf-icon i, .sf-icon)')].every((i) => {
+      const box = i.getBoundingClientRect();
+      if (!box.width) return true;
+      const range = document.createRange();
+      range.selectNodeContents(i);
+      return range.getBoundingClientRect().width <= box.height + 1;
+    }), null, {timeout: 20000});
   await child.evaluate(READ);
   await page.waitForTimeout(300);
   return {page, child, errors};
@@ -341,13 +351,15 @@ try {
 
   // sf-language trigger="name" (C381): rest, hover, keyboard focus, open, a choice.
   for (const theme of ['theme-light', 'theme-dark']) {
-    const page = await browser.newPage({viewport: {width: 1440, height: 700}});
+    const page = await browser.newPage({viewport: {width: 1440, height: 700}, colorScheme: theme === 'theme-dark' ? 'dark' : 'light'});
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(message.text()); });
     await page.goto(`${origin}/link?theme=${theme}`);
     await page.waitForFunction(() => document.querySelector('#l2 button.sf-language-name sf-icon i') && document.fonts.status === 'loaded', null, {timeout: 20000});
     await page.waitForTimeout(400);
+    const [scheme, bodyInk] = await page.evaluate(() => [getComputedStyle(document.body).colorScheme, getComputedStyle(document.body).color]);
+    if (scheme !== (theme === 'theme-dark' ? 'dark' : 'light')) failures.push(`link ${theme}: the page draws ${scheme}`);
     const look = (id) => page.evaluate((sel) => {
       const host = document.querySelector(sel);
       const b = host.querySelector('button.sf-language-name');
@@ -392,6 +404,8 @@ try {
     await page.waitForTimeout(500);
     states.chosen = await look('#l2');
     report.link[theme] = states;
+    // The navigation form keeps the ink of its place in every state (on-surface here).
+    for (const [name, state] of Object.entries(states)) if (state.ink !== bodyInk) failures.push(`link ${theme} ${name}: ink ${state.ink}, the place's is ${bodyInk}`);
     const label = (state) => `link ${theme} ${state}`;
     for (const [state, v] of Object.entries(states)) {
       if (!v.transparent) failures.push(`${label(state)}: a fill ${v.fills.join(' / ')}`);
@@ -428,7 +442,18 @@ try {
     // the md step the floor lifts when the row fits). Measured 0.003-0.013
     // on this page (evidence README); a larger shift is a regression.
     if (shifts > SHIFT_BUDGET) failures.push(`load ${theme} ${width} #${load}: CLS ${shifts}`);
-    if (state.bad.length) failures.push(`load ${theme} ${width} #${load}: ${state.bad.join('; ')}`);
+    if (state.bad.length) {
+      // What the bar and its menu say, to tell a late decision from a wrong one.
+      const said = await child.evaluate(() => {
+        const h = document.getElementById('h'); const m = h.querySelector('sf-menu');
+        return {host: ['data-fitted', 'data-tools-compact', 'data-nav-overflow', 'data-collapsed'].map((n) => `${n}=${h.getAttribute(n)}`).join(' '),
+          orientation: m.getAttribute('orientation'), items: [...h.querySelectorAll('nav .sf-menu > li')].map((li) => `${li.hidden ? '-' : ''}${Math.round(li.getBoundingClientRect().left)}:${Math.round(li.getBoundingClientRect().width)}`).join(' '),
+          fonts: document.fonts.status};
+      });
+      await page.waitForTimeout(1500);
+      const later = await child.evaluate(() => window.__read());
+      failures.push(`load ${theme} ${width} #${load}: ${state.bad.join('; ')} (${JSON.stringify(said)}; 1.5 s later: ${later.state} ${later.bad.join('; ') || 'no overlap'})`);
+    }
     if (errors.length) failures.push(`load ${theme} ${width} #${load}: ${errors.join(' | ').slice(0, 300)}`);
     await page.close();
   }
