@@ -16,10 +16,11 @@
     "src/component/buttons/rule.js",
     "src/component/buttons/scss/_css__buttons.scss",
     "src/component/buttons/scss/_css__buttons_custom.scss",
+    "src/component/buttons/scss/_css__buttons_shrink.scss",
     "src/component/buttons/scss/_css__utility_hint_layout.scss",
     "src/component/buttons/scss/index.scss"
   ],
-  "content_sha256": "02e02f78354b98857a3be4596aeb8565d2d84817e5754774627d00ab60ce3a26",
+  "content_sha256": "aba2250cd6d82506e86fe58f1d38c0008ed0b74e1369e01791a1cdef57f82f43",
   "dependencies": [
     {
       "id": "component.spinner",

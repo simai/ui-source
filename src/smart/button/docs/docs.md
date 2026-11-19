@@ -236,6 +236,23 @@ A search trigger that reads like a field:
   text-position="start" root-class="w-full"></sf-button>
 ```
 
+## Giving way to a glyph
+
+`shrink="icon"` lets the button give way when the bar it stands in asks
+(owner decision C370): `sf-header-site collapse="auto"` asks its tools first,
+before its sections move into «Ещё» (C372). Asked, the button draws its glyph
+only -- a square of its height, ghost -- and keeps its name (its text, unless
+`aria-label` names it), its `aria-keyshortcuts` and its shortcut; the
+Framework's tooltip says the text and the keys, «Поиск ⌘K». Whole again, it
+draws as written. The bar asks with the host state `data-shrunk`; a button
+never sets it itself. `shrink="none"` (the default) never gives way. A button
+needs an icon to give way to.
+
+```html
+<sf-button slot="tools" appearance="outline" scheme="on-surface" icon-start="search"
+  text="Поиск" shortcut="mod+k" shrink="icon"></sf-button>
+```
+
 ## Events
 
 - `sf-button-press` — a person pressed the native button: a click, Enter or

@@ -263,6 +263,18 @@ same height as the theme switch beside it:
 </sf-header-site>
 ```
 
+A header short of room writes `trigger="icon"` (owner decision C369, the
+documentation header): the trigger is the translate glyph alone, a square
+icon button of the element's size, ghost, named «Язык: Русский» and showing
+that name as the Framework's tooltip. The menu is the same. `trigger="code"`
+(the default) is the glyph, the current code and the arrow, «RU ▾». Core
+holds the trigger's box before the code arrives for both, so the tools beside
+it do not move.
+
+```html
+<sf-language slot="tools" languages="ru en" trigger="icon"></sf-language>
+```
+
 ## Sizes
 
 `size` is a rung of the shared ladder: `1/3`, `1/2`, `1` (the default), `2`,

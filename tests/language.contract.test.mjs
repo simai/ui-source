@@ -16,8 +16,8 @@ const template = read('src/smart/language/js/templates/default.js');
 test('the manifest: a leaf of family language, a form field with one cancellable change and select', () => {
   assert.equal(manifest.tag, 'sf-language');
   assert.equal(manifest.family, 'language');
-  assert.equal(manifest.version, '1.5.3'); // fix/returns-gb67: TT-11, the trigger's name is the Framework tooltip // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2) // queue #70: the field look takes the dropdown of the same size // C282: 1.5.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch
-  assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'missing', 'home', 'mode', 'inline-max', 'search-from', 'labels', 'size', 'apply', 'remember', 'label', 'name', 'disabled']);
+  assert.equal(manifest.version, '1.7.0'); // C369: trigger icon (1.7.0, above 1.6.1 on fix/lang-follow) // fix/returns-gb67: TT-11, the trigger's name is the Framework tooltip // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2) // queue #70: the field look takes the dropdown of the same size // C282: 1.5.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch
+  assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'missing', 'home', 'mode', 'inline-max', 'search-from', 'labels', 'size', 'trigger', 'apply', 'remember', 'label', 'name', 'disabled']);
   assert.deepEqual(manifest.settings.mode.values, ['auto', 'inline', 'menu', 'search', 'field']);
   assert.deepEqual(manifest.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(manifest.settings['inline-max'].default, 1);
@@ -28,7 +28,9 @@ test('the manifest: a leaf of family language, a form field with one cancellable
   assert.deepEqual(Object.keys(manifest.events.change.carries), ['value', 'previous', 'href', 'dir', 'reason']);
   assert.deepEqual(Object.keys(manifest.actions), ['select']);
   assert.equal(manifest.form.value, 'value');
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button', 'cl-icon', 'cl-menu-context', 'cl-dropdown', 'tooltip']); // tooltip: the trigger's name tooltip, TT-11
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button', 'cl-button-icon', 'cl-icon', 'cl-menu-context', 'cl-dropdown', 'tooltip']); // tooltip: the trigger's name tooltip, TT-11; cl-button-icon: trigger icon, C369
+  assert.deepEqual(manifest.settings.trigger.values, ['code', 'icon']);
+  assert.equal(manifest.settings.trigger.default, 'code');
   assert.equal(manifest['css-variables'], undefined, 'no sheet of its own');
 });
 
@@ -89,7 +91,9 @@ test('it composes the Framework\'s parts and keeps their events inside', () => {
   assert.match(template, /<sf-segmented[\s\S]*appearance="track"/u);
   assert.match(template, /<sf-button\n[\s\S]*icon-start="translate"[\s\S]*icon-end="expand_more"[\s\S]*scheme="on-surface"/u);
   assert.match(template, /slot="text" class="sf-language-code" style=\$\{wide \? 'display: inline-grid; inline-size: auto; grid-template-columns: auto' : 'display: inline-grid'\}/u, 'every code in one grid cell: one width; only a list with a longer code sizes the cell to it');
-  assert.doesNotMatch(template, /<sf-button-icon/u);
+  // The icon-button is the trigger icon only (C369): the glyph alone.
+  assert.match(template, /function renderIconTrigger\(context\) \{\n  return html`<sf-button-icon\n[\s\S]*icon="translate"[\s\S]*appearance="ghost"[\s\S]*aria-haspopup="menu"/u);
+  assert.equal((template.match(/<sf-button-icon/gu) || []).length, 1);
   assert.match(template, /<sf-menu-context[\s\S]*popup/u);
   assert.match(template, /@sf-button-group-change=\$\{stop\}/u);
   assert.match(source, /onGroupChange\(event\) \{\n {4}event\.stopPropagation\(\);/u);

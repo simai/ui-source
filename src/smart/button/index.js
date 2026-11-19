@@ -66,6 +66,7 @@ const COMPONENT_ATTRIBUTES = new Set([
   "split",
   "shortcut",
   "shortcut-listen",
+  "shrink",
   "aria-label",
   "class",
   "style",
@@ -440,13 +441,16 @@ class SfButton extends ButtonElement {
     const shrunk = this.shrunk;
     const caps = shortcutCaps(parseShortcut(this.shortcut));
     const shrinkName = shrinks ? (this.getAttribute("aria-label") || String(this.text || "").trim()) : "";
+    // The tooltip says what the glyph stands for as the whole button showed
+    // it: its text and its keys («Поиск ⌘K»), the name when it has no text.
+    const shrinkWords = String(this.text || "").trim() || shrinkName;
     return this.createTemplateContext({
       ...props,
       // Through the getter: the props context knows only the text attribute,
       // and a button whose label is a text child has none.
       text: this.text,
       shrunk,
-      shrinkTip: shrunk && shrinkName ? [shrinkName, caps.map((cap) => cap.text).join(isApplePlatform() ? "" : "+")].filter(Boolean).join(" ") : "",
+      shrinkTip: shrunk && shrinkWords ? [shrinkWords, caps.map((cap) => cap.text).join(isApplePlatform() ? "" : "+")].filter(Boolean).join(" ") : "",
       // Resolved names the template reads (contracts/template-context.json).
       iconStart: this.iconStart,
       iconEnd: this.iconEnd,

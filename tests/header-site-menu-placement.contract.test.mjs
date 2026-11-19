@@ -113,13 +113,16 @@ test('header site C104 / C181 (2): collapse is a container step of the bar, and 
   assert.match(sheet, /container: sf-site-header \/ inline-size;/u);
   assert.match(sheet, /@each \$step, \$container-step in \(sm: g6, md: h1, lg: h5, xl: h8\) \{\n  @container sf-site-header \(width < #\{mq\.container-step\(\$container-step\)\}\) \{\n    \.sf-site-header--collapse-#\{\$step\} \{\n      @include collapsed;/u);
   assert.doesNotMatch(sheet, /@media not all and \(min-width/u);
-  // collapse-always, each step and (1.13.0, F-1) a nav that overflows its box.
-  assert.equal((sheet.match(/--sf-site-header--collapsed: 1;/gu) || []).length, 3, 'collapse-always, each step and the nav overflow publish the answer');
+  // collapse-always, each step, (1.13.0, F-1) a nav that overflows its box and
+  // (1.14.0, C371) collapse auto's md floor before the bar has measured itself.
+  assert.equal((sheet.match(/--sf-site-header--collapsed: 1;/gu) || []).length, 4, 'collapse-always, each step, the nav overflow and the auto floor publish the answer');
+  assert.match(sheet, /:is\(sf-header-site, sf-site-header\):not\(\[data-fitted='true'\]\) > \.sf-site-header--collapse-auto \{/u);
   assert.match(sheet, /:is\(sf-header-site, sf-site-header\)\[data-nav-overflow='true'\] > \.sf-site-header \{\n  @include collapsed;/u);
   // Every rule of the collapsed state styles a part inside the container, never the container itself.
   for (const [, selector] of collapsed.matchAll(/^  (&[^{\n]*)\{/gmu)) assert.match(selector, /^&[^ ]* \S/u, `${selector} styles a part of the bar`);
   assert.match(source, /getPropertyValue\('--sf-site-header--collapsed'\)\.trim\(\) === '1'/u);
-  assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => \{\n\s+this\.syncCollapsed\(\);\n\s+this\.syncFit\(\);\n\s+\}\);/u);
+  // collapse auto (1.14.0, C371, C372) lays the row out in the same observer.
+  assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => \{\n\s+if \(this\.collapse === 'auto'\) \{\n\s+this\.fitRow\(\);\n\s+return;\n\s+\}\n\s+this\.syncCollapsed\(\);\n\s+this\.syncFit\(\);\n\s+\}\);/u);
   // F-1: the nav's content past its box collapses the bar until it is as wide as the nav needed.
   assert.match(source, /this\.setFit\(Math\.ceil\(width \+ spread\.width - room\.width\) \+ 1\);/u);
   assert.equal(component['host-states']['data-nav-overflow'], 'boolean');

@@ -74,6 +74,40 @@
 На узком экране бренд уступает место инструментам: его слова обрезаются
 многоточием, картинка сохраняет размер, а инструменты остаются целыми.
 
+### Шапка сама решает, что уступить
+
+`collapse="auto"` — шапка меряет свою строку при любой ширине и уступает в
+одном порядке (решения C371, C372):
+
+1. Сначала инструменты, которые умеют сжиматься: `sf-button shrink="icon"`
+   (поиск «Поиск ⌘K») становится значком — квадратом высоты полосы, без
+   подложки, с тем же именем, `aria-keyshortcuts` и подсказкой «Поиск ⌘K».
+2. Потом разделы: `sf-menu` с `overflow="more"` переносит их с конца по
+   одному в «Ещё»; текущий раздел остаётся в строке.
+3. Последней — кнопка меню и боковая панель: только когда рядом с брендом и
+   инструментами не помещается даже один раздел и «Ещё». Шапка
+   разворачивается обратно, когда строка снова так широка.
+
+Каждое изменение ширины шапка решает до отрисовки и за один шаг: при
+перетаскивании края окна не видно ни наложений, ни промежуточных состояний.
+Пока шапка ни разу себя не измерила (первая отрисовка до скрипта), `auto`
+рисуется как `md`. Хост сообщает состояние: `data-tools-compact` — инструменты
+сжаты, `data-nav-overflow` — шапка свёрнута, `data-fitted` — шапка уже
+измерила себя. Другие значения `collapse` инструменты не сжимают.
+
+```html
+<sf-header-site collapse="auto">
+  <a slot="brand" href="/">SIMAI Framework</a>
+  <sf-menu orientation="horizontal" appearance="navigation" overflow="more"
+    current-from-location items='[…]'></sf-menu>
+  <sf-button slot="tools" appearance="outline" scheme="on-surface" icon-start="search"
+    text="Поиск" shortcut="mod+k" shrink="icon"></sf-button>
+  <sf-language slot="tools" languages="ru en" trigger="icon"></sf-language>
+  <sf-button-icon slot="tools" icon="settings" appearance="ghost" scheme="on-surface"
+    aria-label="Настройки"></sf-button-icon>
+</sf-header-site>
+```
+
 ### Сторона кнопки меню
 
 `menu-placement` — сторона кнопки меню и панели: `inline-start` (по умолчанию)
