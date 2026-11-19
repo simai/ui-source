@@ -120,7 +120,7 @@ document.addEventListener('sf-code-input:complete', async (event) => {
 | `--sf-verification-border-width` | Толщина границы ячейки | `var(--sf-px)` |
 | `--sf-verification-radius` | Скругление ячейки и кольца фокуса | `var(--sf-radius--ui)` |
 | `--sf-verification-color` | Цвет символов в ячейках | `var(--sf-on-surface)` |
-| `--sf-verification-cell-size` | Ширина и высота ячейки — одна на всех размерах, если задана | `var(--sf-title-height-6)` |
+| `--sf-verification-cell-size` | Ширина и высота ячейки — одна на всех размерах, если задана; в узкой колонке ячейки сужаются (C284) | высота поля размера: `var(--sf-ui-1--control-height)` у размера 1 |
 | `--sf-verification-gap` | Расстояние между ячейками | `var(--sf-space-1/3)` |
 | `--sf-verification-invalid-border-color` | Рамка ячеек в состоянии ошибки. | `var(--sf-error)` |
 

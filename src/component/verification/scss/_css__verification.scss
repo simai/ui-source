@@ -52,7 +52,13 @@
   place-items: center;
   flex: 0 1 var(--sf-verification--cell-size);
   min-inline-size: min(var(--sf-verification--cell-size), var(--sf-ui-1\/2--control-height));
-  inline-size: auto;
+  /* The cell's own width is its side (1.9.0, DEV order msg-cfe379b5 item 5):
+     the row is sized by its content, and with inline-size auto a cell's
+     content size was its empty content, so every cell stood at its floor --
+     32 x 40 at size 1, 32 x 48 at size 2 on a desktop -- whatever the size
+     or --sf-verification-cell-size said. It still gives way in a narrow
+     column (C284), down to the floor above. */
+  inline-size: var(--sf-verification--cell-size);
   block-size: var(--sf-verification--cell-size);
   box-sizing: border-box;
   border-width: var(--sf-verification--border-width);

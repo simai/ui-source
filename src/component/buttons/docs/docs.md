@@ -62,7 +62,8 @@ the Smart `sf-button` projection.
 ## Public axes
 
 - emphasis: `sf-button--default`, `sf-button--tonal`,
-  `sf-button--outline`, `sf-button--ghost`;
+  `sf-button--outline`, `sf-button--ghost`; `sf-button--plain` beside
+  `sf-button--ghost` (1.22.0) is the ghost that never takes a plate;
   `sf-button--link` is the former name of `ghost` (decision C15), drawn the
   same until 2027-01-01 (journal `class-button-link-to-ghost`); the Smart
   `sf-button` writes both until then. `sf-button--surface` is deprecated
@@ -148,7 +149,7 @@ of the segment before it (a segment that follows another has no start edge).
 An outline segment among others owns both of its joins, so a selected outline
 segment is framed whole.
 
-Five emphases, each in an accent (`primary`) and a neutral (`on-surface`)
+Six emphases, each in an accent (`primary`) and a neutral (`on-surface`)
 scheme:
 
 - `default` — the one action a screen is about;
@@ -165,6 +166,30 @@ scheme:
   the same in both themes;
 - `ghost` — the lightest action, in a table row, a card or next to text: no
   fill or edge until it is hovered.
+- `plain`, written `sf-button--ghost sf-button--plain` (1.22.0; the sign-in
+  screen's language, C381; the name of the icon
+  button's look without a plate, `sf-icon-button--plain`, C201) — a quiet
+  text tool beside text or fields that never takes a plate: no fill and no
+  edge in any state, so hover, press, an open menu (`aria-expanded="true"`)
+  and focus leave the background transparent. The label wears ghost's ink and
+  steps; the state signal is the link's (C186, its form in a menu or a
+  navigation): a line under the label at full ink under the pointer, on a
+  press, while its menu is open and on keyboard focus, none at rest. The
+  focus ring is every button's. The box is its content: no side padding and
+  no outer space beside the label, so the first glyph or letter stands on the
+  line the button is placed on; the control height of the size stays, the
+  hit area and the row. An icon-only plain button keeps its square; for a
+  glyph inside a field write `sf-icon-button--plain`. It is not a toggle
+  (C211) and not a segment. Its label is a button label (medium, the
+  size's text step); a recipe that wants the field label's role beside size
+  2 fields (the sign-in screen) says so on the page.
+
+  ```html
+  <button class="sf-button sf-button--ghost sf-button--plain sf-button--on-surface sf-button--size-1" type="button" aria-haspopup="menu" aria-expanded="false">
+    <i class="sf-icon" aria-hidden="true">translate</i>
+    <span class="sf-button-text-container">Русский</span>
+  </button>
+  ```
 
 `ghost` is the name of the look (decision C15, CB-01). `sf-button--link` is
 its former name: the sheets draw it the same until 2027-01-01 (journal

@@ -25,7 +25,9 @@ test('the field layer says the standout, the value step and the pair step once, 
 
 test('an action after another action of the frame stands the pair step from it, in the frame or in a child of it', () => {
   assert.match(layer, /\$action: '\.sf-field-action:not\(\[hidden\]\)';/u);
-  assert.match(layer, /:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ #\{\$action\},\s+:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ \* #\{\$action\} \{\s+margin-inline-start: var\(--sf-field-action--pair-space\);/u);
+  assert.match(layer, /:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ #\{\$action\},\s+:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ \* #\{\$action\} \{\s+margin-inline-start: calc\(var\(--sf-field-action--pair-space\) \+ var\(--sf-field-action--give-back\)\);/u);
+  // A hit area wider than its step (the eye's touch square, C191 (2)) gives the extra back (signin parts, item 3).
+  assert.match(layer, /--sf-field-action--give-back: min\(var\(--sf-px\) \* 0, calc\(var\(--sf-field-action--standout\) - \(var\(--sf-field-action--hit-inline\) - var\(--sf-field-action--glyph-size\)\) \/ 2\)\);/u);
   // a list of frames stays one selector list: every use of $fields is wrapped in :is()
   assert.doesNotMatch(layer.replace(/:is\(#\{\$fields\}\)/gu, ''), /#\{\$fields\}/u);
 });
@@ -43,7 +45,7 @@ test('the fields read the value step: sf-input, the slot, the colour frame, the 
 });
 
 test('the versions', () => {
-  assert.equal(json('src/component/inputs/passport.json').version, '1.12.1'); // 1.9.0: the script's layout in the sheet (RG-B-53); 1.11.1: a measured-false hint removed (queue item 198), above 1.11.0 on fix/fields-c224-c227 // group build 10: 1.11.1 moved on by the merged branches or a GB10 patch // group build 11: 1.12.0 moved on by the merged branches or a GB11 merge (fix/c178-findings)
+  assert.equal(json('src/component/inputs/passport.json').version, '1.14.1'); // group build 14: the eye's give-back (signin parts item 3), above 1.14.0 on feat/filter-window-top; // 1.9.0: the script's layout in the sheet (RG-B-53); 1.11.1: a measured-false hint removed (queue item 198), above 1.11.0 on fix/fields-c224-c227 // group build 10: 1.11.1 moved on by the merged branches or a GB10 patch // group build 11: 1.12.0 moved on by the merged branches or a GB11 merge (fix/c178-findings)
   assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.15.1'); // 1.13.0: the anchored badge's .sf-dot (C185 (8)) // group build 9: 1.13.0 moved on by the merged branches or a GB9 patch // C282: 1.13.1 moved on by the language-file patch (Russian is a language file)
   // input-color moved on to 1.13.0 (fix/field-action-gaps-2-c123); its 1.12.1 note stays.
   // Group build 7: the notes numbered above the released pair (1.12.1 -> 1.13.1, 1.13.2 -> 1.15.1).

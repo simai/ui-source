@@ -34,7 +34,12 @@ Registration: `registerComponent('Inputs', Inputs)`
   pointer, `--sf-primary` on a press (1.8.0, owner decision C201: the ink of
   the icon button's plain look, `sf-icon-button--plain`). Its hit area is the
   field's height and its keyboard ring stands round the glyph inside the
-  field (C123).
+  field (C123). The value ends half an inset before the first glyph and
+  glyphs stand half an inset apart at every size (C123 (4)); a hit area
+  wider than its step -- the password eye's touch square (sf-input C191
+  (2)) -- gives the extra back on its start side and overlaps the value's
+  padding, so the steps hold on a touch screen too (1.14.1; it was 12
+  instead of 6 at size 2 on a phone).
 - A label row (`.sf-input-label`) that holds its text in `.sf-input-text`
   and an `sf-help-mark` is running text, not a flex row: the mark stands
   `--sf-input-label--gap` after the label's last word, centred on the line it

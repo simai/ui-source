@@ -123,7 +123,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "default",
             "tonal",
             "outline",
-            "ghost"
+            "ghost",
+            "plain"
           ],
           "type": "string"
         },
@@ -311,7 +312,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.16.8"
+    "version": "1.18.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -997,7 +998,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.15.2"
+    "version": "1.16.1"
   },
   "sf-input-textarea": {
     "inputs": {

@@ -95,7 +95,9 @@ test('C284: code cells give way in width down to the touch rung 1/2, the row nev
   const cell = rule(css, '.sf-verification-cell, .sf-verification-form-wrap .sf-verification');
   assert.ok(cell.includes('flex: 0 1 var(--sf-verification--cell-size);'), cell);
   assert.ok(cell.includes('min-inline-size: min(var(--sf-verification--cell-size), var(--sf-ui-1\\/2--control-height));'), cell);
-  assert.ok(cell.includes('inline-size: auto;'), cell);
+  // component.verification 1.9.0 (signin parts item 5): the cell's own width is its side, so the row's
+  // content size is the cells' and --sf-verification-cell-size sets the width; it still gives way (flex shrink).
+  assert.ok(cell.includes('inline-size: var(--sf-verification--cell-size);'), cell);
   assert.match(rule(css, '.sf-verification-form > .sf-verification'), /max-inline-size: 100%;/u);
   assert.match(rule(css, '.sf-verification-cells, .sf-verification-form-wrap'), /min-inline-size: 0;/u);
 });

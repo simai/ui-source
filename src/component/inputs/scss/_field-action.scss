@@ -88,6 +88,23 @@
       pointer-events: none;
     }
 
+    // A hit area wider than the step's (the password eye's touch square,
+    // C191 (2): the field's inner height on a coarse pointer) stands out past
+    // its glyph by more than the standout the value's space counts on; it
+    // gives the difference back on its start side, so the value -> glyph step
+    // stays half an inset (C123 (4); spacing gate on the sign-in showcase:
+    // 12 at size 2 and 10 at size 1 on a phone instead of 6). The
+    // hit area keeps its width and overlaps the value's padding by that much.
+    // 0 wherever the hit area is the step's own width.
+    :is(#{$fields}) .sf-field-action {
+      --sf-field-action--give-back: min(var(--sf-px) * 0, calc(var(--sf-field-action--standout) - (var(--sf-field-action--hit-inline) - var(--sf-field-action--glyph-size)) / 2));
+    }
+
+    :is(#{$fields}) > .sf-field-action:not([hidden]),
+    :is(#{$fields}) > * .sf-field-action:not([hidden]) {
+      margin-inline-start: var(--sf-field-action--give-back);
+    }
+
     // The last action at the field's end: its glyph, not its hit area, ends
     // on the inset. It gives back half of what the hit area stands out past
     // the glyph, which is the quarter inset unless the 24 floor widened it.
@@ -101,7 +118,7 @@
     // its own between them.
     :is(#{$fields}) > :is(#{$action}, :has(#{$action})) ~ #{$action},
     :is(#{$fields}) > :is(#{$action}, :has(#{$action})) ~ * #{$action} {
-      margin-inline-start: var(--sf-field-action--pair-space);
+      margin-inline-start: calc(var(--sf-field-action--pair-space) + var(--sf-field-action--give-back));
     }
   }
 

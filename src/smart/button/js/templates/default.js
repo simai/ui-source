@@ -78,7 +78,10 @@ export function renderButtonTemplate(context) {
         // former name, is written beside it until 2027-01-01 (journal
         // class-button-link-to-ghost), so a page selector that reached it
         // still does. href, not the look, makes a link.
-        `sf-button--${appearance || type}`,
+        // plain (1.18.0): a ghost that never takes a plate, the box its
+        // content -- sf-button--ghost with sf-button--plain (it was never
+        // link, so no former class beside it).
+        (appearance || type) === 'plain' ? 'sf-button--ghost sf-button--plain' : `sf-button--${appearance || type}`,
         (appearance || type) === 'ghost' ? 'sf-button--link' : '',
         // One colour name, as the styles expect: the status when one is set, the
         // scheme otherwise. A status says what the control is about -- an error

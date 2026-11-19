@@ -50,6 +50,10 @@ class Buttons extends ComponentObserver {
     if (look === 'ghost') {
       this.button.classList.add('sf-button--link');
     }
+    // plain (1.22.0) is a ghost that never takes a plate: both classes.
+    if (look === 'plain') {
+      this.button.classList.add('sf-button--ghost');
+    }
     // The readable names for the same steps: compact, comfortable, spacious.
     // `normal` is the default and needs no class. When both options are given,
     // `spacing` wins, as it does on the Smart element (control-spacing.js), so

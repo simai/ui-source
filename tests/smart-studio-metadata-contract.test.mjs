@@ -19,7 +19,8 @@ test('button Studio contract preserves closed choices and open icon examples', a
   // C15, a dated value alias listed in compatibility.aliases). surface and the
   // scheme secondary are former names since sf-button 1.14.0 (decision C116),
   // drawn as tonal on-surface and on-surface, so Studio no longer offers them.
-  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'ghost']);
+  // plain (sf-button 1.18.0): the ghost that never takes a plate (sign-in screen, C381).
+  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'ghost', 'plain']);
   assert.ok(manifest.compatibility.aliases.includes('appearance=link'));
   // on-surface-variant: the on-surface family one step quieter (sf-button 1.2.0).
   assert.deepEqual(properties.scheme.enum, ['primary', 'on-surface', 'on-surface-variant']);
