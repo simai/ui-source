@@ -74,9 +74,9 @@
      until 2027-01-01): it takes the drawer's step 1, 24rem (C157 (2)), not
      the width of its text (305 px in the drawer study). */
   display: flex;
-  max-width: min(100%, var(--sf-modal-drawer-width, var(--sf-g2)));
+  max-width: min(100%, var(--sf-modal-drawer-width, var(--sf-measure-52)));
   min-height: 100%;
-  width: var(--sf-modal-drawer-width, var(--sf-g2));
+  width: var(--sf-modal-drawer-width, var(--sf-measure-52));
 }
 
 .sf-modal[data-sf-modal-position='top'] [data-sf-modal-panel],
@@ -88,13 +88,14 @@
 
 /* The one sheet (owner decision C157 (5); core mix/_mix__sheet.scss): a
    window at the bottom -- a question or a form on a phone (C159 (2)), the
-   old position="bottom" -- is the screen's width up to 44rem, centred, with
+   old position="bottom" -- is the screen's width up to 96 characters (--sf-measure-96, C396;
+   44rem before), centred, with
    the sheet's grab bar on top, and a finger drags it down (sf-modal reads
    the swipe). It stretched to the window's width and had no bar. */
 .sf-modal[data-sf-modal-position='bottom']:not([data-sf-modal-fullscreen='true']) [data-sf-modal-panel] {
   min-width: 0;
   inline-size: 100%;
-  max-inline-size: var(--sf-h1);
+  max-inline-size: var(--sf-measure-96);
   margin-inline: auto;
   translate: 0 var(--sf-sheet--drag, 0px);
 }
@@ -581,17 +582,18 @@
    The body scrolls inside a 1/4 inset that keeps its focus rings whole; that
    inset is taken out of the frame and given to the header and the footer, so
    the title, the content and the answers start on one line and the × stands
-   on the frame's corner. The width is the core's question step (C32 moves it
-   with the density); a page's width still wins. */
+   on the frame's corner. The width is the core's question step (52
+   characters, C396; it follows the text); a page's width still wins. */
 .sf-modal--size-question [data-sf-modal-panel] {
   inline-size: var(--sf-modal-question-width, var(--sf-popup-question-width));
   max-inline-size: 100%;
 }
 
-/* Widths by name (owner decision C159 (1), 2026-11-14): question 28rem,
-   form 36rem, wide 48rem, full the whole screen; compact one step narrower
-   (26, 32, 44rem: core --sf-popup--window-*-width, moved by the density
-   like C32's popups); no size is a form. A window grew with its text (294 to
+/* Widths by name (owner decision C159 (1), 2026-11-14): question, form,
+   wide, full the whole screen; since owner decision C396 (2026-11-19) steps
+   of the width ladder in characters, 52, 80 and 96 (416, 640, 768px at text
+   16; 28, 36, 48rem before), core --sf-popup--window-*-width, following the
+   text in a compact region and at the browser's font size; no size is a form. A window grew with its text (294 to
    1043 px of 1440). A page's width still wins; a side panel keeps its own
    (side windows are sf-drawer's). The page's width and a window that takes
    the whole screen (fullscreen, or a phone's wide window) are left alone:

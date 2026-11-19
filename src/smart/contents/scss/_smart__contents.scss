@@ -311,7 +311,7 @@
         z-index: var(--sf-layer--window);
         inset: auto var(--sf-0) var(--sf-0);
         inline-size: 100%;
-        max-inline-size: var(--sf-h1);
+        max-inline-size: var(--sf-measure-96);
         max-block-size: 70dvh;
         margin: var(--sf-0) auto;
         padding-block: var(--sf-space-1\/2) calc(var(--sf-space-1\/2) + env(safe-area-inset-bottom, var(--sf-a0)));

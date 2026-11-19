@@ -24,9 +24,10 @@
     padding-bottom: var(--sf-tag--block, var(--sf-tag-padding-block, var(--sf-tag--padding-bottom)));
     box-shadow: var(--sf-tag--box-shadow);
     margin: 0;
-    /* A long name ends in an ellipsis and the tag is never wider than --sf-g0
-       nor its container (owner decision C58; tags study TG-1). */
-    max-inline-size: min(var(--sf-g0), 100%);
+    /* A long name ends in an ellipsis and the tag is never wider than 44
+       characters (--sf-measure-44, owner decision C396; --sf-g0 before) nor
+       its container (owner decision C58; tags study TG-1). */
+    max-inline-size: min(var(--sf-measure-44), 100%);
     min-inline-size: 0;
     /* The picture before the label -- avatar, icon, colour swatch -- is the
        tag less 4 above and below (C58: tag - 8; TG-7): the tag's line and its

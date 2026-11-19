@@ -193,7 +193,7 @@
   .sf-clipboard-result {
     inline-size: max-content;
     max-inline-size: min(
-      var(--sf-tooltip--max-inline-size, var(--sf-g0)),
+      var(--sf-tooltip--max-inline-size, var(--sf-measure-44)),
       calc(100vw - var(--sf-space-2))
     );
     pointer-events: none;
