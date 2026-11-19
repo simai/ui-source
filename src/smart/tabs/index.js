@@ -6,7 +6,7 @@ import { isTag } from '../../core/js/tag-aliases.js';
 import { followDensity, RELATIVE } from '../../core/js/density.js';
 import { BREAKPOINTS, breakpointMedia } from '../../core/js/breakpoints.js';
 import { noteDeprecated } from '../../core/js/deprecations';
-import { fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra } from '../../core/js/overflow-row.js';
+import { fitInOrder, fitBesideMore, layoutRowRoom, layoutWidth, standardMenu, triggerExtra } from '../../core/js/overflow-row.js';
 import { menuOpen } from '../../core/js/menu-open.js';
 import { renderTabsTemplate, errorBadgeClasses } from './js/templates/default';
 import manifest from './component.json';
@@ -838,14 +838,16 @@ class SfTabs extends TabsElement {
   // The width the vertical look folds on (C181 (2)): the tabs' own block,
   // which is as wide as their place in either look (sf-tabs itself is
   // display: contents); before the first drawing, the parent's content box.
+  // Layout widths (1.4.7): a screen box inside scale() or rotate() is not the
+  // width the md step is compared with.
   placeWidth() {
     const root = this.querySelector(':scope > .sf-tabs');
-    if (root) return root.getBoundingClientRect().width;
+    if (root) return layoutWidth(root);
     const parent = this.parentElement;
     if (!parent) return 0;
     const style = globalThis.getComputedStyle?.(parent);
     const inset = (Number.parseFloat(style?.paddingInlineStart) || 0) + (Number.parseFloat(style?.paddingInlineEnd) || 0);
-    return Math.max(0, parent.getBoundingClientRect().width - inset);
+    return Math.max(0, layoutWidth(parent) - inset);
   }
 
   readNarrow() {
@@ -1153,15 +1155,20 @@ class SfTabs extends TabsElement {
       this._expectedTabSizes = null;
       return;
     }
-    const width = (host) => tabBox(host)?.getBoundingClientRect().width ?? 0;
+    // Layout widths (1.4.7): the room, the text of «Ещё (n)» measured in canvas
+    // and the ResizeObserver sizes are layout pixels, so the tabs are too; a
+    // screen box inside scale() or rotate() mixed the two (docs hero study
+    // 2026-11-19, section 9).
+    const width = (host) => layoutWidth(tabBox(host));
     const widths = hosts.map(width);
     const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
     // The row's arithmetic is the shared row engine (core/js/overflow-row.js,
     // taken out of these tabs for sf-contents' bar): the tabs in their order
     // up to the first that does not fit, each whole in the row or in «Ещё»
     // (owner decision C54); the room is the row's content box in fractional
-    // pixels (rowRoom: clientWidth is a whole pixel, C54 return).
-    const room = () => rowRoom(list);
+    // pixels (rowRoom: clientWidth is a whole pixel, C54 return), before any
+    // transform (layoutRowRoom).
+    const room = () => layoutRowRoom(list);
     showMore(false);
     this.syncMoreErrors(more, 0);
     let kept = fitInOrder(widths, gap, room());

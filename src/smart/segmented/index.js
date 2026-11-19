@@ -6,6 +6,7 @@ import { noteDeprecated } from '../../core/js/deprecations.js';
 import { bindFormReset } from '../../component/form-reset-helper';
 import { FormField } from '../helpers/form-field';
 import { preloadControlIcons } from '../helpers/cycle';
+import { layoutHeight, layoutWidth } from '../../core/js/overflow-row.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import {files as languageFiles} from './lang/index.mjs';
@@ -182,6 +183,70 @@ const ButtonGroupElement = elementFromManifest(manifest, {
     },
   },
 });
+
+// The offset box of an element from a positioned ancestor's padding edge,
+// walking offsetParent: layout pixels, before any transform. null as the stop
+// walks to the page's origin.
+function offsetWithin(element, stop) {
+  let x = 0;
+  let y = 0;
+  let node = element;
+  while (node && node !== stop) {
+    x += node.offsetLeft;
+    y += node.offsetTop;
+    const parent = node.offsetParent;
+    if (parent && parent !== stop) {
+      x += parent.clientLeft;
+      y += parent.clientTop;
+    }
+    node = parent;
+  }
+  if (node === stop) return {x, y};
+  // The stop is not on the element's offsetParent chain (a track that is not
+  // positioned): both from the page's origin.
+  const element0 = offsetWithin(element, null);
+  const stop0 = offsetWithin(stop, null);
+  return {x: element0.x - stop0.x - stop.clientLeft, y: element0.y - stop0.y - stop.clientTop};
+}
+
+// Where the plate goes (1.8.1): the selected segment's box in the track's own
+// layout coordinates, from its padding edge at the inline start (a
+// right-to-left track starts at its right edge), the scroll included -- the
+// plate is laid out inside the track and scrolls with the segments.
+// getBoundingClientRect gives screen boxes, and under a scale, rotate or
+// perspective ancestor their difference is not a layout distance: inside
+// rotate(-14deg) the plate stood 21 px below its segment, inside scale(.7) at
+// 70 % of its size (docs hero study 2026-11-19, section 9). The offset box is
+// the layout's own, in whole pixels for its place; the screen boxes keep their
+// fractions where they agree with it within a pixel -- nothing transformed
+// between the track and the screen, the common case, where the plate stands
+// exactly where 1.8.0 put it.
+function segmentPlace(root, active) {
+  const width = layoutWidth(active);
+  const height = layoutHeight(active);
+  if (!width || !height) return null;
+  const style = getComputedStyle(root);
+  const rtl = style.direction === 'rtl';
+  const borderStart = parseFloat(style.borderLeftWidth) || 0;
+  const borderEnd = parseFloat(style.borderRightWidth) || 0;
+  const offset = offsetWithin(active, root);
+  const layout = {
+    x: rtl ? offset.x + width - (layoutWidth(root) - borderStart - borderEnd) : offset.x,
+    y: offset.y,
+    width,
+    height,
+  };
+  const box = root.getBoundingClientRect();
+  const rect = active.getBoundingClientRect();
+  const screen = {
+    x: rtl ? rect.right - (box.right - borderEnd) + root.scrollLeft : rect.left - box.left - root.clientLeft + root.scrollLeft,
+    y: rect.top - box.top - root.clientTop + root.scrollTop,
+    width: rect.width,
+    height: rect.height,
+  };
+  const agree = ['x', 'y', 'width', 'height'].every((key) => Math.abs(screen[key] - layout[key]) <= 1);
+  return agree ? screen : layout;
+}
 
 class SfButtonGroup extends FormField(ButtonGroupElement) {
   static get props() {
@@ -366,11 +431,13 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     if (!root) return null;
     if (this.folded) {
       const narrow = this.querySelector(':scope > .sf-button-group-narrow');
-      return {need: root.getBoundingClientRect().width, room: narrow ? narrow.getBoundingClientRect().width : 0};
+      return {need: layoutWidth(root), room: narrow ? layoutWidth(narrow) : 0};
     }
-    const room = root.getBoundingClientRect().width;
+    // Layout widths (1.8.1): inside rotate() a screen box is the rotated
+    // bounding box, and need and room grew by different amounts.
+    const room = layoutWidth(root);
     root.setAttribute('data-sf-measure', '');
-    const need = root.getBoundingClientRect().width;
+    const need = layoutWidth(root);
     root.removeAttribute('data-sf-measure');
     return {need, room};
   }
@@ -492,16 +559,9 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
 
   measurePlate(root, plate, active, moving) {
     if (!plate) return;
-    const box = root.getBoundingClientRect();
-    const rect = active.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-    // From the track's padding edge at its inline start, with the scroll: a
-    // right-to-left track starts at its right edge.
-    const rtl = getComputedStyle(root).direction === 'rtl';
-    const x = rtl
-      ? rect.right - (box.right - (parseFloat(getComputedStyle(root).borderRightWidth) || 0)) + root.scrollLeft
-      : rect.left - box.left - root.clientLeft + root.scrollLeft;
-    const y = rect.top - box.top - root.clientTop + root.scrollTop;
+    const place = segmentPlace(root, active);
+    if (!place) return;
+    const {x, y, width, height} = place;
     // A render that follows the choice (the value echoed back, a form sync)
     // measures again while the plate slides: it keeps the slide and its timer.
     const sliding = !moving && root.getAttribute('data-plate') === 'moving';
@@ -512,8 +572,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     }
     plate.style.setProperty('--sf-button-group--plate-x', `${x}px`);
     plate.style.setProperty('--sf-button-group--plate-y', `${y}px`);
-    plate.style.setProperty('--sf-button-group--plate-inline-size', `${rect.width}px`);
-    plate.style.setProperty('--sf-button-group--plate-block-size', `${rect.height}px`);
+    plate.style.setProperty('--sf-button-group--plate-inline-size', `${width}px`);
+    plate.style.setProperty('--sf-button-group--plate-block-size', `${height}px`);
     if (first) {
       cancelAnimationFrame(this._plateShow);
       this._plateShow = requestAnimationFrame(() => {

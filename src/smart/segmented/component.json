@@ -2,7 +2,7 @@
   "$comment": "The source of sf-segmented's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.segmented",
   "tag": "sf-segmented",
-  "version": "1.6.7",
+  "version": "1.8.1",
   "kind": "leaf",
   "family": "segmented",
   "settings": {
@@ -435,7 +435,8 @@
     "version 1.6.3 (2026-11-15; numbered above 1.6.2 of group build 7): a patch. The buttons look tells its sf-button items the button set's current scheme name: scheme=\"secondary\" reaches the selected button as on-surface, sf-button's name for it (C116), so sf-button no longer says its former name secondary in the console on every page with such a group. The button drew as on-surface already (sf-button 1.14.0), so nothing looks different. The track look keeps secondary (a segment colour in core). Settings, values, events and keys unchanged.",
     "version 1.6.4 (FM-9): the folded dropdown writes appearance=\"bordered\", the field look's name since sf-dropdown 1.18.0; it draws as before.",
     "version 1.6.6 (2026-11-17, feat/lang-file-c282; numbered above 1.6.5 on origin/fix/utilities-c264): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
-    "version 1.6.7 (written on the branch as 1.6.5; 2026-11-17, owner decision C268; numbered above 1.6.4 on origin/fix/fields-sizes-e2): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged."
+    "version 1.6.7 (written on the branch as 1.6.5; 2026-11-17, owner decision C268; numbered above 1.6.4 on origin/fix/fields-sizes-e2): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
+    "version 1.8.1 (2026-11-19, docs hero study section 9, DEV order msg-d9c2e1640ee24748b154; numbered above 1.8.0 on origin/integration/pair-next-15): a patch. The plate is placed in the track's layout coordinates, not from screen boxes: inside a scale, rotate or perspective ancestor getBoundingClientRect gives transformed boxes, and the plate stood off its segment (inside rotate(-14deg) 21 px low, inside scale(.7) at 70 % of its size). The selected segment's offset box from the track's padding edge (offsetParent walk, rtl from the inline start) is used; where the screen boxes agree with it within a pixel (nothing transformed between the track and the screen) they keep their fractions, so an untransformed plate is where it was. The fold check (labels on one line or the dropdown) reads layout widths too. The ResizeObserver stays. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [
