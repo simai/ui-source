@@ -80,7 +80,11 @@ export function renderBadgeTemplate(context) {
     context.rootClass,
   ].filter(Boolean);
 
-  return html`
+  // Without a value the template is the one it always was, character for
+  // character, so the drawn markup (Lit's part markers included) is
+  // byte-identical to 1.6.x.
+  const value = valuePart(context, hasAccessibleLabel);
+  if (value === nothing) return html`
     <span
       class=${classes.join(' ')}
       style=${context.rootStyle || nothing}
@@ -101,4 +105,39 @@ export function renderBadgeTemplate(context) {
       ${rightIconContent}
     </span>
   `;
+
+  return html`
+    <span
+      class=${classes.join(' ')}
+      style=${context.rootStyle || nothing}
+      aria-hidden=${!hasTextContent && !hasAccessibleLabel ? 'true' : nothing}
+    >
+      ${hasAccessibleLabel ? html`<span class="sr-only">${context.ariaLabel}</span>` : nothing}
+      ${leftIconContent}
+      ${hasTextContent
+        ? html`
+            <span
+              class=${`sf-badge-text-container flex items-center${isIconOnly ? ' sr-only' : ''}`}
+              aria-hidden=${hasAccessibleLabel ? 'true' : nothing}
+            >
+              <span class="sf-badge-text">${textContent}</span>
+            </span>
+          `
+        : nothing}
+      ${rightIconContent}${value}
+    </span>
+  `;
+}
+
+// Name and value (owner decisions C317-C319): after the name a divider and the
+// value, in the same badge. The divider is hidden from assistive technology
+// and a visually hidden word stands before the value, so the badge reads
+// «sf-wizard, версия 1.5.3». Without a value (attribute or slot) nothing is
+// added, and the badge is drawn exactly as before.
+function valuePart(context, hasAccessibleLabel) {
+  const hasValueSlot = context.component?.hasSlotContent?.('value');
+  const valueText = String(context.valueText ?? '');
+  if (!hasValueSlot && !valueText.length) return nothing;
+  const content = hasValueSlot ? context.component.getSlotContent('value') : valueText;
+  return html`<span class="sf-badge-divider" aria-hidden="true"></span><span class="sf-badge-value" aria-hidden=${hasAccessibleLabel ? 'true' : nothing}><span class="sr-only">, ${context.valueLabel} </span>${content}</span>`;
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.badge",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "title": "Badges",
   "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
   "kind": "smart",
@@ -128,6 +128,15 @@
       "text": {
         "type": "string",
         "default": ""
+      },
+      "value": {
+        "type": "string",
+        "default": "",
+        "description": "A second text after the name, behind a thin divider in the same badge: «sf-wizard | 1.5.3», a key and its value (owner decision C317). The pair never breaks: a long name truncates and the value does not. Without it the badge is drawn as before. The slot value takes markup in its place. The property value stays the badge's state object; it carries this text under value."
+      },
+      "value-label": {
+        "type": "string",
+        "description": "The word a screen reader says before the value, visually hidden: the badge reads «text, value-label value» («sf-wizard, версия 1.5.3»). Empty: the word of the page's language («значение», «value»)."
       },
       "icon": {
         "type": "string",
@@ -284,7 +293,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",
-        "sha256": "cb2b00088bf0f68ecde646011b8b68343eb8b8983ccd638d0f3cd08a5fc88a79"
+        "sha256": "da805ce5f26709c79fb91b48c46340eb3895047e3b734d77d9ae19377c0b7f6f"
       }
     ],
     "generated_runtime": [

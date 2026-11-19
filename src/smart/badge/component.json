@@ -2,7 +2,7 @@
   "$comment": "The source of sf-badge's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/badge (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.badge",
   "tag": "sf-badge",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "badge",
   "settings": {
@@ -90,6 +90,16 @@
       "type": "string",
       "default": ""
     },
+    "value": {
+      "type": "string",
+      "default": "",
+      "summary": "A second text after the name, behind a thin divider in the same badge: «sf-wizard | 1.5.3», a key and its value (owner decision C317). The pair never breaks: a long name truncates and the value does not. Without it the badge is drawn as before. The slot value takes markup in its place. The property value stays the badge's state object; it carries this text under value."
+    },
+    "value-label": {
+      "type": "string",
+      "default-from": "runtime.value-label",
+      "summary": "The word a screen reader says before the value, visually hidden: the badge reads «text, value-label value» («sf-wizard, версия 1.5.3»). Empty: the word of the page's language («значение», «value»)."
+    },
     "icon": {
       "type": "icon",
       "default": ""
@@ -146,14 +156,25 @@
   "docs": "docs/docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "No role of its own: the badge is text. With aria-label the label is said through a visually hidden span and the visible text is hidden from assistive technology; with neither text nor aria-label the badge is decorative and aria-hidden.",
+    "$comment": "No role of its own: the badge is text. With aria-label the label is said through a visually hidden span and the visible text is hidden from assistive technology; with neither text nor aria-label the badge is decorative and aria-hidden. With a value (owner decision C317) the divider is hidden and a visually hidden word stands before the value: «text, value-label value».",
     "role": "none",
     "name": {
       "from": [
         "aria-label",
         "text",
-        "slot:text"
+        "slot:text",
+        "value-label",
+        "value",
+        "slot:value"
       ]
+    }
+  },
+  "slots": {
+    "text": {
+      "x-summary": "The name with markup, in place of the text setting."
+    },
+    "value": {
+      "x-summary": "The value with markup, in place of the value setting (owner decision C317): drawn after the divider, never truncated."
     }
   },
   "css-variables": {
@@ -190,6 +211,10 @@
       "state": "default"
     },
     "--sf-badge-ring-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-badge-divider-color": {
       "type": "color",
       "state": "default"
     }
@@ -274,7 +299,8 @@
     "converted": "control/smart-architecture/stands/17-ports-migration/out/badges.component.json"
   },
   "x-words": [
-    "text"
+    "text",
+    "value-label"
   ],
   "x-renamed": [
     "settings.aria-label: a host attribute, read by the base, never a setting (§3.1)"
@@ -301,7 +327,8 @@
     "version 1.6.1 (2026-11-15, group build 6; numbered above 1.6.0 on refs/remotes/origin/fix/area-theme-dark-c84): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc).",
     "version 1.6.2 (2026-11-17, group build 9; numbered above 1.6.1 on origin/feat/dependency-graph-c249): a patch, nothing drawn or done differently by this unit: its words of the withdrawn pilot interface pack leave it (C278).",
     "version 1.6.3 (2026-11-17, feat/lang-file-c282; numbered above 1.6.2 on origin/integration/pair-next-11): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
-    "version 1.6.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
+    "version 1.6.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
+    "version 1.7.0 (2026-11-18, owner decisions C317-C319; study ui-control prototypes/composite-badge-study.html, variant A; component.badges 1.13.0): a minor. The settings value and value-label and the slot value are added: «name | value» in one badge, one outline pill with a one-pixel divider as high as the text line between the name and the value, --sf-space-1/3 on each side of it (C317). The pair never breaks: the badge does not wrap inside, a long name truncates with an ellipsis, the value never. It is part of sf-badge, class and Smart (C318): the class parts .sf-badge-divider and .sf-badge-value, the public variable --sf-badge-divider-color (the badge's border colour on outline, --sf-outline on a fill); the value takes the text colour (--sf-badge-color colours both): --sf-badge-value-color of the order would be the badge's eleventh public variable, over the ten a component may offer, so it is internal (--sf-badge--value-color) until the owner says otherwise. The badge stays a static mark, no copy on a click (C319). Accessible text «text, value-label value»: the divider is aria-hidden, a visually hidden «, <value-label> » stands before the value; value-label defaults to the language word runtime value-label («значение», «value»); with aria-label the value is hidden as the text is. Without value (attribute or slot) the template is the one of 1.6.3, character for character, so the drawn markup is byte-identical. The property value stays the state object (as on sf-button); it now carries value and valueLabel, so el.value = el.value keeps them; a string given to it writes the attribute value. Numbered above 1.6.4 on origin/integration/pair-next-15."
   ],
   "x-rule": {
     "$comment-after": [

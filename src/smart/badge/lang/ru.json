@@ -7,6 +7,7 @@
     "activity-stopped": "Остановлено",
     "activity-failed": "Не удалось",
     "activity-paused": "Пауза",
-    "activity-queued": "В очереди"
+    "activity-queued": "В очереди",
+    "value-label": "значение"
   }
 }

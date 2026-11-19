@@ -114,6 +114,17 @@ const sfBadgeMeta = {
       "valueType": "string",
       "default": ""
     },
+    "value": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A second text after the name, behind a thin divider in the same badge: «sf-wizard | 1.5.3», a key and its value (owner decision C317). The pair never breaks: a long name truncates and the value does not. Without it the badge is drawn as before. The slot value takes markup in its place. The property value stays the badge's state object; it carries this text under value."
+    },
+    "value-label": {
+      "kind": "custom",
+      "valueType": "string",
+      "description": "The word a screen reader says before the value, visually hidden: the badge reads «text, value-label value» («sf-wizard, версия 1.5.3»). Empty: the word of the page's language («значение», «value»)."
+    },
     "icon": {
       "kind": "custom",
       "valueType": "string",

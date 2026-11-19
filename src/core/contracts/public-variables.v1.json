@@ -84,7 +84,7 @@
         {
           "name": "--sf-badge-gap",
           "role": "gap",
-          "summary": "Space between the icon and the text.",
+          "summary": "Space between the icon and the text; on a badge with a name and a value, the space on each side of the divider, --sf-space-1/3 there (owner decision C317).",
           "default": "var(--sf-space-1/4)",
           "since": "2026-10-13"
         },
@@ -94,6 +94,18 @@
           "summary": "The ring that separates a badge anchored on an avatar, an icon or an icon button from its anchor: the colour of the surface the anchor sits on. Framework surfaces (menus, lists, drawers, modals, toasts) say their own; set it where a page paints a surface of its own.",
           "default": "var(--sf-surface-place)",
           "since": "2026-10-21"
+        },
+        {
+          "name": "--sf-badge-divider-color",
+          "role": "indicator-color",
+          "summary": "The one-pixel divider between a name and a value in one badge («sf-wizard | 1.5.3», owner decision C317): the badge's border colour on an outline badge, --sf-outline on a fill.",
+          "default": "var(--sf-outline)",
+          "since": "2026-11-18",
+          "varies_with": [
+            "appearance",
+            "scheme",
+            "status"
+          ]
         }
       ]
     },

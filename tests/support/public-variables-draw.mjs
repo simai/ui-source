@@ -9,8 +9,9 @@
 // an entry here fails, so the probe grows with the contract.
 export const DRAW = {
   // A count anchored on an icon besides the label: the ring is drawn on the
-  // anchored badge alone (simai/ui-source#12).
-  badge: {css: ['badges'], js: 'badge', html: '<sf-badge text="Новое" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
+  // anchored badge alone (simai/ui-source#12). A name and a value (C317) carry
+  // the divider and the value the divider and value colours reach.
+  badge: {css: ['badges'], js: 'badge', html: '<sf-badge text="Новое" size="1"></sf-badge><sf-badge text="sf-tabs" value="1.5.2" appearance="outline" scheme="on-surface" size="1"></sf-badge><span class="sf-badge-anchor"><i class="sf-icon" aria-hidden="true">mail</i><span class="sf-badge sf-badge--anchored" aria-hidden="true">3</span></span>'},
   // A pressed toggle beside the button: the pressed variables colour its resting look.
   button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button><sf-button text="Жирный" icon-start="format_bold" appearance="outline" scheme="on-surface" pressed size="1"></sf-button>'},
   // A variable of a state (standard 1.3.8 §6) is measured on an instance in

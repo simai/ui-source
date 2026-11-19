@@ -80,6 +80,13 @@
      so hover and disabled still show. These lines give the parts that are read
      only through a fallback a place to take them. */
   --sf-badge--gap: var(--sf-badge-gap, var(--sf-space-1\/4));
+  /* Name and value (owner decision C317): the divider takes the badge's
+     border colour where it has one (outline, below) and --sf-outline on a
+     fill; the value the badge's text colour (--sf-badge-color colours both).
+     The value's colour is internal for now: the badge already has the ten
+     public variables a component may offer (public-variables contract). */
+  --sf-badge--divider-color: var(--sf-badge-divider-color, var(--sf-outline));
+  --sf-badge--value-color: var(--sf-badge-color, var(--sf-badge--color));
   --sf-badge--border-color: var(--sf-badge-border-color, transparent);
   --sf-badge--border-top-width: var(--sf-badge-border-width, var(--sf-a0));
   --sf-badge--border-bottom-width: var(--sf-badge-border-width, var(--sf-a0));
@@ -119,6 +126,30 @@
   line-height: var(--sf-badge-text--line-height);
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Name and value in one badge (owner decisions C317-C319, 2026-11-18; study
+   ui-control prototypes/composite-badge-study.html, variant A): «sf-wizard |
+   1.5.3» is one pill. After the name come a divider, one pixel wide and as
+   high as the text line, and the value; the pair never breaks: the badge does
+   not wrap inside, a long name truncates with an ellipsis and the value never
+   does. --sf-space-1/3 stands on each side of the divider (--sf-badge-gap, a
+   quarter step between an icon and a text). Heights, sizes and looks are the
+   badge's own (C01, C140 (5)); the badge stays a static mark (C319). A badge
+   without the parts draws exactly as before. */
+.sf-badge:has(> .sf-badge-divider) {
+  --sf-badge--gap: var(--sf-badge-gap, var(--sf-space-1\/3));
+}
+
+.sf-badge .sf-badge-divider {
+  flex: none;
+  align-self: stretch;
+  inline-size: var(--sf-px);
+}
+
+.sf-badge .sf-badge-value {
+  flex: none;
   white-space: nowrap;
 }
 
@@ -290,6 +321,9 @@
 .sf-badge.sf-badge--main:is(.sf-badge--error, .sf-badge--danger) {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-error));
+  /* On the one filled look the divider is the text's colour: an outline line
+     on the error fill would not read. */
+  --sf-badge--divider-color: var(--sf-badge-divider-color, var(--sf-badge--color));
 }
 
 .sf-badge:where(.sf-badge--tonal, :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--error, .sf-badge--danger) {
@@ -357,6 +391,7 @@
   --sf-badge--border-inline-start-width: var(--sf-badge-border-width, var(--sf-px));
   --sf-badge--border-top-width: var(--sf-badge-border-width, var(--sf-px));
   --sf-badge--border-style: solid;
+  --sf-badge--divider-color: var(--sf-badge-divider-color, var(--sf-badge--border-color));
 }
 }
 
@@ -384,6 +419,12 @@
   }
   .sf-badge .sf-badge-spinner {
     color: var(--sf-loader--color, currentColor);
+  }
+  .sf-badge .sf-badge-divider {
+    background-color: var(--sf-badge--divider-color);
+  }
+  .sf-badge .sf-badge-value {
+    color: var(--sf-badge--value-color);
   }
   .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--neutral, .sf-badge--on-surface) {
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
@@ -482,5 +523,7 @@
   --sf-badge--background-color: var(--sf-surface-disabled);
   --sf-badge--color: var(--sf-on-surface-disabled);
   --sf-badge--border-color: var(--sf-outline-disabled);
+  --sf-badge--divider-color: var(--sf-outline-disabled);
+  --sf-badge--value-color: var(--sf-on-surface-disabled);
 }
 }

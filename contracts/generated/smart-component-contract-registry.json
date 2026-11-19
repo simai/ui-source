@@ -225,7 +225,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/badge/smart.manifest.json",
-      "manifest_sha256": "55c5b20139652e71697451117be789afdee9712fba43129cda2615cb2b3c05ab",
+      "manifest_sha256": "b2e46fbd3e0c74ffb463b60816326495d692ba57ea7743a50b9c1406142ff43a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
