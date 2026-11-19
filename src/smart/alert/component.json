@@ -2,7 +2,7 @@
   "$comment": "The source of sf-alert's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/alert (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.alert",
   "tag": "sf-alert",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "kind": "leaf",
   "family": "alert",
   "settings": {
@@ -328,7 +328,8 @@
     "version 1.5.0 (2026-11-16): a minor. RG-CL-3 (DEV study actions-close-study.html K3; owner decision C14: one close): the close is sf-button-close (ghost, on-surface, size 1, height low), not sf-button-icon kind=\"close\"; the relation cl-button-icon becomes cl-button-close. Same box, cross and inks (the notice's service ink 64 at rest, its text ink under a pointer, C112); measured before and after in the study.",
     "version 1.5.2 (2026-11-17, feat/lang-file-c282; numbered above 1.5.1 on origin/fix/utilities-c264): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.5.3 (written on the branch as 1.5.1; 2026-11-17, owner decision C268; numbered above 1.5.0 on origin/fix/close-c14-cl1): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
-    "version 1.5.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
+    "version 1.5.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
+    "version 1.5.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (p1-live-region p2-action-data-only p6-aliases); the pair before carried the old checks under the same number. No code, setting, word or drawing changes."
   ],
   "x-registry": {
     "contracts": {
