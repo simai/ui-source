@@ -55,7 +55,10 @@ test('Smart Icons accepts only the Framework icon size scale', async () => {
 test('Core Loader tracks exact Smart icon descriptors', async () => {
   const source = await read('src/core/js/iconSubsetRuntime.js');
   assert.match(source, /"optical-size", "type"/);
-  assert.match(source, /query\.set\("optical_size", requestConfig\.opticalSize\)/);
+  // The service's names, grad and opsz, each a range (icons-axes 2026-11-19).
+  assert.match(source, /query\.set\(ICON_AXIS_PARAMS\.opsz, iconAxisRequestRange\("opsz", requestConfig\.opticalSize\)\)/);
+  assert.match(source, /query\.set\(ICON_AXIS_PARAMS\.GRAD, iconAxisRequestRange\("GRAD", requestConfig\.grade\)\)/);
+  assert.doesNotMatch(source, /query\.set\("(?:optical_size|grade)"/);
   assert.match(source, /manifestAxisIncludesValue\(manifest, "GRAD", attrs\.grade\)/);
   assert.match(source, /"opsz",\s*attrs\["optical-size"\]/s);
 });
