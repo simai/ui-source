@@ -126,7 +126,8 @@ test('C212 (3): the old classes draw as before (values untouched)', () => {
   const vars = read('src/utility/font-weight/default/scss/_sf_var__font_weight.scss');
   assert.match(vars, /regular: normal,\s*bold:\s+bold,\s*lighter: lighter,\s*bolder:\s+bolder,/u);
   for (let step = 1; step <= 9; step++) assert.match(vars, new RegExp(`${step}: ${step}00`, 'u'));
-  assert.match(read('src/utility/max-width/default/scss/_sf_var__width_max.scss'), /prose : 65ch,/u);
-  assert.match(read('src/utility/text-max-width/default/scss/_sf_var__text_measure.scss'), /'': 65ch,/u);
+  // C396 (2026-11-19) moved the reading measure, and its alias max-w-prose with it, to the step of 80 characters (65ch before).
+  assert.match(read('src/utility/max-width/default/scss/_sf_var__width_max.scss'), /prose : var\(--sf-measure-80\),/u);
+  assert.match(read('src/utility/text-max-width/default/scss/_sf_var__text_measure.scss'), /'': var\(--sf-measure-80\),/u);
   assert.match(read('src/utility/line-height/default/scss/_sf_var__line_height.scss'), /tight:\s+1\.25,\s*snug:\s+1\.375,\s*relaxed: 1\.625,\s*loose:\s+2,\s*none:\s+1,\s*normal:\s+1\.5/u);
 });

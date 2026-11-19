@@ -21,7 +21,7 @@ test("the canonical vertical sizing contract is valid", () => {
     assert.equal(validateContract(), contract);
     assert.match(contractSha256, /^[a-f0-9]{64}$/);
     assert.equal(primitiveValues().size, 91);
-    assert.equal(projections().size, 11);
+    assert.equal(projections().size, 12); // C396: the width ladder in characters, figma_measure.scss
 });
 
 // The contract is the single source of the generated sheets: a hand edit to a

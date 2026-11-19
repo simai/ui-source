@@ -157,7 +157,7 @@ test('C212 (4): the Loader notes the hint before the retired sheet, once', () =>
 });
 
 test('C212 (4): the sheets are unchanged but for comments; the versions move', () => {
-  const versions = {gap: '1.2.0', space: '1.1.0', width: '1.1.0', 'width-ext': '1.1.0', height: '1.2.0', 'flex-basis': '1.1.0', 'flex-basis-ext': '1.1.0', 'element-position': '1.1.0'};
+  const versions = {gap: '1.2.0', space: '1.1.0', width: '1.2.0', 'width-ext': '1.1.0', height: '1.2.0', 'flex-basis': '1.1.0', 'flex-basis-ext': '1.1.0', 'element-position': '1.1.0'};
   for (const [unit, version] of Object.entries(versions)) {
     const passport = JSON.parse(read(`src/utility/${unit}/passport.json`));
     assert.equal(passport.version, version, unit);
