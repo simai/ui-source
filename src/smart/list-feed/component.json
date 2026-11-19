@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-feed's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The feed variant of block list (duplication audit 2026-11-03 A-6): the behaviour of ui-pro's sf-message-log 1.2.5 on core's reading position (core/js/reading-position.js).",
   "id": "smart.list-feed",
   "tag": "sf-list-feed",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -592,7 +592,8 @@
     "version 1.5.1 (2026-11-17, feat/lang-file-c282; numbered above 1.5.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.5.2 (written on the branch as 1.4.2; 2026-11-17, owner decision C268; numbered above 1.4.1 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.5.3 (written on the branch as 1.5.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
-    "version 1.5.4 (2026-11-18): a patch: one focus offset (DEV held answers H3, owner decision C212, msg-bc1702eb): the ring stands at --sf-focus--offset (outside) or --sf-focus--inset (inside a filled cell) instead of its own number; only the forced-colours rules keep 2px."
+    "version 1.5.4 (2026-11-18): a patch: one focus offset (DEV held answers H3, owner decision C212, msg-bc1702eb): the ring stands at --sf-focus--offset (outside) or --sf-focus--inset (inside a filled cell) instead of its own number; only the forced-colours rules keep 2px.",
+    "version 1.5.5 (2026-11-20, fix/ru-words-vs-site-4, VS-SITE-4; above 1.5.4 of every branch): a patch. The entries are drawn again when the page's language changes or its language file arrives after the feed was drawn: the default entry's «Вы» (you-text) and the «Новые» line (new-text) were chosen once per entry and stayed English («You») on a Russian page whose pack came late. A host renderer is called again for each entry then, as on any redraw. Settings, values and events unchanged."
   ],
   "x-rule": {
     "$comment": [

@@ -2,7 +2,7 @@
 // external drop targets share one drag session. Pointer (mouse, pen, touch via
 // handles), keyboard and screen-reader paths all end in the same intent event;
 // the component never moves host DOM or data. The host applies the change.
-import { pageText } from '../page-language.js';
+import { followLanguage, language, pageText } from '../page-language.js';
 
 // The request to move an item (simai.smart-vocabulary 1.1.5 §5 move): the
 // name sf-sortable's component.json declares. The former sf-sortable-intent
@@ -527,12 +527,22 @@ function swallowNextClick() {
 // (a control inside a button is not reachable) -- and every item says it can be
 // moved, in the page's language. A host's own role and description stay.
 const GENERIC = new Set(['DIV', 'SPAN', 'SECTION', 'ARTICLE', 'P']);
+// The description this module wrote is remembered on the item (a shared
+// symbol: every bundle carries this module), so a later language -- the page's
+// pack arriving after the list was drawn, SF.language.use(), a changed lang --
+// replaces its own word and never a host's (VS-SITE-4: the board kept
+// «draggable» on a Russian page when the pack came after the list).
+const SAID_ROLE = Symbol.for('simai.sf.sortable.roledescription');
 function describeItem(item) {
   if (!item.hasAttribute('role') && GENERIC.has(item.tagName)) {
     const holdsControl = item.querySelector(`${INTERACTIVE},${HANDLE},[tabindex]`);
     item.setAttribute('role', holdsControl ? 'group' : 'button');
   }
-  if (!item.hasAttribute('aria-roledescription')) item.setAttribute('aria-roledescription', messages().roledescription);
+  const current = item.getAttribute('aria-roledescription');
+  if (current !== null && current !== item[SAID_ROLE]) return;
+  const word = messages().roledescription;
+  if (current !== word) item.setAttribute('aria-roledescription', word);
+  item[SAID_ROLE] = word;
 }
 
 /**
@@ -648,6 +658,16 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       }
       this.append(this.live, this.instructions);
       this.writeInstructions();
+      // The words are the page's language when they are read, not when the
+      // list was drawn: the language file may arrive later (a Smart bundle
+      // before core.js, a slow network), the page may choose another language
+      // or change a lang. The instructions and the items' description follow.
+      const offLanguage = language.onChange(() => this.refreshWords());
+      // Followed through the instructions node: followLanguage keeps one
+      // redraw per element, and the list itself may be a Smart element with
+      // its own.
+      const unwatch = followLanguage(this.instructions, () => this.refreshWords());
+      this.connection.signal.addEventListener('abort', () => { offLanguage(); unwatch(); }, { once: true });
       this.addEventListener('pointerdown', (event) => this.onPointerDown(event), options);
       this.addEventListener('keydown', (event) => this.onKeyDown(event), options);
       this.addEventListener('focusin', (event) => {
@@ -711,6 +731,12 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
         if (item.getAttribute('tabindex') !== want) item.setAttribute('tabindex', want);
       }
       this.writeInstructions();
+    }
+
+    refreshWords() {
+      if (!this.connection) return;
+      this.writeInstructions();
+      for (const item of items(this)) if (item.closest('sf-sortable') === this) describeItem(item);
     }
 
     // On a list of selectable items the instructions say Space selects (BV-8).
@@ -1210,6 +1236,16 @@ export function attachSortable(container, options = {}) {
     doc.body.append(help);
   }
   const abort = new AbortController();
+  // The keys' words follow the page's language, as a list's do (VS-SITE-4).
+  if (help) {
+    const rewrite = () => {
+      const text = messages().instructions;
+      if (help.textContent !== text) help.textContent = text;
+    };
+    const offLanguage = language.onChange(rewrite);
+    const unwatch = followLanguage(help, rewrite);
+    abort.signal.addEventListener('abort', () => { offLanguage(); unwatch(); }, { once: true });
+  }
   let session = null;
 
   const members = (group) => [...container.querySelectorAll(options.items)].filter((item) => groupOf(item) === group);
