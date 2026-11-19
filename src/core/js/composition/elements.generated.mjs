@@ -105,13 +105,20 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "tight": {
           "default": false,
           "type": "boolean"
+        },
+        "value": {
+          "default": "",
+          "type": "string"
+        },
+        "value-label": {
+          "type": "string"
         }
       },
       "type": "object"
     },
     "kind": "custom-element",
     "manifest": "smart.badge",
-    "version": "1.6.4"
+    "version": "1.7.0"
   },
   "sf-button": {
     "inputs": {

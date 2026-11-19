@@ -147,6 +147,11 @@ test('a single section is a plain section, not a toggle', async () => {
   assert.match(behavior, /this\.trigger\.replaceWith\(header\)/);
   assert.match(behavior, /header\.replaceWith\(this\.trigger\)/);
   assert.match(behavior, /if \(!this\.content \|\| this\.staticHeader\) return;/);
-  assert.match(styles, /\.sf-accordion\.sf-accordion--static \.sf-accordion-trigger \.sf-icon \{\s*display: none;/);
-  assert.match(styles, /\.sf-accordion\.sf-accordion--static \.sf-accordion-trigger:is\(:hover, :active\) \{\s*background-color: transparent;/);
+  // The static look is drawn by $single: the runtime's sf-accordion--static,
+  // and from the first paint a section single by its markup (DF-6: the
+  // marker sf-accordion--single and the only section of an sf-accordion-group),
+  // at the weight of .sf-accordion.sf-accordion--static.
+  assert.match(styles, /\$single: ':is\(\.sf-accordion--static, :where\(\.sf-accordion--single:not\(\.sf-accordion--legacy\), \.sf-accordion-group:not\(\[data-single-section="toggle"\]\) > \.sf-accordion:not\(\.sf-accordion--legacy, \.sf-accordion ~ \.sf-accordion, :has\(~ \.sf-accordion\)\)\)\)';/u);
+  assert.match(styles, /\.sf-accordion#\{\$single\} \.sf-accordion-trigger \.sf-icon \{\s*display: none;/);
+  assert.match(styles, /\.sf-accordion#\{\$single\} \.sf-accordion-trigger:is\(:hover, :active\) \{\s*background-color: transparent;/);
 });

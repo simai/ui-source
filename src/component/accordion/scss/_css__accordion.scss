@@ -1,4 +1,11 @@
 @use 'var__accordion' as *;
+
+// A section drawn as a single one (simai/ui-source#19; see «A single
+// section» below): marked static by the runtime, or single by its markup.
+// :where keeps the rules at the weight of .sf-accordion.sf-accordion--static,
+// the one they had.
+$single: ':is(.sf-accordion--static, :where(.sf-accordion--single:not(.sf-accordion--legacy), .sf-accordion-group:not([data-single-section="toggle"]) > .sf-accordion:not(.sf-accordion--legacy, .sf-accordion ~ .sf-accordion, :has(~ .sf-accordion))))';
+
 .sf-accordion {
   /* The public variables (src/core/contracts/public-variables.v1.json) wrap
      the values the accordion drew before them, so a page that sets none sees
@@ -271,7 +278,7 @@
   color: var(--sf-icon--color, var(--sf-accordion-icon-color, currentColor));
 }
 
-.sf-accordion.sf-accordion--static .sf-accordion-trigger:is(:hover, :active) .sf-icon {
+.sf-accordion#{$single} .sf-accordion-trigger:is(:hover, :active) .sf-icon {
   color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-icon)));
 }
 
@@ -324,20 +331,25 @@
 
 /* A single section (simai/ui-source#19): the heading is a heading, not a
    toggle -- nothing to press, no chevron, no hover; the line under it stays,
-   as under an open section. */
-.sf-accordion.sf-accordion--static .sf-accordion-trigger {
+   as under an open section. The runtime marks it sf-accordion--static; a
+   section that is single by its markup -- sf-accordion--single, or the only
+   section of an sf-accordion-group that does not say
+   data-single-section="toggle" -- draws so from the first paint, before the
+   runtime takes its button away (the rule the runtime reads, isSingle(); the
+   legacy markup keeps its toggle). $single is defined at the top. */
+.sf-accordion#{$single} .sf-accordion-trigger {
   cursor: auto;
 }
 
-.sf-accordion.sf-accordion--static .sf-accordion-trigger:is(:hover, :active) {
+.sf-accordion#{$single} .sf-accordion-trigger:is(:hover, :active) {
   background-color: transparent;
 }
 
-.sf-accordion.sf-accordion--static .sf-accordion-trigger .sf-icon {
+.sf-accordion#{$single} .sf-accordion-trigger .sf-icon {
   display: none;
 }
 
-.sf-accordion.sf-accordion--static .sf-accordion-trigger::after {
+.sf-accordion#{$single} .sf-accordion-trigger::after {
   background-color: var(
     --sf-accordion-divider--color,
     var(--sf-accordion-divider-color, var(--sf-outline-variant))

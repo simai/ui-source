@@ -55,7 +55,10 @@ second section joins the group the button comes back, open (the content
 the reader sees does not vanish);
 when sections leave and one remains, it becomes plain. A group that keeps its
 one section a toggle -- a list that fills in later -- says
-`data-single-section="toggle"`. The legacy markup keeps its toggle.
+`data-single-section="toggle"`. The legacy markup keeps its toggle. A
+section that is single by its markup -- `sf-accordion--single`, or the only
+section of a group -- draws as a heading from the first paint: no chevron and
+no pointer before the runtime takes its button away.
 
 ```html
 <div class="sf-accordion-group">

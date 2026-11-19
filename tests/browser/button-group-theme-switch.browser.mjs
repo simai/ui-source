@@ -16,6 +16,8 @@
 //     tab stop;
 //   - with the theme disabled (SF_BOOT_CONFIG.theme false) a click changes
 //     nothing.
+//   - no console line tells a segment it has no label: each is named by its
+//     hidden label (DF-4).
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
@@ -92,6 +94,12 @@ async function open(path, {colorScheme = 'light'} = {}) {
   const context = await browser.newContext({colorScheme});
   const page = await context.newPage();
   page.on('pageerror', (error) => failures.push({name: `page error on ${path}`, said: error.message}));
+  // An icon-only segment is named by its hidden label: the button checks
+  // must not ask it for aria-label (DF-4: the theme switch of sf-header-site
+  // and of the docs' theme page said so three times per switch).
+  page.on('console', (message) => {
+    if (/has an icon and no label/u.test(message.text())) failures.push({name: `${path}: a named segment was told it has no label`, said: message.text().slice(0, 200)});
+  });
   await page.goto(`${origin}${path}`);
   await page.waitForFunction(() => {
     const groups = [...document.querySelectorAll('sf-segmented')];

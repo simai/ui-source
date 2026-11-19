@@ -91,10 +91,28 @@ function nameOf(element) {
   return `<${element.localName}${element.id ? `#${element.id}` : ''} class="${classes}">${label ? ` «${label.slice(0, 40)}»` : ''}`;
 }
 
+// The words a button is named by from its content: its text outside the
+// glyphs (an icon's ligature is its name in the font, not words), the spinner
+// and anything aria-hidden. A label kept out of view (sr-only, sf-segmented's
+// sf-button-group-label--hidden on an icon-only segment) still names it: the
+// theme switch of sf-header-site was told it needed aria-label, though each
+// segment is named «Как в системе», «Светлая», «Тёмная» (DF-4).
+const NOT_WORDS = '.sf-icon, sf-icon, .sf-button-spinner, [aria-hidden="true"]';
+
+function contentName(element) {
+  let words = '';
+  for (const node of element.childNodes) {
+    if (node.nodeType === 3) words += node.nodeValue;
+    else if (node.nodeType === 1 && !matches(node, NOT_WORDS)) words += contentName(node);
+  }
+  return words;
+}
+
 function hasName(element) {
   return Boolean(element.getAttribute('aria-label')?.trim()
     || element.getAttribute('aria-labelledby')?.trim()
-    || element.getAttribute('title')?.trim());
+    || element.getAttribute('title')?.trim()
+    || contentName(element).trim());
 }
 
 function matches(element, selector) {

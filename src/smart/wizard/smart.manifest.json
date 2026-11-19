@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.wizard",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "title": "Wizard",
   "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal (36rem, wide with the column), drawer (a side panel 30rem) and pages (the server's page per step, its form posting). The wizard's name is the page's or window's title (h4), the step's title one step under it (h5); on a phone a window takes the screen with the footer at its bottom. The draft is kept by the wizard itself, closing is continue later, and one value of all answers.",
   "kind": "smart",
@@ -443,7 +443,7 @@
     "keyboard": [
       "Tab reaches «Продолжить позже», the reachable steps of the progress, the step's controls, then Back, Skip and the primary button",
       "Enter in a field of the step submits it as the primary button does",
-      "Escape closes the window in place modal, asking first with unsaved input"
+      "Escape leaves a window (places modal and drawer) as its × does: continue later (owner decision C179 (6)), the draft kept and nothing asked; close {reason: escape}"
     ],
     "focus": "After a move the step's title (role heading, tabindex -1) takes focus and a status region says «Шаг N из M: <step>». A failed validation focuses the first invalid field."
   },
@@ -523,7 +523,7 @@
       },
       {
         "path": "src/smart/wizard/docs.md",
-        "sha256": "dbf280b5bbcef58fac15a6365e3ddc8474677e39811e3ed7d67e7d5a0f10283e"
+        "sha256": "7eefebb79c5468f84aa4b5959500b5fc12fade8486f6d355da5db5e61192c786"
       }
     ],
     "generated_runtime": []
