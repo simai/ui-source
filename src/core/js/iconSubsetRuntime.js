@@ -1,5 +1,10 @@
 import pageStorage from './page-storage.js';
 import {
+  clampIconAxisValue,
+  ICON_AXIS_BOUNDS,
+  ICON_AXIS_PARAMS,
+  iconAxisNumbers,
+  iconAxisRequestRange,
   iconManifestFontFamily,
   iconManifestType,
   iconSubsetCssFromManifest,
@@ -599,6 +604,28 @@ export function installIconSubsetRuntime(
   ) {
     const normalizedValue = String(value ?? "").trim();
     if (!normalizedValue) return true;
+
+    // Grade and optical size: a value past the font's design space is the
+    // bound it is clamped to; a list or a range ("-25,0", "20..48") is covered
+    // when every number it names is.
+    const boundsAxis = Object.keys(ICON_AXIS_BOUNDS).find(
+      (axis) => axis.toLowerCase() === String(axisName).toLowerCase(),
+    );
+    if (boundsAxis) {
+      const numbers = iconAxisNumbers(normalizedValue).map((number) =>
+        clampIconAxisValue(boundsAxis, number),
+      );
+      if (!numbers.length) return true;
+      if (
+        numbers.length > 1 ||
+        /,|\.\./u.test(normalizedValue) ||
+        String(numbers[0]) !== normalizedValue
+      ) {
+        return numbers.every((number) =>
+          this.manifestAxisIncludesValue(manifest, axisName, String(number)),
+        );
+      }
+    }
 
     const axis = this.getManifestAxis(manifest, axisName);
     if (axis == null) return true;
@@ -2682,10 +2709,10 @@ export function installIconSubsetRuntime(
       query.set("weight", requestWeights.sort().join(","));
     }
     if (requestConfig.fill) query.set("fill", "1");
-    if (requestConfig.grade) query.set("grade", requestConfig.grade);
-    if (requestConfig.opticalSize) {
-      query.set("optical_size", requestConfig.opticalSize);
-    }
+    // Grade and optical size as the service names them, each a range kept as
+    // a variable axis: the page's range, widened to the icons' own values.
+    query.set(ICON_AXIS_PARAMS.GRAD, iconAxisRequestRange("GRAD", requestConfig.grade));
+    query.set(ICON_AXIS_PARAMS.opsz, iconAxisRequestRange("opsz", requestConfig.opticalSize));
     if (requestConfig.accumulate) query.set("accumulate", "true");
 
     if (!this.iconSubsetAppliedGenerations) {

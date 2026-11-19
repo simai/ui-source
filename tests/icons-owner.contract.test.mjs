@@ -12,7 +12,9 @@ const uiDocRoot = process.env.UI_DOC_ROOT
 const readUiDoc = path => readFile(new URL(path, uiDocRoot), 'utf8');
 
 test('ordinary Icons has valid semantic defaults and token geometry', async () => {
-  const styles = await read('src/component/icons/scss/_css__icons.scss');
+  // The size steps live in the core partial the icons sheet and the core
+  // sheet's undefined-icon box share (AM-16).
+  const styles = await read('src/component/icons/scss/_css__icons.scss') + await read('src/core/scss/_sf_icon_steps.scss');
 
   // Unset weight inherits the label's (C151 point 4); grade and optical size
   // are inherited variables with the font's defaults as fallbacks.

@@ -1055,7 +1055,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "443e3e66846c9c257f2146e05c7c884afe841eaa26814d6aa3db7aa16118f53d",
+  "content_sha256": "54fc93aae6f5ea8a0a9465a733ce368a25b390b6483115f35344e3e52a8a6416",
   "dependencies": [
     {
       "id": "core.styles",
@@ -1075,7 +1075,7 @@
     },
     {
       "id": "tokens.size",
-      "range": "^1.6.1"
+      "range": "^1.6.2"
     },
     {
       "id": "tokens.space",

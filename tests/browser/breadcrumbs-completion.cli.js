@@ -64,8 +64,18 @@ async page => {
   }));
 
   await page.evaluate(() => document.documentElement.dir = 'rtl');
-  check('RTL mirrors separator direction', await page.locator('#ordinary .sf-breadcrumbs-item--separator .sf-icon').first().evaluate(node =>
-    getComputedStyle(node).transform !== 'none'));
+  // The glyph is turned once in all: its own scale (a directional glyph,
+  // C151 point 3) and any transform together, so the arrow points left
+  // (AM-39: a transform on top of the glyph's scale turned it back).
+  check('RTL mirrors separator direction', await page.locator('#ordinary .sf-breadcrumbs-item--separator .sf-icon').first().evaluate(node => {
+    let turn = 1;
+    for (let el = node; el && el !== document.body; el = el.parentElement) {
+      const style = getComputedStyle(el);
+      if (style.scale && style.scale !== 'none') turn *= Math.sign(parseFloat(style.scale.split(' ')[0]));
+      if (style.transform && style.transform !== 'none') turn *= Math.sign(new DOMMatrix(style.transform).a);
+    }
+    return turn === -1;
+  }));
   await page.evaluate(() => {
     document.documentElement.className = 'theme-dark';
     document.documentElement.style.fontSize = '32px';

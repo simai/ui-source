@@ -231,6 +231,10 @@ function warnMissing(name) {
     if (!names || names.includes(name)) {
       state.warned.delete(name);
       watchFaces();
+      // The face may have come in while the list was on its way: no event
+      // is left to read the glyph again, and it stayed an empty box for good
+      // (AM-21, one cold load in twelve). It is read again now.
+      recheckSoon();
       return;
     }
     const near = nearestIconName(name, names);
@@ -245,17 +249,29 @@ function recheckMissing() {
   doc?.querySelectorAll?.('.sf-icon[data-sf-icon-missing]').forEach((el) => checkIconGlyph(el));
 }
 
+function recheckSoon() {
+  const raf = globalThis.requestAnimationFrame;
+  if (typeof raf === 'function') raf(recheckMissing);
+  else setTimeout(recheckMissing, 16);
+}
+
+// Watched from the first glyph marked missing, not from the answer of the
+// names list: a face that loaded between the two was never seen (AM-21).
+// Besides a face loading and a subset answer, the page's subset-pending mark
+// lifting changes the family every glyph draws in without loading anything
+// (a face already in the cache), and the fonts settling ends a wait.
 function watchFaces() {
   const state = shared();
   if (state.watching) return;
   state.watching = true;
-  const later = () => {
-    const raf = globalThis.requestAnimationFrame;
-    if (typeof raf === 'function') raf(recheckMissing);
-    else setTimeout(recheckMissing, 16);
-  };
-  globalThis.document?.fonts?.addEventListener?.('loadingdone', later);
-  globalThis.addEventListener?.('sf-icons-subset:ready', later);
+  const doc = globalThis.document;
+  doc?.fonts?.addEventListener?.('loadingdone', recheckSoon);
+  globalThis.addEventListener?.('sf-icons-subset:ready', recheckSoon);
+  Promise.resolve(doc?.fonts?.ready).then(recheckSoon, () => {});
+  const Watch = globalThis.MutationObserver;
+  if (typeof Watch === 'function' && doc?.documentElement) {
+    new Watch(recheckSoon).observe(doc.documentElement, {attributes: true, attributeFilter: ['data-sf-icons']});
+  }
 }
 
 // A glyph is judged only once the face that draws it is in: marked loaded,
@@ -318,6 +334,7 @@ export function checkIconGlyph(el) {
           continue;
         }
         if (!glyph.hasAttribute('data-sf-icon-missing')) glyph.setAttribute('data-sf-icon-missing', '');
+        watchFaces();
         if (name) warnMissing(name);
       } else if (glyph.hasAttribute('data-sf-icon-missing')) {
         glyph.removeAttribute('data-sf-icon-missing');

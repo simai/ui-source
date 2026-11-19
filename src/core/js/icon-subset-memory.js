@@ -48,6 +48,46 @@ export function normalizeIconType(type = '') {
   return 'outlined';
 }
 
+// The grade and optical-size axes of the subset request (icons study,
+// ui-control evidence 2026-11-19-icons-axes). The service's parameters are
+// `grad` and `opsz`; the runtime sent `grade` and `optical_size`, which it never
+// read, so an author's grade and every optical size reached it as nothing. A
+// page asks for a range, kept as a variable axis in the subset: grade -25..0
+// holds the light and the dark theme (C151 point 4), optical size 20..48 every
+// icon size. Each icon picks its own point with font-variation-settings, so an
+// author's grade on one icon widens the range and restyles no other icon. A
+// value past the font's design space is clamped to it.
+export const ICON_AXIS_PARAMS = Object.freeze({GRAD: 'grad', opsz: 'opsz'});
+export const ICON_AXIS_BOUNDS = Object.freeze({GRAD: Object.freeze([-25, 200]), opsz: Object.freeze([20, 48])});
+export const ICON_AXIS_PAGE_RANGE = Object.freeze({GRAD: Object.freeze([-25, 0]), opsz: Object.freeze([20, 48])});
+
+// The numbers a value names: one number, a list ("-25,0"), a range ("20..48"),
+// or a Set or an array of those.
+export function iconAxisNumbers(value) {
+  const items = value instanceof Set || Array.isArray(value) ? [...value] : [value];
+  return items
+    .flatMap((item) => String(item ?? '').split(/,|\.\./u))
+    .map((item) => item.trim())
+    .filter((item) => item !== '')
+    .map(Number)
+    .filter((item) => Number.isFinite(item));
+}
+
+export function clampIconAxisValue(axis, value) {
+  const bounds = ICON_AXIS_BOUNDS[axis];
+  if (!bounds) return value;
+  return Math.min(bounds[1], Math.max(bounds[0], value));
+}
+
+// The range a page asks for on an axis: the page range, widened to the values
+// its icons set (clamped to the font's design space), as "min..max".
+export function iconAxisRequestRange(axis, values = []) {
+  const range = ICON_AXIS_PAGE_RANGE[axis];
+  if (!range) return '';
+  const points = [...range, ...iconAxisNumbers(values).map((value) => clampIconAxisValue(axis, value))];
+  return `${Math.min(...points)}..${Math.max(...points)}`;
+}
+
 // A variable font's weight range loads as one weight in every browser.
 export function normalizeIconFontLoadWeight(value = '400') {
   const normalized = String(value || '').trim().replace(/\s+/g, ' ');
