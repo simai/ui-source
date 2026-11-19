@@ -116,7 +116,7 @@ test('header site C104 / C181 (2): collapse is a container step of the bar, and 
   // collapse-always, each step, (1.13.0, F-1) a nav that overflows its box and
   // (1.14.0, C371) collapse auto's md floor before the bar has measured itself.
   assert.equal((sheet.match(/--sf-site-header--collapsed: 1;/gu) || []).length, 4, 'collapse-always, each step, the nav overflow and the auto floor publish the answer');
-  assert.match(sheet, /:is\(sf-header-site, sf-site-header\):not\(:defined\) > \.sf-site-header--collapse-auto \{/u);
+  assert.match(sheet, /:is\(sf-header-site, sf-site-header\):is\(:not\(:defined\), :has\(\.sf-site-header-nav > sf-menu:not\(:defined\)\)\) > \.sf-site-header--collapse-auto \{/u);
   assert.match(sheet, /:is\(sf-header-site, sf-site-header\)\[data-nav-overflow='true'\] > \.sf-site-header \{\n  @include collapsed;/u);
   // Every rule of the collapsed state styles a part inside the container, never the container itself.
   for (const [, selector] of collapsed.matchAll(/^  (&[^{\n]*)\{/gmu)) assert.match(selector, /^&[^ ]* \S/u, `${selector} styles a part of the bar`);

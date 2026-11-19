@@ -20,7 +20,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 import {BREAKPOINTS, breakpointMedia} from '../../core/js/breakpoints.js';
-import {rowRoom} from '../../core/js/overflow-row.js';
+import {layoutRowRoom, layoutWidth} from '../../core/js/overflow-row.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
@@ -1181,8 +1181,10 @@ class SfSmartMenu extends MenuElement {
     const tops = Array.from(list.children).filter((li) => li !== more && li.matches('[data-sf-menu-item], [data-sf-menu-placeholder]'));
     const was = [...tops, more].map((li) => li.hidden);
     for (const li of [...tops, more]) li.hidden = false;
-    const widths = tops.map((li) => li.getBoundingClientRect().width);
-    const moreWidth = more.getBoundingClientRect().width;
+    // Layout boxes (layoutWidth): a row under a transformed ancestor (a
+    // scaled preview) reads the widths it is laid out at, not its screen's.
+    const widths = tops.map((li) => layoutWidth(li));
+    const moreWidth = layoutWidth(more);
     [...tops, more].forEach((li, at) => {
       li.hidden = was[at];
     });
@@ -1196,8 +1198,8 @@ class SfSmartMenu extends MenuElement {
     // The room in fractional pixels (the row engine's rowRoom; clientWidth
     // is a whole pixel, the C54 return), the arithmetic the shared engine's
     // (fitRow, owner decision C155 (1)).
-    const room = rowRoom(nav);
-    const edges = nav.getBoundingClientRect().width - room;
+    const room = layoutRowRoom(nav);
+    const edges = layoutWidth(nav) - room;
     const whole = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, widths.length - 1) + edges;
     // The narrowest row that still is a row: the item that stays (the
     // current section, else the first) beside «Ещё», with the nav's edges.

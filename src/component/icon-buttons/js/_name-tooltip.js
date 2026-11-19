@@ -37,7 +37,21 @@ function hasTitle(button) {
   }
   return false;
 }
-let made = 0;
+// The surfaces' numbers are counted on the page, not in this file, and under
+// a name of their own: every bundle that carries this file has its own copy
+// of it (sf-button since C370, the icon buttons), and <sf-button-icon>
+// numbers its own tooltips «sf-icon-button-tooltip-N» from 1 too; two
+// counters from 1 made a second «sf-icon-button-tooltip-1», and the language
+// glyph in the docs header showed the shrunk search's «Поиск ⌘K».
+const MADE = Symbol.for('sf.icon-button.name-tooltip.made');
+function nextTipId(doc) {
+  let id = '';
+  do {
+    globalThis[MADE] = (globalThis[MADE] || 0) + 1;
+    id = `sf-name-tooltip-${globalThis[MADE]}`;
+  } while (doc.getElementById(id));
+  return id;
+}
 
 function tooltipController() {
   return globalThis.SF?.ComponentRegistry?.Tooltip || globalThis.SF?.Loader?.ComponentRegistry?.Tooltip || null;
@@ -121,7 +135,7 @@ function wake(event) {
   const doc = button.ownerDocument;
   const tip = doc.createElement('span');
   tip.className = `sf-tooltip sf-tooltip--dark ${NAME_TIP}`;
-  tip.id = button.id ? `${button.id}--tooltip` : `${NAME_TIP}-${++made}`;
+  tip.id = button.id ? `${button.id}--tooltip` : nextTipId(doc);
   tip.hidden = true;
   const content = doc.createElement('span');
   content.className = 'sf-tooltip-content';

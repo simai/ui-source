@@ -58,7 +58,7 @@ test('C372: sf-header-site collapse auto, its host states and its md floor befor
   assert.equal(header['host-states']['data-tools-compact'], 'boolean');
   assert.equal(header['host-states']['data-fitted'], 'boolean');
   const sheet = read('src/smart/header-site/scss/_smart__site_header.scss');
-  assert.match(sheet, /@container sf-site-header \(width < #\{mq\.container-step\(h1\)\}\) \{\n  :is\(sf-header-site, sf-site-header\):not\(:defined\) > \.sf-site-header--collapse-auto \{\n    @include collapsed;/u);
+  assert.match(sheet, /@container sf-site-header \(width < #\{mq\.container-step\(h1\)\}\) \{\n  :is\(sf-header-site, sf-site-header\):is\(:not\(:defined\), :has\(\.sf-site-header-nav > sf-menu:not\(:defined\)\)\) > \.sf-site-header--collapse-auto \{\n    @include collapsed;/u);
 });
 
 test('C370: sf-button shrink icon draws its glyph square at once, keeps its name and keys, and tells its tooltip', () => {

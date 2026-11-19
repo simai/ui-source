@@ -616,10 +616,11 @@
 /* collapse auto (C371, C372): the bar measures its row and gives way itself
    (index.js fitRow: tools, then the nav's sections into «Ещё», then the menu
    button), at any width, and says so with data-nav-overflow above. Before its
-   code -- a bar printed as the first paint -- it draws as collapse md, the
-   phone's step; with its code it measures itself before its first paint. */
+   code, or its nav menu's (the row it would measure is not there yet), it
+   draws as collapse md, the phone's step: a phone's first paint has its menu
+   button at once, and the bar measures itself as soon as the menu draws. */
 @container sf-site-header (width < #{mq.container-step(h1)}) {
-  :is(sf-header-site, sf-site-header):not(:defined) > .sf-site-header--collapse-auto {
+  :is(sf-header-site, sf-site-header):is(:not(:defined), :has(.sf-site-header-nav > sf-menu:not(:defined))) > .sf-site-header--collapse-auto {
     @include collapsed;
 
     .sf-site-header-row {
@@ -660,7 +661,7 @@
     }
   }
   @container sf-site-header (width < #{mq.container-step(h1)}) {
-    :is(sf-header-site, sf-site-header):not(:defined) > .sf-site-header--collapse-auto {
+    :is(sf-header-site, sf-site-header):is(:not(:defined), :has(.sf-site-header-nav > sf-menu:not(:defined))) > .sf-site-header--collapse-auto {
       @include collapsed;
     }
   }

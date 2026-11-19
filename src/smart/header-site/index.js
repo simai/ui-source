@@ -24,7 +24,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
-import {rowRoom} from '../../core/js/overflow-row.js';
+import {layoutHeight, layoutRowRoom, layoutWidth} from '../../core/js/overflow-row.js';
 import {closeLayer, focusablesIn, isTopLayer, openLayer, returnLayerFocus, landmarksAround} from '../../core/js/layer-stack';
 import {renderSiteHeaderTemplate} from './js/templates/default';
 import manifest from './component.json';
@@ -428,8 +428,11 @@ class SfSiteHeader extends SiteHeaderElement {
     this.sfHostState('data-fitted', true);
   }
 
+  // Layout boxes, not screen boxes (layoutWidth, layoutRowRoom; the row
+  // engine's measures under a transformed ancestor, fix/segmented-transform):
+  // a bar in a scaled preview decides as it is laid out.
   fitRowNow(row) {
-    const room = rowRoom(row);
+    const room = layoutRowRoom(row);
     // Collapsed by this measure: the bar comes back when its row is again as
     // wide as the narrowest row needed when it collapsed. The menu draws as a
     // row again, measures and asks the bar back (rowHost), which then decides
@@ -440,14 +443,17 @@ class SfSiteHeader extends SiteHeaderElement {
       this.syncCollapsed();
       return;
     }
-    // Below the floor (the md step, a phone) the sheet collapses the bar.
+    // Below the floor (the md step, a phone, until the nav's menu has drawn)
+    // the sheet collapses the bar; the floor lifted, the menu turns back into
+    // a row and asks the bar again.
+    this.syncCollapsed();
     if (this.collapsed) {
       this.setToolsCompact(this.shrinkingTools().length > 0);
       return;
     }
     const nav = row.querySelector('.sf-site-header-nav');
     const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
-    const width = (element) => (element ? element.getBoundingClientRect().width : 0);
+    const width = (element) => (element ? layoutWidth(element) : 0);
     const brand = row.querySelector(':scope > .sf-site-header-brand');
     const actions = row.querySelector('.sf-site-header-actions');
     const tools = row.querySelector(':scope > .sf-site-header-tools');
@@ -458,7 +464,7 @@ class SfSiteHeader extends SiteHeaderElement {
     let glyph = 0;
     for (const tool of this.shrinkingTools()) {
       const box = tool.querySelector(':scope > :is(button, a)') ?? tool;
-      const drawn = box.getBoundingClientRect();
+      const drawn = {width: layoutWidth(box), height: layoutHeight(box)};
       if (!this._toolsCompact) this._wholeWidths.set(tool, drawn.width);
       whole += this._wholeWidths.get(tool) ?? drawn.width;
       glyph += this._toolsCompact ? drawn.width : drawn.height;

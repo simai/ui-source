@@ -15,9 +15,11 @@
 // - Sweep 360-1600 px step 8, both pages: no gap under 8 px between the boxes
 //   of the header's parts (the brand, the shown sections' words, «Ещё», each
 //   tool), no sideways scroll; the current section is in the row wherever the
-//   nav is; the state at each width (menu button, sections in the row, search
-//   a field or a glyph) is the study's within one step (8 px) at each
-//   threshold.
+//   nav is; from wide to narrow the states come in the C372 order (field,
+//   glyph, sections one by one into «Ещё», menu button) and never back. The
+//   study's reference widths (measured on Docara's own header, whose row
+//   inset, gap and type steps differ) are compared change by change and
+//   reported (--report, and the summary's study list).
 // - Drag 1440 -> 360 -> 1440, one 8 px step per frame, sampled after every
 //   paint: no painted frame with an overlap, and the state changes equal the
 //   thresholds the sweep crossed on the same path (no intermediate state).
@@ -27,6 +29,13 @@
 // - The glyphs: the shrunk search keeps its name and aria-keyshortcuts and
 //   shows the tooltip «Поиск ⌘K»; the language glyph is a square named
 //   «Язык: Русский» showing that tooltip.
+// - sf-language trigger="link" (C381), light and dark, in lines of 14/20 and
+//   16/24 with no page CSS: at rest, hover, keyboard focus and open the
+//   trigger and its pseudo boxes are transparent, the glyph is one line high
+//   on the trigger's left edge, 4 from the name, the words take their place's
+//   size, no tooltip shows, the name is underlined on hover, focus and open
+//   (never the glyph), the focus ring is 2px offset 2; choosing Deutsch shows
+//   Deutsch and the host is as wide as its trigger.
 // - Cold loads at 1440, 1024, 704 and 390, light and dark, three each: CLS 0
 //   from the first paint, the console clean.
 //
@@ -68,6 +77,18 @@ ${kind === 'home' ? '<sf-language slot="tools" languages="ru en" trigger="icon" 
 </sf-header-site>
 <main class="page-body"><p>Страница</p></main>
 </body></html>`;
+// sf-language trigger="link" (owner decision C381, DEV msg-cfe379b5d6aa492c8ba6
+// item 1 a): the sign-in screen's language beside a form, in a line of 14/20
+// and in one of 16/24, without any page CSS for the trigger.
+const linkPage = (theme) => `<!doctype html><html lang="ru" class="${theme}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/js/core.js"></script></head><body class="bg-surface">
+<p class="text-1/2" id="small">Вход в панель · <sf-language id="l1" languages="ru en de" mode="menu" trigger="link" apply="none" label="Язык"></sf-language></p>
+<p class="text-1" id="large"><sf-language id="l2" languages="ru en de" mode="menu" trigger="link" apply="none" label="Язык"></sf-language></p>
+</body></html>`;
+
 const host = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><style>body{margin:0}iframe{display:block;border:0;block-size:232px}</style></head>
 <body><iframe id="f"></iframe></body></html>`;
 
@@ -82,6 +103,10 @@ const server = createServer((request, response) => {
   if (path === '/frame') {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
     return response.end(frame(url.searchParams.get('theme'), url.searchParams.get('kind')));
+  }
+  if (path === '/link') {
+    response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
+    return response.end(linkPage(url.searchParams.get('theme')));
   }
   if (path === '/host') {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
@@ -130,7 +155,7 @@ const READ = `window.__read = () => {
 };`;
 
 const failures = [];
-const report = {sweep: {}, drag: {}, keys: {}, glyphs: {}, loads: []};
+const report = {sweep: {}, study: {}, drag: {}, keys: {}, glyphs: {}, link: {}, loads: []};
 const browser = await chromium.launch({headless: true, channel: process.env.SF_PROBE_CHANNEL || undefined, ignoreDefaultArgs: ['--hide-scrollbars']});
 
 async function openHost(kind, theme = 'theme-light', width = 1440) {
@@ -142,7 +167,10 @@ async function openHost(kind, theme = 'theme-light', width = 1440) {
   await page.evaluate(([src, w]) => { const f = document.getElementById('f'); f.style.inlineSize = `${w}px`; f.src = src; }, [`/frame?theme=${theme}&kind=${kind}`, width]);
   const child = await (await page.$('#f')).contentFrame();
   await child.waitForFunction(() => document.querySelector('#h')?.getAttribute('data-fitted') === 'true' && document.fonts.status === 'loaded'
-    && document.querySelector('#h nav.sf-smart-menu'), null, {timeout: 20000});
+    && document.querySelector('#h nav.sf-smart-menu')
+    // The icon font drawn: a glyph not yet in its font is its ligature's
+    // words («keyboard_arrow_down»), many times wider than the glyph.
+    && [...document.querySelectorAll('#h .sf-site-header-row sf-icon i')].every((i) => { const r = i.getBoundingClientRect(); return !r.width || r.width <= r.height + 1; }), null, {timeout: 20000});
   await child.evaluate(READ);
   await page.waitForTimeout(300);
   return {page, child, errors};
@@ -168,13 +196,26 @@ try {
       if (row.sideways > 0) failures.push(`${kind} sweep at ${row.width}: the page scrolls sideways by ${row.sideways}`);
       if (kind === 'section' && !row.menuOn && !row.current) failures.push(`section sweep at ${row.width}: the current section is not in the row`);
     }
-    // Thresholds: each change of state in the sweep within one step of the study's.
+    // The order of giving way (C372): from wide to narrow the field, then the
+    // glyph, then the sections one by one into «Ещё», then the menu button --
+    // never back. As a rank: field 0, glyph 1, k sections shown 2 + (5 - k),
+    // menu 8; it never falls as the bar narrows.
+    const rank = (state) => (state === 'menu' ? 8 : state.endsWith('/field') ? 0 : state.endsWith('/glyph') ? 1 : 2 + Number(state.split('+')[1]));
+    for (let index = 1; index < rows.length; index += 1) {
+      const [narrow, wide] = [rows[index - 1], rows[index]];
+      if (rank(narrow.state) < rank(wide.state)) failures.push(`${kind} sweep: ${narrow.state} at ${narrow.width} is further than ${wide.state} at ${wide.width} (C372 order)`);
+      if (/\/field$/u.test(narrow.state) && !/^5\+0/u.test(narrow.state)) failures.push(`${kind} sweep at ${narrow.width}: a section left while the search is a field (C372 order)`);
+    }
+    // The study's reference widths (Docara's own header, its row inset, gap
+    // and type steps; here the Framework bar): each change of state compared,
+    // within one step, and reported.
     const studyAt = (width) => expected(kind, width);
+    report.study[kind] = [];
     for (let index = 1; index < rows.length; index += 1) {
       const [a, b] = [rows[index - 1], rows[index]];
       if (a.state === b.state) continue;
       const near = [b.width - 8, b.width, b.width + 8].some((w) => studyAt(w) === b.state) && [a.width - 8, a.width, a.width + 8].some((w) => studyAt(w) === a.state);
-      if (!near) failures.push(`${kind} sweep: ${a.state} at ${a.width} -> ${b.state} at ${b.width}; the study has ${studyAt(a.width)} -> ${studyAt(b.width)}`);
+      report.study[kind].push(`${a.state} ${a.width} -> ${b.state} ${b.width}: ${near ? 'within one step' : `study ${studyAt(a.width)} -> ${studyAt(b.width)}`}`);
     }
     // Drag: one width per frame, every painted frame sampled.
     await setWidth(page, 1440);
@@ -297,6 +338,81 @@ try {
     await page.close();
   }
 
+  // sf-language trigger="link" (C381): rest, hover, keyboard focus, open, a choice.
+  for (const theme of ['theme-light', 'theme-dark']) {
+    const page = await browser.newPage({viewport: {width: 1440, height: 700}});
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(message.text()); });
+    await page.goto(`${origin}/link?theme=${theme}`);
+    await page.waitForFunction(() => document.querySelector('#l2 button.sf-language-link sf-icon i') && document.fonts.status === 'loaded', null, {timeout: 20000});
+    await page.waitForTimeout(400);
+    const look = (id) => page.evaluate((sel) => {
+      const host = document.querySelector(sel);
+      const b = host.querySelector('button.sf-language-link');
+      // sf-icon is its glyph (display: contents): the box is the glyph's.
+      const icon = b.querySelector('sf-icon');
+      const glyph = [icon.querySelector('i, svg, .sf-icon'), icon].find((element) => element && element.getBoundingClientRect().width) || icon;
+      const words = b.querySelector('.sf-link-content');
+      const cs = getComputedStyle(b);
+      const fills = [cs.backgroundColor, getComputedStyle(b, '::before').backgroundColor, getComputedStyle(b, '::after').backgroundColor];
+      const tips = [...document.querySelectorAll('.sf-tooltip')].filter((t) => !t.hidden && t.getBoundingClientRect().height && getComputedStyle(t).visibility !== 'hidden' && Number(getComputedStyle(t).opacity) > 0).length;
+      const r = b.getBoundingClientRect(); const g = glyph.getBoundingClientRect(); const w = words.getBoundingClientRect();
+      const p = getComputedStyle(host.parentElement);
+      return {fills, transparent: fills.every((c) => c === 'transparent' || /^rgba\(.*,\s*0\)$/u.test(c)), glyphLeft: Math.round((g.left - r.left) * 10) / 10,
+        glyph: [Math.round(g.width), Math.round(g.height)], line: parseFloat(p.lineHeight), font: [cs.fontSize, p.fontSize], gap: Math.round((w.left - g.right) * 10) / 10,
+        underline: getComputedStyle(words).textDecorationLine, glyphLine: getComputedStyle(glyph).textDecorationLine, text: words.textContent.trim(), name: b.getAttribute('aria-label'),
+        popup: b.getAttribute('aria-haspopup'), expanded: b.getAttribute('aria-expanded'), outline: [cs.outlineStyle, cs.outlineWidth, cs.outlineOffset],
+        // Drawn, the host is its parts (display: contents): its box is the trigger.
+        hostWidth: getComputedStyle(host).display === 'contents' ? Math.round(r.width * 10) / 10 : Math.round(host.getBoundingClientRect().width * 10) / 10,
+        content: Math.round((g.width + (w.left - g.right) + w.width) * 10) / 10, width: Math.round(r.width * 10) / 10, tips, ink: cs.color};
+    }, id);
+    const states = {};
+    states.rest = await look('#l1');
+    await page.hover('#l1 button.sf-language-link');
+    await page.waitForTimeout(700);
+    states.hover = await look('#l1');
+    await page.mouse.move(5, 650);
+    await page.focus('#l1 button.sf-language-link');
+    await page.keyboard.press('Tab');
+    await page.waitForTimeout(300);
+    states.focus = await look('#l2');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(500);
+    states.open = await look('#l2');
+    let picked = false;
+    for (const element of await page.$$('[role="menuitemradio"]')) {
+      if ((await element.textContent()).includes('Deutsch') && await element.isVisible()) {
+        await element.click();
+        picked = true;
+        break;
+      }
+    }
+    await page.waitForTimeout(500);
+    states.chosen = await look('#l2');
+    report.link[theme] = states;
+    const label = (state) => `link ${theme} ${state}`;
+    for (const [state, v] of Object.entries(states)) {
+      if (!v.transparent) failures.push(`${label(state)}: a fill ${v.fills.join(' / ')}`);
+      if (Math.abs(v.glyphLeft) > 0.5) failures.push(`${label(state)}: the glyph stands ${v.glyphLeft} from the trigger's left edge`);
+      if (Math.abs(v.glyph[1] - v.line) > 0.5 || v.glyph[0] !== v.glyph[1]) failures.push(`${label(state)}: the glyph ${v.glyph} is not one line (${v.line})`);
+      if (Math.abs(v.gap - 4) > 0.5) failures.push(`${label(state)}: the glyph stands ${v.gap} from the name, not 4`);
+      if (v.font[0] !== v.font[1]) failures.push(`${label(state)}: the words are ${v.font[0]}, their place ${v.font[1]}`);
+      if (v.tips) failures.push(`${label(state)}: ${v.tips} tooltip(s) shown`);
+      if (v.glyphLine !== 'none') failures.push(`${label(state)}: the glyph is underlined`);
+      if (v.popup !== 'menu' || !/^Язык: /u.test(v.name)) failures.push(`${label(state)}: name ${v.name}, haspopup ${v.popup}`);
+    }
+    if (states.rest.underline !== 'none') failures.push(`link ${theme}: the name is underlined at rest`);
+    for (const state of ['hover', 'focus', 'open']) if (states[state].underline !== 'underline') failures.push(`link ${theme} ${state}: no line under the name`);
+    if (states.focus.outline[0] === 'none' || states.focus.outline[1] !== '2px' || states.focus.outline[2] !== '2px') failures.push(`link ${theme} focus: ring ${states.focus.outline}`);
+    if (states.open.expanded !== 'true') failures.push(`link ${theme} open: aria-expanded ${states.open.expanded}`);
+    if (states.rest.text !== 'Русский') failures.push(`link ${theme}: the trigger says ${states.rest.text}`);
+    if (!picked || states.chosen.text !== 'Deutsch' || states.chosen.name !== 'Язык: Deutsch') failures.push(`link ${theme}: after choosing Deutsch the trigger says ${states.chosen.text} (${states.chosen.name})`);
+    if (Math.abs(states.chosen.hostWidth - states.chosen.width) > 0.5 || Math.abs(states.chosen.width - states.chosen.content) > 0.5 || states.chosen.width === states.focus.width) failures.push(`link ${theme}: the host (${states.chosen.hostWidth}) does not follow the name (${states.chosen.width}, was ${states.focus.width})`);
+    if (errors.length) failures.push(`link ${theme} console: ${errors.join(' | ').slice(0, 300)}`);
+    await page.close();
+  }
+
   // Cold loads: CLS from the first paint, the console.
   for (const theme of ['theme-light', 'theme-dark']) for (const width of [1440, 1024, 704, 390]) for (let load = 1; load <= 3; load += 1) {
     const {page, child, errors} = await openHost('home', theme, width);
@@ -324,7 +440,7 @@ const ranges = (rows) => {
   return out.map((r) => `${r.from}-${r.to} ${r.state}`);
 };
 const summary = {sweep: Object.fromEntries(Object.entries(report.sweep).map(([kind, rows]) => [kind, {states: ranges(rows), minGap: Math.min(...rows.map((row) => row.min))}])),
-  drag: report.drag, keys: report.keys, glyphs: report.glyphs,
+  study: report.study, drag: report.drag, keys: report.keys, glyphs: report.glyphs, link: report.link,
   loads: {count: report.loads.length, maxCls: Math.max(...report.loads.map((row) => row.cls)), states: [...new Set(report.loads.map((row) => `${row.width} ${row.state}`))]}};
 console.log(JSON.stringify(reportOnly ? report : summary, null, 1));
 if (reportOnly) process.exit(0);
