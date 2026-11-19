@@ -42,6 +42,14 @@ sizes or raw colors are part of the component contract.
 
 The label is the field label of sf-input: regular weight, on-surface (the text ink; the hint keeps on-surface-variant), one text step below the field's text (14 at size 1, and 14 on a phone too), a quarter step above the cells (1.5.0, owner decision C153 (1); 1.2.0 drew it on-surface-variant and 12 on a phone). The current cell is marked only while the field has the focus: three fields at rest all looked focused (CI-02).
 
+A cell is square: its side is the control height of its size (32 / 40 / 48
+on a desktop, 28 / 36 / 44 on a phone at 1/2, 1 and 2), or
+`--sf-verification-cell-size` when the page sets it, at every size (1.9.0).
+In a column too narrow for the row the cells give way in width, all alike,
+down to the touch rung 1/2 (C284); their height stays. Before 1.9.0 the
+cells stood at that floor in every column -- 32 x 40 at size 1, 32 x 48 at
+size 2 on a desktop -- and the public variable changed only their height.
+
 ### States the owning runtime paints (1.3.0, owner R136-R139, decision C82)
 
 The input is transparent (text, caret, selection and autofill fill), not

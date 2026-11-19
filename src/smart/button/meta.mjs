@@ -50,10 +50,11 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost"
+        "ghost",
+        "plain"
       ],
       "default": "default",
-      "description": "How the button looks: default (filled), tonal, outline or ghost (no fill or edge until hovered; rule C15). link is ghost's former name; a link is made by href, not by the look. surface is a former name until 2027-01-01 (rule C116): it draws as the soft grey button, tonal with the on-surface scheme (C113), and warns once per page. A danger button is default, outline or ghost: tonal and surface with status danger draw as outline until 2027-01-01."
+      "description": "How the button looks: default (filled), tonal, outline or ghost (no fill or edge until hovered; rule C15), or plain (no fill or edge in any state, the box is its content: a quiet text tool next to text or fields; its label takes ghost's ink and a line under the label on hover, press, an open menu and keyboard focus, as a link in a menu or a navigation, C186; the plain look of an icon button, C201). link is ghost's former name; a link is made by href, not by the look. surface is a former name until 2027-01-01 (rule C116): it draws as the soft grey button, tonal with the on-surface scheme (C113), and warns once per page. A danger button is default, outline or ghost: tonal and surface with status danger draw as outline until 2027-01-01."
     },
     "scheme": {
       "kind": "enum",
@@ -328,7 +329,8 @@ const sfButtonMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost"
+        "ghost",
+        "plain"
       ],
       "default": "default",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."

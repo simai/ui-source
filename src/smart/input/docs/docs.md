@@ -205,7 +205,8 @@ two hit areas then overlap, each still 24 wide (component.inputs 1.7.1).
   sending the form (the submit button, Enter, `requestSubmit()`) hide the
   password again, before the page's own submit handler runs. On a touch screen
   (`pointer: coarse`) the eye's hit area is a square of the field's inner
-  height; the glyph keeps its size. While the field has the focus and Caps Lock
+  height; the glyph keeps its size and stands half an inset from the value
+  and from a clear, as on a mouse screen. While the field has the focus and Caps Lock
   is on, «Включён Caps Lock» («Caps Lock is on») stands under the field in the
   hint's place and type, and is said once through a polite live region; it goes
   when the field loses the focus or Caps Lock is turned off.

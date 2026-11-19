@@ -40,10 +40,16 @@ Main attributes:
 
 - `template`
 - `size`
-- `appearance="default|tonal|outline|ghost"` — `ghost` is the quiet
+- `appearance="default|tonal|outline|ghost|plain"` — `ghost` is the quiet
   button with no fill and no edge until a pointer meets it (1.9.0, decision
-  C15; `link` is its former name, a dated alias). `href` makes any appearance
-  a link. `surface` is a former name until 2027-01-01 (1.14.0, decision C116):
+  C15; `link` is its former name, a dated alias). `plain` (1.18.0) never
+  takes a fill or an edge, in any state: a quiet text tool beside text or
+  fields, such as the language of a sign-in screen (C381). Its label wears
+  ghost's ink, a line under it shows hover, press, an open menu and keyboard
+  focus (the link's form in a menu or a navigation, C186), the focus ring is
+  every button's, and the box is its content -- no side padding, so its first
+  glyph or letter stands on its line -- at the control height of its size.
+  It is not a toggle. `href` makes any appearance a link. `surface` is a former name until 2027-01-01 (1.14.0, decision C116):
   it draws as the soft grey button, `tonal` with `scheme="on-surface"` (C113),
   and warns once in the console.
 - `scheme="primary|on-surface|on-surface-variant"` — which colour family the

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "purpose": "One name per question a public input answers. The Framework grew three different meanings under the word type, and a developer could not tell from the name which one a component meant. The axes below fix the question each name answers; the alias map records every legacy name that still works, so a rename never breaks a consumer.",
   "axes": {
-    "appearance": "How the control looks: default, tonal, outline, ghost, link, surface, filled, bordered, segmented.",
+    "appearance": "How the control looks: default, tonal, outline, ghost, link, plain, surface, filled, bordered, segmented.",
     "status": "What the control reports about the world: success, warning, error, info, neutral.",
     "kind": "What the control carries or is: an icon, an avatar, a checkbox, a folder, a file."
   },

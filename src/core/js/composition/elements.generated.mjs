@@ -130,7 +130,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "default",
             "tonal",
             "outline",
-            "ghost"
+            "ghost",
+            "plain"
           ],
           "type": "string"
         },

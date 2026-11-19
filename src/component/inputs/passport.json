@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.inputs",
   "kind": "component",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/inputs/docs/docs.md",
@@ -19,7 +19,7 @@
     "src/component/inputs/scss/_field-ladder.scss",
     "src/component/inputs/scss/index.scss"
   ],
-  "content_sha256": "ca84075114c7a35fee97b7e4cd1e4279515c62d820f6f17bf3cf89da01cc8156",
+  "content_sha256": "8a143d25e0663d65983a3c448f3a9ace46e0cebb08c3ab65ed0252f41c132a03",
   "dependencies": [
     {
       "id": "core.runtime",

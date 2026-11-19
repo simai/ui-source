@@ -94,7 +94,7 @@ test('button set: sf-button and sf-button-icon read it; their lists no longer na
   assert.match(icon, /if \(this\.dangerFormer\) return 'outline';/u);
   assert.match(icon, /sayButtonSetFormers\('sf-button-icon', \[/u);
   const settings = json('src/smart/button/component.json').settings;
-  assert.deepEqual(settings.appearance.values, ['default', 'tonal', 'outline', 'ghost']);
+  assert.deepEqual(settings.appearance.values, ['default', 'tonal', 'outline', 'ghost', 'plain']); // plain: sf-button 1.18.0
   assert.deepEqual(settings.scheme.values, ['primary', 'on-surface', 'on-surface-variant']);
   assert.deepEqual(settings.status.values, ['', 'danger']);
   assert.deepEqual(json('src/smart/button-icon/component.json').settings.status.values, ['', 'danger']);

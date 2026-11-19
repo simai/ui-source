@@ -25,7 +25,9 @@ test('the field layer says the standout, the value step and the pair step once, 
 
 test('an action after another action of the frame stands the pair step from it, in the frame or in a child of it', () => {
   assert.match(layer, /\$action: '\.sf-field-action:not\(\[hidden\]\)';/u);
-  assert.match(layer, /:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ #\{\$action\},\s+:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ \* #\{\$action\} \{\s+margin-inline-start: var\(--sf-field-action--pair-space\);/u);
+  assert.match(layer, /:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ #\{\$action\},\s+:is\(#\{\$fields\}\) > :is\(#\{\$action\}, :has\(#\{\$action\}\)\) ~ \* #\{\$action\} \{\s+margin-inline-start: calc\(var\(--sf-field-action--pair-space\) \+ var\(--sf-field-action--give-back\)\);/u);
+  // A hit area wider than its step (the eye's touch square, C191 (2)) gives the extra back (signin parts, item 3).
+  assert.match(layer, /--sf-field-action--give-back: min\(var\(--sf-px\) \* 0, calc\(var\(--sf-field-action--standout\) - \(var\(--sf-field-action--hit-inline\) - var\(--sf-field-action--glyph-size\)\) \/ 2\)\);/u);
   // a list of frames stays one selector list: every use of $fields is wrapped in :is()
   assert.doesNotMatch(layer.replace(/:is\(#\{\$fields\}\)/gu, ''), /#\{\$fields\}/u);
 });

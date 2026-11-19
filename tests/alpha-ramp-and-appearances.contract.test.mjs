@@ -235,7 +235,8 @@ test('the appearances are part of the public API, and documented', () => {
   // button retired surface (drawn as tonal on-surface), and since decision C116
   // (sf-button 1.14.0) the button too: a former name drawn as tonal on-surface.
   const expected = {
-    button: ['default', 'tonal', 'outline', 'ghost'],
+    // plain (sf-button 1.18.0, the sign-in screen C381): a ghost that never takes a plate.
+    button: ['default', 'tonal', 'outline', 'ghost', 'plain'],
     // plain (sf-button-icon 1.12.0, owner decision C201): no plate in any
     // state, for an icon inside another element.
     'button-icon': ['default', 'tonal', 'outline', 'ghost', 'plain'],

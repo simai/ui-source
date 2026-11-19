@@ -630,7 +630,8 @@
               "default",
               "tonal",
               "outline",
-              "ghost"
+              "ghost",
+              "plain"
             ],
             "type": "string"
           },

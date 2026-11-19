@@ -464,3 +464,58 @@
     --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-button--padding-bottom));
   }
 }
+
+/* The plain look, sf-button--plain (1.22.0; DEV order msg-cfe379b5 item 2,
+   owner-approved sign-in screen 2026-11-19, C381; the name of the icon
+   button's look without a plate, sf-icon-button--plain, C201): a quiet text
+   tool next to text or fields -- a language link, «Забыли пароль?» drawn as a
+   button. No fill and no edge in any state: hover, press, an open menu
+   (aria-expanded) and focus leave the background transparent. It is a ghost
+   setting: written beside sf-button--ghost, so the label takes ghost's ink
+   and steps from ghost's rules, and these rules take the plate away; the
+   link's state signal (C186, its navigation form): a line under the label at
+   full ink under the pointer, on a press, while its menu is open and on
+   keyboard focus, none at rest. The focus ring is every button's. The box is
+   the content: no side padding, the label's outer side space dropped, so a
+   plain button's first glyph or letter stands on the line it is placed on;
+   the control height of the size stays (the hit area and the row). An
+   icon-only plain button keeps its square. A plain button is not a toggle
+   (C211) and not a segment. */
+@layer sf.components {
+  .sf-button.sf-button.sf-button.sf-button--plain:has(> .sf-button-text-container:not(:empty)) {
+    /* The padding rule subtracts the border width: the border's own width
+       here makes it none. */
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-button--border-inline-start-width));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-button--border-inline-end-width));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button--plain > .sf-button-text-container:first-child {
+    --sf-button-text-container--padding-inline-start: var(--sf-0);
+  }
+
+  .sf-button.sf-button.sf-button.sf-button--plain > .sf-button-text-container:last-child {
+    --sf-button-text-container--padding-inline-end: var(--sf-0);
+  }
+
+  .sf-button.sf-button--plain .sf-button-text-container {
+    text-decoration-line: none;
+    text-decoration-color: currentColor;
+    text-decoration-thickness: var(--sf-px);
+    text-underline-offset: var(--sf-a3);
+    text-decoration-skip-ink: auto;
+  }
+}
+
+@layer sf.states {
+  .sf-button.sf-button.sf-button.sf-button.sf-button.sf-button--plain,
+  .sf-button.sf-button.sf-button.sf-button.sf-button.sf-button--plain:is(:hover, :active, .active, :focus, :focus-visible, [aria-expanded="true"]) {
+    --sf-button--background-color: transparent;
+    --sf-button--focus-inset: 0 0 var(--sf-transparent);
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .sf-button.sf-button--plain:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active, :focus-visible, [aria-expanded="true"]) .sf-button-text-container {
+    text-decoration-line: underline;
+  }
+}
