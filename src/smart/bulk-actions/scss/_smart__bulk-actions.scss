@@ -135,6 +135,12 @@
   text-overflow: ellipsis;
 }
 
+// The select-all offer beside it keeps its words whole (the row wraps first).
+.sf-bulk-actions__lead[data-sf-bulk-done] .sf-bulk-actions__offer > button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .sf-bulk-actions__progress {
   flex: 1 1 var(--sf-f0);
   min-inline-size: var(--sf-e2);
