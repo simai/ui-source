@@ -6,7 +6,8 @@
 // - the subset in the browser: every vector of tests/fixtures/rich-text-
 //   vectors.json set as the value gives the value the string reader gives,
 //   and nothing in any of them runs;
-// - typing, Mod+B, undo and redo, the bulleted list on and off, a heading;
+// - typing, Mod+B, undo and redo, the bulleted list on and off, a heading
+//   chosen in the text-level menu;
 // - an HTML paste and a plain-text paste cleaned to the subset;
 // - the link editor: Mod+K opens it, a javascript: address is refused with
 //   the language file's words, a /path is applied;
@@ -15,6 +16,11 @@
 //   value-missing;
 // - the keyboard: one Tab stop for the toolbar, the arrows, Home and End
 //   inside it, Tab into the text and out of the field with no tab typed;
+//   since sf-input-rich 1.6.0 (owner decision C155) the text levels P, H2,
+//   H3, H4 are one menu button «Paragraph ▾» (data-sf-tool="levels") first in
+//   the row, a radio menu under it, and what does not fit leaves for ⋯; at
+//   1000 px the row is levels, bold, italic, link, the lists, quote, undo,
+//   redo, ⋯ hidden; the page waits until the element has laid the row out;
 // - the frame against sf-input-textarea's at sizes 1/2, 1 and 2: the border, the
 //   radius, the padding, the text size and line height;
 // - text, placeholder, hint and a pressed tool against their backgrounds,
@@ -53,10 +59,15 @@ const server = createServer((request, response) => {
 await new Promise((settle) => server.once('listening', settle));
 const base = `http://127.0.0.1:${server.address().port}`;
 
+// The page includes core/lang/ru.js before core, as a site does (owner
+// decision C282: English is built in, Russian is a language file), for the
+// Russian region below.
+if (!existsSync(join(parts.core, 'lang', 'ru.js'))) throw new Error(`core/lang/ru.js not found under ${out}`);
 const shell = (theme, body) => `<!doctype html><html lang="en" class="${theme}"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false},icons:{enabled:false}};
 window.__ran = 0; window.alert = () => { window.__ran += 1; };</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/lang/ru.js"></script>
 <script src="/distr/core/js/core.js"></script></head><body style="margin:0;padding:16px;display:grid;gap:16px;background:var(--sf-surface-0)">
 ${body}
 </body></html>`;
@@ -72,12 +83,32 @@ async function open(page, theme, body) {
   current = shell(theme, body);
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
   await page.waitForFunction(() => customElements.get('sf-input-rich')
-    && [...document.querySelectorAll('sf-input-rich')].every((el) => el.querySelector('.sf-rich-text-editor') && el.querySelectorAll('button.sf-rich-text-tool').length === 12), null, {timeout: 20000});
+    && [...document.querySelectorAll('sf-input-rich')].every((el) => el.querySelector('.sf-rich-text-editor') && el.querySelector('.sf-rich-text-toolbar[data-sf-row-laid] button[data-sf-tool="levels"]')), null, {timeout: 20000});
   await page.waitForTimeout(300);
   if (process.env.RICH_TEXT_SHOT) await page.screenshot({path: `${process.env.RICH_TEXT_SHOT}-${theme}-${Date.now()}.png`, fullPage: true});
 }
 
 const value = (page, id = 'r') => page.evaluate((one) => document.getElementById(one).value, id);
+// The text-level menu (C155 (5)): open it from «Paragraph ▾», read its radio
+// rows, choose one with a click as a person does.
+const levelMenu = (page, id = 'r') => page.evaluate((one) => {
+  const menu = document.querySelector(`#${one}`)._sfRowMoreMenu;
+  const rows = [...(menu?.querySelectorAll('[role="menuitemradio"]') ?? [])];
+  return {open: Boolean(menu?.hasAttribute('open') || menu?.getAttribute('data-open') === 'true' || rows.some((row) => row.getClientRects().length)),
+    rows: rows.map((row) => ({text: row.textContent.trim(), checked: row.getAttribute('aria-checked'), disabled: row.getAttribute('aria-disabled')}))};
+}, id);
+const chooseLevel = async (page, word, id = 'r') => {
+  await page.click(`#${id} [data-sf-tool="levels"]`);
+  await page.waitForFunction((one) => [...(document.querySelector(`#${one}`)._sfRowMoreMenu?.querySelectorAll('[role="menuitemradio"]') ?? [])].some((row) => row.getClientRects().length), id, {timeout: 5000});
+  const rows = await levelMenu(page, id);
+  // The menu is the page's sf-menu-context the element appended to the body.
+  await page.evaluate((one) => { document.querySelector(`#${one}`)._sfRowMoreMenu.id = `${one}-row-menu`; }, id);
+  const row = page.locator(`#${id}-row-menu [role="menuitemradio"]`).filter({hasText: word}).first();
+  await row.click();
+  await page.waitForTimeout(150);
+  return rows;
+};
+const levelLabel = (page, id = 'r') => page.evaluate((one) => document.querySelector(`#${one} [data-sf-tool="levels"]`).getAttribute('aria-label'), id);
 const focusEnd = async (page, id = 'r') => {
   await page.evaluate((one) => {
     const editor = document.querySelector(`#${one} .sf-rich-text-editor`);
@@ -120,13 +151,17 @@ try {
   await page.focus('#before');
   await page.keyboard.press('Tab');
   const tool = () => page.evaluate(() => document.activeElement?.dataset?.sfTool || document.activeElement?.className || document.activeElement?.tagName);
-  check('Tab reaches the toolbar once', await tool() === 'paragraph', {got: await tool()});
+  const row = await page.evaluate(() => [...document.querySelectorAll('#r button.sf-rich-text-tool')]
+    .filter((b) => !b.classList.contains('sf-rich-text-out') && b.getClientRects().length).map((b) => b.dataset.sfTool));
+  check('the row shows every tool at this width, the levels first, ⋯ hidden', row.join() === 'levels,bold,italic,link,bulleted-list,numbered-list,quote,undo,redo', {got: row});
+  check('the levels button names the current level', await levelLabel(page) === 'Text level: Paragraph', {got: await levelLabel(page)});
+  check('Tab reaches the toolbar once', await tool() === 'levels', {got: await tool()});
   await page.keyboard.press('ArrowRight');
-  check('ArrowRight', await tool() === 'heading-2', {got: await tool()});
+  check('ArrowRight', await tool() === 'bold', {got: await tool()});
   await page.keyboard.press('End');
   check('End', await tool() === 'redo', {got: await tool()});
   await page.keyboard.press('ArrowRight');
-  check('ArrowRight wraps', await tool() === 'paragraph', {got: await tool()});
+  check('ArrowRight wraps', await tool() === 'levels', {got: await tool()});
   await page.keyboard.press('ArrowLeft');
   check('ArrowLeft wraps', await tool() === 'redo', {got: await tool()});
   await page.keyboard.press('Home');
@@ -134,7 +169,7 @@ try {
   await page.keyboard.press('Tab');
   check('Tab from the toolbar goes to the text', await page.evaluate(() => document.activeElement === document.querySelector('#r .sf-rich-text-editor')));
   await page.keyboard.press('Shift+Tab');
-  check('Shift+Tab comes back to the last tool', await tool() === 'heading-2', {got: await tool()});
+  check('Shift+Tab comes back to the last tool', await tool() === 'bold', {got: await tool()});
   check('one tool is a Tab stop', await page.evaluate(() => [...document.querySelectorAll('#r button.sf-rich-text-tool')].filter((button) => button.tabIndex === 0).length === 1));
 
   // ---- events, typing, bold, undo, redo ---------------------------------
@@ -163,15 +198,18 @@ try {
   await page.click('#r [data-sf-tool="bulleted-list"]');
   check('list on', await value(page) === '<ul><li>Start <strong>text</strong></li></ul>', {got: await value(page)});
   check('list pressed', await page.evaluate(() => document.querySelector('#r [data-sf-tool="bulleted-list"]').getAttribute('aria-pressed') === 'true'));
-  check('heading unavailable in a list', await page.evaluate(() => document.querySelector('#r [data-sf-tool="heading-2"]').getAttribute('aria-disabled') === 'true'));
+  check('heading unavailable in a list', await page.evaluate(() => document.querySelector('#r [data-sf-tool="levels"]').getAttribute('aria-disabled') === 'true'));
   await page.click('#r [data-sf-tool="numbered-list"]');
   check('list kind changes', await value(page) === '<ol><li>Start <strong>text</strong></li></ol>', {got: await value(page)});
   await page.click('#r [data-sf-tool="numbered-list"]');
   check('list off', await value(page) === '<p>Start <strong>text</strong></p>', {got: await value(page)});
-  await page.click('#r [data-sf-tool="heading-2"]');
+  const levelsAtParagraph = await chooseLevel(page, 'Heading 2');
+  check('the level menu lists the four levels, Paragraph chosen', levelsAtParagraph.rows.map((one) => `${one.text}:${one.checked}`).join() === 'Paragraph:true,Heading 2:false,Heading 3:false,Heading 4:false', {got: levelsAtParagraph});
   check('heading 2', await value(page) === '<h2>Start <strong>text</strong></h2>', {got: await value(page)});
-  await page.click('#r [data-sf-tool="heading-2"]');
-  check('heading 2 off is a paragraph', await value(page) === '<p>Start <strong>text</strong></p>', {got: await value(page)});
+  check('the levels button names Heading 2', await levelLabel(page) === 'Text level: Heading 2', {got: await levelLabel(page)});
+  const levelsAtHeading = await chooseLevel(page, 'Paragraph');
+  check('the level menu has Heading 2 chosen', levelsAtHeading.rows.find((one) => one.checked === 'true')?.text === 'Heading 2', {got: levelsAtHeading});
+  check('heading 2 back to a paragraph', await value(page) === '<p>Start <strong>text</strong></p>', {got: await value(page)});
   await page.click('#r [data-sf-tool="quote"]');
   check('quote', await value(page) === '<blockquote><p>Start <strong>text</strong></p></blockquote>', {got: await value(page)});
   await page.click('#r [data-sf-tool="quote"]');
