@@ -78,10 +78,12 @@ try {
       }
       await page.waitForTimeout(700);
       if (open) { await page.evaluate(open); await page.waitForTimeout(500); }
-      const measured = await page.evaluate(({selector, variables, roles}) => {
+      const measured = await page.evaluate(({selector, parts, variables, roles}) => {
         const roots = [...document.querySelectorAll(selector)];
         if (!roots.length) return {missing: selector};
-        const partsOf = (list) => list.flatMap((root) => [root, ...root.querySelectorAll('*')]);
+        // The parts the component draws outside its root (the stage's `parts`).
+        const own = parts ? [...document.querySelectorAll(parts)] : [];
+        const partsOf = (list) => [...new Set([...list, ...own].flatMap((root) => [root, ...root.querySelectorAll('*')]))];
         const answers = [];
         for (const variable of variables) {
           const role = roles[variable.role];
@@ -103,7 +105,7 @@ try {
           answers.push({name: variable.name, moved: moved.slice(0, 3), count: moved.length});
         }
         return {answers};
-      }, {selector: entry.selector, variables: entry.variables, roles: ROLES});
+      }, {selector: entry.selector, parts: draw.parts ?? null, variables: entry.variables, roles: ROLES});
       await page.close();
       if (measured.missing) { note({component: entry.component, said: `nothing drawn for ${measured.missing}`}); continue; }
       for (const answer of measured.answers) {

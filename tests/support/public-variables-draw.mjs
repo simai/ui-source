@@ -76,7 +76,11 @@ export const DRAW = {
   // panel is open, so the panel's own variables have a part to reach.
   menu: {css: ['menu', 'icons', 'icon-buttons', 'smart/smart/menu/css/menu.css'], js: 'menu',
     html: `<sf-menu label="Разделы" items='[{"id":"a","label":"Обзор","href":"#a"},{"id":"b","label":"Каталог","href":"#b"}]'></sf-menu>`
-      + `<div style="inline-size:900px"><sf-menu id="row" orientation="horizontal" label="Шапка" items='[{"id":"c","label":"Каталог","children":[{"id":"d","label":"Решения","href":"#d"}]},{"id":"e","label":"Контакты","href":"#e"}]'></sf-menu></div>`,
+      + `<div style="inline-size:900px"><sf-menu id="row" orientation="horizontal" label="Шапка" items='[{"id":"c","label":"Каталог","children":[{"id":"d","label":"Решения","href":"#d"}]},{"id":"e","label":"Контакты","href":"#e"}]'></sf-menu></div>`
+      // The framed rows (appearance framed, C238: the former default, until
+      // 2027-01-01) are the only rows with a frame: the one part
+      // --sf-menu-item-border-color reaches.
+      + `<sf-menu label="Рамки" appearance="framed" items='[{"id":"f","label":"Обзор","href":"#f"}]'></sf-menu>`,
     open: 'document.getElementById("row").open("c")'},
   // The class verification's sheet, drawn by sf-code-input bordered and
   // filled: the fill varies with the appearance, the border is the bordered
@@ -91,9 +95,15 @@ export const DRAW = {
   'country-code': {css: ['country-code'], js: 'input-country',
     html: '<sf-input-country label="Телефон" value="+7 999 123-45-67" size="1"></sf-input-country>',
     open: 'document.querySelector(".sf-country-code").classList.add("open")'},
-  color: {css: ['smart/smart/input-color/css/input-color.css'], js: 'input-color',
-    html: '<sf-input-color label="Цвет" value="#1f6feb" swatches="#1f6feb|Синий, #d1242f|Красный"></sf-input-color><sf-input-color label="Цвет"></sf-input-color>'},
-  'range-slider': {css: ['range-slider'], js: 'slider-range',
+  // The swatches stand in the field's window, beside .sf-color in the field
+  // (`parts`): the window is opened on a page of its own, so the swatches'
+  // gap has a part to reach.
+  color: {css: ['smart/smart/input-color/css/input-color.css'], js: 'input-color', parts: '.sf-color-window',
+    html: '<sf-input-color label="Цвет" value="#1f6feb" swatches="#1f6feb|Синий, #d1242f|Красный"></sf-input-color><sf-input-color label="Цвет"></sf-input-color>',
+    opens: [null, 'document.querySelector("sf-input-color").openPicker()']},
+  // The value stands in the field's head, beside the track .sf-range-slider
+  // in the field's group (`parts`).
+  'range-slider': {css: ['range-slider'], js: 'slider-range', parts: '.sf-range-slider-group',
     html: '<div style="inline-size:400px;padding:40px 20px"><sf-slider-range aria-label="Громкость" value="40" label="text"></sf-slider-range></div>'},
   'file-upload': {css: ['file-upload', 'featured-icon'], js: 'file-upload',
     html: '<sf-file-upload aria-label="Документы"></sf-file-upload><sf-file-upload id="held" aria-label="Документы"></sf-file-upload>',
@@ -121,8 +131,26 @@ export const DRAW = {
       '(async () => { const [, ok] = document.querySelectorAll("sf-button-copy"); if (navigator.clipboard) navigator.clipboard.writeText = async () => {}; await ok.copy(); })()',
       '(async () => { const [, failed] = document.querySelectorAll("sf-button-copy"); failed.removeAttribute("value"); await failed.copy(); })()',
     ]},
+  // The window's width cap is read when it opens (core float-anchor writes it
+  // inline), so a variable set on an open window shows nothing computed: the
+  // drawing proves it -- a long explanation opened at rest is wider than 213,
+  // opened again with the variable it is 213 at most.
   'help-mark': {css: ['icon-buttons', 'icons', 'smart/smart/help-mark/css/help-mark.css'], js: 'help-mark',
-    html: '<sf-help-mark id="hm" heading="Заголовок" text="Пояснение"></sf-help-mark>', open: 'document.getElementById("hm").open()'},
+    html: '<sf-help-mark id="hm" heading="Заголовок" text="Пояснение"></sf-help-mark>', open: 'document.getElementById("hm").open()',
+    proven: ['--sf-help-mark-max-width'],
+    proves: `(async () => {
+      const mark = document.getElementById('hm');
+      const frame = () => new Promise((settle) => setTimeout(settle, 150));
+      const width = async () => { mark.open(); await frame(); const panel = document.querySelector('.sf-help-mark-panel'); const w = panel.getBoundingClientRect().width; mark.close(); await frame(); return w; };
+      mark.close?.(); await frame();
+      mark.setAttribute('text', 'Пояснение длиной в несколько строк, чтобы окно дошло до своего предела ширины и перенесло слова на новую строку.');
+      await frame();
+      const rest = await width();
+      document.documentElement.style.setProperty('--sf-help-mark-max-width', '213px');
+      const capped = await width();
+      document.documentElement.style.removeProperty('--sf-help-mark-max-width');
+      return {ok: rest > 213.5 && capped <= 213.5 && capped > 150, rest: Math.round(rest), capped: Math.round(capped * 10) / 10};
+    })()`},
   datepicker: {css: ['datepicker', 'buttons', 'icon-buttons'], js: 'input-date',
     html: '<sf-input-date input="false" value="2026-09-03"></sf-input-date><sf-input-date input="false" range start-value="2026-09-01" end-value="2026-09-07"></sf-input-date>'},
   // The navigation family, with its move to standard 1.3.8 (2026-10-27): a
@@ -140,7 +168,9 @@ export const DRAW = {
   // buttons, a slider's thumbnails, a gallery's inline caption, a handle at
   // rest and one being dragged, a picker's folded trigger.
   'progress-bar': {css: ['progress-bar'], js: 'progress-bar',
-    html: '<sf-progress-bar label="Загрузка" value="40" text-position="inline-end"></sf-progress-bar>'},
+    // A row-end meter (inline, C203) beside it: its track has a width of its
+    // own, the one part --sf-progress-bar-track-size reaches.
+    html: '<sf-progress-bar label="Загрузка" value="40" text-position="inline-end"></sf-progress-bar><sf-progress-bar label="Диск" value="40" inline meter></sf-progress-bar>'},
   'progress-scale': {css: ['progress-scale'], js: 'progress-scale',
     html: '<sf-progress-scale label="Этапы" value="45"></sf-progress-scale>'},
   // The percentage is shown, so its colour has a part to reach.
@@ -150,17 +180,24 @@ export const DRAW = {
     html: '<sf-spinner label="Загрузка данных" size="2"></sf-spinner>'},
   skeleton: {css: ['skeleton'], js: 'skeleton',
     html: '<sf-skeleton count="2" animation="wave"></sf-skeleton>'},
-  'empty-state': {css: ['featured-icon', 'buttons', 'smart/smart/empty-state/css/empty-state.css'], js: 'empty-state',
+  // sf-empty-state draws the class placeholder's markup (.sf-placeholder), so
+  // the placeholder sheet is the one its colours and gaps reach.
+  'empty-state': {css: ['placeholder', 'featured-icon', 'buttons', 'smart/smart/empty-state/css/empty-state.css'], js: 'empty-state',
     html: '<sf-empty-state kind="error"></sf-empty-state>'},
   'file-preview': {css: ['file-preview', 'icon-buttons'], js: 'file-preview',
     html: '<sf-file-preview file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-preview>'},
   slider: {css: ['slider', 'icon-buttons'], js: 'slider',
     html: '<div style="inline-size:600px"><sf-slider thumbs><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Два"></sf-slider></div>'},
-  gallery: {css: ['slider', 'modal', 'icon-buttons', 'smart/smart/gallery/css/gallery.css'], js: ['slider', 'gallery'],
-    html: '<div style="inline-size:600px"><sf-gallery thumbs="false"><figure slot="slide"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><figcaption>Подпись</figcaption></figure></sf-gallery></div>'},
+  // The caption's colour is the viewer's (.sf-gallery-viewer-caption): the
+  // viewer opens on the body (`parts`), on a page of its own.
+  gallery: {css: ['slider', 'modal', 'icon-buttons', 'smart/smart/gallery/css/gallery.css'], js: ['slider', 'gallery'], parts: '.sf-gallery-viewer',
+    html: '<div style="inline-size:600px"><sf-gallery thumbs="false"><figure slot="slide"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><figcaption>Подпись</figcaption></figure></sf-gallery></div>',
+    opens: [null, '(async () => { document.querySelector("sf-gallery").open(1); await new Promise((settle) => setTimeout(settle, 300)); })()']},
   resizer: {css: ['smart/smart/resizer/css/resizer.css'], js: 'resizer',
     html: '<nav style="position:relative;inline-size:300px;block-size:100px"><sf-resizer min="200" max="400"></sf-resizer></nav><nav style="position:relative;inline-size:300px;block-size:100px"><sf-resizer min="200" max="400" data-sf-resizing></sf-resizer></nav>'},
-  'profile-picker': {css: ['smart/smart/profile-picker/css/profile-picker.css'], js: 'profile-picker',
+  // The trigger is an sf-button (ghost, on-surface): the picker's variables
+  // reach it through the button's own, so the button sheet draws it.
+  'profile-picker': {css: ['buttons', 'icons', 'smart/smart/profile-picker/css/profile-picker.css'], js: 'profile-picker',
     html: '<sf-profile-picker label="Профиль"></sf-profile-picker>'},
   // The editors and screens (2026-10-27): a favourite with an action, so the
   // star's colour and the actions' gap have a part to reach.
@@ -218,8 +255,22 @@ export const DRAW = {
     html: `<sf-progress-run label="Run" total="10" value="4" output-open><script type="application/json" data-sf-settings>${JSON.stringify({steps: [{id: 'a', title: 'A', state: 'done'}, {id: 'b', title: 'B', state: 'running'}], output: 'log'})}</script></sf-progress-run>`},
   // sf-list-description (2026-11-08): two rows with dividers, so the
   // divider is drawn; an empty value takes the label colour too.
+  // A third label longer than the label width: --sf-list-description-label-width
+  // caps the labels' column inside fit-content(), a grid track the computed
+  // max-inline-size does not show, so the drawing proves it -- the column is
+  // the long label's width at rest and 213 with the variable.
   'list-description': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/list-description/css/list-description.css'], js: ['list-description', 'button-copy'],
-    html: `<sf-list-description dividers><script type="application/json" data-sf-settings>${JSON.stringify({items: [{label: 'Адрес', value: 'demo.test'}, {label: 'Путь', value: '/var/www', mono: true, copy: true}]})}</script></sf-list-description>`},
+    html: `<sf-list-description dividers><script type="application/json" data-sf-settings>${JSON.stringify({items: [{label: 'Адрес', value: 'demo.test'}, {label: 'Путь', value: '/var/www', mono: true, copy: true}, {label: 'Каталог резервных копий сайта на сервере', value: '/var/backups'}]})}</script></sf-list-description>`,
+    proven: ['--sf-list-description-label-width'],
+    proves: `(() => {
+      const list = document.querySelector('.sf-list-description-list');
+      const label = () => Math.max(...[...list.querySelectorAll('.sf-list-description-label')].map((one) => one.getBoundingClientRect().width));
+      const rest = label();
+      document.documentElement.style.setProperty('--sf-list-description-label-width', '213px');
+      const capped = label();
+      document.documentElement.style.removeProperty('--sf-list-description-label-width');
+      return {ok: rest > 213.5 && Math.abs(capped - 213) < 0.5, rest: Math.round(rest), capped: Math.round(capped * 10) / 10};
+    })()`},
   // sf-list-timeline 1.1 (C40): one day under the shared heading, two
   // events, the first without a status (the neutral marker) and with the
   // connector under it.
@@ -235,8 +286,11 @@ export const DRAW = {
   // keyboard focuses it.
   // sf-form (2026-11-14, C182): two groups and a sticky footer, so the gaps,
   // the label, the group line and the footer's fill are drawn.
+  // Both fields required and, on a page of its own, saved empty: two errors
+  // draw the summary, the one part its fill reaches.
   form: {css: ['buttons', 'inputs', 'smart/smart/form/css/form.css'], js: ['form', 'button', 'input'],
-    html: `<sf-form footer="sticky"><script type="application/json" data-sf-settings>${JSON.stringify({groups: [{key: 'a', label: 'A'}, {key: 'b', label: 'B'}], fields: [{key: 'x', label: 'X', propertyType: 'string', group: 'a'}, {key: 'y', label: 'Y', propertyType: 'string', group: 'b'}]})}</script></sf-form>`},
+    html: `<sf-form footer="sticky"><script type="application/json" data-sf-settings>${JSON.stringify({groups: [{key: 'a', label: 'A'}, {key: 'b', label: 'B'}], fields: [{key: 'x', label: 'X', propertyType: 'string', group: 'a', required: true}, {key: 'y', label: 'Y', propertyType: 'string', group: 'b', required: true}]})}</script></sf-form>`,
+    opens: [null, '(async () => { document.querySelector("sf-form").submit(); await new Promise((settle) => setTimeout(settle, 200)); })()']},
   time: {css: ['tooltip', 'smart/smart/time/css/time.css'], js: 'time',
     html: '<sf-time format="time" datetime="2026-11-09T14:32:00+03:00"></sf-time>',
     open: 'document.querySelector("sf-time .sf-time[tabindex], sf-time .sf-time, sf-time [tabindex]")?.focus({focusVisible: true})'},
@@ -256,7 +310,20 @@ export const DRAW = {
   // a turn to another, so both spacings have an entry to move.
   list: {css: ['dropdown', 'icons', 'icon-buttons', 'buttons', 'smart/smart/list/css/list.css'], js: ['list', 'list-item'],
     html: '<sf-list group-by="key" selected="b"><script type="application/json" data-sf-settings>{"groups":[{"key":"x","text":"Входящие"}],"items":[{"id":"a","text":"Письмо","group":"x"},{"id":"b","text":"Ответ","group":"x"}]}</script></sf-list>'},
+  // The reading column's width is inside a calc() with the inset on either
+  // side (max-inline-size: column + 2 x inset), so the drawing proves it: the
+  // column's content box is the reading width at rest and 213 with the variable.
   'list-feed': {css: ['buttons', 'icon-buttons', 'smart/smart/list-feed/css/list-feed.css'], js: 'list-feed',
+    proven: ['--sf-list-feed-column-width'],
+    proves: `(() => {
+      const column = document.querySelector('.sf-list-feed__column');
+      const content = () => { const style = getComputedStyle(column); return column.getBoundingClientRect().width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight); };
+      const rest = content();
+      document.documentElement.style.setProperty('--sf-list-feed-column-width', '213px');
+      const narrow = content();
+      document.documentElement.style.removeProperty('--sf-list-feed-column-width');
+      return {ok: rest > 213.5 && Math.abs(narrow - 213) < 0.5, rest: Math.round(rest), narrow: Math.round(narrow * 10) / 10};
+    })()`,
     html: '<div style="display:flex;flex-direction:column;block-size:300px"><sf-list-feed><script type="application/json" data-sf-settings>{"items":[{"id":"1","author":"a","author-name":"Анна","text":"Один"},{"id":"2","author":"a","author-name":"Анна","text":"Два"},{"id":"3","author":"b","author-name":"Борис","text":"Три"}]}</script></sf-list-feed></div>'},
   // sf-wizard (2026-11-06): two steps inline, the frame drawing its head,
   // body and footer; the frame takes the gap, the fill, the edge and the corner.
@@ -336,8 +403,12 @@ export const ROLES = {
   'outline-width': {properties: ['outline-width'], value: '7px'},
   'border-width': {properties: ['border-top-width', 'border-bottom-width'], value: '7px'},
   radius: {properties: ['border-top-left-radius'], value: '13px'},
-  'padding-inline': {properties: ['padding-inline-start', 'padding-left'], value: '17px'},
-  'padding-block': {properties: ['padding-top'], value: '19px'},
+  // An inset may count the element's edge inside it (C105 H4): the padding
+  // and the border's width together (`edges`, the context menu's panel).
+  'padding-inline': {properties: ['padding-inline-start', 'padding-left'], edges: [['padding-inline-start', 'border-inline-start-width']], value: '17px'},
+  // Not 19px: a window's frame at rest is 20 less its 1 px edge, 19 (sf-modal),
+  // so a 19 set by the page moved nothing the probe could see.
+  'padding-block': {properties: ['padding-top'], edges: [['padding-top', 'border-top-width']], value: '19.5px'},
   // A gap may be the room after each entry but the last (sf-list-timeline's
   // events, padding-block-end).
   gap: {properties: ['column-gap', 'row-gap', 'padding-block-end', 'padding-bottom'], value: '23px'},

@@ -88,6 +88,11 @@ try {
             options: [{value: 'a', label: 'A'}]}, {get(target, key) { if (typeof key === 'string') reads.add(key); return target[key]; }});
           for (const draw of [
             () => set.renderEditField(field, VALUES[entry.type], host),
+            // The record picker a host asks with {picker: 'dropdown'} (C139 (1),
+            // until 2027-01-01) is the one whose search box is a box of its own:
+            // a record, relation and user read searchPlaceholder there, the
+            // sf-input-lookup they draw by default searches in the field itself.
+            () => set.renderEditField(field, VALUES[entry.type], host, {picker: 'dropdown'}),
             () => set.renderViewField(field, VALUES[entry.type], host),
             () => set.renderCellField(field, VALUES[entry.type], host),
             () => set.renderFilterField(field, host),
