@@ -41,8 +41,7 @@ export function renderPageHeaderTemplate(context) {
   return html`<header class=${classes} style=${context.rootStyle || nothing}>
     ${hasHostSlot('path') ? html`<div class="sf-page-header-path flex items-cross-center min-w-0">${hostSlot('path')}</div>` : nothing}
     <div class="sf-page-header-line flex items-cross-center flex-wrap min-w-0">
-      ${hasHostSlot('start') ? hostSlot('start') : nothing}
-      ${hasHostSlot('media') ? html`<div class="sf-page-header-media flex items-cross-center">${hostSlot('media')}</div>` : nothing}
+      ${hasHostSlot('start') ? hostSlot('start') : nothing}${hasHostSlot('media') ? html`<div class="sf-page-header-media flex items-cross-center">${hostSlot('media')}</div>` : nothing}
       <div class="sf-page-header-title flex items-cross-center min-w-0">
         ${name}
         ${count !== '' && count !== null && count !== undefined
