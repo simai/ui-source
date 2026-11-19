@@ -37,7 +37,7 @@ test('RG-NV 3: «…» asks the Loader for sf-menu-context and opens the menu', 
 test('RG-NV 4: a crumb rings as a link, two pixels off', async () => {
   const item = await read('src/component/breadcrumbs/scss/_css__breadcrumbs_item.scss');
   assert.match(item, /:focus-visible \{\n\s+--sf-breadcrumbs-item--background-color: var\(--sf-transparent-for-focus\);\n\s+outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n\s+outline-offset: var\(--sf-a2\);/u); // C186 (4): a crumb keeps a link's 2 px offset
-  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.3.4'); // C282: 1.2.0 moved on by the language-file patch (Russian is a language file) // C278: 1.3.1 moved on by the language packs // group build 13: 1.3.2 moved on by the merged branches or a GB11 merge
+  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.3.5'); // DF-9: the trail folds once per frame for a batch of changes // // C282: 1.2.0 moved on by the language-file patch (Russian is a language file) // C278: 1.3.1 moved on by the language packs // group build 13: 1.3.2 moved on by the merged branches or a GB11 merge
 });
 
 test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is one inline-flex control', async () => {

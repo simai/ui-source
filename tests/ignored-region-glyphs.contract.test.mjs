@@ -35,7 +35,11 @@ test('the Loader asks for adopted glyphs and marks them when their font is in', 
   assert.match(body, /added \+= this\.trackIconDescriptor\(tracked\.icon, tracked\.attrs\);/u);
   // The glyph itself is passed (fix/icon-loaded-document-fonts): a glyph drawn
   // in a face the page brought counts as loaded once that face is.
-  assert.match(body, /if \(this\.isTrackedIconLoaded\(tracked, el\)\) \{\s*el\.classList\.add\("sf-icon-loaded"\);/u);
+  // Every glyph is read before any class is set (DF-9: a read after the
+  // class of the one before it changed worked the page's styles out again).
+  assert.match(body, /return this\.isTrackedIconLoaded\(tracked, el\);/u);
+  assert.match(body, /\} else if \(loaded\) \{\s*el\.classList\.add\("sf-icon-loaded"\);/u);
+  assert.match(body, /if \(this\.isTrackedIconLoaded\(tracked, el\)\) loaded\.push\(el\);/u);
   assert.match(body, /window\.addEventListener\("sf-icons-subset:ready", settle\);/u);
   assert.match(body, /if \(added > 0\) this\.mutate\(\(\) => this\.loadFonts\(\)\);/u);
 });

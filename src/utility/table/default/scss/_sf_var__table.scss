@@ -98,8 +98,15 @@ $table-control-cell: ":has(> sf-checkbox:only-child, > sf-button-icon:only-child
 $table-phone-min: map.get(bp.$breakpoint-array, md);
 // $table-keyed-actions on the table; $table-frame-keyed-actions on the frame
 // that holds it.
+// Each :has() argument reaches its control through a descendant combinator,
+// and the position the condition means (a control alone in a body cell, a key
+// that is a cell) is the :where() on the control. An argument of child
+// combinators only (> tbody > tr > * > ...) is not cached by the browser: the
+// condition was walked over the whole table again for every cell a rule
+// under it tried, and a full style pass of a page with a 1000-cell framed
+// table took about 500 ms instead of 30 (DF-9, the docs' update guide).
 @function table-keyed-actions($table: '') {
-    @return ":has(#{$table}> tbody > tr > * > sf-button-icon[icon='menu']:only-child, #{$table}> tbody > tr > * > sf-icon-button[icon='menu']:only-child):has(#{$table}> :not(caption) > tr > .table-key)";
+    @return ":has(#{$table}> tbody > tr > * sf-button-icon[icon='menu']:only-child:where(tr > * > *), #{$table}> tbody > tr > * sf-icon-button[icon='menu']:only-child:where(tr > * > *)):has(#{$table}> :not(caption) > tr .table-key:where(tr > *))";
 }
 $table-keyed-actions: table-keyed-actions();
 $table-frame-keyed-actions: table-keyed-actions('> .table ');

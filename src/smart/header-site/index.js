@@ -167,7 +167,7 @@ class SfSiteHeader extends SiteHeaderElement {
     this._offSwitches?.();
     this._offSwitches = this.onAfterRender(() => {
       this.observeSize();
-      this.syncCollapsed();
+      if (this.collapsedAnswerStale()) this.syncCollapsed();
       this.syncSwitches();
       this.queueFit();
     }, {once: false});
@@ -223,6 +223,21 @@ class SfSiteHeader extends SiteHeaderElement {
     return this._media ? !this._media.matches : false;
   }
 
+  // The sheet's answer is read again only when it can have changed: the row
+  // it was read on was drawn anew, or the step changed. The bar's width is
+  // the observer's (it answers after layout, at no cost). A read after each
+  // drawing made the browser work out the page's styles again every time the
+  // bar drew (DF-9).
+  collapsedAnswerStale() {
+    return this._collapsedNow === undefined
+      || this._collapsedRow !== this.collapseRow()
+      || this._collapsedStep !== this.collapse;
+  }
+
+  collapseRow() {
+    return this.header()?.querySelector(':scope > .sf-site-header-row') ?? null;
+  }
+
   watchCollapse() {
     this._media?.removeEventListener?.('change', this._onMedia);
     // The guess before the row is drawn, and a wake-up when the window
@@ -252,6 +267,8 @@ class SfSiteHeader extends SiteHeaderElement {
   // the drawing and the window can all ask.
   syncCollapsed() {
     const collapsed = this.collapsed;
+    this._collapsedRow = this.collapseRow();
+    this._collapsedStep = this.collapse;
     if (collapsed === this._collapsedNow) return;
     this._collapsedNow = collapsed;
     this.sfHostState('data-collapsed', collapsed);
@@ -550,7 +567,7 @@ class SfSiteHeader extends SiteHeaderElement {
   }
 
   templateContext() {
-    const collapsed = this.collapsed;
+    const collapsed = this.collapsedAnswerStale() ? this.collapsed : this._collapsedNow;
     this._drawnCollapsed = collapsed;
     const tools = this.toolParts(collapsed);
     return this.createTemplateContext({
