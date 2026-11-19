@@ -52,7 +52,7 @@ test('a link\'s address box is text with the address keyboard: a path and an anc
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.22.0'); // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.23.0'); // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 14: 1.22.0 moved on by the merged branches or the C278 language patch
   const source = read('src/smart/dropdown/index.js');
   assert.match(source, /this\.watchOptionNodes\(optionNodes\);/u);
   assert.match(source, /this\._optionWatch\.observe\(node, \{attributes: true\}\);/u);

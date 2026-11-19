@@ -107,5 +107,5 @@ test('tabs with no panel content keep their panel row hidden; words written late
   assert.equal(row.hidden, false, 'a host wrote into a panel: the row shows');
   sync.call(tabs([panel([]), panel([])]));
   assert.equal(row.hidden, true, 'emptied again');
-  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.4.6'); // group build 13: 1.4.5 moved on by the merged branches or a GB11 merge
+  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.4.7'); // group build 13: 1.4.5 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch
 });

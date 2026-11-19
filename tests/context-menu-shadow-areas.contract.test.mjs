@@ -14,7 +14,7 @@ const docs = read('src/smart/menu-context/docs/docs.md');
 const slice = (from, to) => source.slice(source.indexOf(from), source.indexOf(to, source.indexOf(from)));
 
 test('for takes the areas themselves as the property, ids in the attribute', () => {
-  assert.equal(manifest.version, '1.27.1'); // 1.27.1: aria-label watched (small-defects-3)
+  assert.equal(manifest.version, '1.27.3'); // 1.27.1: aria-label watched (small-defects-3) // group build 14: 1.27.1 moved on by the merged branches or the C278 language patch
   assert.equal(manifest.settings.for.type, 'string');
   assert.match(manifest.settings.for['x-note'], /the property also takes a list of the areas, elements or ids/);
   assert.match(manifest.settings.for.summary, /menu\.for = \[table, \.\.\.\]/);

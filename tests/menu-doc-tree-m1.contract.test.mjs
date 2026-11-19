@@ -40,7 +40,7 @@ test('contents: the docs say a one-heading page reserves no column', () => {
 test('versions: component.menu 1.8.3, sf-menu 1.11.2, sf-contents 1.7.4 with their notes', () => {
   assert.equal(json('src/component/menu/passport.json').version, '1.10.3'); // group build 9: 1.8.3 moved on by the merged branches or a GB9 patch // group build 10: 1.9.1 moved on by the merged branches or a GB10 patch // defects-d11: component.menu 1.10.1: the empty sf.components block left by C273 removed // defects-d12: component.menu 1.10.2: a row's panel's path line clears the corner by its block padding // fix/rtl-direction-icons: one RTL turn
   // group build 9: the current numbers moved on (menu 1.13.5, contents 1.7.7); the notes stay.
-  for (const [name, version, current, noted] of [['menu', '1.11.2', '1.14.3', '1.13.5'], ['contents', '1.7.4', '1.8.4', '1.7.7']]) {
+  for (const [name, version, current, noted] of [['menu', '1.11.2', '1.15.0', '1.13.5'], ['contents', '1.7.4', '1.8.4', '1.7.7']]) {
     const component = json(`src/smart/${name}/component.json`);
     assert.equal(component.version, current);
     assert.equal(json(`src/smart/${name}/smart.manifest.json`).version, current);
