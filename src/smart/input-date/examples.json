@@ -190,6 +190,45 @@
         "max-bytes": 16384,
         "why": "inline mode draws the calendar open on the page: the month grid of six weeks and the day line are the first paint"
       }
+    },
+    {
+      "name": "day-marks",
+      "title": "Отметки на днях",
+      "settings": {
+        "input": false,
+        "value": "2026-11-18",
+        "locale": "ru",
+        "day-marks": {
+          "2026-11-10": {
+            "count": 3
+          },
+          "2026-11-12": {
+            "count": 2,
+            "tone": "warning"
+          },
+          "2026-11-18": {
+            "count": 4
+          },
+          "2026-11-19": {
+            "tone": "success"
+          },
+          "2026-11-24": {
+            "count": 120,
+            "tone": "tertiary"
+          },
+          "2026-11-27": {
+            "tone": "error",
+            "label": "Срыв"
+          }
+        }
+      },
+      "expect": {
+        "role": "group"
+      },
+      "first-paint": {
+        "max-bytes": 16384,
+        "why": "inline mode draws the calendar open on the page: the month grid of six weeks with its day marks is the first paint"
+      }
     }
   ],
   "pages": [

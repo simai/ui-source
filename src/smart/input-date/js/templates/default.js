@@ -136,6 +136,16 @@ function renderDatepickerInput(context) {
             ><sf-icon icon=${context.calendarIcon}></sf-icon></span></sf-input>`;
 }
 
+// A day's mark (CL-6): a dot (a count of 1 or none) or a small number, in
+// the tone's ink, in the row under the number that every day keeps, so a
+// marked day is as tall as any other. The day's own label says it to a screen
+// reader, so the mark is hidden from it.
+export function renderDayMark(mark) {
+    if (!mark) return nothing;
+    return html`<span class=${joinClasses('sf-datepicker-day-mark', `sf-datepicker-day-mark--${mark.tone}`,
+        mark.text ? 'sf-datepicker-day-mark--count' : 'sf-datepicker-day-mark--dot')} aria-hidden="true">${mark.text || nothing}</span>`;
+}
+
 function renderDay(day, context) {
     const classes = joinClasses('sf-datepicker-day', day.weekend ? 'sf-datepicker-day-off' : '',
         day.selected ? 'active' : '', day.rangeStart ? 'sf-datepicker-day-start' : '',
@@ -152,7 +162,7 @@ function renderDay(day, context) {
             @focus=${() => context.component.setActiveDate(day.value)}
             @pointerenter=${() => context.component.showDayLine(day.value)}
             @keydown=${(event) => context.component.handleDayKeydown(event, day)}>
-            <span class="sf-datepicker-day-date">${day.day}</span>
+            <span class="sf-datepicker-day-date">${day.day}</span>${renderDayMark(day.mark)}
         </button>`;
 }
 

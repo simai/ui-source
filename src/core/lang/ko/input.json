@@ -9,9 +9,9 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 542,
+    "words": 544,
     "translated": 541,
-    "share": 99.8
+    "share": 99.4
   },
   "words": {
     "sf-input": {

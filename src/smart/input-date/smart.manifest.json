@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -347,6 +347,11 @@
         "type": "array",
         "default": [],
         "description": "The site's special days (owner decision C198): a list of {date: 'YYYY-MM-DD', kind, name?}, the property or JSON in the attribute. holiday and day-off (a moved day off) take the day-off ink, working-day (a moved working Saturday) the weekday's; each listed day gets a dot under its number, its name joins the day's accessible name, and a line under the grid names the day under the pointer, with the focus or chosen. Empty: plain weekends, as before. The Framework ships no country calendar."
+      },
+      "day-marks": {
+        "type": "object",
+        "default": {},
+        "description": "Marks on days (CL-6): the property as a function (isoDate) -> {count?, tone?, label?} | null, asked for each day drawn, or as a map {'YYYY-MM-DD': {count?, tone?, label?}}; the attribute as JSON of the map. A count of 1 or none draws a dot under the number, 2 and more a small number (99+ over 99), in the tone's ink (primary by default); a count under 1 is no mark. The day keeps its height. The day's accessible name ends with the label, else the count in the page language («3 события»), else «есть события». A host whose function reads new data calls refresh(); a new map or attribute draws by itself. Without marks the days are drawn as before."
       }
     },
     "additionalProperties": false
@@ -520,6 +525,13 @@
     },
     "chooseCustomRange": {
       "summary": "Let go of the quick range and move focus to the grid.",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "refresh": {
+      "summary": "Draws the day marks again (vocabulary refresh): for a day-marks function whose data changed. Answers applied.",
       "arguments": [],
       "returns": {
         "type": "object"
@@ -766,11 +778,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "7333cfaa53716656244082e331d0b1fb8e9d0a1344b4932c31ad8f36715fd843"
+        "sha256": "ae944818fa87f1b1ce7dd59581edf73d16808db9fb62b653a3b5c71a344612aa"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "d9f6dad1095e8b0fff9b30886a61effe654fc3cacf78c868dbcf489bc76fcc28"
+        "sha256": "c0b54505f7915787b86282bfdd5fc3a87d23082215edc7fa741a0876d21a3147"
       },
       {
         "path": "src/smart/input-date/rule.js",
@@ -778,7 +790,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "0db6182de3b713003c243eb535f5f73256f2818bca2817c774ef6a779121ada7"
+        "sha256": "251feb43637ae01304b7eddb4e6737cf78015b9cd25660d8326f467c9e3955fa"
       }
     ],
     "generated_runtime": [

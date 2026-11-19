@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-date's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-date",
   "tag": "sf-input-date",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -322,6 +322,34 @@
         }
       },
       "summary": "The site's special days (owner decision C198): a list of {date: 'YYYY-MM-DD', kind, name?}, the property or JSON in the attribute. holiday and day-off (a moved day off) take the day-off ink, working-day (a moved working Saturday) the weekday's; each listed day gets a dot under its number, its name joins the day's accessible name, and a line under the grid names the day under the pointer, with the focus or chosen. Empty: plain weekends, as before. The Framework ships no country calendar."
+    },
+    "day-marks": {
+      "type": "object",
+      "default": {},
+      "of": {
+        "count": {
+          "type": "number",
+          "integer": true,
+          "optional": true
+        },
+        "tone": {
+          "type": "enum",
+          "values": [
+            "primary",
+            "error",
+            "warning",
+            "success",
+            "tertiary",
+            "neutral"
+          ],
+          "optional": true
+        },
+        "label": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "summary": "Marks on days (CL-6): the property as a function (isoDate) -> {count?, tone?, label?} | null, asked for each day drawn, or as a map {'YYYY-MM-DD': {count?, tone?, label?}}; the attribute as JSON of the map. A count of 1 or none draws a dot under the number, 2 and more a small number (99+ over 99), in the tone's ink (primary by default); a count under 1 is no mark. The day keeps its height. The day's accessible name ends with the label, else the count in the page language («3 события»), else «есть события». A host whose function reads new data calls refresh(); a new map or attribute draws by itself. Without marks the days are drawn as before."
     }
   },
   "values": {
@@ -398,6 +426,12 @@
         "refused"
       ],
       "summary": "Let go of the quick range and move focus to the grid."
+    },
+    "refresh": {
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Draws the day marks again (vocabulary refresh): for a day-marks function whose data changed. Answers applied."
     }
   },
   "form": {
@@ -673,7 +707,8 @@
     "version 1.14.2 (written on the branch as 1.13.1; 2026-11-17, owner decision C268; numbered above 1.13.0 on origin/fix/fields-c224-c227): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.14.3 (written on the branch as 1.14.0; 2026-11-17, group build 10, fix/forms-fm2; component.datepicker 1.10.1; numbered above 1.13.1 on another origin branch): a minor. SM-DP-1: the text box holds a whole value of its format -- two dates and the dash for a period (23 figures), the time with a date-time -- plus its padding, its figures tabular; the field grows to it, so a period's second date is never cut (07.09.2026 – 13.09.2026 stood in 186 of the 191 px it needs). SM-DP-2: the legacy names left-icon (icon-start) and input-size (size) get their date: dated rows in aliases.json (manifest-only, read by the element itself), a change journal record attribute-input-date-legacy-names, and each use noted in SF.deprecations, until 2027-01-01. Settings, values, events and keys otherwise unchanged.",
     "version 1.15.0 (2026-11-17, owner decision C293, the date filter; component.datepicker 1.11.0): a minor, values added and a behaviour. DF-5: the calendar quick ranges are whole periods -- this-week runs to the week's last day, this-month to the month's last day -- where they ended today; last-week, this-year and the forward tomorrow, next-week, next-month join the built-in ids (relative presets and the presets attribute); last-7-days and last-30-days still end today. DF-8: the calendar's markup carries only its own class names (the utility names grid, grid-col-7, grid-col-3, flex, inline-flex, absolute, relative and gap-1/4 are gone), its layout is component.datepicker's, so a host page's unlayered .grid no longer lays the days out in one column. DF-7: the field's wrapper takes the row it stands in, as sf-input does. Settings, events and keys otherwise unchanged.",
-    "version 1.16.0 (2026-11-17, Larena record forms msg-9e7b5015, dispatcher decision: one look vocabulary for every field; numbered above 1.15.0 on origin/feat/date-filter-c293): a minor (§4.10). The setting appearance (bordered, the default, or filled) is added: the name and the words of sf-input, sf-input-textarea and sf-dropdown, so a form gives every field one look. input-type, its legacy name, keeps working until 2027-01-01 (aliases row, journal attribute-input-date-input-type-to-appearance): noted in SF.deprecations and said once per page in the console, appearance winning when both are set. The field drawn is the same sf-input as before."
+    "version 1.16.0 (2026-11-17, Larena record forms msg-9e7b5015, dispatcher decision: one look vocabulary for every field; numbered above 1.15.0 on origin/feat/date-filter-c293): a minor (§4.10). The setting appearance (bordered, the default, or filled) is added: the name and the words of sf-input, sf-input-textarea and sf-dropdown, so a form gives every field one look. input-type, its legacy name, keeps working until 2027-01-01 (aliases row, journal attribute-input-date-input-type-to-appearance): noted in SF.deprecations and said once per page in the console, appearance winning when both are set. The field drawn is the same sf-input as before.",
+    "version 1.17.0 (2026-11-18, CL-6 of the calendar layout study ui-control control/research/2026-11-18-calendar-view, DEV msg-9e2f03e75ea646a9a00e; component.datepicker 1.12.0; numbered above 1.16.0 on origin/integration/pair-next-15): a minor, a setting and an action added. day-marks: a function of the ISO day or a map by ISO day (the attribute JSON of the map) gives a day a mark {count?, tone?, label?}: a 6 px dot (C132: a coloured mark is never under 6) for a count of 1 or none, a small number for 2 and more (99+ over 99), in the tone's ink, in the row under the number every day keeps, so the day's size does not change; on a chosen day the fill's ink, in a period's band the band's, on a disabled day the disabled ink. A holiday's dot (C198) gives way on a marked day. The day's accessible name ends with the label, else the plural count (words mark-count, mark-present). refresh() draws the marks again. The phone ribbon draws them too. Values, events and keys unchanged."
   ],
   "x-registry": {
     "kind": "composite",

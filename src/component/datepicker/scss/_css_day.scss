@@ -1,3 +1,5 @@
+@use '../../../core/scss/vars/sf_var__size' as size;
+
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-datepicker-day {
@@ -81,6 +83,72 @@
     border-radius: var(--sf-radius-circle);
     pointer-events: none;
   }
+
+  /* A day's mark (CL-6, calendar layout study 2026-11-18: the panel as the
+     mini month beside a calendar and as the phone month): a dot for a day
+     with an event or a small number for two and more («99+» over 99), in the
+     tone's ink. It stands in the row under the number that every day keeps
+     (the day's own height, as the caption above), so a marked day is no
+     taller and its number does not move. The row is the cell's last line of
+     the smallest text (12 at every size): under the number's ink, with the
+     count's whole line inside the day (a row from the number's line box down
+     was 8 px at 40 and pushed the count's line 2 px past the day's edge). The dot is a coloured mark, so it
+     is the micro ladder's 6, never the tick's 4 (C132); the number is the
+     smallest text step. A holiday's dot (C198) steps aside on a marked day:
+     the day keeps its day-off ink and its name, and the two would overlap. */
+  .sf-datepicker-day:has(> .sf-datepicker-day-mark) {
+    position: relative;
+  }
+
+  .sf-datepicker-day > .sf-datepicker-day-mark {
+    --sf-datepicker-day-mark--color: var(--sf-primary);
+    --sf-datepicker-day-mark--size: #{size.small-step(6)};
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    block-size: var(--sf-text-height-1\/4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1\/4);
+    font-weight: var(--sf-font-weight-medium);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--sf-text-height-1\/4);
+    pointer-events: none;
+  }
+
+  .sf-datepicker-day > .sf-datepicker-day-mark--dot::before {
+    content: "";
+    flex: none;
+    inline-size: var(--sf-datepicker-day-mark--size);
+    block-size: var(--sf-datepicker-day-mark--size);
+    border-radius: var(--sf-radius-circle);
+  }
+
+  .sf-datepicker-day > .sf-datepicker-day-mark--error {
+    --sf-datepicker-day-mark--color: var(--sf-error);
+  }
+
+  .sf-datepicker-day > .sf-datepicker-day-mark--warning {
+    --sf-datepicker-day-mark--color: var(--sf-warning);
+  }
+
+  .sf-datepicker-day > .sf-datepicker-day-mark--success {
+    --sf-datepicker-day-mark--color: var(--sf-success);
+  }
+
+  .sf-datepicker-day > .sf-datepicker-day-mark--tertiary {
+    --sf-datepicker-day-mark--color: var(--sf-tertiary);
+  }
+
+  .sf-datepicker-day > .sf-datepicker-day-mark--neutral {
+    --sf-datepicker-day-mark--color: var(--sf-on-surface-variant);
+  }
+
+  .sf-datepicker-day.sf-datepicker-day-special:has(> .sf-datepicker-day-mark) .sf-datepicker-day-date::after {
+    content: none;
+  }
 }
 
 // Paint (C273): the fill, edge and place colour of these parts stand in
@@ -97,6 +165,12 @@
     color: var(--sf-datepicker-day-info--color);
   }
   .sf-datepicker-day.sf-datepicker-day-special .sf-datepicker-day-date::after {
+    background-color: currentColor;
+  }
+  .sf-datepicker-day > .sf-datepicker-day-mark {
+    color: var(--sf-datepicker-day-mark--color);
+  }
+  .sf-datepicker-day > .sf-datepicker-day-mark--dot::before {
     background-color: currentColor;
   }
 }
@@ -179,5 +253,33 @@
 
   .sf-datepicker-day:is(.sf-datepicker-day-today, [aria-current="date"]):not(:disabled):not(.disabled):not(.active):not(:active):not(.sf-datepicker-day-start):not(.sf-datepicker-day-end) .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-primary);
+  }
+  /* A mark keeps its contrast in every state of its day (CL-6): on a chosen
+     day -- the selected one, a period's end, a day held pressed -- it takes
+     the fill's own ink, as the number does; inside a period's band the
+     band's ink; on a disabled day the disabled ink. Today keeps the tone:
+     the ring and the number say today, the mark says the events. */
+  .sf-datepicker-day:is(.active, .sf-datepicker-day-start, .sf-datepicker-day-end) > .sf-datepicker-day-mark,
+  .sf-datepicker-day:not(:disabled):not(.disabled):active > .sf-datepicker-day-mark {
+    --sf-datepicker-day-mark--color: var(--sf-datepicker-selected-color, var(--sf-on-primary));
+  }
+
+  .sf-datepicker-day.sf-datepicker-day-selected:not(.sf-datepicker-day-start):not(.sf-datepicker-day-end) > .sf-datepicker-day-mark {
+    --sf-datepicker-day-mark--color: var(--sf-on-primary-container);
+  }
+
+  .sf-datepicker-day:is(:disabled, .disabled) > .sf-datepicker-day-mark {
+    --sf-datepicker-day-mark--color: var(--sf-on-surface-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .sf-datepicker-day > .sf-datepicker-day-mark--dot::before {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
+
+    .sf-datepicker-day:is(.active, .sf-datepicker-day-start, .sf-datepicker-day-end) > .sf-datepicker-day-mark--dot::before {
+      background-color: HighlightText;
+    }
   }
 }

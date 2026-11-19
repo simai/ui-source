@@ -15,6 +15,11 @@
     "hours": "Hours",
     "later-hour": "Next hour",
     "later-minute": "Next minutes",
+    "mark-count": {
+      "one": "{n} event",
+      "other": "{n} events"
+    },
+    "mark-present": "has events",
     "minutes": "Minutes",
     "next-month": "Next month",
     "next-years": "Next years",
