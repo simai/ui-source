@@ -299,7 +299,7 @@ test('SM-PN-1, EX-3: a numbers place of either twin shrinks to square when the r
   // The arithmetic at the phone step (control 36, gap 8): Smart two arrows and
   // five places, the class long range seven places.
   assert.ok(2 * 36 + 5 * 36 + 6 * 8 <= 326 && 7 * 36 + 6 * 8 <= 326);
-  assert.equal(json('src/component/pagination/passport.json').version, '1.6.3'); // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9)
+  assert.equal(json('src/component/pagination/passport.json').version, '1.7.0'); // feat/button-icon-toggle: 1.7.0, no closing line inside a place; // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9)
 });
 
 // ---- SM-DL-2: the class row puts the size under the name on a phone --------

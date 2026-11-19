@@ -9,6 +9,7 @@ import {
   iconSubsetCssFromManifest,
   iconSubsetHostOrigin,
   isRememberedIconSubsetUsable,
+  publicIconFillAxis,
   readRememberedIconSubset,
 } from '../src/core/js/icon-subset-memory.js';
 
@@ -184,4 +185,30 @@ test('icons.remember and the site hints are documented', () => {
   assert.match(docs, /<link rel="preload" as="font" type="font\/woff2" crossorigin/u);
   assert.match(docs, /cacheVersion: 'ui-2d39b617a719'/u);
   assert.match(read('src/smart/icon/docs.md'), /icons\.remember/u);
+});
+
+// DEV TG-2 (2026-11-19): the subset rule outranks the sheet's .sf-icon and read
+// only the private --sf-icon--fill, so a page's --sf-icon-fill did nothing
+// while the subset font drew. Every font path now reads the public name first.
+test('the subset and service stylesheets read the public --sf-icon-fill first', () => {
+  const service = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), 'fixtures/icon-subset-service/ms/css'), 'utf8');
+  assert.match(service, /'FILL' var\(--sf-icon--fill, 0\)/u);
+  const rewritten = publicIconFillAxis(service);
+  assert.match(rewritten, /'FILL' var\(--sf-icon-fill, var\(--sf-icon--fill, 0\)\)/u);
+  assert.doesNotMatch(rewritten, /'FILL' var\(--sf-icon--fill/u);
+  assert.equal(publicIconFillAxis(rewritten), rewritten);
+  assert.equal(publicIconFillAxis("'FILL' var(--sf-icon--fill)"), "'FILL' var(--sf-icon-fill, var(--sf-icon--fill, 0))");
+  const built = iconSubsetCssFromManifest({
+    family: 'Material Symbols Outlined',
+    icons: ['add'],
+    fonts: [{url: 'https://icons.simai.io/f/a.woff2', weight: 400}],
+  }).cssText;
+  assert.match(built, /'FILL' var\(--sf-icon-fill, var\(--sf-icon--fill, 0\)\)/u);
+});
+
+test('the Loader puts the public fill into every subset and fallback rule it writes', () => {
+  const runtime = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../src/core/js/iconSubsetRuntime.js'), 'utf8');
+  assert.doesNotMatch(runtime, /'FILL' var\(--sf-icon--fill/u);
+  assert.match(runtime, /return publicIconFillAxis\(cssText\);/u);
+  assert.match(runtime, /publicIconFillAxis\(options\.cssText \|\| builtCssText\)/u);
 });

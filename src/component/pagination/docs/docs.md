@@ -70,5 +70,16 @@ page. Reserve the row with the variable, not with a measured pixel count: the
 sum moves with the size tokens and a page that copied today's number would hold
 the wrong room after the next ladder change.
 
+The line under the row closes a list that stands on the page (1.7.0). Inside a
+place -- a card, a grey plate, a `bg-surface-*` block, a docked drawer, a
+popup -- the place's own edge or ground closes the list, so the line is
+transparent there: it no longer draws a second rule a pixel above a framed
+box's edge or under a list on a pane. The pixel stays, so the row keeps the
+height published above. `--sf-pagination-divider-color` (public) colours this
+line as well as the Show more row's; a page's own frame that is not a place
+sets it to `transparent`:
+
+    .list-box { border: var(--sf-px) solid var(--sf-outline-variant); --sf-pagination-divider-color: transparent; }
+
 The component provides presentation only. Result loading, URL policy, history,
 selection state and batch actions belong to the host or to a Smart composition.

@@ -257,7 +257,19 @@
   flex-wrap: wrap;
   --sf-pagination-main--background-color: transparent;
   --sf-pagination-main--border-bottom-width: var(--sf-px);
-  --sf-pagination-main--border-color: var(--sf-outline-variant);
+  /* The line under the page row closes a list standing on the page. Inside a
+     place -- a card, a grey plate, a bg-surface-* block, a popup -- the place's
+     own edge or ground closes it, and the row's line drew a second rule under
+     the footer, a pixel above a framed box's edge (DEV msg-b137d217, the
+     admin list study, 2026-11-19): there it is transparent. A place declares
+     --sf-place--ink-variant and the page declares none, so the colour mixed
+     at 0 % of the hook is valid -- transparent -- only on a place and falls
+     back to the line elsewhere. The 1 px stays, so the row keeps its published
+     height (--sf-pagination-block-size-<step>) and nothing moves. The public
+     --sf-pagination-divider-color reaches this line too (it reached only the
+     Show more row's): a page's own frame turns it off with transparent. */
+  --sf-pagination-main--line-on-place: color-mix(in srgb, transparent, var(--sf-place--ink-variant) 0%);
+  --sf-pagination-main--border-color: var(--sf-pagination-divider-color, var(--sf-pagination-main--line-on-place, var(--sf-outline-variant)));
   --sf-pagination-main--border-style: solid;
   --sf-pagination-main--padding-bottom: var(--sf-pagination--padding-block);
   --sf-pagination-main--padding-top: var(--sf-pagination--padding-block);

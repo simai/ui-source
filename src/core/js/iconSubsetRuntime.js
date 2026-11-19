@@ -1,5 +1,6 @@
 import pageStorage from './page-storage.js';
 import {
+  ICON_FILL_AXIS,
   iconManifestFontFamily,
   iconManifestType,
   iconSubsetCssFromManifest,
@@ -8,6 +9,7 @@ import {
   isIconSubsetRemembered,
   isRememberedIconSubsetUsable,
   normalizeIconFontLoadWeight,
+  publicIconFillAxis,
 } from './icon-subset-memory.js';
 import { checkIconGlyph, markCustomGlyph, markMirrorGlyph, registeredIcon } from "./icon-glyphs.js";
 
@@ -1696,7 +1698,7 @@ export function installIconSubsetRuntime(
       `  font-family: '${fallbackFont.family}';\n` +
       `  font-feature-settings: 'liga';\n` +
       `  font-variation-settings: ` +
-      `'FILL' var(--sf-icon--fill, 0), ` +
+      `${ICON_FILL_AXIS}, ` +
       `'GRAD' var(--sf-icon--grade, 0), ` +
       `'opsz' var(--sf-icon--optical-size, 24);\n` +
       `}\n`
@@ -1883,7 +1885,8 @@ export function installIconSubsetRuntime(
     if (!manifest || typeof manifest !== "object") return false;
     const { cssText: builtCssText, weights } =
       this.buildIconSubsetCssFromManifest(manifest);
-    const cssText = options.cssText || builtCssText;
+    // A stylesheet handed in reads the public fill first too (DEV TG-2).
+    const cssText = publicIconFillAxis(options.cssText || builtCssText);
     if (!cssText) return false;
 
     const icons = Array.isArray(manifest.icons) ? manifest.icons : [];
@@ -2629,13 +2632,16 @@ export function installIconSubsetRuntime(
     cssText = "",
     manifest = null,
   ) {
+    // The service's rule outranks the sheet's .sf-icon and names only the
+    // private --sf-icon--fill: the public --sf-icon-fill is put first in it,
+    // whichever stylesheet goes in (DEV TG-2).
     if (!manifest || !Array.isArray(manifest.fonts) || !manifest.fonts.length) {
-      return cssText;
+      return publicIconFillAxis(cssText);
     }
     const family = this.getIconManifestFontFamily(manifest);
     const text = String(cssText || "");
     if (text.includes(`'${family}'`) || text.includes(`"${family}"`)) {
-      return cssText;
+      return publicIconFillAxis(cssText);
     }
     const rebuilt = iconSubsetCssFromManifest(manifest).cssText;
     if (!rebuilt) return cssText;

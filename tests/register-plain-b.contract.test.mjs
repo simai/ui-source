@@ -24,7 +24,7 @@ test('C105 H5 (RG-B-11): the pagination list spaces its numbers without the cont
   assert.match(rule, /gap: var\(--sf-pagination-container--gap, var\(--sf-pagination-gap, var\(--sf-space-1\\\/3\)\)\);/);
   // The container keeps the same step, so a list inside it reads the same.
   assert.match(css, /--sf-pagination-container--gap: var\(--sf-pagination-gap, var\(--sf-space-1\\\/3\)\);/);
-  assert.equal((await json('src/component/pagination/passport.json')).version, '1.6.3'); // group build 7: the integrated number (the branch wrote 1.4.4) // C212 focus offsets: 1.4.6 // group build 9: 1.4.6 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9)
+  assert.equal((await json('src/component/pagination/passport.json')).version, '1.7.0'); // feat/button-icon-toggle: 1.7.0, no closing line inside a place; // group build 7: the integrated number (the branch wrote 1.4.4) // C212 focus offsets: 1.4.6 // group build 9: 1.4.6 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9)
 });
 
 test('RG-B-50: a reference card draws one ring, the link inside none', async () => {

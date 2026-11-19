@@ -60,10 +60,11 @@ const sfButtonIconMeta = {
         "tonal",
         "outline",
         "ghost",
-        "plain"
+        "plain",
+        "toggle"
       ],
       "default": "default",
-      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it), and plain (owner decision C201): no fill or edge in any state, only the glyph's ink moves -- on-surface-variant at rest, on-surface under the pointer, primary on a press -- for an icon inside another element (a field's action, the help mark at a heading, copy in a code block); a plain icon button is neutral whatever the scheme or the status say. link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning."
+      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it), and plain (owner decision C201): no fill or edge in any state, only the glyph's ink moves -- on-surface-variant at rest, on-surface under the pointer, primary on a press -- for an icon inside another element (a field's action, the help mark at a heading, copy in a code block); a plain icon button is neutral whatever the scheme or the status say. toggle (owner decision C393): the quiet on/off icon in a row of controls (a view or panel switch) whose state is the plate, never the glyph -- off a neutral ghost (no fill, the glyph on-surface-icon, the surface container step under the pointer), on (pressed) the soft primary container and a 1 px primary ring inside, the glyph keeping its outline weight; neutral whatever the scheme or the status say. link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning."
     },
     "scheme": {
       "kind": "enum",
@@ -219,7 +220,7 @@ const sfButtonIconMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (rule C12), on a toggle: outline or ghost in the neutral scheme (owner decision C211 (1)), and a filled (default) button of any scheme at its scheme's pressed step, its own ink and the icon filled (owner decision C309 (2)); another look keeps its own with aria-pressed and the console says once that it is no toggle; one choice among several is sf-segmented. pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (rule C12), on a toggle: outline or ghost in the neutral scheme (owner decision C211 (1)), and a filled (default) button of any scheme at its scheme's pressed step, its own ink and the icon filled (owner decision C309 (2)); the toggle look (owner decision C393) draws on as the primary container and a 1 px primary ring inside, the icon kept outline; another look keeps its own with aria-pressed and the console says once that it is no toggle; one choice among several is sf-segmented. pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     },
     "label-pressed": {
       "kind": "custom",
@@ -258,7 +259,8 @@ const sfButtonIconMeta = {
         "tonal",
         "outline",
         "ghost",
-        "plain"
+        "plain",
+        "toggle"
       ],
       "default": "default",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."

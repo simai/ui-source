@@ -48,7 +48,7 @@ test('metadata refresh is generic and also corrects icon button inputs', async (
   // 1.6.0, decision C15): link reads as ghost, surface is drawn as tonal
   // on-surface; and plain (1.12.0, owner decision C201), an icon inside
   // another element with no plate in any state.
-  assert.deepEqual(manifest.inputs.properties.type.enum, ['default', 'tonal', 'outline', 'ghost', 'plain']);
+  assert.deepEqual(manifest.inputs.properties.type.enum, ['default', 'tonal', 'outline', 'ghost', 'plain', 'toggle']);
   assert.equal(manifest.inputs.properties.icon.type, 'string');
   assert.equal(manifest.inputs.properties.loading.type, 'boolean');
 });
