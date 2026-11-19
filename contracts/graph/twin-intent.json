@@ -124,14 +124,6 @@
       "date": "2026-11-17"
     },
     {
-      "unit": "component.context-menu",
-      "version": "1.19.1",
-      "twin": "smart.menu-context",
-      "reason": "RTL icons (fix/rtl-direction-icons): this sheet turned a directional glyph that the icons sheet already turns (C151 point 3), so it pointed the left-to-right way in RTL; the rule for the submenu chevron is fixed in the class sheet, which smart.menu-context draws its markup with, so the Smart twin takes the fix without a change of its own files",
-      "decision": "C151 (3)",
-      "date": "2026-11-19"
-    },
-    {
       "unit": "component.menu",
       "version": "1.10.3",
       "twin": "smart.menu",

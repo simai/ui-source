@@ -104,10 +104,10 @@ test('C191 (4)-(6): sf-menu-context 1.24.0 draws a meter row over sf-progress-ba
 
 test('C191 (4): the meter row is declared, styled from the systems, documented and loads the bar lazily', () => {
   const manifest = json('src/smart/menu-context/component.json');
-  assert.ok(['1.25.3', '1.25.4', '1.25.5', '1.26.1', '1.26.3', '1.27.0'].includes(manifest.version), manifest.version); // group build 7: the integrated number (the branch wrote 1.24.0); 1.25.4: TT-11 (fix/returns-gb67); 1.25.5: the openFor() warning (fix/core-small-d1); 1.26.1: current event names in the reference (fix/misc-m10); 1.27.0: for reaches shadow-root areas (fix/menu-context-shadow-areas)
+  assert.ok(['1.25.3', '1.25.4', '1.25.5', '1.26.1', '1.26.3', '1.27.0', '1.27.2'].includes(manifest.version), manifest.version); // group build 7: the integrated number (the branch wrote 1.24.0); 1.25.4: TT-11 (fix/returns-gb67); 1.25.5: the openFor() warning (fix/core-small-d1); 1.26.1: current event names in the reference (fix/misc-m10); 1.27.0: for reaches shadow-root areas (fix/menu-context-shadow-areas) // fix/rtl-direction-icons: one RTL turn
   assert.ok(manifest['x-registry'].item_contract.kinds.meter.fields.valueText);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-progress-bar' && relation.lazy === true));
-  assert.equal(json('src/component/context-menu/passport.json').version, '1.18.1'); // group build 8: C208's patch // group build 9: 1.16.1 moved on by the merged branches or a GB9 patch // group build 10: 1.17.0 moved on by the merged branches or a GB10 patch // group build 11: 1.18.0 moved on by the merged branches or a GB11 merge (fix/c178-findings)
+  assert.equal(json('src/component/context-menu/passport.json').version, '1.19.1'); // group build 8: C208's patch // group build 9: 1.16.1 moved on by the merged branches or a GB9 patch // group build 10: 1.17.0 moved on by the merged branches or a GB10 patch // group build 11: 1.18.0 moved on by the merged branches or a GB11 merge (fix/c178-findings) // fix/rtl-direction-icons: one RTL turn
   const sheet = read('src/component/context-menu/scss/_css__context_menu.scss');
   const block = sheet.slice(sheet.indexOf('.sf-context-menu-meter {'), sheet.indexOf('/* The search is the panel\'s header'));
   assert.match(block, /gap: var\(--sf-space-1\\\/4\);/);

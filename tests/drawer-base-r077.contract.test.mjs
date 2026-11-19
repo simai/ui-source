@@ -68,7 +68,7 @@ test('drawer r-077 (3): content headings start below the panel title, by role to
 
 test('drawer r-077: the version and its migration step', () => {
   // 1.16.0 or a later patch (1.16.1: owner decision C205, docs and gates only).
-  assert.match(manifest.version, /^1\.1[67]\.\d+$/u); // C282: moved on by the language-file patch (Russian is a language file)
+  assert.match(manifest.version, /^1\.1[678]\.\d+$/u); // C282: moved on by the language-file patch (Russian is a language file) // fix/rtl-direction-icons: one RTL turn
   const steps = JSON.stringify(manifest);
   assert.match(steps, /"from":"1\.15\.0","to":"1\.16\.0"/u);
 });

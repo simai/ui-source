@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.27.0",
+  "version": "1.27.2",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -1042,7 +1042,7 @@
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "1c465786268718277189cbf87510140f713bf56a8f34b4b59dbe79e8dd95ea1f"
+        "sha256": "68aa40d8c2c41deb8c0e93a4839346ffaabdb84fda59f7eb25dd6ddd4c71e97e"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
