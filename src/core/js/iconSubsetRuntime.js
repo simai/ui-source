@@ -2682,6 +2682,7 @@ export function installIconSubsetRuntime(
       (this.iconSubsetAppliedGenerations.get(type) || 0) > request.generation;
 
     let manifest = null;
+    let priorManifest = null;
     let appliedStyle = null;
     try {
       // No cache: "reload": the list is the cache key, and the service marks
@@ -2755,6 +2756,7 @@ export function installIconSubsetRuntime(
             JSON.stringify(manifest),
           );
         }
+        priorManifest = this.getIconManifestForType(type);
         this.setIconManifestForType(type, manifest);
         this.markManifestIconsAsLoaded(manifest);
         if (Array.isArray(manifest.fonts) && manifest.fonts.length) {
@@ -2764,6 +2766,20 @@ export function installIconSubsetRuntime(
         }
       } else {
         await this.verifyIconCssFonts(cssText, { icons });
+      }
+      // Its face is in, but the page may have moved on while it loaded: a
+      // request asked before the deadline (only the header's menu) answered
+      // after the full font took over (chevrons and all) and then took the
+      // fallback away, so every name it does not hold drew in a system font,
+      // still marked loaded, until the grown subset came (the font held 6 s:
+      // «ar» of keyboard_arrow_down for 2.6 s, icon-ready 2026-11-19). The
+      // same rule as before its face: an answer that is outrun, or behind the
+      // full font without every name the page draws, goes, and the full font
+      // keeps drawing.
+      if (dropped()) {
+        this.retireIconSubsetStyle(appliedStyle);
+        if (manifest) this.setIconManifestForType(type, priorManifest);
+        return false;
       }
       // Not document.fonts.ready: it waits for every font of the page, the
       // text faces too; the face this request loads is awaited above.

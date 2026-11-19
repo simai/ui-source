@@ -140,6 +140,18 @@ subset path remains the preferred path for all three families.
 There is no `@latest` fallback. A service failure produces one diagnostic per
 family and does not expose a network dependency as a correctness requirement.
 
+A subset answer takes over from the full font only when it holds every name
+the page draws in that family, and this is checked again once its face is in,
+not only when the answer arrives. An answer that came before the deadline
+(say the header's `menu` alone) may still be loading its face when a grown
+request times out and the full font draws every name; when that older face
+comes in, it does not take the full font away: its stylesheet leaves, the full
+font keeps drawing, and the grown subset takes over when its face is in.
+Before 2026-11-19 it did, and every name it did not hold drew its letters in a
+system font, still marked loaded, until the grown face came (icon font held
+6 s on a cold load: about 2.6 s of «ar» in each menu chevron; ui-control
+`control/evidence/2026-11-19-icon-ready`).
+
 ## An app that serves its own icons
 
 The subset service is an optimisation, not a dependency. Four settings, all
