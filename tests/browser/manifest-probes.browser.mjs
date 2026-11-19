@@ -89,6 +89,13 @@ const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'),
 for (const [name, path] of Object.entries(parts)) if (!existsSync(path)) throw new Error(`${name} not found under ${out}`);
 
 const smartRoot = join(repo, 'src', 'smart');
+// The tags a Smart component defines (component.json `tag`). A page waits for
+// these only: a child marker a component reads, as <sf-breadcrumbs-item>, is
+// never defined, and waiting for it timed out every check of its page.
+const definedTags = new Set(readdirSync(smartRoot)
+  .filter((folder) => existsSync(join(smartRoot, folder, 'component.json')))
+  .map((folder) => JSON.parse(readFileSync(join(smartRoot, folder, 'component.json'), 'utf8')).tag)
+  .filter(Boolean));
 const probes = [
   ...readdirSync(smartRoot)
     .filter((folder) => (!only.length || only.includes(folder)) && existsSync(join(smartRoot, folder, 'probe.json')))
@@ -531,7 +538,7 @@ try {
       try {
         await page.goto(`${base}/probe`);
         if (shaped) {
-          const tags = [...new Set([...current.matchAll(/<(sf-[a-z-]+)/gu)].map((m) => m[1]))];
+          const tags = [...new Set([...current.matchAll(/<(sf-[a-z0-9-]+)/gu)].map((m) => m[1]))].filter((tag) => definedTags.has(tag));
           await page.waitForFunction((tags) => tags.every((tag) => customElements.get(tag)), tags, {timeout: 20000});
           await page.waitForTimeout(400);
           problems = await runSteps(page, check);
