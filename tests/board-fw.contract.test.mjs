@@ -75,7 +75,8 @@ test('sf-sortable in a picture adds no live region and takes no keys until it is
   assert.match(connected, /super\.connectedCallback\?\.\(\);\s*(?:\/\/[^\n]*\n\s*)*if \(this\.sfInPicture\?\.\(\)\) return;\s*if \(this\.connection\) return;/u);
   for (const name of ['sortable', 'editor-inline', 'editor-overlay']) {
     const component = JSON.parse(read(`src/smart/${name}/component.json`));
-    assert.match(component['x-decisions'].at(-1), /fix\/board-fw/u, `${name} notes the plain host`);
+    // group build 14: a later note (the manifest probe patch) may follow it
+    assert.ok(component['x-decisions'].some((note) => /fix\/board-fw/u.test(note)), `${name} notes the plain host`);
   }
   assert.equal(JSON.parse(read('src/smart/sortable/component.json')).version, '1.7.3'); // group build 13: 1.7.2 moved on by the merged branches or a GB11 merge
 });

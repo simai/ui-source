@@ -117,5 +117,5 @@ test('(6) sf-empty-state size 1/2: heading-6 size on the card title\'s line, 16/
   // Sizes 1 and 2 keep their rungs.
   assert.match(ruleOf(sheet, '.sf-empty-state .sf-empty-state-title'), /--sf-placeholder--title-height: var\(--sf-heading-4--height\);/u);
   assert.match(ruleOf(sheet, '.sf-empty-state--size-2 .sf-empty-state-title'), /--sf-placeholder--title-height: var\(--sf-heading-3--height\);/u);
-  assert.equal(JSON.parse(read('src/smart/empty-state/component.json')).version, '1.6.6'); // group build 13: 1.6.5 moved on by the merged branches or the C278 language patch
+  assert.equal(JSON.parse(read('src/smart/empty-state/component.json')).version, '1.6.7'); // group build 13: 1.6.5 moved on by the merged branches or the C278 language patch // group build 14: 1.6.6 moved on by the merged branches or the C278 language patch
 });

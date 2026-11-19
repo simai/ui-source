@@ -89,7 +89,8 @@ test('VP-26: a tab list alone folds by the first box around it wider than its co
   const source = read('src/smart/tabs/index.js');
   assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.4.7'); // group build 13: 1.4.4 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch
   const contentWidth = (box) => box.width;
-  const placeBox = new Function('contentWidth', `return function () {${method(source, 'placeBox')}}`)(contentWidth);
+  const layoutWidth = (box) => box.width; // group build 14: the layout widths of fix/segmented-transform (1.4.7)
+  const placeBox = new Function('contentWidth', 'layoutWidth', `return function () {${method(source, 'placeBox')}}`)(contentWidth, layoutWidth);
   const box = (width, parentElement = null) => ({width, parentElement, getBoundingClientRect: () => ({width})});
   const html = box(1440);
   const body = box(1440, html);

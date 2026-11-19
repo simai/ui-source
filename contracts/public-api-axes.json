@@ -62,6 +62,9 @@
       ],
       "input-textarea": [
         "flush"
+      ],
+      "dropdown": [
+        "band"
       ]
     },
     "former_settings": [
