@@ -221,10 +221,10 @@
       "rule_name": "cl-mail-library",
       "folder": "mail-library",
       "requires": [
-        "smart.button",
         "smart.empty-state",
         "smart.icon",
         "smart.input",
+        "smart.segmented",
         "utility.sr-only"
       ]
     },
