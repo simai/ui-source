@@ -34,6 +34,30 @@ Attributes:
   1 when the page gives none); else the size of the `start` control beside
   it; alone with the heading — no actions, or a phone's actions on a line of
   their own — the half step (32).
+  Its look (1.11.0, views study VS-10, owner decision C393): where the
+  Framework's icon button has the toggle look (`sf-button-icon
+  appearance="toggle"`), the star is that toggle — off a quiet ghost, on the
+  soft primary plate with a 1 px primary ring inside, the glyph kept outline;
+  it carries `aria-pressed` and one name and tooltip, «В избранное», so the
+  state is said once (C12). Where the toggle look is not there, the star
+  draws the filled glyph in `--sf-page-header-star-color` and says its state
+  by its name («В избранное» / «Убрать из избранного»). The header checks the
+  icon button's own interface, not the page's sheets.
+
+```html
+<!-- A list page that is a favourite: the star on, beside a long heading.
+     The host answers the press itself (cancels the toggle, sets star). -->
+<sf-header-page id="orders" heading="Заказы интернет-магазина за текущий квартал" star>
+  <sf-button slot="actions" icon-start="add" text="Создать"></sf-button>
+</sf-header-page>
+<script>
+  document.getElementById('orders').addEventListener('sf-header-page-toggle', async (event) => {
+    event.preventDefault();
+    const saved = await saveFavourite(event.detail.on); // the host keeps favourites
+    event.target.star = saved;
+  });
+</script>
+```
 - `expressive` — the decorative level (owner decision C91, level 2): a tinted
   head, primary tone 50 at 16 (dark 24) fading down to nothing by the head's
   foot, in a padded field with the surface radius. A head narrower than 30rem
@@ -118,7 +142,8 @@ The host keeps favourites; the header keeps nothing.
 Public variables (standard 1.3.8 §6): `--sf-page-header-gap` (between the path
 and the line), `--sf-page-header-line-gap`, `--sf-page-header-actions-gap`,
 `--sf-page-header-heading-color`, `--sf-page-header-star-color` (the
-favourite's star).
+favourite's star in its filled look; the toggle look takes the toggle's own
+colours).
 
 The interface is `component.json`, the examples `examples.json`, the words
 `lang/`.

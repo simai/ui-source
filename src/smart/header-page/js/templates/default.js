@@ -35,13 +35,23 @@ export function renderPageHeaderTemplate(context) {
           // It stands on its row's rung (C103, 1.7.0): the actions' size while
           // they keep the line beside it, else the start control's, else the
           // half step (index.js syncStarRung).
-          ? html`<sf-button-icon size=${context.starSize || '1/2'} appearance="ghost" scheme="on-surface"
-              class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
-              icon="star"
-              ?filled=${on}
-              aria-label=${on ? text('unstar') : text('star')}
-              title=${on ? text('unstar') : text('star')}
-              @click=${() => component.toggleStar()}></sf-button-icon>`
+          ? (context.starToggle
+            // The toggle look (VS-10, C393): one name and aria-pressed, the
+            // state on the plate, the glyph outline (index.js starToggle).
+            ? html`<sf-button-icon size=${context.starSize || '1/2'} appearance="toggle"
+                class=${on ? 'sf-page-header-star sf-page-header-star--toggle sf-page-header-star--on' : 'sf-page-header-star sf-page-header-star--toggle'}
+                icon="star"
+                pressed=${on ? 'true' : 'false'}
+                aria-label=${text('star')}
+                title=${text('star')}
+                @click=${() => component.toggleStar()}></sf-button-icon>`
+            : html`<sf-button-icon size=${context.starSize || '1/2'} appearance="ghost" scheme="on-surface"
+                class=${on ? 'sf-page-header-star sf-page-header-star--on' : 'sf-page-header-star'}
+                icon="star"
+                ?filled=${on}
+                aria-label=${on ? text('unstar') : text('star')}
+                title=${on ? text('unstar') : text('star')}
+                @click=${() => component.toggleStar()}></sf-button-icon>`)
           : nothing}
       </div>
       ${hasHostSlot('actions')
