@@ -84,8 +84,9 @@
   min-inline-size: 0;
 }
 
-/* The media slot: an avatar before the title, the line's gap from it, kept
-   whole. */
+/* The media slot: an avatar first in the title, the title's gap from the
+   name, kept whole (a mark of the title: flex none above); it moves with the
+   name when the line wraps the title. */
 .sf-page-header-media {
   flex: none;
 }

@@ -259,11 +259,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "dca4a14164d8b5af7aa95ba4bccaf91351da32d1a924d3067a6f4d27a275f3d6"
+        "sha256": "3886714b23e3a5f104ab245745d776852829cf03c88054144a09141400bd2b0f"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "5c2d5df506ca5bba64616ce4acb9d47d17cfa554a2f092ed60b77b0b3f48b6a3"
+        "sha256": "b0650cc0cc03f9b9294a3ec76898bec20d61463997f12b6d81576be50730e4d9"
       }
     ],
     "generated_runtime": [

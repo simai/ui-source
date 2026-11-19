@@ -295,7 +295,7 @@ class SfPageHeader extends PageHeaderElement {
     const row = this.actionRow();
     const sizeOf = (element) => element?.getAttribute('size') || '1';
     const first = row ? this.actionItems(row).find((item) => !item.classList.contains('sf-page-header-out')) : null;
-    const start = [...line.children].find((child) => child !== title && child !== row && child.nodeType === 1 && !child.classList.contains('sf-page-header-media'));
+    const start = [...line.children].find((child) => child !== title && child !== row && child.nodeType === 1);
     // Not laid yet: the line before its sheet, an action before its code.
     if (getComputedStyle(line).display !== 'flex' || (first && !drawnBox(controlOf(first)).height)) return;
     let want = '1/2';

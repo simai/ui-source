@@ -63,8 +63,9 @@ Slots:
 - `start` — the start of the line, before the heading: «назад» (an
   `sf-button-icon` `arrow_back`, ghost, on-surface) on the head of a page an
   app opens from a list, or a phone's ☰.
-- `media` — a mark before the title, the line's gap from it: the
-  conversation's `sf-avatar` (C161). It stands on the line's rung: an avatar
+- `media` — a mark before the heading, first in the title and the title's
+  gap from the name: the conversation's `sf-avatar` (C161). It moves with the
+  name when a narrow line wraps the title under «назад». It stands on the line's rung: an avatar
   without a `size` takes the size of the first action, else of the `start`
   control, else `1` beside a `description` (the heading and its line are that
   tall) and `1/2` alone with the heading. A size the page writes stays.

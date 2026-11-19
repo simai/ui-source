@@ -14,7 +14,8 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 //
 // The head of a conversation (C161, 1.10.0) adds three optional parts, each
 // drawn only when the page gives it, so a head without them is the markup it
-// always was: the media slot (an avatar) between the start and the title, a
+// always was: the media slot (an avatar) first in the title, so that it moves
+// with the name when a narrow line wraps the title under «назад», a
 // heading slot (a control, such as a picker of whom to talk to) inside the
 // heading element in place of the heading's words, and a description line
 // under the heading (whether the person is online). heading-level changes the
@@ -41,9 +42,9 @@ export function renderPageHeaderTemplate(context) {
   return html`<header class=${classes} style=${context.rootStyle || nothing}>
     ${hasHostSlot('path') ? html`<div class="sf-page-header-path flex items-cross-center min-w-0">${hostSlot('path')}</div>` : nothing}
     <div class="sf-page-header-line flex items-cross-center flex-wrap min-w-0">
-      ${hasHostSlot('start') ? hostSlot('start') : nothing}${hasHostSlot('media') ? html`<div class="sf-page-header-media flex items-cross-center">${hostSlot('media')}</div>` : nothing}
+      ${hasHostSlot('start') ? hostSlot('start') : nothing}
       <div class="sf-page-header-title flex items-cross-center min-w-0">
-        ${name}
+        ${hasHostSlot('media') ? html`<div class="sf-page-header-media flex items-cross-center">${hostSlot('media')}</div>` : nothing}${name}
         ${count !== '' && count !== null && count !== undefined
           ? html`<sf-badge appearance="tonal" scheme="neutral" size="1/2" text=${String(count)}></sf-badge>`
           : nothing}

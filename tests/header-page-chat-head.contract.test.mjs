@@ -33,7 +33,7 @@ test('heading level 1 without a heading slot keeps the h1 literal; any other lev
 
 test('description and media are drawn only when given', () => {
   assert.match(template, /const name = description\s*\? html`<div class="sf-page-header-name flex flex-col min-w-0">/u);
-  assert.match(template, /hasHostSlot\('media'\) \? html`<div class="sf-page-header-media flex items-cross-center">/u);
+  assert.match(template, /<div class="sf-page-header-title flex items-cross-center min-w-0">\s*\$\{hasHostSlot\('media'\) \? html`<div class="sf-page-header-media flex items-cross-center">\$\{hostSlot\('media'\)\}<\/div>` : nothing\}\$\{name\}/u);
   assert.match(sheet, /\.sf-page-header-description \{\s*font-size: var\(--sf-text-size-1\\\/2\);\s*line-height: var\(--sf-text-height-1\\\/2\);/u);
   assert.match(sheet, /\.sf-page-header-description \{\s*color: var\(--sf-on-surface-variant\);/u);
 });
@@ -42,8 +42,6 @@ test('an avatar without a size takes the line rung; a size the page wrote stays'
   assert.match(source, /for \(const name of \['actions', 'start'\]\)/u);
   assert.match(source, /if \(!rung\) rung = this\.description \? '1' : '1\/2';/u);
   assert.match(source, /node\.hasAttribute\('size'\) && !node\.hasAttribute\('data-sf-page-header-size'\)/u);
-  // The star does not take the avatar for the start control.
-  assert.match(source, /!child\.classList\.contains\('sf-page-header-media'\)/u);
 });
 
 test('core counts the description line and a written media size in the bare tag box', () => {
