@@ -38,7 +38,7 @@ function fn(name) {
 }
 
 test('1.4.0 is noted', () => {
-  assert.equal(component.version, '1.4.3'); // C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.4.2 moved on by the merged branches or a GB10 patch
+  assert.equal(component.version, '1.4.7'); // segmented-transform: layout widths under a transformed ancestor; C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.4.2 moved on by the merged branches or a GB10 patch
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.4.0') && line.includes('C181 (2)')));
 });
 
