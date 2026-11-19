@@ -124,6 +124,8 @@
 .sf-bulk-actions__lead[data-sf-bulk-done] {
   flex: 1 1 0;
   flex-wrap: nowrap;
+  // Never narrower than the icon and the offer: the row wraps first.
+  min-inline-size: min-content;
 }
 
 .sf-bulk-actions__say--done {
