@@ -268,7 +268,11 @@ try {
         language: [Math.round(l.width), Math.round(l.height)], languageName: language.getAttribute('aria-label')};
     });
     const tipOf = async (selector) => {
-      await child.hover(selector);
+      try {
+        await child.hover(selector, {timeout: 3000});
+      } catch (error) {
+        return `not reachable: ${error.message.split('\n').find((line) => /intercepts/u.test(line))?.trim() || error.message.split('\n')[0]}`;
+      }
       await page.waitForTimeout(900);
       return child.evaluate((sel) => {
         const button = document.querySelector(sel);

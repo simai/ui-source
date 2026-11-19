@@ -30,6 +30,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.link",
       "component.tooltip",
       "smart.button",
       "smart.button-icon",
@@ -126,10 +127,11 @@
       "trigger": {
         "type": "string",
         "default": "code",
-        "description": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). The menu is the same. Core holds the trigger's box before the code arrives for both (--sf-language--trigger)",
+        "description": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). link, the glyph and the current language's own name («Русский», «Deutsch») in the link role (component link, owner decisions C381, C186: the navigation form, the ink and size of its place, no fill in any state, the line under the name on hover, press, keyboard focus and while open, the link's focus ring), as wide as the name, no tooltip (the name is shown), still named «Язык: Русский». The menu is the same. Core holds the trigger's box before the code arrives (--sf-language--trigger: the code's width, the icon's square, the link's line)",
         "enum": [
           "code",
-          "icon"
+          "icon",
+          "link"
         ]
       },
       "apply": {
@@ -357,19 +359,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "462444c5fc2ec401d9bf2e4de7d8995ea48d590063d973c004790783cb656542"
+        "sha256": "5a7ec6a40769e318866b3b89b6f38d7cef764089eb43ea965ff241e755765f30"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "63787b95b442075f74fb7aa0687eace7177610107ea670124d9515bcfc91618d"
+        "sha256": "37d25af94ae4fb5f05418855aefbbcf00fb686096511f2a98da3b7c0c910239c"
       },
       {
         "path": "src/smart/language/rule.js",
-        "sha256": "31f3ae94c763f0b0870387d772365e75d299a7c88555b76662804b4830b019d3"
+        "sha256": "754f8f8da8b1bb3a20079c04b3bd74fc8e28c54e1e6a6cd67cf4752082ea3daf"
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "23a5cbc2b6a65cc23ab1d03e55d2c0229be7893e9fc71e9fe24e4884aeaec8fb"
+        "sha256": "23d48c15ed62b8d8628e7065da65e37c1a3dcb16de950f8ec36102bb88b80755"
       }
     ],
     "generated_runtime": []

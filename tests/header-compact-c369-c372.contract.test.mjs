@@ -83,13 +83,28 @@ test('C370: sf-button shrink icon draws its glyph square at once, keeps its name
 
 test('C369: sf-language trigger icon is the glyph alone, and core holds its square before the code', () => {
   const language = json('src/smart/language/component.json');
-  assert.deepEqual(language.settings.trigger.values, ['code', 'icon']);
+  assert.deepEqual(language.settings.trigger.values, ['code', 'icon', 'link']);
   assert.equal(language.settings.trigger.default, 'code');
   const core = read('src/core/scss/_sf_css__placeholder.scss');
   assert.match(core, /:where\(sf-language\[trigger="icon"\]\) \{\n  --sf-language--trigger: var\(--sf-language--box\);\n\}/u);
   assert.match(core, /:where\(sf-language \.sf-language-parts > :is\(sf-button, :is\(sf-button-icon, sf-icon-button\)\):not\(:defined\)\)/u);
   const source = read('src/smart/language/index.js');
-  assert.match(source, /tipId: \(look === 'menu' \|\| look === 'search'\) && this\.getAttribute\('trigger'\) !== 'icon'/u);
+  assert.match(source, /tipId: \(look === 'menu' \|\| look === 'search'\) && !\['icon', 'link'\]\.includes\(this\.getAttribute\('trigger'\)\)/u);
+});
+
+test('C381: sf-language trigger link is the glyph and the name in the link role, and the link sheet draws that form', () => {
+  const language = json('src/smart/language/component.json');
+  assert.ok(language.relations.some((relation) => relation.name === 'link'));
+  const template = read('src/smart/language/js/templates/default.js');
+  assert.match(template, /class=\$\{\['sf-link', 'sf-link--navigation', 'sf-language-link', context\.rootClass\]/u);
+  assert.match(template, /<sf-icon class="sf-link-icon" icon="translate" aria-hidden="true"><\/sf-icon><span class="sf-link-content" lang=\$\{current\?\.code \|\| nothing\}>\$\{current\?\.native \?\? context\.label\}<\/span>/u);
+  assert.match(template, /aria-haspopup="menu"\n\s+aria-expanded="false"/u);
+  const sheet = read('src/component/link/scss/_css__link.scss');
+  assert.match(sheet, /button\.sf-link \{\n    appearance: none;/u);
+  assert.match(sheet, /\.sf-link--navigation \{\n    --sf-link--color: var\(--sf-place--ink, var\(--sf-on-surface\)\);\n    --sf-link--text-decoration: none;/u);
+  assert.match(sheet, /\.sf-link\[aria-expanded='true'\]:not\(\.disabled\):not\(\[aria-disabled='true'\]\) \{\n    --sf-link--text-decoration: underline;/u);
+  assert.equal(json('src/component/link/passport.json').version, '1.4.0');
+  assert.match(read('src/core/scss/_sf_css__placeholder.scss'), /:where\(sf-language\[trigger="link"\]\) \{\n  --sf-language--box: 1lh;\n  --sf-language--trigger: auto;\n\}/u);
 });
 
 test('docs pages for the four values', () => {
@@ -97,4 +112,6 @@ test('docs pages for the four values', () => {
   assert.match(read('src/smart/menu/docs.md'), /`keep-current="false"`/u);
   assert.match(read('src/smart/button/docs/docs.md'), /`shrink="icon"`/u);
   assert.match(read('src/smart/language/docs.md'), /`trigger="icon"`/u);
+  assert.match(read('src/smart/language/docs.md'), /`trigger="link"`/u);
+  assert.match(read('src/component/link/docs/docs.md'), /sf-link--navigation/u);
 });

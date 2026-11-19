@@ -275,6 +275,21 @@ it do not move.
 <sf-language slot="tools" languages="ru en" trigger="icon"></sf-language>
 ```
 
+Beside a form or in a quiet row, `trigger="link"` (owner decision C381, the
+sign-in screen) is the glyph and the current language's own name,
+«Русский», «Deutsch», in the link role: the words take the size and the ink
+of their place, nothing is filled in any state, the name is underlined on
+hover, press, keyboard focus and while the menu is open, and the focus ring
+is the link's. The trigger is as wide as the name and has no tooltip, since
+the name is shown; it is still named «Язык: Русский». Before its code core
+holds one line of its place for it; its width comes with the name.
+
+```html
+<p class="text-1/2">
+  <sf-language languages="ru en de" mode="menu" trigger="link" apply="none"></sf-language>
+</p>
+```
+
 ## Sizes
 
 `size` is a rung of the shared ladder: `1/3`, `1/2`, `1` (the default), `2`,

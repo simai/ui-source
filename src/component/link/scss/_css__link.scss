@@ -46,6 +46,41 @@
     --sf-link--text-decoration: none;
   }
 
+  /* A link that is a native button (a menu's trigger in the link role,
+     sf-language trigger="link", owner decision C381): the button's own box,
+     edge and padding go, so it is the words of its place as a link is. */
+  button.sf-link {
+    appearance: none;
+    margin: var(--sf-0);
+    padding: var(--sf-0);
+    border: var(--sf-0) none;
+    border-radius: var(--sf-radius--ui);
+    text-align: start;
+    cursor: pointer;
+  }
+
+  /* The navigation form (C186 (1), C381): a link that names where it goes
+     in a row of controls -- a menu's trigger, a language beside a form --
+     outside a nav, menu or table. The words take the ink of their place
+     (on-surface where nothing says otherwise), the glyph the icon role of
+     that place (C107), no line at rest. With an icon part the line, when
+     it comes, is under the words only, not under the glyph. */
+  .sf-link--navigation {
+    --sf-link--color: var(--sf-place--ink, var(--sf-on-surface));
+    --sf-link--text-decoration: none;
+  }
+
+  .sf-link--navigation:has(> :is(.sf-link__icon, .sf-link-icon)) {
+    text-decoration-line: none;
+  }
+
+  .sf-link--navigation:has(> :is(.sf-link__icon, .sf-link-icon)) > :where(.sf-link__content, .sf-link-content) {
+    text-decoration-line: var(--sf-link--text-decoration);
+    text-decoration-color: inherit;
+    text-decoration-thickness: inherit;
+    text-underline-offset: inherit;
+  }
+
   .sf-link :where(.sf-link__content, .sf-link-content) {
     min-inline-size: var(--sf-0);
     font: inherit;
@@ -89,6 +124,9 @@
   .sf-link :where(.sf-link__icon, .sf-link-icon) {
     color: currentColor;
   }
+  .sf-link--navigation :where(.sf-link__icon, .sf-link-icon) {
+    color: var(--sf-on-surface-icon);
+  }
 }
 
 @layer sf.states {
@@ -118,6 +156,19 @@
     --sf-link--text-decoration: underline;
   }
 
+  /* A link that opens a menu keeps its line while the menu is open (C381). */
+  .sf-link[aria-expanded='true']:not(.disabled):not([aria-disabled='true']) {
+    --sf-link--text-decoration: underline;
+
+    text-decoration-color: currentColor;
+  }
+
+  /* The navigation form keeps the ink of its place in every state: the line
+     says the state, not a colour (C381). */
+  .sf-link--navigation:is(:hover, :active, :focus-visible, [aria-expanded='true']):not(.disabled):not([aria-disabled='true']) {
+    --sf-link--color: var(--sf-place--ink, var(--sf-on-surface));
+  }
+
   .sf-link:focus {
     outline: none;
   }
@@ -134,7 +185,7 @@
     outline-width: var(--sf-focus--width);
   }
 
-  .sf-link:is(.disabled, [aria-disabled='true']) {
+  .sf-link:is(.disabled, [aria-disabled='true'], :disabled) {
     --sf-link--color: var(--sf-on-surface-disabled);
     --sf-link--text-decoration: none;
 

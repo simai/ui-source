@@ -48,7 +48,7 @@ useNames(names);
 const MENU = `:scope > .sf-language-parts > ${tagSelector('sf-menu-context')}`;
 // The trigger: sf-button «文A RU ▾» (trigger code), or sf-button-icon, the
 // glyph alone (trigger icon, owner decision C369).
-const TRIGGER = `:scope > .sf-language-parts > :is(${tagSelector('sf-button')}, ${tagSelector('sf-button-icon')})`;
+const TRIGGER = `:scope > .sf-language-parts > :is(${tagSelector('sf-button')}, ${tagSelector('sf-button-icon')}, button.sf-language-link)`;
 const TRACK = `:scope > .sf-language-parts > ${tagSelector('sf-segmented')}`;
 const FIELD = `:scope > .sf-language-parts > ${tagSelector('sf-dropdown')}`;
 
@@ -463,8 +463,11 @@ class SfLanguage extends FormField(LanguageElement) {
       // element's path (§7.1.1).
       // trigger icon (C369): the glyph alone, sf-button-icon, which shows
       // its own name tooltip, so no surface is drawn here.
+      // trigger link (C381): the glyph and the current language's own name
+      // in the link role; the name is shown, so no tooltip either.
       icon: this.getAttribute('trigger') === 'icon',
-      tipId: (look === 'menu' || look === 'search') && this.getAttribute('trigger') !== 'icon' ? partId(instancePath(this, {kind: 'sf-language'}), 'tooltip') : '',
+      link: this.getAttribute('trigger') === 'link',
+      tipId: (look === 'menu' || look === 'search') && !['icon', 'link'].includes(this.getAttribute('trigger')) ? partId(instancePath(this, {kind: 'sf-language'}), 'tooltip') : '',
       entries: look === 'menu' || look === 'search' ? this.menuEntries(list, current, look === 'search' ? this._query : '') : [],
       search: look === 'search' ? this.searchOptions() : null,
       // The field look (C142 (8)): sf-dropdown of the same size -- it stands

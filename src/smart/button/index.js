@@ -67,6 +67,9 @@ const COMPONENT_ATTRIBUTES = new Set([
   "shortcut",
   "shortcut-listen",
   "shrink",
+  // The bar's state on the host (C370): the sheet and the name tooltip read
+  // it there, so it is not moved onto the inner button as data-* are.
+  "data-shrunk",
   "aria-label",
   "class",
   "style",
