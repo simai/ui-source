@@ -320,12 +320,12 @@
         },
         {
           "id": "p9-processing-share",
-          "title": "processing with value: an sf-progress-ring of the circle's size step (3 at size 2) is the circle, its box the circle's, the percentage in it, a progressbar named «Готово» with the share; a new value moves the ring only",
+          "title": "processing with value: an sf-progress-ring of the circle's size step (3 at size 2) is the circle, its box the circle's, the percentage in it («40 %», a no-break space before the sign, C25), a progressbar named «Готово» with the share; a new value moves the ring only",
           "covers": "settings.value, accessibility (processing ring)",
           "steps": [
             {
               "wait": 400,
-              "check": "(() => { const r = document.querySelector('#e8 .sf-empty-state'); const c = r.querySelector('.sf-featured-icon.sf-featured-icon--neutral.sf-featured-icon--soft.sf-empty-state-icon--ring'); const ring = c && c.querySelector('sf-progress-ring'); const box = ring && ring.querySelector('.sf-progress-ring'); const bar = box && box.querySelector('.sf-progress-ring-indicator'); if (!bar) return false; const a = c.getBoundingClientRect(); const b = box.getBoundingClientRect(); return r.getAttribute('role') === 'status' && !c.hasAttribute('aria-hidden') && ring.getAttribute('size') === '3' && !c.querySelector('sf-spinner') && Math.abs(a.width - b.width) < 0.5 && Math.abs(a.height - b.height) < 0.5 && bar.getAttribute('role') === 'progressbar' && bar.getAttribute('aria-label') === 'Готово' && bar.getAttribute('aria-valuenow') === '40' && box.querySelector('.sf-progress-ring-content').textContent.trim() === '40%'; })()"
+              "check": "(() => { const r = document.querySelector('#e8 .sf-empty-state'); const c = r.querySelector('.sf-featured-icon.sf-featured-icon--neutral.sf-featured-icon--soft.sf-empty-state-icon--ring'); const ring = c && c.querySelector('sf-progress-ring'); const box = ring && ring.querySelector('.sf-progress-ring'); const bar = box && box.querySelector('.sf-progress-ring-indicator'); if (!bar) return false; const a = c.getBoundingClientRect(); const b = box.getBoundingClientRect(); return r.getAttribute('role') === 'status' && !c.hasAttribute('aria-hidden') && ring.getAttribute('size') === '3' && !c.querySelector('sf-spinner') && Math.abs(a.width - b.width) < 0.5 && Math.abs(a.height - b.height) < 0.5 && bar.getAttribute('role') === 'progressbar' && bar.getAttribute('aria-label') === 'Готово' && bar.getAttribute('aria-valuenow') === '40' && box.querySelector('.sf-progress-ring-content').textContent.trim() === '40\\u00a0%'; })()"
             },
             {
               "script": "(document.getElementById('e8').value = 72.4, true)",

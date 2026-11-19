@@ -14,12 +14,28 @@
   "probes": [
     {
       "id": "p1-auto-arrows",
-      "title": "automatic activation: ArrowRight selects the next enabled tab (past the disabled one): sf-tabs-change once, sf-tab-change once, noted with its dates",
-      "covers": "keyboard.host ArrowRight focus:next, events.change, aliases sf-tab-change",
+      "title": "automatic activation: ArrowRight stops on the disabled tab (focusable, aria-disabled, nothing selected: R184), the next ArrowRight selects the next enabled tab: sf-tabs-change once, sf-tab-change once, noted with its dates",
+      "covers": "keyboard.host ArrowRight focus:next, disabled tabs focusable, events.change, aliases sf-tab-change",
       "steps": [
         {
           "script": "(document.querySelector('#tb [data-sf-tab-index=\"1\"]').focus(), true)",
           "wait": 60
+        },
+        {
+          "user": "keyboard:ArrowRight",
+          "wait": 150,
+          "expect": {
+            "events": [
+              {
+                "name": "sf-tabs-change",
+                "count": 0
+              }
+            ],
+            "values": {
+              "#tb.selected": "main"
+            }
+          },
+          "check": "document.activeElement === document.querySelector('#tb [data-sf-tab-index=\"2\"]') && document.activeElement.getAttribute('aria-disabled') === 'true'"
         },
         {
           "user": "keyboard:ArrowRight",
@@ -62,7 +78,7 @@
     },
     {
       "id": "p2-home-end-left",
-      "title": "Home, End and ArrowLeft move and select",
+      "title": "Home, End and ArrowLeft move; ArrowLeft stops on the disabled tab without selecting it",
       "covers": "keyboard.host Home focus:first, End focus:last, ArrowLeft focus:prev",
       "steps": [
         {
@@ -73,6 +89,11 @@
           "user": "keyboard:End",
           "wait": 120,
           "check": "document.getElementById('tb').activeIndex === 3 && document.activeElement === document.querySelector('#tb [data-sf-tab-index=\"3\"]')"
+        },
+        {
+          "user": "keyboard:ArrowLeft",
+          "wait": 120,
+          "check": "document.getElementById('tb').activeIndex === 3 && document.activeElement === document.querySelector('#tb [data-sf-tab-index=\"2\"]')"
         },
         {
           "user": "keyboard:ArrowLeft",
@@ -148,17 +169,17 @@
     },
     {
       "id": "p4-tab-reaches-panel",
-      "title": "Tab leaves the tablist for the open panel",
+      "title": "Tab leaves the tablist for the open panel when it holds content and nothing focusable; an empty panel is no stop (sf-tabs 1.4.0)",
       "covers": "keyboard.host Tab reach",
       "steps": [
         {
-          "script": "(document.querySelector('#tb [data-sf-tab-index=\"0\"]').focus(), true)",
+          "script": "(document.querySelector('#lazy [data-sf-tab-index=\"0\"]').focus(), true)",
           "wait": 60
         },
         {
           "user": "keyboard:Tab",
           "wait": 60,
-          "check": "document.activeElement?.getAttribute('role') === 'tabpanel' && !document.activeElement.hidden"
+          "check": "document.activeElement?.getAttribute('role') === 'tabpanel' && !document.activeElement.hidden && document.activeElement.closest('#lazy') && document.activeElement.textContent.trim() === 'Заказы' && !document.querySelector('#tb [role=tabpanel]:not([hidden])').hasAttribute('tabindex')"
         }
       ]
     },

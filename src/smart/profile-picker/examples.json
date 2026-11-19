@@ -291,7 +291,7 @@
         },
         {
           "id": "p5-escape",
-          "title": "Escape closes the open panel and the focus returns to the trigger",
+          "title": "Escape closes the open panel and the focus returns to the trigger, sf-button's own button (C163 (2))",
           "covers": "accessibility.keys Escape (close)",
           "steps": [
             {
@@ -306,7 +306,7 @@
             },
             {
               "user": "keyboard:Escape",
-              "focus": "expect returned to #pp .sf-profile-picker-trigger",
+              "focus": "expect returned to #pp .sf-profile-picker-trigger > button",
               "check": "document.querySelector('#pp .sf-profile-picker-panel').hidden"
             }
           ]

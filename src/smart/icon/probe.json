@@ -43,11 +43,11 @@
     },
     {
       "id": "p3-shape-dated",
-      "title": "the old family name shape draws sharp and is noted with its dates",
-      "covers": "aliases.json value shape -> sharp",
+      "title": "the old family name shape draws outlined (one family, icons study IC-4) and is noted with its dates",
+      "covers": "aliases.json value shape -> outlined",
       "steps": [
         {
-          "check": "document.querySelector('#i-old i.sf-icon').classList.contains('sf-icon--sharp') && document.querySelector('#i-old').getAttribute('type') === 'sharp' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-icon' && note.from === 'shape' && note.remove_after === '2026-12-01')"
+          "check": "!document.querySelector('#i-old i.sf-icon').classList.contains('sf-icon--sharp') && document.querySelector('#i-old').getAttribute('type') === 'outlined' && [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-icon' && note.from === 'shape' && note.to === 'outlined' && note.remove_after === '2026-12-01')"
         }
       ]
     },

@@ -133,14 +133,14 @@
     },
     {
       "id": "p8-public-variables",
-      "title": "a public variable reaches the drawing",
+      "title": "a public variable reaches the drawing: --sf-contents-current-color colours the current line, not the text (CT-06, 1.6.0)",
       "covers": "css-variables",
       "steps": [
         {
           "script": "(document.querySelector('#toc').style.setProperty('--sf-contents-current-color', 'rgb(1, 2, 3)'), true)"
         },
         {
-          "check": "getComputedStyle(document.querySelector('#toc [aria-current=\"location\"]')).color === 'rgb(1, 2, 3)'"
+          "check": "getComputedStyle(document.querySelector('#toc [aria-current=\"location\"] .sf-contents-mark')).backgroundColor === 'rgb(1, 2, 3)' && getComputedStyle(document.querySelector('#toc [aria-current=\"location\"]')).color !== 'rgb(1, 2, 3)'"
         }
       ]
     },

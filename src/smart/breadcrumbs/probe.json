@@ -198,12 +198,12 @@
     },
     {
       "id": "p10-fold-by-room",
-      "title": "a trail with no cap folds by room: in 16rem it stays on one line, the page and its parent shown (R177 BC-06, C93 items 1-2)",
+      "title": "a trail with no cap folds by room: in 16rem the crumbs stay one row, the page and its parent shown; the page's name may wrap by words in its place at the row's end (R177 BC-06, C93 items 1-2 and 6, sf-breadcrumbs 1.2.3)",
       "covers": "settings.max-items",
       "steps": [
         {
           "wait": 300,
-          "check": "(() => { const entries = [...document.querySelectorAll('#bc-room nav > ol > li')]; const tops = new Set(entries.map((one) => Math.round(one.getBoundingClientRect().top + one.getBoundingClientRect().height / 2))); return entries.length < 6 && tops.size === 1 && Boolean(document.querySelector('#bc-room button[aria-expanded]')) && document.querySelector('#bc-room [aria-current=\"page\"]')?.textContent.trim() === 'Стол Nord' && Boolean(document.querySelector('#bc-room a[href=\"#n5\"]')); })()"
+          "check": "(() => { const entries = [...document.querySelectorAll('#bc-room nav > ol > li')]; const tops = new Set(entries.map((one) => Math.round(one.getBoundingClientRect().top))); return entries.length < 6 && tops.size === 1 && Boolean(document.querySelector('#bc-room button[aria-expanded]')) && document.querySelector('#bc-room [aria-current=\"page\"]')?.textContent.trim() === 'Стол Nord' && Boolean(document.querySelector('#bc-room a[href=\"#n5\"]')); })()"
         }
       ]
     },

@@ -368,6 +368,9 @@
                 "user": "click:.sf-color-trigger"
               },
               {
+                "user": "click:[data-sf-button-group-value=palette]"
+              },
+              {
                 "user": "click:.sf-color-option[aria-label='Красный']"
               }
             ],

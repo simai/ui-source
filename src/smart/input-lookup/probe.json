@@ -56,7 +56,7 @@
     },
     {
       "id": "l1-max-items",
-      "title": "past max-items a choice is refused with a visible polite line, the value unchanged",
+      "title": "past max-items a choice is refused with a visible polite line, the value unchanged; the list's state line is its live region (the field's other polite region says a chip's place while the arrows walk the chips, C139 (6))",
       "covers": "settings.max-items",
       "steps": [
         {
@@ -71,7 +71,7 @@
         {
           "script": "(() => { const el = document.getElementById('l1'); [...el.querySelectorAll('[role=option]')].find((r) => /Vera/.test(r.textContent)).click(); return true; })()",
           "wait": 200,
-          "check": "(() => { const el = document.getElementById('l1'); const status = el.querySelector('[role=status]'); return el.value.length === 2 && status.getAttribute('aria-live') === 'polite' && status.textContent.trim() === 'No more than 2'; })()"
+          "check": "(() => { const el = document.getElementById('l1'); const status = el.querySelector('.sf-lookup-status[role=status]'); return el.value.length === 2 && status.getAttribute('aria-live') === 'polite' && status.textContent.trim() === 'No more than 2'; })()"
         }
       ]
     },
@@ -144,7 +144,7 @@
         {
           "script": "(() => { const el = document.getElementById('l3'); window.__calls = []; el.provider = async (query, {limit}) => { window.__calls.push(query + ':' + limit); return query === 'zz' ? {status: 'unavailable'} : {items: [{value: 1, label: 'Ann ' + query, caption: 'QA'}]}; }; el.querySelector('input').focus(); return el.search('a'); })()",
           "wait": 200,
-          "check": "(() => { const el = document.getElementById('l3'); return window.__calls.length === 0 && el.querySelector('[role=status]').textContent.trim() === 'Type at least 2 characters'; })()"
+          "check": "(() => { const el = document.getElementById('l3'); return window.__calls.length === 0 && el.querySelector('.sf-lookup-status[role=status]').textContent.trim() === 'Type at least 2 characters'; })()"
         },
         {
           "script": "(document.getElementById('l3').search('an'), true)",
@@ -154,7 +154,7 @@
         {
           "script": "(document.getElementById('l3').search('zz'), true)",
           "wait": 200,
-          "check": "(() => { const el = document.getElementById('l3'); return el.querySelectorAll('[role=option]').length === 0 && el.querySelector('[role=status]').textContent.trim() === 'Search is unavailable'; })()"
+          "check": "(() => { const el = document.getElementById('l3'); return el.querySelectorAll('[role=option]').length === 0 && el.querySelector('.sf-lookup-status[role=status]').textContent.trim() === 'Search is unavailable'; })()"
         }
       ]
     },
@@ -166,7 +166,7 @@
         {
           "script": "(() => { const el = document.getElementById('l4'); el.provider = async () => ({items: []}); el.querySelector('input').focus(); return el.search('a'); })()",
           "wait": 200,
-          "check": "(() => { const el = document.getElementById('l4'); const text = el.querySelector('[role=status]').textContent.trim(); return el.querySelector('input').getAttribute('aria-label') === 'Person' && text.length > 0 && !/Type at least/.test(text); })()"
+          "check": "(() => { const el = document.getElementById('l4'); const text = el.querySelector('.sf-lookup-status[role=status]').textContent.trim(); return el.querySelector('input').getAttribute('aria-label') === 'Person' && text.length > 0 && !/Type at least/.test(text); })()"
         }
       ]
     }

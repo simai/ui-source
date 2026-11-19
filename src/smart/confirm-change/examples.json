@@ -220,13 +220,18 @@
       "checks": [
         {
           "id": "p1-tab-enter-confirms",
-          "title": "Tab reaches the first answer; Enter confirms: sf-change-confirm-answer {id, accepted: true} once and sf-change-confirm-accept once, noted with its dates; the card is pending and the focus is on its status line",
+          "title": "Tab reaches the first answer after core's skip link (C196); Enter confirms: sf-change-confirm-answer {id, accepted: true} once and sf-change-confirm-accept once, noted with its dates; the card is pending and the focus is on its status line",
           "covers": "keyboard.host Tab reach, Enter select, events.answer, aliases sf-change-confirm-accept, accessibility.name heading",
           "steps": [
             {
               "script": "(document.activeElement?.blur?.(), true)",
               "wait": 60,
               "check": "document.querySelector('#c section').getAttribute('aria-labelledby') === document.querySelector('#c [role=heading]').id && document.querySelector('#c [role=heading]').id === 'page-c--heading'"
+            },
+            {
+              "user": "keyboard:Tab",
+              "wait": 80,
+              "check": "document.activeElement?.matches('a.sf-skip-link')"
             },
             {
               "user": "keyboard:Tab",

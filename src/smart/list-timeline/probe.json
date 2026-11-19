@@ -102,11 +102,11 @@
     },
     {
       "id": "p7-steps",
-      "title": "state draws steps: the current one aria-current=step, each step said in words, the line after the current one dashed",
+      "title": "state draws steps: the current one aria-current=step, each step said in words; sf-steps' line: a passed step's segment 2 px, the current and the ahead ones the quiet hairline (C204 (1), C101 (2))",
       "covers": "settings.items state",
       "steps": [
         {
-          "check": "(() => { const el = document.querySelector('#steps'); const cur = el.querySelector('[aria-current=step]'); return cur && cur.dataset.id === 's4' && cur.querySelector('.sr-only').textContent === 'Сейчас: ' && el.querySelector('[data-id=s1] .sr-only').textContent === 'Пройдено: ' && el.querySelector('[data-id=s5] .sr-only').textContent === 'Впереди: ' && getComputedStyle(cur, '::before').borderInlineStartStyle === 'dashed' && el.querySelector('[data-id=s1] .sf-featured-icon').classList.contains('sf-featured-icon--solid'); })()"
+          "check": "(() => { const el = document.querySelector('#steps'); const cur = el.querySelector('[aria-current=step]'); return cur && cur.dataset.id === 's4' && cur.querySelector('.sr-only').textContent === 'Сейчас: ' && el.querySelector('[data-id=s1] .sr-only').textContent === 'Пройдено: ' && el.querySelector('[data-id=s5] .sr-only').textContent === 'Впереди: ' && getComputedStyle(el.querySelector('[data-id=s1]'), '::before').inlineSize === '2px' && getComputedStyle(cur, '::before').inlineSize === '1px' && el.querySelector('[data-id=s1] .sf-featured-icon').classList.contains('sf-featured-icon--solid'); })()"
         }
       ]
     },

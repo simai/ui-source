@@ -14,11 +14,11 @@
   "probes": [
     {
       "id": "p1-unset",
-      "title": "unset, it is SIMAI Framework's colour: a group named by its title, eight palettes, nothing applied",
+      "title": "unset, it is SIMAI Framework's colour: a group named by its title, four palettes (the theme palettes, no status palette: TG-01, 1.2.0), nothing applied",
       "covers": "settings.value, values.theme, accessibility group and name, lang runtime.title, runtime.preview",
       "steps": [
         {
-          "check": "(() => { const g = document.querySelector('#g'); const root = g.querySelector('.sf-theme-generator'); return g.value === '' && root.getAttribute('role') === 'group' && root.getAttribute('aria-label') === 'Генератор темы' && g.querySelectorAll('.sf-theme-generator-row').length === 8 && g.querySelector('.sf-theme-generator-preview').getAttribute('aria-label') === 'Предпросмотр темы' && typeof g.theme === 'object' && !document.documentElement.style.getPropertyValue('--sf-primary-40'); })()"
+          "check": "(() => { const g = document.querySelector('#g'); const root = g.querySelector('.sf-theme-generator'); return g.value === '' && root.getAttribute('role') === 'group' && root.getAttribute('aria-label') === 'Генератор темы' && g.querySelectorAll('.sf-theme-generator-row').length === 4 && g.querySelector('.sf-theme-generator-preview').getAttribute('aria-label') === 'Предпросмотр темы' && typeof g.theme === 'object' && !document.documentElement.style.getPropertyValue('--sf-primary-40'); })()"
         }
       ]
     },
