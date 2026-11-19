@@ -89,6 +89,13 @@ const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'),
 for (const [name, path] of Object.entries(parts)) if (!existsSync(path)) throw new Error(`${name} not found under ${out}`);
 
 const smartRoot = join(repo, 'src', 'smart');
+// The tags a Smart component defines (component.json `tag`). A page waits for
+// these only: a child marker a component reads, as <sf-breadcrumbs-item>, is
+// never defined, and waiting for it timed out every check of its page.
+const definedTags = new Set(readdirSync(smartRoot)
+  .filter((folder) => existsSync(join(smartRoot, folder, 'component.json')))
+  .map((folder) => JSON.parse(readFileSync(join(smartRoot, folder, 'component.json'), 'utf8')).tag)
+  .filter(Boolean));
 const probes = [
   ...readdirSync(smartRoot)
     .filter((folder) => (!only.length || only.includes(folder)) && existsSync(join(smartRoot, folder, 'probe.json')))
@@ -97,10 +104,21 @@ const probes = [
   ...extra.map((file) => ({folder: null, file})),
 ].map((one) => ({...one, probe: JSON.parse(readFileSync(one.file, 'utf8'))}));
 
+// A page in a language other than English includes that language's file
+// before core, as a site does (owner decision C282: English is built in, every
+// other language, Russian too, is a language file core/lang/<code>.js). Without
+// it the words arrive by a later fetch of the family parts and a check that
+// reads a text at once finds the English one.
+const languageScript = (lang) => {
+  const code = String(lang || 'ru').toLowerCase().split('-')[0];
+  if (code === 'en') return '';
+  if (!existsSync(join(parts.core, 'lang', `${code}.js`))) throw new Error(`core/lang/${code}.js not found under ${out}`);
+  return `<script src="/distr/core/lang/${code}.js"></script>\n`;
+};
 const shell = (lang, body) => `<!doctype html><html lang="${lang || 'ru'}" class="theme-light"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
-<script src="/distr/core/js/core.js"></script></head><body>
+${languageScript(lang)}<script src="/distr/core/js/core.js"></script></head><body>
 ${body}
 </body></html>`;
 const checkPage = (probe, check) => shell(probe.page?.lang, String(probe.page?.markup || '<form id="f">{{field}}<button type="submit">OK</button></form>').replace('{{field}}', check.field));
@@ -520,7 +538,7 @@ try {
       try {
         await page.goto(`${base}/probe`);
         if (shaped) {
-          const tags = [...new Set([...current.matchAll(/<(sf-[a-z-]+)/gu)].map((m) => m[1]))];
+          const tags = [...new Set([...current.matchAll(/<(sf-[a-z0-9-]+)/gu)].map((m) => m[1]))].filter((tag) => definedTags.has(tag));
           await page.waitForFunction((tags) => tags.every((tag) => customElements.get(tag)), tags, {timeout: 20000});
           await page.waitForTimeout(400);
           problems = await runSteps(page, check);
