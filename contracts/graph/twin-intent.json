@@ -338,6 +338,30 @@
       "reason": "recorded by fix/reds-before-gb15 (template-context probe): the height property of the Smart element says the drawn height (the former spacing included); a property of the Smart element, the class tags have none",
       "decision": "C251",
       "date": "2026-11-20"
+    },
+    {
+      "unit": "component.buttons",
+      "version": "1.22.2",
+      "twin": "smart.button",
+      "reason": "recorded by group build 15 (A3) from feat/button-icon-toggle: the class checks (button-checks.js) name the icon button's toggle look (C393) among the looks that draw pressed; that look is sf-button-icon's (smart.button-icon 1.14.0 and component.icon-buttons 1.20.0 changed together); sf-button and its pressed rule are unchanged",
+      "decision": "C393",
+      "date": "2026-11-20"
+    },
+    {
+      "unit": "component.breadcrumbs",
+      "version": "1.3.7",
+      "twin": "smart.breadcrumbs",
+      "reason": "recorded by group build 15 (A3) from fix/ru-words-vs-site-4 (VS-SITE-4): the class trail names «…» and its menu again when the language file arrives late or the page's language changes; sf-breadcrumbs reads its words with sfWord on every drawing, so it followed the language already",
+      "decision": "VS-SITE-4",
+      "date": "2026-11-20"
+    },
+    {
+      "unit": "smart.input-date",
+      "version": "1.18.0",
+      "twin": "component.datepicker",
+      "reason": "recorded by group build 15 (A3) from feat/field-width: the width setting (C396, WM-4) sizes sf-input-date's field, drawn by the class input (component.inputs 1.14.2 documents sf-field--width-* for it); the class datepicker is the calendar panel and has no field width",
+      "decision": "C396",
+      "date": "2026-11-20"
     }
   ]
 }

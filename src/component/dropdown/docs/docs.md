@@ -85,3 +85,18 @@ else the page's `aria-label` or `aria-labelledby` on the root -- so a screen
 reader names the field and not its placeholder. An `aria-label` or
 `aria-labelledby` the page writes on the input itself wins. The Smart
 `sf-dropdown` names its input already and is unchanged.
+
+## Width (C396)
+
+A field may be at most 20, 28 or 44 characters of the width ladder wide, and
+the container's width below that: put `sf-field--width-short`, `-medium` or
+`-long` on the field's root (`.sf-dropdown`). The roles are core's
+(`--sf-field--width-short / -medium / -long` on `--sf-measure-20 / -28 / -44`:
+160 / 224 / 352 px at text 16, 140 / 196 / 308 in compact density and on a
+phone) and the rule is core's too, so the class markup and `sf-dropdown` (its
+`width` setting, which writes the same class) draw the same width from the
+first frame. Without the class the field is its container's width, as before.
+
+```html
+<div class="sf-dropdown sf-field--width-short">…</div>
+```

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-pager's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design target is tab 2 of ui-control's prototypes/docara-four.html, with the owner's decisions of 2026-10-30.",
   "id": "smart.pager",
   "tag": "sf-pager",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "kind": "leaf",
   "family": "pager",
   "settings": {
@@ -355,7 +355,8 @@
     "version 1.4.3 (written on the branch as 1.4.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.4.4 (written on the branch as 1.4.2; 2026-11-17, numbered above 1.4.1 of feat/lang-file-c282): a patch, nothing drawn changed. The track's segments and the dots stand --sf-space-1/4 apart, the step of plates side by side (C105 H5), in place of the size primitive --sf-a4 of the same 4 (C178 spacing roles).",
     "version 1.4.5 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
-    "version 1.4.6 (2026-11-19, above 1.4.5 of integration/pair-next-15; fix/rtl-direction-icons): a patch, a look. Every arrow of the pager (cards, row, compact, counter, steps, course) points the right-to-left way in a right-to-left page again: the icons sheet turns chevron_left/right and arrow_back/forward (directional glyphs, C151 point 3), and the pager's own turn of them turned them back. Settings, values, events and keys unchanged."
+    "version 1.4.6 (2026-11-19, above 1.4.5 of integration/pair-next-15; fix/rtl-direction-icons): a patch, a look. Every arrow of the pager (cards, row, compact, counter, steps, course) points the right-to-left way in a right-to-left page again: the icons sheet turns chevron_left/right and arrow_back/forward (directional glyphs, C151 point 3), and the pager's own turn of them turned them back. Settings, values, events and keys unchanged.",
+    "version 1.4.7 (2026-11-20, group build 15, A3: the twins level, C251; above every origin branch): a patch, follows its class twin. sf-pager draws with component.pagination 1.7.0: inside a place (a card, a plate, a popup) the page row draws no closing line of its own, the place's edge closes it; on the page the line is as before, and --sf-pagination-divider-color reaches it. Height unchanged; settings and events unchanged."
   ],
   "x-registry": {
     "capabilities": [
