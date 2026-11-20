@@ -737,6 +737,13 @@
     animation: none;
   }
 }
+  /* D-SCROLL (Larena audit, DEV 2026-11-20): in a side window -- the dated
+     form of an sf-drawer (C157 (1)) a page still writes -- the answers its
+     content writes at the end (an sf-confirm question's, a form's last row
+     of buttons) stay at the window's foot while the body scrolls under them,
+     as sf-drawer's do (core mix/_mix__window-footer.scss content-actions). A
+     window with a footer slot keeps that one alone. */
+  @include window-footer.content-actions(".sf-modal:is([data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end'], [data-sf-modal-position='left'], [data-sf-modal-position='right']):not(:has(.sf-modal-footer)) [data-sf-modal-body-scroll]", var(--sf-modal--body-inset), ".sf-modal[data-sf-modal-more-end]:is([data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end'], [data-sf-modal-position='left'], [data-sf-modal-position='right']):not(:has(.sf-modal-footer)) [data-sf-modal-body-scroll]");
   @include paint.part(all);
 }
 
@@ -745,6 +752,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   @include paint.part(paint);
+  @include window-footer.content-actions(".sf-modal:is([data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end'], [data-sf-modal-position='left'], [data-sf-modal-position='right']):not(:has(.sf-modal-footer)) [data-sf-modal-body-scroll]", var(--sf-modal--body-inset), ".sf-modal[data-sf-modal-more-end]:is([data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end'], [data-sf-modal-position='left'], [data-sf-modal-position='right']):not(:has(.sf-modal-footer)) [data-sf-modal-body-scroll]");
   .sf-modal[data-sf-modal-position='bottom']:not([data-sf-modal-fullscreen='true']) [data-sf-modal-surface]::before {
     @include sheet.sheet-bar-row;
   }
