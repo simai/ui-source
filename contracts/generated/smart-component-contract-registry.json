@@ -809,7 +809,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/drawer/smart.manifest.json",
-      "manifest_sha256": "08edb1242c1804698a44f2b976ae9701468445b8e68710dd0604845e4480d2e6",
+      "manifest_sha256": "135f747a9f0d4014a7be24b9e0eb43971116a4be06bb5de3c5e1486b2c3e0a6f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

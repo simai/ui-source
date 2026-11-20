@@ -71,8 +71,10 @@
 $content-actions: (
   '.sf-confirm--window > .sf-confirm__footer',
   "form > :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))",
-  // a row of buttons the content puts last in the body itself, without a form
-  "> :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))"
+  // a row of buttons the content puts last in the body itself, without a form,
+  // or last in the one element the content wraps itself in
+  "> :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))",
+  "> :only-child > :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))"
 );
 
 @mixin content-actions($body, $end, $more-end) {
