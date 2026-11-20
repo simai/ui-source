@@ -14,7 +14,9 @@ async function walk(dir) {
   return out;
 }
 const files = (await walk(SRC)).filter((u) => u.pathname.endsWith('.scss'));
-const name = (u) => u.pathname.slice(u.pathname.indexOf('/src/') + 5);
+// Relative to the package's src/ folder: a checkout that itself sits in a folder called «src» must not
+// shift the names (GB14-3).
+const name = (u) => u.href.slice(SRC.href.length);
 
 /* A scale that the most-used utility ignores is decoration. The transition
    utility sits on almost every control in this library, so it is the one place
