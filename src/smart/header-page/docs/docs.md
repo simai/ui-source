@@ -21,6 +21,15 @@ Attributes:
   heading ends in an ellipsis on one line: beside the actions while it has
   at least 20rem (the g0 step) there, and the count, the install mark and the
   star stay whole right after it.
+- `heading-level` — the heading element's level, 1 to 6, `1` by default:
+  the page's own title. A head inside a page that has its own h1 (a
+  conversation embedded in a page) says `2`. Only the tag changes; the look
+  stays the fourth heading step.
+- `description` — a line under the heading in the 1/3 text step (12/16)
+  and the secondary ink; with the heading it is as tall as the 1 rung (40),
+  so the head stands as tall as its «назад», avatar and actions, one line ending in an ellipsis: between people the head of a
+  conversation says whether the person is online («в сети», «был(а) вчера»).
+  Empty draws no line.
 - `count` — how many records the page holds, for a page without a table
   footer (a folder, a settings section). A list page shows no count here: its
   table footer gives the total, «1–50 из 448» (C161 (6)). Empty draws no
@@ -55,6 +64,17 @@ Slots:
 - `start` — the start of the line, before the heading: «назад» (an
   `sf-button-icon` `arrow_back`, ghost, on-surface) on the head of a page an
   app opens from a list, or a phone's ☰.
+- `media` — a mark before the heading, first in the title and the title's
+  gap from the name: the conversation's `sf-avatar` (C161). It moves with the
+  name when a narrow line wraps the title under «назад». It stands on the line's rung: an avatar
+  without a `size` takes the size of the first action, else of the `start`
+  control, else `1` beside a `description` (the heading and its line are that
+  tall) and `1/2` alone with the heading. A size the page writes stays.
+- `heading` — a control in place of the heading's words: the head of a
+  conversation with an assistant titles itself with a picker of whom to talk
+  to, a menu button. It stands inside the heading element, at
+  `heading-level`, so the page keeps its heading and the control names it;
+  the `heading` attribute is then not drawn. The control keeps its own look.
 - `actions` — the page's actions, 8 apart (C105 H5). The header places the
   main one (a filled `sf-button`, one per page) last, at the end of the line,
   and the outlined and quiet ones before it in the page's order (C161 (3));
@@ -101,6 +121,25 @@ Slots:
 <sf-header-page heading="Отпуск и перенос">
   <sf-button-icon slot="start" icon="arrow_back" appearance="ghost" scheme="on-surface" aria-label="К разговорам"></sf-button-icon>
   <sf-button slot="actions" appearance="outline" icon-start="group" text="Участники"></sf-button>
+</sf-header-page>
+```
+
+The head of a conversation (C161): «назад» in `start`, the avatar in
+`media`, the name and whether the person is online, the conversation's
+actions. Embedded in a page with its own h1, the heading is an h2.
+
+```html
+<sf-header-page heading="Анна Белова" description="в сети" heading-level="2">
+  <sf-button-icon slot="start" icon="arrow_back" appearance="ghost" scheme="on-surface" aria-label="К разговорам"></sf-button-icon>
+  <sf-avatar slot="media" text="АБ" hue="auto" aria-hidden="true"></sf-avatar>
+  <sf-button-icon slot="actions" icon="search" appearance="ghost" scheme="on-surface" aria-label="Поиск в разговоре"></sf-button-icon>
+  <sf-button-icon slot="actions" icon="group" appearance="ghost" scheme="on-surface" aria-label="Участники"></sf-button-icon>
+</sf-header-page>
+
+<sf-header-page heading-level="2">
+  <sf-button-icon slot="start" icon="arrow_back" appearance="ghost" scheme="on-surface" aria-label="К разговорам"></sf-button-icon>
+  <sf-button slot="heading" appearance="ghost" scheme="on-surface" icon-end="expand_more" text="Ассистент" aria-haspopup="menu"></sf-button>
+  <sf-button-icon slot="actions" icon="group" appearance="ghost" scheme="on-surface" aria-label="Участники"></sf-button-icon>
 </sf-header-page>
 ```
 

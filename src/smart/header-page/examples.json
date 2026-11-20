@@ -99,6 +99,29 @@
       "expect": {
         "heading": "Папка «Договоры»"
       }
+    },
+    {
+      "name": "chat-head",
+      "title": "Голова разговора: аватар, имя и «в сети»",
+      "children": "<sf-button-icon slot=\"start\" icon=\"arrow_back\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"К разговорам\"></sf-button-icon><sf-avatar slot=\"media\" text=\"АБ\" hue=\"auto\" aria-hidden=\"true\"></sf-avatar><sf-button-icon slot=\"actions\" icon=\"search\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"Поиск в разговоре\"></sf-button-icon><sf-button-icon slot=\"actions\" icon=\"group\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"Участники\"></sf-button-icon>",
+      "settings": {
+        "heading": "Анна Белова",
+        "description": "в сети",
+        "heading-level": 2
+      },
+      "expect": {
+        "heading": "Анна Белова",
+        "description": "в сети"
+      }
+    },
+    {
+      "name": "chat-head-picker",
+      "title": "Голова разговора с ассистентом: выбор собеседника вместо заголовка",
+      "children": "<sf-button-icon slot=\"start\" icon=\"arrow_back\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"К разговорам\"></sf-button-icon><sf-button slot=\"heading\" appearance=\"ghost\" scheme=\"on-surface\" icon-end=\"expand_more\" text=\"Ассистент\" aria-haspopup=\"menu\"></sf-button><sf-button-icon slot=\"actions\" icon=\"group\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"Участники\"></sf-button-icon>",
+      "settings": {
+        "heading-level": 2
+      },
+      "expect": {}
     }
   ],
   "pages": [
@@ -115,6 +138,9 @@
           "  <div lang=\"en\"><sf-header-page id=\"h-en\" heading=\"Orders\" star=\"false\" level=\"install\"></sf-header-page></div>",
           "  <sf-header-page id=\"h-order\" heading=\"Заказы\"><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button><sf-button slot=\"actions\" appearance=\"outline\" text=\"Импорт\"></sf-button></sf-header-page>",
           "  <sf-header-page id=\"h-tabs\" heading=\"Каталог\"><sf-tabs slot=\"tabs\" type=\"underline\" items='[{\"id\":\"all\",\"label\":\"Все\",\"current\":true}]'></sf-tabs></sf-header-page>",
+          "  <sf-header-page id=\"h-chat\" heading=\"Анна Белова\" description=\"в сети\" heading-level=\"2\"><sf-avatar slot=\"media\" text=\"АБ\" aria-hidden=\"true\"></sf-avatar><sf-button-icon slot=\"actions\" icon=\"group\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"Участники\"></sf-button-icon></sf-header-page>",
+          "  <sf-header-page id=\"h-alone\" heading=\"Анна Белова\"><sf-avatar slot=\"media\" text=\"АБ\" aria-hidden=\"true\"></sf-avatar><sf-avatar slot=\"media\" size=\"2\" text=\"ВК\" aria-hidden=\"true\"></sf-avatar></sf-header-page>",
+          "  <sf-header-page id=\"h-pick\" heading=\"Не рисуется\" heading-level=\"3\"><sf-button slot=\"heading\" appearance=\"ghost\" scheme=\"on-surface\" icon-end=\"expand_more\" text=\"Ассистент\"></sf-button></sf-header-page>",
           "</main>"
         ]
       },
@@ -248,6 +274,26 @@
           "steps": [
             {
               "check": "(() => { const hd = document.querySelector('#h-tabs > .sf-page-header'); return hd.lastElementChild.classList.contains('sf-page-header-tabs') && !!hd.querySelector('.sf-page-header-tabs sf-tabs') && document.querySelector('#h-tabs').sticky === false && getComputedStyle(hd).position === 'static'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p9-chat-head",
+          "title": "heading-level changes the tag only; the description is a line under the heading; an avatar in the media slot takes the line's rung, a size the page wrote stays (C161, 1.10.0)",
+          "covers": "settings.heading-level, settings.description, slots.media",
+          "steps": [
+            {
+              "check": "(() => { const h = document.querySelector('#h-chat'); const h2 = h.querySelector('.sf-page-header-name > h2.sf-page-header-heading'); const line = h.querySelector('.sf-page-header-name > .sf-page-header-description'); const media = h.querySelector('.sf-page-header-title > .sf-page-header-media > sf-avatar'); const one = document.querySelector('#h h1'); const alone = [...document.querySelectorAll('#h-alone .sf-page-header-media > sf-avatar')]; return !!h2 && h2.textContent.trim() === 'Анна Белова' && !h.querySelector('h1') && getComputedStyle(h2).fontSize === getComputedStyle(one).fontSize && line && line.textContent.trim() === 'в сети' && media && media.getAttribute('size') === '1' && h.querySelector('.sf-page-header-title').firstElementChild === h.querySelector('.sf-page-header-media') && alone.length === 2 && alone[0].getAttribute('size') === '1/2' && alone[1].getAttribute('size') === '2' && !document.querySelector('#h .sf-page-header-description') && !document.querySelector('#h .sf-page-header-media'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p10-heading-slot",
+          "title": "a control in the heading slot stands inside the heading element at heading-level, in place of the heading's words",
+          "covers": "slots.heading",
+          "steps": [
+            {
+              "check": "(() => { const h3 = document.querySelector('#h-pick h3.sf-page-header-heading'); return !!h3 && !!h3.querySelector('sf-button') && !h3.textContent.includes('Не рисуется') && !document.querySelector('#h-pick h1'); })()"
             }
           ]
         }

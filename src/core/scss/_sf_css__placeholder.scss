@@ -1604,7 +1604,29 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
   --sf-page-header--box-actions: calc(var(--sf-px) * 0);
   --sf-page-header--box-tabs: calc(var(--sf-px) * 0);
   --sf-page-header--box-pad: calc(var(--sf-px) * 0);
-  --sf-page-header--box: calc(var(--sf-page-header--box-path) + max(var(--sf-page-header--box-line), var(--sf-page-header--box-actions)) + var(--sf-page-header--box-tabs) + var(--sf-page-header--box-pad));
+  --sf-page-header--box-media: calc(var(--sf-px) * 0);
+  --sf-page-header--box: calc(var(--sf-page-header--box-path) + max(var(--sf-page-header--box-line), var(--sf-page-header--box-actions), var(--sf-page-header--box-media)) + var(--sf-page-header--box-tabs) + var(--sf-page-header--box-pad));
+}
+
+/* The head of a conversation (sf-header-page 1.10.0): a description is a
+   line of the 1/3 text step under the heading, and an avatar in the media
+   slot with a size the page wrote is that size's control height (one without
+   a size takes the line's rung, which the actions, the start control or the
+   description already hold). */
+:where(:is(sf-header-page, sf-page-header))[description]:not([description=""]) {
+  --sf-page-header--box-line: max(calc(var(--sf-heading-4--height) + var(--sf-text-height-1\/3)), var(--sf-ui-1\/2--control-height));
+}
+
+:where(:is(sf-header-page, sf-page-header)):has(> [slot="media"][size="1/2"]:not([data-sf-page-header-size]), > header > .sf-page-header-line > .sf-page-header-title > .sf-page-header-media > [slot="media"][size="1/2"]:not([data-sf-page-header-size])) {
+  --sf-page-header--box-media: var(--sf-ui-1\/2--control-height);
+}
+
+:where(:is(sf-header-page, sf-page-header)):has(> [slot="media"][size="1"]:not([data-sf-page-header-size]), > header > .sf-page-header-line > .sf-page-header-title > .sf-page-header-media > [slot="media"][size="1"]:not([data-sf-page-header-size])) {
+  --sf-page-header--box-media: var(--sf-ui-1--control-height);
+}
+
+:where(:is(sf-header-page, sf-page-header)):has(> [slot="media"][size="2"]:not([data-sf-page-header-size]), > header > .sf-page-header-line > .sf-page-header-title > .sf-page-header-media > [slot="media"][size="2"]:not([data-sf-page-header-size])) {
+  --sf-page-header--box-media: var(--sf-ui-2--control-height);
 }
 
 :where(:is(sf-header-page, sf-page-header)):has(> [slot="path"], > header > .sf-page-header-path > [slot="path"]) {

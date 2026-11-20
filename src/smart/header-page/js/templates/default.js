@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 
 // Framework utilities and the header's own sheet (scss/: the gaps and colours
 // are its public variables): a column for the path above the line, and a line
@@ -10,8 +11,31 @@ import {html, nothing} from 'lit';
 // (HD-12); the count and the marks stay right after the words. The actions
 // come in the header's order, the main one last (C161 (3)); the tabs slot
 // ends the header, its line the header's lower edge (C161 (5)).
+//
+// The head of a conversation (C161, 1.10.0) adds three optional parts, each
+// drawn only when the page gives it, so a head without them is the markup it
+// always was: the media slot (an avatar) first in the title, so that it moves
+// with the name when a narrow line wraps the title under «назад», a
+// heading slot (a control, such as a picker of whom to talk to) inside the
+// heading element in place of the heading's words, and a description line
+// under the heading (whether the person is online). heading-level changes the
+// heading element's tag only; its look stays the fourth heading step.
 export function renderPageHeaderTemplate(context) {
   const {component, heading, count, level, star, text, hostSlot, hasHostSlot, rootClass} = context;
+  const headingLevel = context.headingLevel || 1;
+  const tag = unsafeStatic(`h${headingLevel}`);
+  const slotted = hasHostSlot('heading');
+  const headingBody = slotted ? hostSlot('heading') : heading;
+  const headingClass = slotted
+    ? 'sf-page-header-heading sf-page-header-heading--slot sf-h-4 m-0 min-w-0 flex items-cross-center'
+    : 'sf-page-header-heading sf-h-4 m-0 min-w-0 truncate';
+  const headingElement = headingLevel === 1 && !slotted
+    ? html`<h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 truncate">${heading}</h1>`
+    : staticHtml`<${tag} class=${headingClass}>${headingBody}</${tag}>`;
+  const description = context.description;
+  const name = description
+    ? html`<div class="sf-page-header-name flex flex-col min-w-0">${headingElement}<p class="sf-page-header-description m-0 min-w-0 truncate">${description}</p></div>`
+    : headingElement;
   const classes = ['sf-page-header', 'flex', 'flex-col', 'min-w-0', context.expressive ? 'sf-page-header--expressive' : '', context.sticky ? 'sf-page-header--sticky' : '', rootClass].filter(Boolean).join(' ');
   const on = star === true;
   const actions = context.actions ? context.actions() : {rest: hostSlot('actions'), main: nothing};
@@ -20,7 +44,7 @@ export function renderPageHeaderTemplate(context) {
     <div class="sf-page-header-line flex items-cross-center flex-wrap min-w-0">
       ${hasHostSlot('start') ? hostSlot('start') : nothing}
       <div class="sf-page-header-title flex items-cross-center min-w-0">
-        <h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 truncate">${heading}</h1>
+        ${hasHostSlot('media') ? html`<div class="sf-page-header-media flex items-cross-center">${hostSlot('media')}</div>` : nothing}${name}
         ${count !== '' && count !== null && count !== undefined
           ? html`<sf-badge appearance="tonal" scheme="neutral" size="1/2" text=${String(count)}></sf-badge>`
           : nothing}
