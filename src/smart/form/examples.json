@@ -37,7 +37,7 @@
             "label": "Тон",
             "propertyType": "choice",
             "group": "look",
-            "width": "m",
+            "width": "medium",
             "options": [
               {
                 "value": "accent",
@@ -55,7 +55,7 @@
             "propertyType": "number",
             "decimals": 0,
             "group": "look",
-            "width": "s",
+            "width": "short",
             "min": 0,
             "max": 24,
             "help": "Только для залитой кнопки"
@@ -126,7 +126,7 @@
             "label": "Тон",
             "propertyType": "choice",
             "group": "look",
-            "width": "m",
+            "width": "medium",
             "options": [
               {
                 "value": "accent",
@@ -184,7 +184,7 @@
             "label": "Тон",
             "propertyType": "choice",
             "group": "look",
-            "width": "m",
+            "width": "medium",
             "options": [
               {
                 "value": "accent",
@@ -234,7 +234,7 @@
             "label": "Тон",
             "propertyType": "choice",
             "group": "look",
-            "width": "m",
+            "width": "medium",
             "options": [
               {
                 "value": "accent",
@@ -302,7 +302,7 @@
             "label": "Тон",
             "propertyType": "choice",
             "group": "look",
-            "width": "m",
+            "width": "medium",
             "options": [
               {
                 "value": "accent",
@@ -320,7 +320,7 @@
             "propertyType": "number",
             "decimals": 0,
             "group": "look",
-            "width": "s",
+            "width": "short",
             "min": 0,
             "max": 24,
             "help": "Только для залитой кнопки"
@@ -380,7 +380,7 @@
             "label": "Скидка",
             "propertyType": "percent",
             "precision": 1,
-            "width": "s"
+            "width": "short"
           },
           {
             "key": "comment",
@@ -420,7 +420,7 @@
             "label": "Скидка",
             "propertyType": "percent",
             "precision": 1,
-            "width": "s"
+            "width": "short"
           },
           {
             "key": "comment",

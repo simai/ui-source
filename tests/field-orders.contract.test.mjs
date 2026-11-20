@@ -95,10 +95,10 @@ test('FO-4: the set asks for its words when it publishes itself, and whenFieldRe
 
 test('FO-6: sf-form declares a ru.inn field\'s holder', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.12.3'); // GB13 notes: 1.12.3 // form fields: 1.7.0 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
+  assert.equal(manifest.version, '1.13.0'); // look answers: widths short and medium // GB13 notes: 1.12.3 // form fields: 1.7.0 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
   assert.deepEqual(manifest.settings.fields.schema.items.properties.holder, {type: 'string', enum: ['any', 'organization', 'person']});
   // FL-7: a phone field's starting country is declared too.
   assert.deepEqual(manifest.settings.fields.schema.items.properties.defaultCountry, {type: 'string', pattern: '^[A-Za-z]{2}$'});
   assert.match(manifest.settings.fields.summary, /holder \(a ru\.inn field: any, organization -- 10 digits -- or person -- 12\)/);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.26.1'); // GB13 notes: 1.26.1 // cards-fw: 1.25.0 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.27.0'); // C396 WM-4: the template parameter width, above 1.26.1 on origin // cards-fw: 1.25.0 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });

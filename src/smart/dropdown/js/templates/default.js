@@ -1,6 +1,7 @@
 import { html, nothing } from "lit";
 import {renderFieldHelp} from '../../../helpers/field-help';
 import { renderInheritedSlot } from "../../../helpers/inherited-value";
+import { fieldWidthClass } from "../../../../component/field-size";
 import { avatarPicture } from "../../../avatar/js/picture";
 import { optionBadgeProps } from "../../../helpers/option-badge.js";
 
@@ -197,6 +198,8 @@ export function renderDropdownTemplate(context) {
     context.invalid ? "error" : "",
     "flex",
     "flex-col",
+    // The field's width (C396, WM-4); none without the setting.
+    fieldWidthClass(context.width),
   ].filter(Boolean);
 
   const fieldClasses = [

@@ -134,6 +134,6 @@ test('the registry names the buttons template of choice and the keys the two rea
   assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'required', 'readonly']);
   const choice = PROPERTY_TYPES.find((entry) => entry.type === 'choice');
   assert.deepEqual(choice.variants, [{id: 'buttons', label: {ru: 'Кнопками', en: 'As buttons'}}]);
-  assert.deepEqual(choice.templates.map((one) => [one.id, one.default, one.params]), [['dropdown', true, ['badge']], ['buttons', false, ['size']]]);
+  assert.deepEqual(choice.templates.map((one) => [one.id, one.default, one.params]), [['dropdown', true, ['badge', 'width']], ['buttons', false, ['size']]]);
   assert.deepEqual(choice.params, ['options', 'required', 'readonly']);
 });

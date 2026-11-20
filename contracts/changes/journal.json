@@ -18637,6 +18637,37 @@
       "source": "src/utility/text-max-width/default/scss/_sf_var__text_measure.scss; src/core/scss/_sf_css__typograpy.scss; src/core/contracts/token-aliases.v1.json; ui-control control/docs-review/decisions.md C396"
     },
     {
+      "id": "value-form-field-width-s-m",
+      "recorded_on": "2026-11-20",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-form 1.13.0 (DEV look answer 2026-11-20, on the width ladder of C396): a field's width in the form's field descriptor is a field width step -- short (20 characters, 160 px at text 16, 140 in compact density and on a phone) or medium (28, 224 / 196) -- or full. It was s (8rem, 128 px) and m (16rem, 256 px): a visible change, a short field 32 px wider and a medium one 32 px narrower at text 16. s and m stay dated aliases: they draw short and medium and the use is noted once in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-form",
+          "attribute": "fields[].width",
+          "from": "s",
+          "to": "short"
+        },
+        {
+          "component": "sf-form",
+          "attribute": "fields[].width",
+          "from": "m",
+          "to": "medium"
+        }
+      ],
+      "deprecated_on": "2026-11-20",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "{\"key\": \"radius\", \"propertyType\": \"number\", \"width\": \"s\"}",
+        "after": "{\"key\": \"radius\", \"propertyType\": \"number\", \"width\": \"short\"}"
+      },
+      "manual": "In a field descriptor given to sf-form (fields, or what sf-view-properties sends) write width short for s and medium for m; full is unchanged.",
+      "owner": "ui-source",
+      "source": "src/smart/form/index.js (fieldWidth); src/smart/form/scss/_smart__form.scss"
+    },
+    {
       "id": "behaviour-bulk-actions-result-places",
       "recorded_on": "2026-11-19",
       "stage": "removed",

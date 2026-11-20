@@ -33,6 +33,17 @@ const sfInputMeta = {
       "default": "1",
       "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input and every field of the family (lookup, quantity, date, code, colour, phone, textarea, rich text, dropdown, file upload, image) stand on all five steps."
     },
+    "width": {
+      "kind": "enum",
+      "values": [
+        "",
+        "short",
+        "medium",
+        "long"
+      ],
+      "default": "",
+      "description": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width."
+    },
     "radius": {
       "kind": "enum",
       "values": [

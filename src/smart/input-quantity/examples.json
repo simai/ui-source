@@ -164,6 +164,18 @@
       "expect": {
         "data-at-min": true
       }
+    },
+    {
+      "name": "width",
+      "title": "Короткое поле",
+      "settings": {
+        "label": "Количество",
+        "value": "3",
+        "width": "short"
+      },
+      "expect": {
+        "width": "short"
+      }
     }
   ],
   "pages": [

@@ -13,6 +13,7 @@
 //   @include window-footer.window-footer('.sf-modal-footer', var(--sf-modal-footer-gap, var(--sf-space-1\/3)));
 @use 'sass:map';
 @use '../vars/sf_var__breakpoint' as bp;
+@use 'mix__paint' as paint;
 
 @mixin window-footer($footer, $gap) {
   #{$footer} {
@@ -40,6 +41,70 @@
 
     #{$footer} :is([data-apart], [data-apart] > :is(button, a)) {
       margin-inline-start: 0;
+    }
+  }
+}
+
+// The answers a window's content writes at its own end (D-SCROLL, Larena
+// audit 2026-11-19 through DEV 2026-11-20): a long body -- the plan of an
+// action, a form of many fields -- took the answers below the screen, so the
+// main one was reached only by scrolling to the end. In a side window the row
+// stays at the window's foot while the body scrolls under it, as the footer
+// slot does, with no markup of the page's own:
+//
+//   - the answers of an sf-confirm question in its window form
+//     (.sf-confirm--window > .sf-confirm__footer);
+//   - the last child of a form when it holds only buttons, a submit among
+//     them (the row of «Сохранить» / «Отмена» a page writes at its end).
+//
+// The row stands on the window's own surface (the place's), a step of
+// --sf-space-1 above its buttons and $end below them (the bottom inset of
+// the window's footer). The step below is taken back from the body's end
+// padding by a margin of the same length, so where nothing scrolls the
+// buttons stay where they were; a question's answers, --sf-space-3 under the
+// plan (sf-confirm), keep the same distance, the step above taken from it.
+// A plain form's row stands --sf-space-1 further from the field above it.
+// The hairline over the row is the footer's: only while content is below it
+// ($more-end: the body's selector under the window's mark of it).
+//
+//   @include window-footer.content-actions('.sf-drawer-body', var(--sf-drawer--inset), '.sf-drawer[data-sf-drawer-more-end] .sf-drawer-body');
+$content-actions: (
+  '.sf-confirm--window > .sf-confirm__footer',
+  "form > :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))",
+  // a row of buttons the content puts last in the body itself, without a form,
+  // or last in the one element the content wraps itself in
+  "> :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))",
+  "> :only-child > :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))"
+);
+
+@mixin content-actions($body, $end, $more-end) {
+  @each $row in $content-actions {
+    @if paint.writes-shape() {
+      #{$body} #{$row} {
+        position: sticky;
+        inset-block-end: 0;
+        z-index: 1;
+        padding-block: var(--sf-space-1) #{$end};
+        margin-block-end: calc(-1 * #{$end});
+      }
+
+      #{$more-end} #{$row} {
+        box-shadow: 0 calc(-1 * var(--sf-px)) 0 var(--sf-outline-variant);
+      }
+    }
+
+    @if paint.writes-paint() {
+      #{$body} #{$row} {
+        background-color: var(--sf-surface-place);
+      }
+    }
+  }
+
+  // sf-confirm keeps the plan --sf-space-3 above its answers: the row's own
+  // step above is taken from it.
+  @if paint.writes-shape() {
+    #{$body} .sf-confirm--window > * + .sf-confirm__footer {
+      margin-block-start: calc(var(--sf-space-3) - var(--sf-space-1));
     }
   }
 }

@@ -1,6 +1,7 @@
 import {html, nothing} from 'lit';
 import {renderFieldHelp} from '../../../helpers/field-help';
 import {renderInheritedSlot} from '../../../helpers/inherited-value';
+import {fieldWidthClass} from '../../../../component/field-size';
 
 // The class component's markup (component/quantity), so its sheet draws the
 // field: the root, the label row, the wrap with «−», the box and «+». The
@@ -60,6 +61,8 @@ export function renderQuantityTemplate(context) {
     field.invalid ? 'error' : '',
     context.rootClass,
     LAYOUT.root,
+    // The field's width (C396, WM-4); none without the setting.
+    fieldWidthClass(context.width),
   ].filter(Boolean);
 
   const labelContent = component?.hasSlotContent?.('label')

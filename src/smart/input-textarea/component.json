@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-textarea's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/textarea (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.input-textarea",
   "tag": "sf-input-textarea",
-  "version": "1.13.3",
+  "version": "1.14.0",
   "kind": "leaf",
   "family": "input",
   "traits": [
@@ -20,6 +20,17 @@
       ],
       "default": "1",
       "summary": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the text size, the side padding and the height of one row are those of sf-input of the same size."
+    },
+    "width": {
+      "type": "enum",
+      "values": [
+        "",
+        "short",
+        "medium",
+        "long"
+      ],
+      "default": "",
+      "summary": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width."
     },
     "appearance": {
       "type": "enum",
@@ -409,7 +420,8 @@
     "version 1.12.3 (2026-11-16, owner decision C141 (1), GB4 acceptance follow-up (1); numbered above 1.12.2 on origin/main): a patch. The count of a field with maxlength shows from 80 % of the limit, as the decision and these docs say: at 80 characters of 100 (0.8 x limit and more), where it showed only from the 81st (more than 0.8 x limit). The shared rule is src/smart/helpers/char-count.js. Settings, values, events and keys unchanged.",
     "version 1.13.1 (2026-11-17, feat/lang-file-c282; numbered above 1.13.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.13.2 (written on the branch as 1.13.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
-    "version 1.13.3 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
+    "version 1.13.3 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
+    "version 1.14.0 (2026-11-20, owner decision C396, WM-4 of the width ladder, feat/field-width; above 1.13.3 on origin): a minor, setting added. width short | medium | long: the field is at most 20, 28 or 44 characters of the width ladder wide (--sf-field--width-short, -medium, -long on --sf-measure-20, -28, -44: 160 / 224 / 352 px at text 16, 140 / 196 / 308 in compact density and on a phone) and the container's width below that; its root carries sf-field--width-<name>, core's rule (core _sf_css__field_width.scss), so it holds before the field's own sheet comes. Without the setting the field draws the same markup as before. Values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [

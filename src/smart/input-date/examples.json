@@ -229,6 +229,17 @@
         "max-bytes": 16384,
         "why": "inline mode draws the calendar open on the page: the month grid of six weeks with its day marks is the first paint"
       }
+    },
+    {
+      "name": "width",
+      "title": "Короткое поле",
+      "settings": {
+        "label": "Дата визита",
+        "width": "short"
+      },
+      "expect": {
+        "width": "short"
+      }
     }
   ],
   "pages": [

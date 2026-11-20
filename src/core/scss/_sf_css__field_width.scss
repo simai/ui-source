@@ -1,0 +1,26 @@
+// Field widths (owner decision C396, WM-4): a field of the input family with
+// width="short | medium | long" is at most that many characters of the width
+// ladder wide -- 20, 28 and 44 (--sf-field--width-short, -medium, -long on
+// --sf-measure-20, -28, -44, figma_measure.scss) -- and as wide as its
+// container below that. The field's root carries the class
+// (component/field-size.js fieldWidthClass); a field without the setting
+// carries none and is the container's width, as before.
+//
+// Core's, not a field sheet's: the roles are core's, every field of the
+// family reads the same three, and a field drawn before its own sheet has come
+// stands at its width from the first frame. In sf.components, over the
+// utilities, as a field's other geometry is (C273); a page that wants another
+// width writes a container of that width.
+@layer sf.components {
+  .sf-field--width-short {
+    max-inline-size: var(--sf-field--width-short);
+  }
+
+  .sf-field--width-medium {
+    max-inline-size: var(--sf-field--width-medium);
+  }
+
+  .sf-field--width-long {
+    max-inline-size: var(--sf-field--width-long);
+  }
+}

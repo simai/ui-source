@@ -1,3 +1,5 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+
 @layer sf.components {
 /* The list of sf-steps and its three layouts (owner decision C101): a row
    (marker and label beside it, a line to the next step), a column (a rail of
@@ -7,8 +9,9 @@
    after it; no pills, no «›».
 
    layout="auto" draws the row while it fits its own width, the column
-   otherwise, and the count line under twenty rem (sf-steps measures, the classes
-   below draw). While it measures, data-sf-measure lays the list out as a row
+   otherwise and always below thirty rem (the sheet's container query draws it
+   before the code measures), and the count line under twenty rem (sf-steps
+   measures, the classes below draw). While it measures, data-sf-measure lays the list out as a row
    at its one-line width for a moment, in the same task, never painted. */
 .sf-steps {
   display: block;
@@ -156,6 +159,106 @@
   border-radius: var(--sf-radius--ui);
 }
 
+/* --------------------------------------------- auto in a narrow place */
+/* An automatic list is a column below thirty rem of its own width (DEV look answer
+   2026-11-20): the sheet draws it so before the code has measured anything,
+   so the first paint of a narrow place no longer draws a row the code then
+   folds into a column (sf-steps 1.5.0 agrees: COLUMN_BELOW_REM). The list is
+   its own inline-size container; its width is its place's (display block,
+   at most 100%), never its content's. Above thirty rem the code decides as before.
+   The list still carries sf-steps--layout-row until the code has measured: the
+   row's declarations are taken back here, then the column's are the column's
+   above, under this selector. */
+.sf-steps.sf-steps--auto {
+  container: sf-steps / inline-size;
+}
+
+@container sf-steps (not (min-width: #{mq.container-step(g5)})) {
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-steps-container {
+    align-items: normal;
+    gap: normal;
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step,
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step:not(:last-child) {
+    align-items: normal;
+    gap: normal;
+    flex: 0 1 auto;
+    padding-block-start: 0;
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step .sf-step-container {
+    white-space: normal;
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step .sf-step-text {
+    display: inline;
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step:not(:last-child)::after {
+    content: none;
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step-control {
+    min-block-size: auto;
+    padding-inline: 0;
+    margin-inline: 0;
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-steps-container {
+    display: flex;
+    flex-direction: column;
+    /* Room for the first and the last ring. */
+    padding-block: calc(var(--sf-step--ring, calc(var(--sf-px) * 2)) * 2);
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step {
+    display: block;
+    padding-block-end: var(--sf-space-1);
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step:last-child {
+    padding-block-end: 0;
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step .sf-step-body {
+    display: grid;
+    grid-template-columns: var(--sf-step--marker) minmax(0, 1fr);
+    /* The marker → label gap is the body's own (_css__step.scss, C105 H2). */
+    align-items: start;
+    inline-size: 100%;
+  }
+
+  /* The marker stands on the label's first line. */
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step .sf-step-marker {
+    block-size: var(--sf-step--line-height);
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]).sf-steps--marker-number .sf-step .sf-step-marker {
+    block-size: var(--sf-step--marker);
+    margin-block: calc((var(--sf-step--line-height) - var(--sf-step--marker)) / 2);
+  }
+
+  /* The line down the rail, from under this marker to the next one. */
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    inset-block-start: calc((var(--sf-step--line-height) + var(--sf-step--marker-reach)) / 2 + var(--sf-space-1\/4));
+    inset-block-end: calc(var(--sf-space-1\/4) - (var(--sf-step--line-height) - var(--sf-step--marker-reach)) / 2);
+    inset-inline-start: calc((var(--sf-step--marker) - var(--sf-px)) / 2);
+    inline-size: var(--sf-px);
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::before {
+    inline-size: calc(var(--sf-px) * 2);
+    inset-inline-start: calc((var(--sf-step--marker) - var(--sf-px) * 2) / 2);
+  }
+
+  .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step-control {
+    border-radius: var(--sf-radius--ui);
+  }
+}
+
 /* -------------------------------------------------------------- count */
 .sf-steps.sf-steps--layout-count:not([data-sf-measure]) .sf-steps-container {
   display: none;
@@ -220,6 +323,14 @@
   }
   .sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::before {
     background-color: var(--sf-step--progress);
+  }
+  @container sf-steps (not (min-width: #{mq.container-step(g5)})) {
+    .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step:not(:last-child)::before {
+      background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
+    }
+    .sf-steps.sf-steps--auto.sf-steps--layout-row:not([data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::before {
+      background-color: var(--sf-step--progress);
+    }
   }
   .sf-steps .sf-steps-count-line {
     color: var(--sf-on-surface);

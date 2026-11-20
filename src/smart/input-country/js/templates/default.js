@@ -1,6 +1,7 @@
 import { html, nothing } from 'lit';
 import {renderFieldHelp} from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
+import { fieldWidthClass } from '../../../../component/field-size';
 import { countryName } from '../../../../component/country-code/js/_country_code';
 
 // A flag of the list is the browser's own lazy image: the address is written
@@ -79,6 +80,8 @@ export function renderCountryCodeTemplate(context) {
 
   const rootClasses = ['sf-country-code', `sf-country-code--size-${size}`, 'flex', 'flex-col'];
   if (context.rootClass) rootClasses.push(context.rootClass);
+  // The field's width (C396, WM-4); none without the setting.
+  if (fieldWidthClass(context.width)) rootClasses.push(fieldWidthClass(context.width));
   if (field.invalid) rootClasses.push('error');
   if (disabled) rootClasses.push('disabled');
   if (open) rootClasses.push('open');

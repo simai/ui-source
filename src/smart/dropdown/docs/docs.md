@@ -362,3 +362,20 @@ row's text.
             {"value":"not_in","text":"ни один из","dot":"error"},
             {"value":"empty","text":"не задано","dot":"tertiary"}]'></sf-dropdown>
 ```
+
+## Width by the value (C396)
+
+`width="short | medium | long"` (sf-dropdown 1.24.0) sets how wide the field is by the
+value it is made for, in characters of the width ladder: `short` 20 (a date, a
+number, a code), `medium` 28 (a name, a phone), `long` 44 (a path, an e-mail,
+an address) -- the roles `--sf-field--width-short`, `-medium` and `-long` on
+`--sf-measure-20`, `-28` and `-44`. That is 160 / 224 / 352 px at text 16 and
+140 / 196 / 308 in compact density and on a phone: the characters stay, the
+pixels follow the text. The field is at most that wide and the container's
+width below it. Without the setting (the default) the field takes the whole
+width of its container, as before. Its root carries `sf-field--width-<name>`,
+core's rule, so the width holds before the field's own sheet arrives.
+
+```html
+<sf-dropdown label="Город" width="medium"></sf-dropdown>
+```

@@ -19,6 +19,7 @@
     "src/core/scss/_sf_css__composition.scss",
     "src/core/scss/_sf_css__density.scss",
     "src/core/scss/_sf_css__display.scss",
+    "src/core/scss/_sf_css__field_width.scss",
     "src/core/scss/_sf_css__hide.scss",
     "src/core/scss/_sf_css__loader.scss",
     "src/core/scss/_sf_css__logo.scss",
@@ -36,7 +37,7 @@
     "src/core/scss/mix/_mix__window-footer.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "36b06ea3f85a2e39d20d5512dd7da3ff0070198118e09b145c02b582ab623f81",
+  "content_sha256": "5f5f864e2abb4b33a1493ddd93b5689dfb7eef48eb18086fa905481269a4e1f0",
   "dependencies": [
     {
       "id": "font.inter",

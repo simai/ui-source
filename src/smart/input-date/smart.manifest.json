@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -197,6 +197,17 @@
           "1",
           "2",
           "3"
+        ]
+      },
+      "width": {
+        "type": "string",
+        "default": "",
+        "description": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width.",
+        "enum": [
+          "",
+          "short",
+          "medium",
+          "long"
         ]
       },
       "input-size": {
@@ -782,7 +793,7 @@
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "c0b54505f7915787b86282bfdd5fc3a87d23082215edc7fa741a0876d21a3147"
+        "sha256": "476a10f62dd0cf8a9a4fb211fc8833b0e91fb1bf1234d22e3cadf20a2074e786"
       },
       {
         "path": "src/smart/input-date/rule.js",
@@ -790,7 +801,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "251feb43637ae01304b7eddb4e6737cf78015b9cd25660d8326f467c9e3955fa"
+        "sha256": "58bcbf0858152f6952d53a728144f565355ca28c0cef5e632031a648bf0ddc37"
       }
     ],
     "generated_runtime": [

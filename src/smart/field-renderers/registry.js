@@ -38,6 +38,13 @@ const typeLabel = (key) => Object.freeze(Object.defineProperties({}, {
 // non-default templates under their former ids, kept for hosts that read it
 // until 2027-01-01.
 //
+// The template parameter `width` (owner decision C396, WM-4; module
+// smart-field-renderers 1.27.0): short, medium or long, how wide the edit
+// control is by the value it holds -- 20, 28 or 44 characters of the width
+// ladder, the control's own width setting; absent, the whole column. Every
+// template that draws a text box in the edit place takes it; it is not the
+// field key `width` (half or full), which places the field in a view's column.
+//
 // C303: a type of its own only where storage, checking or filter conditions
 // differ; a setting fixed when the field is created is part of the type
 // (`decimals` of a number, 0 for a whole one; `multiple`). integer is read as
@@ -94,20 +101,20 @@ export const PROPERTY_TYPES = Object.freeze([
     // included, and an incomplete one is reported, not written as a value.
     // nullable: false makes a cleared masked field write "" instead of null.
     entry({type: 'string', label: typeLabel('type-string'),
-        templates: [byDefault('string', 'input')],
+        templates: [byDefault('string', 'input', {params: ['width']})],
         params: ['placeholder', 'mask', 'nullable', 'required', 'readonly']}),
     // phone (C302 (1)): the number in E.164, «+79161234567», an extension
     // after «;ext=». defaultCountry (FL-7): the country an empty field starts
     // on, ISO 3166 alpha-2; without it, the page's.
     entry({type: 'phone', label: typeLabel('type-phone'),
-        templates: [byDefault('phone', 'phone_input')],
+        templates: [byDefault('phone', 'phone_input', {params: ['width']})],
         params: ['defaultCountry', 'required', 'readonly']}),
     // password (C302 (1)): write-only. The host never sends the password; the
     // value it sends is {set: true} or {set: false} (null reads as not set),
     // and the set shows only «задан»/«не задан». An edit writes the typed text
     // through setFieldValue and writes nothing for a field nobody typed in.
     entry({type: 'password', label: typeLabel('type-password'), writeOnly: true,
-        templates: [byDefault('password', 'input')],
+        templates: [byDefault('password', 'input', {params: ['width']})],
         conditions: conditions(Object.freeze(['not-empty', 'empty']), 'not-empty'),
         params: ['placeholder', 'required', 'readonly']}),
     // url, link and ru.inn (catalogue step 3): types Larena stores and checks
@@ -119,16 +126,16 @@ export const PROPERTY_TYPES = Object.freeze([
     // organization, person) fixed when the field is created. The rules are
     // text-types.js; each is searched as text in the filter.
     entry({type: 'url', label: typeLabel('type-url'),
-        templates: [byDefault('url', 'input')],
+        templates: [byDefault('url', 'input', {params: ['width']})],
         params: ['placeholder', 'required', 'readonly']}),
     entry({type: 'link', label: typeLabel('type-link'),
-        templates: [byDefault('link', 'link')],
+        templates: [byDefault('link', 'link', {params: ['width']})],
         params: ['required', 'readonly']}),
     entry({type: 'ru.inn', label: typeLabel('type-ru.inn'),
-        templates: [byDefault('ru.inn', 'input')],
+        templates: [byDefault('ru.inn', 'input', {params: ['width']})],
         params: ['holder', 'placeholder', 'required', 'readonly']}),
     entry({type: 'text', label: typeLabel('type-text'),
-        templates: [byDefault('text', 'textarea', {params: ['rows']})],
+        templates: [byDefault('text', 'textarea', {params: ['rows', 'width']})],
         params: ['placeholder', 'required', 'readonly']}),
     // html (property-view port 1.17.0): formatted text, an HTML string of
     // sf-input-rich's subset. Edited with sf-input-rich, shown cleaned by that
@@ -146,8 +153,8 @@ export const PROPERTY_TYPES = Object.freeze([
     // with figures of one width -- number, money and percent.
     entry({type: 'number', label: typeLabel('type-number'), numeric: true,
         templates: [
-            byDefault('number', 'input'),
-            template('number', 'stepper', {places: ['edit']}),
+            byDefault('number', 'input', {params: ['width']}),
+            template('number', 'stepper', {places: ['edit'], params: ['width']}),
             template('number', 'scale', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
             template('number', 'meter', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
         ],
@@ -159,7 +166,7 @@ export const PROPERTY_TYPES = Object.freeze([
     // date and time is read); format is the length the view and the cell print
     // the date in, Intl's dateStyle: short, medium (the default), long, full.
     entry({type: 'date', label: typeLabel('type-date'),
-        templates: [byDefault('date', 'datepicker')],
+        templates: [byDefault('date', 'datepicker', {params: ['width']})],
         conditions: DATE_CONDITIONS,
         params: ['min', 'max', 'format', 'required', 'readonly']}),
     // datetime and time: sf-input-date in mode datetime and time (1.4.0). min
@@ -167,13 +174,13 @@ export const PROPERTY_TYPES = Object.freeze([
     // hh:mm for a time -- and step is the minute step, 1 to 60. A datetime's
     // format is its date's length, as a date's; the clock stays short.
     entry({type: 'datetime', label: typeLabel('type-datetime'),
-        templates: [byDefault('datetime', 'datepicker')],
+        templates: [byDefault('datetime', 'datepicker', {params: ['width']})],
         conditions: DATE_CONDITIONS,
         params: ['min', 'max', 'step', 'format', 'required', 'readonly']}),
     // time (step 4): its own conditions, not a text search -- «Равно»,
     // «Между» (both ends in), «Раньше», «Позже», «Пусто», «Не пусто».
     entry({type: 'time', label: typeLabel('type-time'),
-        templates: [byDefault('time', 'timepicker')],
+        templates: [byDefault('time', 'timepicker', {params: ['width']})],
         conditions: conditions(TIME_FILTER_OPERATORS, 'between'),
         params: ['min', 'max', 'step', 'required', 'readonly']}),
     // boolean (C303 (4)): the switch is the default; the checkbox, and the
@@ -195,7 +202,7 @@ export const PROPERTY_TYPES = Object.freeze([
     // value's badge, tonal (default) or outline.
     entry({type: 'choice', label: typeLabel('type-choice'),
         templates: [
-            byDefault('choice', 'dropdown', {params: ['badge']}),
+            byDefault('choice', 'dropdown', {params: ['badge', 'width']}),
             template('choice', 'buttons', {places: ['edit'], params: ['size']}),
         ],
         params: ['options', 'required', 'readonly']}),
@@ -204,7 +211,7 @@ export const PROPERTY_TYPES = Object.freeze([
     // badges draws the values as badges in their options' colours.
     entry({type: 'choices', label: typeLabel('type-choices'),
         templates: [
-            byDefault('choices', 'dropdown', {params: ['badge'], legacy: 'select'}),
+            byDefault('choices', 'dropdown', {params: ['badge', 'width'], legacy: 'select'}),
             template('choices', 'checklist', {places: ['edit']}),
             template('choices', 'badges', {places: ['view', 'compact'], params: ['badge']}),
         ],
@@ -213,13 +220,13 @@ export const PROPERTY_TYPES = Object.freeze([
             {id: 'select', label: typeLabel('variant-choices-select')}],
         params: ['options', 'required', 'readonly']}),
     entry({type: 'user', label: typeLabel('type-user'),
-        templates: [byDefault('user', 'reference_picker')],
+        templates: [byDefault('user', 'reference_picker', {params: ['width']})],
         params: ['placeholder', 'searchPlaceholder', 'required', 'readonly']}),
     entry({type: 'record', label: typeLabel('type-record'),
-        templates: [byDefault('record', 'reference_picker')],
+        templates: [byDefault('record', 'reference_picker', {params: ['width']})],
         params: ['placeholder', 'searchPlaceholder', 'required', 'readonly']}),
     entry({type: 'relation', label: typeLabel('type-relation'),
-        templates: [byDefault('relation', 'reference_picker')],
+        templates: [byDefault('relation', 'reference_picker', {params: ['width']})],
         params: ['placeholder', 'searchPlaceholder', 'required', 'readonly']}),
     // lookup: a value chosen from a reference list the host keeps -- a country,
     // a status, a contract type (Larena, 2026-10-23). It is not a record: the
@@ -228,7 +235,7 @@ export const PROPERTY_TYPES = Object.freeze([
     // searched by the host, from the source the field names (`source`, which the
     // host reads and no renderer does).
     entry({type: 'lookup', label: typeLabel('type-lookup'),
-        templates: [byDefault('lookup', 'source_picker')],
+        templates: [byDefault('lookup', 'source_picker', {params: ['width']})],
         params: ['options', 'multiple', 'placeholder', 'searchPlaceholder', 'required', 'readonly']}),
     // file: image, image_card and image_list are the same stored file drawn as
     // a picture (image-card and image-list are their former ids until
@@ -263,7 +270,7 @@ export const PROPERTY_TYPES = Object.freeze([
     // its digits after the point are `decimals` (`precision`, its former
     // name), else those of `step`.
     entry({type: 'money', label: typeLabel('type-money'), numeric: true,
-        templates: [byDefault('money', 'money_input')],
+        templates: [byDefault('money', 'money_input', {params: ['width']})],
         conditions: NUMBER_CONDITIONS,
         params: ['currency', 'currencies', 'currencyDisplay', 'min', 'max', 'placeholder', 'required', 'readonly']}),
     // percent (step 5): the number's templates -- stepper, scale and meter,
@@ -271,8 +278,8 @@ export const PROPERTY_TYPES = Object.freeze([
     // It had no former variants.
     entry({type: 'percent', label: typeLabel('type-percent'), numeric: true,
         templates: [
-            byDefault('percent', 'input'),
-            template('percent', 'stepper', {places: ['edit']}),
+            byDefault('percent', 'input', {params: ['width']}),
+            template('percent', 'stepper', {places: ['edit'], params: ['width']}),
             template('percent', 'scale', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
             template('percent', 'meter', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
         ],

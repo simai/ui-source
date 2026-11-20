@@ -39,7 +39,7 @@
         "label": "Тон",
         "propertyType": "choice",
         "group": "look",
-        "width": "m",
+        "width": "medium",
         "options": [
           {
             "value": "accent",
@@ -57,7 +57,7 @@
         "propertyType": "number",
         "decimals": 0,
         "group": "look",
-        "width": "s",
+        "width": "short",
         "min": 0,
         "max": 24,
         "help": "Только для залитой кнопки"
