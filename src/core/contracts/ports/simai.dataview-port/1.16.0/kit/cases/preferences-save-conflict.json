@@ -1,0 +1,28 @@
+{
+  "id": "preferences-save-conflict",
+  "intent": "preferences.save",
+  "capability": "personal-preferences",
+  "summary": "A save against an old revision of the layer is a conflict that names the current one; the view raises the same change again against it.",
+  "given": {
+    "preferences": {
+      "revision": "p4",
+      "page_size": 20
+    }
+  },
+  "when": {
+    "intent": "preferences.save",
+    "payload": {
+      "preferences": {
+        "page_size": 100
+      },
+      "base_revision": "p3"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "current_revision"
+    ],
+    "note": "current_revision is p4. The layer is the person's own (another tab of theirs wrote p4), so the newest change wins: the view raises {page_size: 100} again with base_revision p4."
+  }
+}

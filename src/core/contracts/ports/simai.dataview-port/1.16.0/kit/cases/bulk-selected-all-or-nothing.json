@@ -1,0 +1,45 @@
+{
+  "id": "bulk-selected-all-or-nothing",
+  "intent": "bulk.apply_selected",
+  "capability": null,
+  "summary": "A batch with one stale revision is refused as a whole; nothing is written.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "archive"
+        ]
+      },
+      {
+        "id": 2,
+        "revision": "r3",
+        "actions": [
+          "archive"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "bulk.apply_selected",
+    "payload": {
+      "action_id": "archive",
+      "record_ids": [
+        1,
+        2
+      ],
+      "revisions": {
+        "1": "r1",
+        "2": "r2"
+      }
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "conflicts"
+    ],
+    "note": "Record 1 is not archived either. The kit checks the store afterwards."
+  }
+}

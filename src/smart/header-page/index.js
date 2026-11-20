@@ -400,6 +400,27 @@ class SfPageHeader extends PageHeaderElement {
     else this.setAttribute('star', value ? 'true' : 'false');
   }
 
+  // VS-10 (views study, owner decision C393): where the Framework's icon
+  // button has the toggle look (sf-button-icon appearance="toggle",
+  // component.icon-buttons 1.20.0), the star is that toggle -- off a quiet
+  // ghost, on the soft primary plate with its ring, the glyph kept outline,
+  // aria-pressed its state and one name, «В избранное», so the state is said
+  // once (C12). Where it has not, the star keeps the filled glyph in the
+  // favourite's colour and says its state by its name (1.2.2). Checked on the
+  // element sf-button-icon defines: until it is defined the star draws the
+  // former look and is drawn again once it is.
+  starLook() {
+    const Button = globalThis.customElements?.get?.('sf-button-icon');
+    if (!Button) {
+      if (!this._starToggleWait && globalThis.customElements?.whenDefined) {
+        this._starToggleWait = globalThis.customElements.whenDefined('sf-button-icon').then(() => this.requestComponentUpdate('star-look'));
+      }
+      return null;
+    }
+    const values = Button.sfInterface?.settings?.appearance?.values;
+    return Array.isArray(values) && values.includes('toggle') ? 'toggle' : null;
+  }
+
   // The template's press: the request toggle {on}; not cancelled, the header
   // writes the star itself.
   toggleStar() {
@@ -440,6 +461,7 @@ class SfPageHeader extends PageHeaderElement {
       count: this.count,
       level: this.level,
       star: this.star,
+      starLook: this.star === undefined ? null : this.starLook(),
       rootClass: this.getRootClass(),
       overflow: this.overflowMore ? 'more' : 'wrap',
       moreSize: this.actionMoreSize(),

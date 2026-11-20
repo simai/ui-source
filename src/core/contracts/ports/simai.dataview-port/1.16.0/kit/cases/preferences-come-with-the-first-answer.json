@@ -1,0 +1,41 @@
+{
+  "id": "preferences-come-with-the-first-answer",
+  "intent": "query.change",
+  "capability": "personal-preferences",
+  "summary": "A host that keeps the person's view state sends it with the first answer: the page size, whether the view zone is open, the view opened last, and the layer's revision.",
+  "given": {
+    "records": [],
+    "capabilities": [
+      "saved-views",
+      "personal-preferences"
+    ],
+    "preferences": {
+      "revision": "p3",
+      "page_size": 50,
+      "view_zone": "open",
+      "view": "unpaid"
+    }
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": {
+        "filters": {},
+        "search": "",
+        "sort": [],
+        "page": 1,
+        "per_page": 50
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "echo",
+      "preferences"
+    ],
+    "note": "data.preferences conforms to the port's preferences schema and carries revision p3. The page printed the stored size (per_page 50), so the view asks nothing more; had it asked with another size, it would ask once more with 50. The person is the host's to know: no payload names them."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "bulk-under-filter-count-confirmed",
+  "intent": "bulk.apply_under_filter",
+  "capability": "bulk-under-filter",
+  "summary": "Acting on everything under a filter carries the count the person confirmed; a changed count is a conflict.",
+  "given": {
+    "total_under_filter": 41
+  },
+  "when": {
+    "intent": "bulk.apply_under_filter",
+    "payload": {
+      "action_id": "archive",
+      "filters": {
+        "status": [
+          "draft"
+        ]
+      },
+      "confirmed_total": 40
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "current_total"
+    ],
+    "note": "The host does not act on 41 records when the person confirmed 40."
+  }
+}

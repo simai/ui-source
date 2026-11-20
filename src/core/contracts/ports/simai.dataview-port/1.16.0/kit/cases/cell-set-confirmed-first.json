@@ -1,0 +1,43 @@
+{
+  "id": "cell-set-confirmed-first",
+  "intent": "record.set",
+  "capability": "inline-edit",
+  "summary": "A write that changes other records -- making a field required -- is refused with confirm_required and a digest first, and applied when raised again with it.",
+  "given": {
+    "confirms": [
+      "record.set"
+    ],
+    "records": [
+      {
+        "id": "code",
+        "revision": "s1",
+        "actions": [
+          "edit"
+        ],
+        "required": false,
+        "editable": [
+          "required"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.set",
+    "payload": {
+      "record_id": "code",
+      "key": "required",
+      "value": true,
+      "revision": "s1"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "data_must_include": [
+      "confirm"
+    ],
+    "note": "reason is confirm_required; the summary in data.confirm says what happens to the records. With confirm set to data.confirm.digest the same payload is applied."
+  }
+}

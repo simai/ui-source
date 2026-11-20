@@ -1,0 +1,40 @@
+{
+  "id": "write-confirm-round-trip",
+  "intent": "node.move",
+  "capability": "tree-move",
+  "summary": "A host that confirms a write -- here a node with no revision, so no conflict check is possible -- first refuses it with confirm_required and a digest, and applies it when raised again with that digest.",
+  "given": {
+    "confirms": [
+      "node.move"
+    ],
+    "records": [
+      {
+        "id": "g2",
+        "parent": "g1",
+        "has_children": false,
+        "actions": [
+          "view",
+          "move"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "node.move",
+    "payload": {
+      "id": "g2",
+      "parent": null,
+      "index": null
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "data_must_include": [
+      "confirm"
+    ],
+    "note": "reason is confirm_required. The same payload with confirm set to data.confirm.digest is answered applied; with another digest, refused."
+  }
+}

@@ -297,7 +297,7 @@
 
 /* The icon button's schemes set the glyph's ink on its button, so the
    favourite's colour is given to the glyph itself. */
-.sf-page-header-star--on .sf-icon {
+.sf-page-header-star--on:not(.sf-page-header-star--toggle) .sf-icon {
   --sf-icon--color: var(--sf-page-header-star-color, var(--sf-warning));
 }
 }

@@ -1,0 +1,38 @@
+{
+  "id": "system-view-is-not-written",
+  "intent": "view.save",
+  "capability": "saved-views",
+  "summary": "A system view ships with the product and is never written through the port; the person's change to it is saved as a new view of their own.",
+  "given": {
+    "saved_views": [
+      {
+        "key": "all",
+        "label": "Все заказы",
+        "revision": "v1",
+        "level": "system"
+      }
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "key": "all",
+      "label": "Все заказы",
+      "revision": "v1",
+      "query": {
+        "filters": {
+          "status": [
+            "new"
+          ]
+        }
+      }
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason forbidden. The view offers «Сохранить как новое» for a changed system view and raises view.save with a new key (level personal) or view.save_shared (level shared); the system view keeps its revision."
+  }
+}

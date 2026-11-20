@@ -1,0 +1,48 @@
+{
+  "id": "columns-name-the-title-role",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "The host names the column that leads the record, so the view can pin it and open the record from the row.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ],
+    "columns": [
+      {
+        "key": "name",
+        "label": "Название",
+        "role": "title",
+        "sortable": true
+      },
+      {
+        "key": "city",
+        "label": "Город"
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "total",
+      "columns"
+    ],
+    "note": "At most one column carries role: title. The view pins it beside the box and the row menu; a column without the role is not pinned and a double click on the row still only opens a record the row offers the view action for."
+  }
+}

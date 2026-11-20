@@ -1,0 +1,42 @@
+{
+  "id": "records-carry-permissions",
+  "intent": "query.change",
+  "capability": "row-actions",
+  "summary": "Each record carries the actions the host allows; the view offers only those.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view",
+          "edit"
+        ]
+      },
+      {
+        "id": 2,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 6,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records"
+    ],
+    "note": "Record 2 offers no edit. The view does not infer the right from a field value or a role name."
+  }
+}
