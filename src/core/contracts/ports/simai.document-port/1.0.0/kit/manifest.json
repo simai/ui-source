@@ -3,7 +3,7 @@
   "port": "simai.document-port",
   "version": "1.0.0",
   "transport": "neutral",
-  "summary": "The first edition, draft 3, and its acceptance gate: load, resolve, save with one revision for every language and a conflict that carries the current element, the round trip of unknown content, saving a resolved document, rights, history with paging, restore, publish and rollback with a client_key, area inheritance by the Recipe rule, and the limits per language value. Draft 3 adds the total size of the element, empty objects kept, a publication made outside the port and one draft per change of the values.",
+  "summary": "The first edition, draft 3, and its acceptance gate: load, resolve, save with one revision for every language and a conflict that carries the current element, the round trip of unknown content, saving a resolved document, rights, history with paging, restore, publish and rollback with a client_key, area inheritance by the Recipe rule, and the limits per language value. Draft 3 adds the total size of the element, empty objects kept, a publication made outside the port and one draft per change of the values and paging by a folded draft's newest revision.",
   "answers": [
     "applied",
     "conflict",
@@ -53,6 +53,7 @@
     "save-over-the-total-byte-limit-is-refused-for-the-element",
     "save-keeps-empty-objects-where-the-document-has-objects",
     "load-describes-a-publication-made-outside-the-port",
-    "history-lists-a-draft-only-when-the-values-changed"
+    "history-lists-a-draft-only-when-the-values-changed",
+    "history-pages-from-a-folded-draft-by-its-newest-revision"
   ]
 }

@@ -20,7 +20,7 @@
     },
     "client_key": {
       "$ref": "#/$defs/key",
-      "description": "A stable key per write the editor makes once and keeps until the write is answered. A repeat with the same key and the same parameters is the same write and is answered with the stored result; the same key with other parameters is an idempotency-conflict."
+      "description": "A stable key per write the editor makes once and keeps until the write is answered. A repeat with the same key and the same parameters is the same write and is answered with the stored result; the same key with other parameters is an idempotency-conflict. Kept by the host at least 7 days (draft 3); past that a repeat is a new operation."
     },
     "language": {
       "type": "string",

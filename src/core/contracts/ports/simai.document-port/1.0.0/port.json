@@ -256,7 +256,7 @@
       }
     },
     "history.list": {
-      "summary": "The drafts and the publications of the element, apart, newest first, each list at most limit entries (20 by default). before is a draft revision: the drafts older than it; before_publication is a publication id: the publications older than it. more says whether each list goes on. An unknown before or before_publication is refused not-found. A draft is one change of the document values: versions with equal values are listed once, by the newest revision (draft 3).",
+      "summary": "The drafts and the publications of the element, apart, newest first, each list at most limit entries (20 by default). before is a draft revision: the drafts older than it; before_publication is a publication id: the publications older than it. more says whether each list goes on. An unknown before or before_publication is refused not-found. A draft is one change of the document values: versions with equal values are listed once, by the newest revision (draft 3). Paging over a folded draft (draft 3): before names a draft by the revision history.list answered for it, the newest of its group; a host may answer not-found for an older version folded inside it.",
       "event": "document-port:history",
       "payload": {
         "type": "object",
@@ -433,7 +433,7 @@
     }
   },
   "answer": {
-    "summary": "Every intent is answered with one object. answer says what happened; data carries what an applied answer supplies (the intent's answer_data). A conflict carries reason, current_revision and current, the element as it is now, so the editor keeps the unsaved input and shows the stored one beside it: stale-revision (the draft moved; current carries values, and with levels resolved and areas), environment-changed (the live publication moved; current carries published) or idempotency-conflict (a client_key reused with other parameters). A refused and an unavailable answer carry reason; a refusal the validation explains carries data.diagnostics, and the element is left exactly as it was. reason is one of the codes listed, hyphenated and matched exactly; a host maps its own codes to them. The editor words every reason itself; message is optional, English, for a log, and never shown to a person as it is. session-expired: the reader must sign in again; the editor keeps the unsaved input and repeats the write after it. unavailable may carry retry_after, seconds. The editor may repeat on its own an unavailable answer (after retry_after) and a lost answer (the same write, the same client_key; for a save without one, it reads the element and compares, key order aside); it never repeats a refused or a conflict answer unchanged. A host answers unavailable rather than throwing, and never answers applied to something it did not do.",
+    "summary": "Every intent is answered with one object. answer says what happened; data carries what an applied answer supplies (the intent's answer_data). A conflict carries reason, current_revision and current, the element as it is now, so the editor keeps the unsaved input and shows the stored one beside it: stale-revision (the draft moved; current carries values, and with levels resolved and areas), environment-changed (the live publication moved; current carries published) or idempotency-conflict (a client_key reused with other parameters). A refused and an unavailable answer carry reason; a refusal the validation explains carries data.diagnostics, and the element is left exactly as it was. reason is one of the codes listed, hyphenated and matched exactly; a host maps its own codes to them. The editor words every reason itself; message is optional, English, for a log, and never shown to a person as it is. session-expired: the reader must sign in again; the editor keeps the unsaved input and repeats the write after it. unavailable may carry retry_after, seconds. The editor may repeat on its own an unavailable answer (after retry_after) and a lost answer (the same write, the same client_key; for a save without one, it reads the element and compares, key order aside); it never repeats a refused or a conflict answer unchanged. A host answers unavailable rather than throwing, and never answers applied to something it did not do. client_key lifetime (draft 3, Larena msg-3137b66b): a host keeps a client_key at least 7 days (it may keep it longer; Larena keeps 30). Past that a repeat is a new operation: a save or a publish is compared with the revision it names (usually stale-revision), a restore or a rollback makes a new draft or publication. The editor never repeats a write older than 7 days with the same key.",
     "schema": {
       "type": "object",
       "required": [
@@ -659,8 +659,8 @@
   },
   "conformance": {
     "kit": "kit",
-    "sha256": "e148c497b50e76bb803b9acff7066eaaf4acce725f51075ce8330471c06826bc",
-    "cases": 43
+    "sha256": "20b4f332470a22c56700c96f3946ba9f2dff668bdd227d071c2b1c4353c8c058",
+    "cases": 44
   },
   "compatibility": {
     "previous_major": null,
@@ -683,7 +683,9 @@
       "draft 3: an empty object outside an object-typed slot that a host cannot keep is would-lose with the diagnostic empty-object-not-kept; {} where the document has an object is kept",
       "draft 3: published describes a publication made outside the port as {id: null, revision, languages, at when known}; null is only an element never published",
       "draft 3: history lists a draft only when the document values changed; equal versions are one draft named by the newest revision",
-      "draft 3: catalogue words (C302): a composition document field is template document, component host"
+      "draft 3: catalogue words (C302): a composition document field is template document, component host",
+      "draft 3: a host keeps a client_key at least 7 days; past that a repeat is a new operation, and the editor never repeats a write older than 7 days with the same key",
+      "draft 3: before pages by a folded draft's newest revision; an older version folded inside it may be not-found"
     ]
   }
 }

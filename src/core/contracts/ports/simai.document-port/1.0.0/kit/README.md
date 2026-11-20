@@ -1,6 +1,6 @@
 # Conformance kit — document host port 1.0.0 (draft 3)
 
-Forty-three cases a host runs to show it speaks `simai.document-port`. The kit
+Forty-four cases a host runs to show it speaks `simai.document-port`. The kit
 is the port's acceptance gate: an adapter (Larena, Bitrix) is accepted against
 1.0.0 when it passes every case. The kit
 is transport-neutral: it describes intents, payloads and answers, not HTTP and
@@ -95,6 +95,15 @@ port now says:
   when the document values changed: versions with the same values (an edit of
   the record's other fields, a save of the same values) are one draft, named by
   the newest revision of the group, at its time.
+- **Paging over a folded draft.** `before` names a draft by the revision
+  `history.list` answered for it, the newest of its group; a host may answer
+  `not-found` for an older version folded inside it.
+- **client_key lifetime.** A host keeps a `client_key` at least 7 days (it may
+  keep it longer; Larena keeps 30). Past that a repeat is a new operation: a
+  save or a publish is compared with the revision it names (usually
+  `stale-revision`), a restore or a rollback makes a new draft or publication.
+  The editor never repeats a write older than 7 days with the same key. Not a
+  kit case: the kit does not move a host's clock.
 
 | case | what it holds the host to |
 |:---|:---|
@@ -102,6 +111,7 @@ port now says:
 | `save-keeps-empty-objects-where-the-document-has-objects` | `{}` in `props`, `extensions` and `presentation` comes back `{}` on save and load |
 | `load-describes-a-publication-made-outside-the-port` | an outside publication is `published` with `id` null, its revision and languages |
 | `history-lists-a-draft-only-when-the-values-changed` | a save of the stored values is applied and listed as the draft it equals, by the newest revision |
+| `history-pages-from-a-folded-draft-by-its-newest-revision` | `before` set to a folded draft's newest revision pages on from the next draft |
 
 ## 1.0.0 (draft 2)
 

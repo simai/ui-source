@@ -506,5 +506,7 @@ test('draft 3 is named in the port, the schema and the kit', () => {
   assert.match(port.summary, /template document drawn by the component host/u);
   assert.match(port.data.values.summary, /empty-object-not-kept/u);
   assert.match(port.intents['document.save'].summary, /max-total-bytes/u);
+  assert.match(port.answer.summary, /at least 7 days/u);
+  assert.match(port.intents['history.list'].summary, /newest of its group/u);
   assert.match(readFileSync(join(at, 'kit/README.md'), 'utf8'), /^# Conformance kit — document host port 1\.0\.0 \(draft 3\)/u);
 });
