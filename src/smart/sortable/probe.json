@@ -21,7 +21,7 @@
       "covers": "settings.group, settings.label, settings.mode, lang runtime.instructions, keyboard Tab",
       "steps": [
         {
-          "check": "(() => { const l = document.querySelector('#l'); const item = l.querySelector('[data-sf-sortable-item=s1]'); const help = document.getElementById(item.getAttribute('aria-describedby')); return l.group === 'sections' && l.label === 'Секции' && l.mode === 'move' && item.tabIndex === 0 && help && help.textContent.startsWith('Пробел или Enter'); })()"
+          "check": "(() => { const l = document.querySelector('#l'); const item = l.querySelector('[data-sf-sortable-item=s1]'); const help = document.getElementById(item.getAttribute('aria-describedby')); return l.group === 'sections' && l.label === 'Секции' && l.mode === 'move' && item.tabIndex === 0 && help && help.textContent.startsWith('Enter или пробел — взять'); })()"
         }
       ]
     },

@@ -204,7 +204,7 @@
               }
             ]
           },
-          "check": "document.documentElement.lang === 'de' && document.querySelector('#five sf-button button').getAttribute('aria-label') === 'Language: Deutsch' && document.activeElement === document.querySelector('#five sf-button button')"
+          "check": "document.documentElement.lang === 'de' && document.querySelector('#five sf-button button').getAttribute('aria-label') === 'Sprache: Deutsch' && document.activeElement === document.querySelector('#five sf-button button')"
         },
         {
           "action": {

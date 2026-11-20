@@ -300,9 +300,11 @@ try {
   s = await state(page, 'm');
   check('options: ArrowDown opens the whole list, the excluded value never offered', JSON.stringify(s.rows) === '["Anna Petrova","Boris Ivanov","Vera Smirnova"]' && s.expanded === 'true', s);
   check('a chosen row stays, marked', JSON.stringify(s.selected) === '["Anna Petrova"]', s);
+  // The rows' avatar is size 1/4, which holds one letter (owner decision
+  // C152 (3), 2026-11-14, sf-avatar's avatarStepText): «A», not «AP».
   check('rows carry the avatar and the caption', await page.evaluate(() => {
     const row = document.querySelector('#m [role=option]');
-    return row.querySelector('.sf-avatar')?.textContent.trim() === 'AP' && row.querySelector('.sf-lookup-option-caption')?.textContent === 'Design';
+    return row.querySelector('.sf-avatar')?.textContent.trim() === 'A' && row.querySelector('.sf-lookup-option-caption')?.textContent === 'Design';
   }));
   for (const [key, expected] of [['ArrowDown', 'Anna Petrova'], ['ArrowDown', 'Boris Ivanov'], ['End', 'Vera Smirnova'], ['ArrowDown', 'Vera Smirnova'], ['Home', 'Anna Petrova'], ['ArrowUp', 'Anna Petrova']]) {
     await page.keyboard.press(key);
