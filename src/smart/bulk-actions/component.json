@@ -2,7 +2,7 @@
   "$comment": "The source of sf-bulk-actions' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.16 and vocabulary 1.1.5: owner decisions C291 (1) and C295 (2026-11-17; research ui-control control/research/2026-11-17-sf-bulk-actions/README.md, prototype prototypes/sf-bulk-actions-study.html, variant A).",
   "id": "smart.bulk-actions",
   "tag": "sf-bulk-actions",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "kind": "leaf",
   "family": "bulk",
   "settings": {
@@ -91,6 +91,16 @@
           "optional": true,
           "summary": "Reversible: it goes at once, and the notice (SF.notify) offers «Отменить», which sends undo (C25)"
         },
+        "long": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "Long (owner decision C387): it goes in the background and its result comes in a notice (SF.notify) -- success, or an error that stays until closed, with «Подробнее»; the bar only says «<text>: идёт в фоне» for a moment. Unset: long when it goes to more than 100 items (C34's limit); false keeps a big one in the bar"
+        },
+        "done-text": {
+          "type": "string",
+          "optional": true,
+          "summary": "What the result says when it went («Удалено»): «Удалено: 5» in place of the count for 4 s, then back (C387); in a long action's notice too. Empty: «Готово: 5». doneText is read too"
+        },
         "min": {
           "type": "number",
           "optional": true,
@@ -140,9 +150,13 @@
         "count": {
           "type": "number",
           "summary": "How many items it goes to."
+        },
+        "long": {
+          "type": "boolean",
+          "summary": "The action is long (C387): the host runs it in the background and answers with result({id, ...}) when it ends; the bar does not show its progress."
         }
       },
-      "summary": "A person chose an action (after «yes» in the question when it asks one): the host does it on the selection or on all under the filter. Cancel it to refuse; a reversible action's notice is then not shown"
+      "summary": "A person chose an action (after «yes» in the question when it asks one): the host does it on the selection or on all under the filter, and says how it went with result(). Cancel it to refuse; a reversible action's notice is then not shown"
     },
     "undo": {
       "own-verb": true,
@@ -214,10 +228,15 @@
         "applied",
         "refused"
       ],
-      "summary": "A short run in the bar: «Выполняем: 4 из 12» (or «<text>: 4 / 12») over a progress bar, the actions out of reach until done reaches total or result() comes. Refused {reason: long} over 100 items -- a job longer than that is the host's sf-progress-run (C34) -- and {reason: invalid} without a total"
+      "summary": "A short run in the bar: «Выполняем: 4 из 12» (or «<text>: 4 / 12») over a progress bar, the actions out of reach until done reaches total or result() comes. Refused {reason: long} over 100 items -- an action that long goes in the background and its result in a notice (C387); its progress is the host's sf-progress-run (C34) -- and {reason: invalid} without a total"
     },
     "result": {
       "with": {
+        "id": {
+          "type": "id",
+          "optional": true,
+          "summary": "The action it reports (its id in the action event); the last one sent when not given."
+        },
         "ok": "number",
         "failed": "list",
         "text": {
@@ -228,7 +247,7 @@
       "x-outcomes": [
         "applied"
       ],
-      "summary": "How it went, failed as [{id, text, reason}]: with refusals the bar says «Готово 10 из 12 · 2 не удалось» with «Подробнее» (the list in a question window) and «Повторить для 2»; the host keeps the failed items selected, and the result goes when the selection changes. Without refusals it is said and the bar goes back"
+      "summary": "How an action went, failed as [{id, text, reason}] (owner decision C387, refining C295 and C331). A fast action: without refusals the bar says «Удалено: 5» (the action's done-text, else «Готово: 5») in place of the count for 4 s and goes back, the selection may drop to 0 meanwhile; with refusals «Готово 10 из 12 · 2 не удалось» with «Подробнее» (the list in a question window) and «Повторить для 2», the host keeps the failed items selected and the result goes when the selection changes. A long action (long in its action event): a notice, success or an error that stays with «Подробнее». A failure is written to «Уведомления» either way: SF.notify's sf-notification record, source sf-bulk-actions (a fast one's not shown again as a toast, the bar shows it). A reversible action's success says nothing more: its notice with «Отменить» already did"
     },
     "clear": {
       "with": {},
@@ -343,7 +362,7 @@
       "state": "default"
     }
   },
-  "x-summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run and its per-item result. One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
+  "x-summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run, a fast action's result in place of the count and a long one's in a notice, failures written to «Уведомления». One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
   "x-source": {
     "package": "framework",
     "folder": "bulk-actions",
@@ -356,11 +375,12 @@
     "actions (C295 (2)): buttons, not «dropdown + Apply»: up to three labelled outline on-surface buttons (C116), the rest in «⋯» (more_horiz, C155 (2), the page's one menu SF.menu.open, C184 (4)); a phone (the box under the sm step, 32rem) shows one icon button with its name in the tooltip and «⋯». A dangerous action is always in «⋯», last after a line (C164 (5)), red (C13), and asked about in the question window (sf-modal size=\"question\" + sf-confirm appearance=\"window\", C39) unless it says confirm false. A reversible one (undo) goes at once with «Отменить» in the notice (SF.notify, C25). An action outside min/max is pale, reached, with its reason (C164 (4)).",
     "all under the filter (C295 (3)): «Выбрать все N» is a ghost primary button that appears when the page is selected (count = page-count < total); taken, the count says «Выбраны все N», the button «Только эта страница (n)», and an action goes with scope all. Any other change of the selection takes it back (BA-3 of sf-pagination).",
     "one danger rule (BA-1): status danger, the danger flag, or an id that starts with delete, remove, destroy or trash (js/danger.js); sf-pagination re-exports it.",
-    "run and result: a short run (up to 100 items) in the bar through progress(); a longer one is the host's sf-progress-run (C34, progress refused {reason: long}); result() says how many failed, «Подробнее» lists them (sf-list-description in a question window), «Повторить для N» sends the action again with scope selection, and the failed items stay selected (the host's).",
+    "run and result: a short run (up to 100 items) in the bar through progress(); result() says how many failed, «Подробнее» lists them (sf-list-description in a question window), «Повторить для N» sends the action again with scope selection, and the failed items stay selected (the host's). Where a result goes is C387 (version 1.2.0).",
     "keys and focus: a plain row of buttons in Tab order, 8 apart (C184: roving is for icon rows); the focus is never moved into the bar; Escape in the list or the bar clears the selection unless a menu, a window or a text field holds it; a polite live region says the count, the clear, the run and the result after 300 ms.",
     "look (prototype variant A): one row, padding space-1/4 (start space-1/2), groups 16 apart (space-1), inside 8 (space-1/3); the card surface, an outline-variant edge, the surface radius; the bar is the rung's control height plus 2 × space-1/4 and its edges (42 at 1/2, 50 at 1); five public variables.",
     "replaces (until 2027-01-01): sf-pagination's band (now drawn by this bar, its settings and events kept), sf-view's _renderBulkBand, sf-view-table's setBulkActions / renderBulkActions and the gallery's actions slot (their owners move to the bar; journal bulk-actions-replace-copies).",
-    "version 1.1.0 (2026-11-18): a minor (owner decision C309 (1), DEV held answers H7, msg-839c5a4c). On a phone the bar stays one line: when the count, «Выбрать все N», the actions, «⋯» and the clear button would wrap at size 1 (a 90 px two-line bar), the select-all offer moves into «⋯» as its first entry and the bar keeps the height of its size; it comes back when the row has room (a ResizeObserver on the bar). The offer in the menu selects all, or the page, as the button did."
+    "version 1.1.0 (2026-11-18): a minor (owner decision C309 (1), DEV held answers H7, msg-839c5a4c). On a phone the bar stays one line: when the count, «Выбрать все N», the actions, «⋯» and the clear button would wrap at size 1 (a 90 px two-line bar), the select-all offer moves into «⋯» as its first entry and the bar keeps the height of its size; it comes back when the row has room (a ResizeObserver on the bar). The offer in the menu selects all, or the page, as the button did.",
+    "version 1.2.0 (2026-11-19): a minor (owner decision C387, refining C295 and C331; DEV LV-14, msg-a63a0589; study ui-control control/research/2026-11-19-admin-list, prototypes/admin-list-study.html). Where a bulk result goes: a fast action's result says «Удалено: 5» (the action's done-text, else «Готово: 5») in place of the count for 4 s, then back (to «Выбрано N», or hidden at 0); a long one -- the author's long: true, or unset and more than 100 items, C34's limit -- goes in the background: the action event carries long, the bar says «<action>: идёт в фоне» for 4 s, and result() ends it with a notice (SF.notify success, or an error that stays until closed, C339, with «Подробнее»). A failure goes to «Уведомления» (C332, C341): one SF.notify record with source sf-bulk-actions, which a notification centre writes from the sf-notification event; a fast one's is not shown as a toast (the bar shows it). The Framework has no public «Уведомления» list yet (G7, ui-pro after its study): the sf-notification event is the route. result() takes id, the action it reports, so long actions may overlap. Before 1.2.0 a result without refusals was only spoken and an action over 100 items reported in the bar: journal behaviour-bulk-actions-result-places."
   ],
   "x-registry": {
     "capabilities": [
@@ -394,7 +414,8 @@
           "hidden",
           "shown",
           "running",
-          "result"
+          "result",
+          "done"
         ]
       },
       "visual_states": [
@@ -440,11 +461,11 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-bulk-actions with any list, table, gallery or tree whose items a person selects to act on several at once: place it after the list (before it for place top), write count, page-count and total from the selection, give it actions and do the work on sf-bulk-actions-action.",
+      "use_when": "Use sf-bulk-actions with any list, table, gallery or tree whose items a person selects to act on several at once: place it after the list (before it for place top), write count, page-count and total from the selection, give it actions, do the work on sf-bulk-actions-action and answer with result({id, ok, failed}).",
       "do_not": [
         "Do not draw your own «Выбрано N» row, Apply button or «для всех» checkbox beside a list",
         "Do not move the focus into the bar when a row is selected",
-        "Do not run a job over 100 items or longer than about 10 s in the bar; use sf-progress-run (C34)",
+        "Do not show your own toast or bar line for a bulk result: call result() and the bar says it in place, in a notice or in «Уведомления» (C387); give a job's progress with sf-progress-run (C34)",
         "Do not ask your own question before a dangerous action the bar already asks about"
       ],
       "required_reads": [

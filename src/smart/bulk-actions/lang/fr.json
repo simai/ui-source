@@ -35,6 +35,15 @@
     "details-text": "Détails",
     "details-heading": "Échecs : {failed} sur {total}",
     "retry-text": "Réessayer pour {n}",
-    "failed-reason": "Refusé par le serveur"
+    "failed-reason": "Refusé par le serveur",
+    "done-text": "Terminé : {n}",
+    "done-own-text": "{done} : {n}",
+    "background-text": "{action} : en arrière-plan",
+    "failure-text": "{action} : {failed} sur {total} en échec",
+    "more-failed-text": {
+      "one": "et {n} autre",
+      "many": "et {n} autres",
+      "other": "et {n} autres"
+    }
   }
 }

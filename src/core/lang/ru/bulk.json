@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 24,
-    "translated": 24,
+    "words": 29,
+    "translated": 29,
     "share": 100
   },
   "words": {
@@ -53,7 +53,17 @@
       "details-text": "Подробнее",
       "details-heading": "Не удалось: {failed} из {total}",
       "retry-text": "Повторить для {n}",
-      "failed-reason": "Отказ сервера"
+      "failed-reason": "Отказ сервера",
+      "done-text": "Готово: {n}",
+      "done-own-text": "{done}: {n}",
+      "background-text": "{action}: идёт в фоне",
+      "failure-text": "{action}: не удалось {failed} из {total}",
+      "more-failed-text": {
+        "one": "и ещё {n}",
+        "few": "и ещё {n}",
+        "many": "и ещё {n}",
+        "other": "и ещё {n}"
+      }
     }
   }
 }

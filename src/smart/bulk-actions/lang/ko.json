@@ -29,6 +29,13 @@
     "details-text": "자세히",
     "details-heading": "실패: {total}개 중 {failed}개",
     "retry-text": "{n}개 다시 시도",
-    "failed-reason": "서버에서 거부됨"
+    "failed-reason": "서버에서 거부됨",
+    "done-text": "완료: {n}",
+    "done-own-text": "{done}: {n}",
+    "background-text": "{action}: 백그라운드에서 실행 중",
+    "failure-text": "{action}: {total}개 중 {failed}개 실패",
+    "more-failed-text": {
+      "other": "외 {n}개"
+    }
   }
 }

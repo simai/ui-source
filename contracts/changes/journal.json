@@ -18603,6 +18603,32 @@
       "source": "src/component/quantity/scss/_css__quantity.scss; src/component/quantity/js/_quantity.js; ui-control control/docs-review/decisions.md C153"
     },
     {
+      "id": "behaviour-bulk-actions-result-places",
+      "recorded_on": "2026-11-19",
+      "stage": "removed",
+      "kind": "behaviour",
+      "summary": "Owner decision C387 (2026-11-19, refining C295 and C331): sf-bulk-actions 1.2.0 puts a result where its length says. A fast action's result without refusals was only spoken by the live region; now the bar says it in place of the count («Удалено: 5», the action's done-text, else «Готово: 5») for 4 s and goes back. An action on more than 100 items (or with long: true) is long: its action event carries long true, the bar says «<action>: идёт в фоне», and result() answers it with an SF.notify notice (success, or an error that stays with «Подробнее») instead of the bar; before, its result came in the bar like any other. A failure is also written to «Уведомления» through SF.notify (source sf-bulk-actions, the sf-notification record), silently for a fast action.",
+      "items": [
+        {
+          "component": "sf-bulk-actions",
+          "from": "result() of an action on more than 100 items said in the bar",
+          "to": "a notice (SF.notify); long: false on the action keeps it in the bar"
+        },
+        {
+          "component": "sf-bulk-actions",
+          "from": "result() without refusals only spoken",
+          "to": "«<done-text>: N» in place of the count for 4 s"
+        }
+      ],
+      "deprecated_on": "2026-11-19",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-19",
+      "rewrite": "manual",
+      "manual": "A list whose big actions must report in the bar writes long: false on them. A list that showed its own toast or line after result() drops it: the bar says it (C387). A host that records failures listens to sf-notification on the document (detail.source sf-bulk-actions). Pass result({id, ...}) when several actions may run at once.",
+      "owner": "ui-source",
+      "source": "src/smart/bulk-actions/index.js showResult; src/smart/bulk-actions/js/actions.js isLongAction, resultRoute"
+    },
+    {
       "id": "behaviour-icon-subset-axis-params",
       "recorded_on": "2026-11-19",
       "stage": "compat",

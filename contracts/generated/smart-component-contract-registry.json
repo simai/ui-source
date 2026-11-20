@@ -305,13 +305,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/bulk-actions/smart.manifest.json",
-      "manifest_sha256": "4955c32f71f72857070ad7af8a2d5a56ec1907423b17c07eeba2aefa3d331959",
+      "manifest_sha256": "8fba0a3e9fbd1876b3630bea8328e41604b1677e2e8e4ece29d126de13724499",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run and its per-item result. One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
+      "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run, a fast action's result in place of the count and a long one's in a notice, failures written to «Уведомления». One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
       "tags": [
         "bulk",
         "selection",
