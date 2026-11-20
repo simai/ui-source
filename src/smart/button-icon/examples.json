@@ -91,6 +91,22 @@
       }
     },
     {
+      "name": "toggle",
+      "title": "Переключатель вида: фон и рамка",
+      "settings": {
+        "size": "1/2",
+        "icon": "view_quilt",
+        "appearance": "toggle",
+        "pressed": true
+      },
+      "attributes": {
+        "aria-label": "Представление"
+      },
+      "expect": {
+        "appearance": "toggle"
+      }
+    },
+    {
       "name": "link",
       "title": "Ссылка: скачать файл из строки",
       "settings": {
@@ -279,6 +295,7 @@
           "  <sf-button-icon id=\"ib-cyc\" aria-label=\"Повтор\" value=\"off\" label-pressed=\"Не так\" cycle='[{\"value\":\"off\",\"label\":\"выключен\",\"icon\":\"repeat\"},{\"value\":\"all\",\"label\":\"весь список\",\"icon\":\"repeat\",\"pressed\":true},{\"value\":\"one\",\"label\":\"один трек\",\"icon\":\"repeat_one\",\"pressed\":true}]'></sf-button-icon>",
           "  <sf-button-icon id=\"ib-theme\" theme-cycle></sf-button-icon>",
           "  <sf-button-icon id=\"b-link\" icon=\"download\" href=\"/fixture/report\" download=\"Отчёт.pdf\" aria-label=\"Скачать Отчёт.pdf\"></sf-button-icon><sf-button-icon id=\"b-link-off\" icon=\"download\" href=\"/fixture/report\" disabled aria-label=\"Скачать Отчёт.pdf\"></sf-button-icon><sf-button-icon id=\"b-link-bad\" icon=\"download\" href=\"javascript:alert(1)\" aria-label=\"Скачать\"></sf-button-icon>",
+          "  <sf-button-icon id=\"ib-tg\" icon=\"view_quilt\" appearance=\"toggle\" pressed aria-label=\"Представление\"></sf-button-icon><sf-button-icon id=\"ib-tg-off\" icon=\"view_quilt\" appearance=\"toggle\" pressed=\"false\" aria-label=\"Представление\"></sf-button-icon>",
           "</main>"
         ]
       },
@@ -486,6 +503,16 @@
           "steps": [
             {
               "check": "(() => { const a = document.querySelector('#b-link a.sf-icon-button'); const off = document.querySelector('#b-link-off a.sf-icon-button'); const bad = document.querySelector('#b-link-bad'); return a && a.getAttribute('href') === '/fixture/report' && a.getAttribute('download') === 'Отчёт.pdf' && a.getAttribute('aria-label') === 'Скачать Отчёт.pdf' && getComputedStyle(a).textDecorationLine === 'none' && off && !off.hasAttribute('href') && off.getAttribute('aria-disabled') === 'true' && !bad.querySelector('a') && bad.querySelector('button.sf-icon-button'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p12-toggle-look",
+          "title": "the toggle look (1.14.0, owner decision C393): on is the primary container and a 1 px primary ring inside, the icon stays outline, aria-pressed is said and no 'no toggle' warning; off has no fill and no ring",
+          "covers": "settings.appearance toggle, settings.pressed",
+          "steps": [
+            {
+              "check": "(() => { const on = document.querySelector('#ib-tg button'); const off = document.querySelector('#ib-tg-off button'); const cs = getComputedStyle(on); const co = getComputedStyle(off); return on.classList.contains('sf-icon-button--toggle') && on.classList.contains('sf-icon-button--pressed') && on.getAttribute('aria-pressed') === 'true' && off.getAttribute('aria-pressed') === 'false' && on.querySelector('sf-icon').getAttribute('filled') === 'false' && /inset/.test(cs.boxShadow) && cs.backgroundColor !== co.backgroundColor && !/inset 0px 0px 0px 1px/.test(co.boxShadow); })()"
             }
           ]
         }

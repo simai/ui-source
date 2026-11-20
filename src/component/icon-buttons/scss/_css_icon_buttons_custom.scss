@@ -397,3 +397,79 @@
     --sf-close-icon--background-color: var(--sf-on-surface-disabled);
   }
 }
+
+/* The toggle look, sf-icon-button--toggle (1.20.0, owner decision C393,
+   2026-11-19; study views-switcher-study.html section 2, the ring row). A
+   quiet icon toggle in a row of controls -- a view switch, a panel switch --
+   whose state reads from the plate, never from the glyph: the icon keeps its
+   outline weight in both states. Off it is a ghost of the neutral scheme: no
+   fill, no edge, the glyph --sf-on-surface-icon; under the pointer the
+   neutral container step (--sf-surface-container-hover). On it is two cues
+   (rule C12): the soft --sf-primary-container plate and a 1 px (--sf-px)
+   --sf-primary ring inside the button, the glyph --sf-on-primary-container;
+   the ring stays on hover (--sf-primary-container-hover) and press
+   (-active). Focus draws every button's ring outside. The ring is a shadow
+   inside the edge, so the button keeps its size in both states. Neutral
+   whatever the scheme or the status say, as plain is. The pressed look of
+   outline, ghost and default (filled glyph, C12/C211/C309) is unchanged. */
+@layer sf.components {
+  .sf-icon-button.sf-icon-button.sf-icon-button--toggle {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
+    --sf-icon-button--border-color: transparent;
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-icon));
+  }
+}
+
+@layer sf.states {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-surface-container-hover);
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-hover), var(--sf-on-surface)));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) {
+    --sf-icon-button--background-color: var(--sf-surface-container-active);
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-active), var(--sf-on-surface)));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:not(:disabled, [aria-disabled="true"]):not(.disabled):focus-visible {
+    --sf-icon-button--background-color: var(--sf-transparent-for-focus);
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container));
+    --sf-icon-button--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-primary);
+    --sf-icon-button--focus-ink: transparent;
+    --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-primary-container-hover);
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) {
+    --sf-icon-button--background-color: var(--sf-primary-container-active);
+  }
+
+  /* Disabled: the disabled ink; a toggle that is on keeps its ring in the
+     disabled edge, so the state still reads. */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed="true"]):is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-outline-variant);
+  }
+
+  @media (forced-colors: active) {
+    .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+      --sf-icon-button--border-top-width: var(--sf-px);
+      --sf-icon-button--border-bottom-width: var(--sf-px);
+      --sf-icon-button--border-inline-start-width: var(--sf-px);
+      --sf-icon-button--border-inline-end-width: var(--sf-px);
+      --sf-icon-button--border-width: var(--sf-px);
+      --sf-icon-button--border-style: solid;
+      border-color: Highlight;
+    }
+  }
+}
+

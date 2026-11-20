@@ -7,9 +7,10 @@ const ICON_BUTTON_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
 // The drawing class of each appearance; surface is resolved to tonal by the
 // element (C15), a value off the list draws the default. Ghost is drawn by
 // sf-icon-button--ghost (component.icon-buttons 1.14.0, RG-IB-2); plain is
-// the plate-less look (C201). The former
+// the plate-less look (C201), toggle the quiet on/off look whose state is
+// the plate and a ring, never the glyph (C393). The former
 // --link is an alias the runtime notes, so the element never writes it.
-const ICON_BUTTON_LOOK = {default: 'default', tonal: 'tonal', outline: 'outline', ghost: 'ghost', link: 'ghost', surface: 'tonal', plain: 'plain'};
+const ICON_BUTTON_LOOK = {default: 'default', tonal: 'tonal', outline: 'outline', ghost: 'ghost', link: 'ghost', surface: 'tonal', plain: 'plain', toggle: 'toggle'};
 
 function statusClasses(status, scheme) {
     if (status === 'danger' || status === 'error') return ['sf-icon-button--danger', 'sf-icon-button--error'];
@@ -87,6 +88,10 @@ export function renderIconButtonTemplate(context) {
     const name = context.cycleView ? context.cycleView.name : context.pressed === true && context.labelPressed ? context.labelPressed : ariaLabel;
     const announcesPressed = context.pressed !== undefined && !context.labelPressed;
 
+    // The toggle look keeps the glyph's outline weight in both states (owner
+    // decision C393): its state is the plate and the ring.
+    const toggleLook = ICON_BUTTON_LOOK[appearance || type] === 'toggle';
+
     // Loading shows the spinner in place of the icon, at the icon's size
     // (simai/ui-source#10); the button keeps its name and says aria-busy.
     const iconContent = loading
@@ -97,7 +102,7 @@ export function renderIconButtonTemplate(context) {
                 ? html`
                             <sf-button-close root-class="pointer-events-none" size="${size || '1'}"></sf-button-close>`
                 : html`
-                            <sf-icon filled="${filled || context.pressed === true || Boolean(context.cycleView?.pressedLook)}" root-class="pointer-events-none" icon="${context.cycleView?.icon || icon}" weight="400" aria-hidden="true"></sf-icon>`;
+                            <sf-icon filled="${filled || (!toggleLook && (context.pressed === true || Boolean(context.cycleView?.pressedLook)))}" root-class="pointer-events-none" icon="${context.cycleView?.icon || icon}" weight="400" aria-hidden="true"></sf-icon>`;
 
     // href (1.9.0, decision C51): a link with the icon button's look, as
     // sf-button's -- the quiet «Скачать <name>» of a table row. Disabled or

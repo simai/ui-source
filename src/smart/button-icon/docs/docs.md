@@ -43,9 +43,9 @@ Main attributes:
   32 / 40 / 48 / 56 on desktop, 28 / 32 / 40 / 48 compact, 28 / 36 / 44 / 52
   on a phone. `kind="close"` takes the same heights; a new close is
   `sf-button-close height="…"`.
-- `appearance="default|tonal|outline|ghost|plain"` — four looks on one ladder
-  (1.6.0, decision C15) and `plain` for an icon inside another element
-  (1.12.0, below): a fill, a soft fill, an edge, and `ghost`, which keeps nothing until a
+- `appearance="default|tonal|outline|ghost|plain|toggle"` — four looks on one ladder
+  (1.6.0, decision C15), `plain` for an icon inside another element
+  (1.12.0, below) and `toggle` for a quiet on/off icon (1.14.0, below): a fill, a soft fill, an edge, and `ghost`, which keeps nothing until a
   pointer or the keyboard reaches it. `link` is ghost's former name, a dated
   alias. `surface` is retired: it is drawn as `tonal` in `on-surface`, and the
   console notes it until 2027-01-01.
@@ -64,6 +64,27 @@ Main attributes:
   ```html
   <h3 class="flex items-cross-center gap-1/3">Уровни доступа
     <sf-button-icon size="1/2" appearance="plain" icon="info" aria-label="Подробнее: уровни доступа"></sf-button-icon></h3>
+  ```
+- `toggle` (1.14.0, owner decision C393) — a quiet on/off icon in a row of
+  controls (a view switch, a panel switch) whose state reads from the plate,
+  never from the glyph: the icon keeps its outline weight in both states. Off
+  it is a neutral ghost — no fill or edge, the glyph `--sf-on-surface-icon`,
+  `--sf-surface-container-hover` under the pointer. On (`pressed`) it is two
+  cues (rule C12): the soft `--sf-primary-container` and a 1 px (`--sf-px`)
+  `--sf-primary` ring inside the button, the glyph
+  `--sf-on-primary-container`; the ring stays on hover
+  (`--sf-primary-container-hover`) and press. Focus draws every button's ring
+  outside. The ring is drawn inside the edge, so the button keeps its size.
+  The ring against the row: 6.48:1 in the light theme (page and card),
+  8.93:1 in the dark on a card and 11.13:1 on the dark page (WCAG 1.4.11). Neutral whatever `scheme` or `status` say. The class is
+  `sf-icon-button--toggle`; `--sf-icon-button-pressed-background-color` and
+  `--sf-icon-button-pressed-color` reach it as they reach the pressed look.
+
+  ```html
+  <div class="flex items-cross-center gap-1/3">
+    <sf-button-icon size="1/2" appearance="toggle" icon="view_quilt" pressed aria-label="Представление"></sf-button-icon>
+    <sf-button-icon size="1/2" appearance="toggle" icon="view_sidebar" pressed="false" aria-label="Панель"></sf-button-icon>
+  </div>
   ```
 - `scheme="primary|on-surface|on-surface-variant"` — which colour
   family the control takes (`secondary` is retired and drawn as
@@ -120,7 +141,9 @@ Main attributes:
   `--sf-on-primary-container` and filled, no visible edge (the height does not
   move) -- two cues, not colour alone, in both themes. Only a toggle wears it
   (component.icon-buttons 1.13.0, owner decision C211 (1)): `outline` or
-  `ghost` in `on-surface` or `on-surface-variant`. A `default` or `tonal`
+  `ghost` in `on-surface` or `on-surface-variant`. The `toggle` look (1.14.0,
+  C393, above) draws its own on state: the plate and a ring, the icon kept
+  outline. A `default` or `tonal`
   icon button, a danger or a primary one keeps its own look with `pressed`
   (`aria-pressed` is still written) and the console says once that it is no
   toggle; the tonal toggle looks of 1.6.1 are gone. A choice of one among

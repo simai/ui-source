@@ -58,8 +58,9 @@ export const BUTTON_ICON_ONLY = ':has(> :is(.sf-icon, sf-icon, .sf-button-spinne
 
 const KINDS = {
   'sf-button': {pressedClass: 'sf-button--pressed', toggle: BUTTON_TOGGLE, iconOnly: BUTTON_ICON_ONLY},
-  // The plain look draws a pressed glyph too (C232: sf-highlight's wrap toggle).
-  'sf-icon-button': {pressedClass: 'sf-icon-button--pressed', toggle: `${ICON_BUTTON_TOGGLE}, .sf-icon-button--plain`, iconOnly: null},
+  // The plain look draws a pressed glyph too (C232: sf-highlight's wrap toggle);
+  // the toggle look is made for it (C393: the plate and a ring, the glyph outline).
+  'sf-icon-button': {pressedClass: 'sf-icon-button--pressed', toggle: `${ICON_BUTTON_TOGGLE}, .sf-icon-button--plain, .sf-icon-button--toggle`, iconOnly: null},
 };
 
 function said() {
@@ -128,7 +129,7 @@ export function checkButton(element, block) {
   if (!kind || !element?.classList?.contains(block)) return;
   const pressedSaid = element.hasAttribute('aria-pressed') || element.classList.contains(kind.pressedClass);
   if (pressedSaid && !matches(element, kind.toggle)) {
-    sayOnce(element, 'pressed', `[SIMAI Framework] ${block}: ${nameOf(element)} says aria-pressed, but the pressed look is drawn only on a toggle -- a filled button, or outline or ghost in on-surface (owner decisions C211, C309); this button keeps its own look. A choice of one among several (a view, a width, a theme) is sf-segmented.`);
+    sayOnce(element, 'pressed', `[SIMAI Framework] ${block}: ${nameOf(element)} says aria-pressed, but the pressed look is drawn only on a toggle -- a filled button, outline or ghost in on-surface, or an icon button's toggle look (owner decisions C211, C309, C393); this button keeps its own look. A choice of one among several (a view, a width, a theme) is sf-segmented.`);
   }
   if (kind.iconOnly && matches(element, kind.iconOnly) && !hasName(element)) {
     sayOnce(element, 'name', `[SIMAI Framework] ${block}: ${nameOf(element)} has an icon and no label; it is drawn square and needs aria-label (owner decision C211).`);

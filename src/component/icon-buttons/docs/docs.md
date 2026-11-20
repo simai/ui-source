@@ -27,6 +27,22 @@ decorative and uses `aria-hidden="true"`.
   (`sf-icon-button--ghost`) is unchanged. At rest the glyph stands at least
   3:1 from the page, a card, the grey plate and a field's fill in both
   themes. `sf-button-icon` draws it with `appearance="plain"`;
+- toggle: `sf-icon-button--toggle` (1.20.0, owner decision C393) -- a quiet
+  on/off icon in a row of controls (a view switch, a panel switch) whose state
+  reads from the plate, never from the glyph: the icon keeps its outline weight
+  in both states. Off: no fill or edge, the glyph `--sf-on-surface-icon`,
+  `--sf-surface-container-hover` under the pointer and `-active` on a press.
+  On (`sf-icon-button--pressed` or `aria-pressed="true"`): the soft
+  `--sf-primary-container` and a 1 px (`--sf-px`) `--sf-primary` ring inside
+  the button (an inset shadow, the size holds), the glyph
+  `--sf-on-primary-container`; the ring stays on hover
+  (`--sf-primary-container-hover`) and press (`-active`). Focus is every
+  button's ring outside; disabled takes the disabled ink and an on toggle keeps
+  its ring in `--sf-outline-variant`; forced colours draw a Highlight edge. The
+  ring stands 6.48:1 from the row in the light theme (page and card), 8.93:1
+  on a dark card and 11.13:1 on the dark page (WCAG 1.4.11). Neutral whatever the scheme or the status classes say. The
+  pressed look of outline, ghost and default (the filled icon) is unchanged.
+  `sf-button-icon` draws it with `appearance="toggle"`;
 - scheme: `primary`, `on-surface`, or `on-surface-variant`, one class each
   (1.16.1, SM-CPY-2: `on-surface-variant` alone draws the on-surface fill and
   edge with the quieter glyph; markup that also writes `on-surface` beside it
@@ -159,7 +175,9 @@ toolbar, wrap lines in a code block -- keeps one name and says its state with
 (`on-surface`, its quiet `on-surface-variant`, the former `secondary`), and
 a filled (`default`) icon button of any scheme (owner decision C309 (2),
 2026-11-18): its fill at the scheme's pressed step, its own ink, the icon
-filled.
+filled. The toggle look (`sf-icon-button--toggle`, 1.20.0, C393, above) is a
+toggle too and draws its own on state: the plate and a ring, the icon kept
+outline.
 Pressed, it wears the pressed look (1.3.0, owner decision 2026-11-07, rule
 C12): the primary container fill, the icon in `--sf-on-primary-container` and
 filled (`FILL 1`) -- two cues, not colour alone -- and no visible edge (the

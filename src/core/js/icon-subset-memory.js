@@ -29,6 +29,22 @@ const FONT_WEIGHT = /^[1-9]00(?: [1-9]00)?$/u;
 // Characters a font URL never needs and a CSS url('...') must not meet.
 const UNSAFE_URL = /['"\\()<>\s]/u;
 
+// The fill axis a subset or fallback rule writes. The page's public
+// --sf-icon-fill wins over the glyph's own --sf-icon--fill, as in the sheet's
+// .sf-icon rule (component.icons): without it a page could not turn a fill
+// off -- or on -- while the subset font drew (DEV TG-2, 2026-11-19; the subset
+// rule outranks .sf-icon and read only the private name).
+export const ICON_FILL_AXIS = "'FILL' var(--sf-icon-fill, var(--sf-icon--fill, 0))";
+
+// The subset service's own stylesheet names the private variable alone; the
+// FILL axis is rewritten to ICON_FILL_AXIS wherever it reads
+// var(--sf-icon--fill[, fallback]) directly, so every font path takes the
+// public variable first. Idempotent: an axis already reading --sf-icon-fill
+// is left as it is.
+export function publicIconFillAxis(cssText = '') {
+  return String(cssText || '').replace(/'FILL'\s+var\(\s*--sf-icon--fill\s*(?:,\s*[^()]*?)?\)/gu, ICON_FILL_AXIS);
+}
+
 // The family a subset of the v1 generator declares, by icon type.
 const V1_FAMILIES = Object.freeze({
   outlined: 'Material Symbols Outlined',
@@ -160,7 +176,7 @@ export function iconSubsetCssFromManifest(manifest = {}) {
     `  --sf-icon--font--weight: var(--sf-icon--weight, 400);\n` +
     `  font-feature-settings: 'liga';\n` +
     `  font-variation-settings: ` +
-    `'FILL' var(--sf-icon--fill, 0), ` +
+    `${ICON_FILL_AXIS}, ` +
     `'GRAD' var(--sf-icon--grade, 0), ` +
     `'opsz' var(--sf-icon--optical-size, 24);\n` +
     `}\n`;
