@@ -11,6 +11,7 @@
     "component/dot/css/dot.min.css",
     "component/icons/css/icons.min.css",
     "component/progress-ring/css/progress-ring.min.css",
+    "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
     "utility/background-color/default/css/default.min.css",
@@ -131,6 +132,7 @@
     ],
     "status": [
       "component/progress-ring/css/progress-ring.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/display/default/css/default.min.css",
       "utility/position/default/css/default.min.css"

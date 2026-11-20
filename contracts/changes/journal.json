@@ -18603,31 +18603,6 @@
       "source": "src/component/quantity/scss/_css__quantity.scss; src/component/quantity/js/_quantity.js; ui-control control/docs-review/decisions.md C153"
     },
     {
-      "id": "value-dataview-saved-view-level-package-to-system",
-      "recorded_on": "2026-11-20",
-      "stage": "compat",
-      "kind": "value",
-      "summary": "simai.dataview-port 1.16.0 (owner decision C298, the levels of a view) names a saved view's levels system, shared and personal. 1.0.0 to 1.15.0 called the system level package (saved_views[].level). A host that still sends package is read as system until remove_after; a 1.16.0 host writes system. The column settings layers (settings.layers, column_settings.layers.package) are not renamed: they belong to the host-port standard.",
-      "items": [
-        {
-          "component": "simai.dataview-port",
-          "from": "package",
-          "to": "system",
-          "match": "[\"']level[\"']\\s*[:=]>?\\s*[\"']package[\"']"
-        }
-      ],
-      "deprecated_on": "2026-11-20",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "examples": {
-        "before": "{\"key\": \"all\", \"label\": \"Все заказы\", \"revision\": 1, \"level\": \"package\"}",
-        "after": "{\"key\": \"all\", \"label\": \"Все заказы\", \"revision\": 1, \"level\": \"system\"}"
-      },
-      "manual": "In the host's answer, write level system where it writes package for a saved view shipped with the product, and speak simai.dataview-port 1.16.0. A view that reads levels groups package with system until remove_after.",
-      "owner": "ui-source",
-      "source": "src/core/contracts/ports/simai.dataview-port/1.16.0/port.json data.saved_views; tests/dataview-port-levels.contract.test.mjs; ui-control control/research/2026-11-17-views-architecture/view-config-1-draft.md"
-    },
-    {
       "id": "token-c396-text-measure",
       "recorded_on": "2026-11-19",
       "stage": "compat",
@@ -18660,37 +18635,6 @@
       },
       "owner": "ui-source",
       "source": "src/utility/text-max-width/default/scss/_sf_var__text_measure.scss; src/core/scss/_sf_css__typograpy.scss; src/core/contracts/token-aliases.v1.json; ui-control control/docs-review/decisions.md C396"
-    },
-    {
-      "id": "value-form-field-width-s-m",
-      "recorded_on": "2026-11-20",
-      "stage": "compat",
-      "kind": "value",
-      "summary": "sf-form 1.13.0 (DEV look answer 2026-11-20, on the width ladder of C396): a field's width in the form's field descriptor is a field width step -- short (20 characters, 160 px at text 16, 140 in compact density and on a phone) or medium (28, 224 / 196) -- or full. It was s (8rem, 128 px) and m (16rem, 256 px): a visible change, a short field 32 px wider and a medium one 32 px narrower at text 16. s and m stay dated aliases: they draw short and medium and the use is noted once in SF.deprecations.",
-      "items": [
-        {
-          "component": "sf-form",
-          "attribute": "fields[].width",
-          "from": "s",
-          "to": "short"
-        },
-        {
-          "component": "sf-form",
-          "attribute": "fields[].width",
-          "from": "m",
-          "to": "medium"
-        }
-      ],
-      "deprecated_on": "2026-11-20",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "examples": {
-        "before": "{\"key\": \"radius\", \"propertyType\": \"number\", \"width\": \"s\"}",
-        "after": "{\"key\": \"radius\", \"propertyType\": \"number\", \"width\": \"short\"}"
-      },
-      "manual": "In a field descriptor given to sf-form (fields, or what sf-view-properties sends) write width short for s and medium for m; full is unchanged.",
-      "owner": "ui-source",
-      "source": "src/smart/form/index.js (fieldWidth); src/smart/form/scss/_smart__form.scss"
     },
     {
       "id": "behaviour-bulk-actions-result-places",
@@ -18739,6 +18683,62 @@
       "source": "ui-control control/evidence/2026-11-19-icons-axes; simai/ui-icons feat/variable-opsz-grad"
     },
     {
+      "id": "value-dataview-saved-view-level-package-to-system",
+      "recorded_on": "2026-11-20",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "simai.dataview-port 1.16.0 (owner decision C298, the levels of a view) names a saved view's levels system, shared and personal. 1.0.0 to 1.15.0 called the system level package (saved_views[].level). A host that still sends package is read as system until remove_after; a 1.16.0 host writes system. The column settings layers (settings.layers, column_settings.layers.package) are not renamed: they belong to the host-port standard.",
+      "items": [
+        {
+          "component": "simai.dataview-port",
+          "from": "package",
+          "to": "system",
+          "match": "[\"']level[\"']\\s*[:=]>?\\s*[\"']package[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-20",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "{\"key\": \"all\", \"label\": \"Все заказы\", \"revision\": 1, \"level\": \"package\"}",
+        "after": "{\"key\": \"all\", \"label\": \"Все заказы\", \"revision\": 1, \"level\": \"system\"}"
+      },
+      "manual": "In the host's answer, write level system where it writes package for a saved view shipped with the product, and speak simai.dataview-port 1.16.0. A view that reads levels groups package with system until remove_after.",
+      "owner": "ui-source",
+      "source": "src/core/contracts/ports/simai.dataview-port/1.16.0/port.json data.saved_views; tests/dataview-port-levels.contract.test.mjs; ui-control control/research/2026-11-17-views-architecture/view-config-1-draft.md"
+    },
+    {
+      "id": "value-form-field-width-s-m",
+      "recorded_on": "2026-11-20",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-form 1.13.0 (DEV look answer 2026-11-20, on the width ladder of C396): a field's width in the form's field descriptor is a field width step -- short (20 characters, 160 px at text 16, 140 in compact density and on a phone) or medium (28, 224 / 196) -- or full. It was s (8rem, 128 px) and m (16rem, 256 px): a visible change, a short field 32 px wider and a medium one 32 px narrower at text 16. s and m stay dated aliases: they draw short and medium and the use is noted once in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-form",
+          "attribute": "fields[].width",
+          "from": "s",
+          "to": "short"
+        },
+        {
+          "component": "sf-form",
+          "attribute": "fields[].width",
+          "from": "m",
+          "to": "medium"
+        }
+      ],
+      "deprecated_on": "2026-11-20",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "{\"key\": \"radius\", \"propertyType\": \"number\", \"width\": \"s\"}",
+        "after": "{\"key\": \"radius\", \"propertyType\": \"number\", \"width\": \"short\"}"
+      },
+      "manual": "In a field descriptor given to sf-form (fields, or what sf-view-properties sends) write width short for s and medium for m; full is unchanged.",
+      "owner": "ui-source",
+      "source": "src/smart/form/index.js (fieldWidth); src/smart/form/scss/_smart__form.scss"
+    },
+    {
       "id": "behaviour-progress-ring-size-1-no-text",
       "recorded_on": "2026-11-20",
       "stage": "compat",
@@ -18777,7 +18777,13 @@
           "from": "phone: an action without an icon drawn as a «⋯» icon button",
           "to": "phone: an action without an icon in «⋯» with its label"
         }
-      ]
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Give every bulk action an icon where it must stand in a phone's row; one without an icon is in «⋯» on a phone.",
+      "owner": "ui-source",
+      "source": "src/smart/bulk-actions/js/actions.js; src/smart/bulk-actions/index.js"
     }
   ]
 }

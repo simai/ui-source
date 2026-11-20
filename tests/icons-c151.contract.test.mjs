@@ -98,7 +98,7 @@ test('C151 point 5: the glyph inside an icon button keeps the bottom alignment, 
   for (const char of styles.slice(0, at)) depth += char === '{' ? 1 : char === '}' ? -1 : 0;
   assert.equal(depth, 0, 'the rule is unlayered, as the icon\'s own vertical-align is');
   const passport = JSON.parse(read('src/component/icon-buttons/passport.json'));
-  assert.equal(passport.version, '1.19.0'); // fix/reds-triage-d13: 1.17.2, the size 3 spinner in the phone icon box // 1.12.0: the script's layout in the sheet (RG-B-53); 1.10.0: group build 7: the integrated number (the branch wrote 1.9.1) // group build 9: 1.12.0 moved on by the merged branches or a GB9 patch // group build 10: 1.16.0 moved on by the merged branches or a GB10 patch // group build 13: 1.17.2 moved on by the merged branches or a GB11 merge // group build 14: 1.18.0 moved on by the merged branches or the C278 language patch
+  assert.equal(passport.version, '1.20.0'); // fix/reds-triage-d13: 1.17.2, the size 3 spinner in the phone icon box // 1.12.0: the script's layout in the sheet (RG-B-53); 1.10.0: group build 7: the integrated number (the branch wrote 1.9.1) // group build 9: 1.12.0 moved on by the merged branches or a GB9 patch // group build 10: 1.16.0 moved on by the merged branches or a GB10 patch // group build 13: 1.17.2 moved on by the merged branches or a GB11 merge // group build 14: 1.18.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
 });
 
 test('C151 point 6: SF.icons.register draws a product glyph in every icon slot', () => {

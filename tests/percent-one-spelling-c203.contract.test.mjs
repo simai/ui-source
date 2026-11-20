@@ -73,8 +73,10 @@ test('sf-progress-bar: the script, the sheet and the words follow the same spell
 });
 
 test('sf-progress-ring says «72 %» and shows «72%» in its middle (DEV look answer 2026-11-20)', () => {
-  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '1', showText: true})), [`72${NBSP}%`, '72%']);
-  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '1', showText: true, valueText: '3 из 4'})), ['72%']);
+  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '2', showText: true})), [`72${NBSP}%`, '72%']);
+  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '2', showText: true, valueText: '3 из 4'})), ['72%']);
+  // GB15 A1 (DEV msg-1c3a4f0b): size 1 draws no text inside; the value is the ring's tooltip, spoken «72 %».
+  assert.ok(!percents(renderProgressRingTemplate({value: 72, size: '1', showText: true})).includes('72%'));
 });
 
 test('sf-progress-scale shows «72 %»', async () => {

@@ -37,7 +37,7 @@ test('RG-NV 3: «…» asks the Loader for sf-menu-context and opens the menu', 
 test('RG-NV 4: a crumb rings as a link, two pixels off', async () => {
   const item = await read('src/component/breadcrumbs/scss/_css__breadcrumbs_item.scss');
   assert.match(item, /:focus-visible \{\n\s+--sf-breadcrumbs-item--background-color: var\(--sf-transparent-for-focus\);\n\s+outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n\s+outline-offset: var\(--sf-a2\);/u); // C186 (4): a crumb keeps a link's 2 px offset
-  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.3.6'); // AM-39: 1.3.6 above fix/heavy-page-recalc's 1.3.5 // DF-9: the trail folds once per frame for a batch of changes // C282: 1.2.0 moved on by the language-file patch (Russian is a language file) // C278: 1.3.1 moved on by the language packs // group build 13: 1.3.2 moved on by the merged branches or a GB11 merge
+  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.3.7'); // AM-39: 1.3.6 above fix/heavy-page-recalc's 1.3.5 // DF-9: the trail folds once per frame for a batch of changes // C282: 1.2.0 moved on by the language-file patch (Russian is a language file) // C278: 1.3.1 moved on by the language packs // group build 13: 1.3.2 moved on by the merged branches or a GB11 merge // group build 15: moved on by the merged branches or a GB15 assembly item
 });
 
 test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is one inline-flex control', async () => {
@@ -59,7 +59,7 @@ test('RG-NV 7, 8, 9: a page number is the ghost page button, no plate, as wide a
   assert.match(css, /--sf-page-number--background-color: var\(--sf-pagination-current-background-color, var\(--sf-primary-container\)\);\n\s+--sf-page-number--color: var\(--sf-pagination-current-color, var\(--sf-on-primary-container\)\);/u);
   assert.match(css, /--sf-page-number--background-color: var\(--sf-place--control-hover, var\(--sf-surface-container-hover\)\);/u);
   assert.match(css, /inline-size: auto;\n\s+min-inline-size: max\(/u);
-  assert.equal((await json('src/component/pagination/passport.json')).version, '1.6.4'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9) // group build 14: 1.6.3 moved on by the merged branches or the C278 language patch
+  assert.equal((await json('src/component/pagination/passport.json')).version, '1.7.0'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9) // group build 14: 1.6.3 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
 });
 
 test('RG-NV 10, 11: the row size reaches the arrows; the count row keeps the icon ink; a Smart number never breaks', async () => {

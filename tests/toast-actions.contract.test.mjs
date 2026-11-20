@@ -30,7 +30,7 @@ const buttons = (html) => (html.match(/data-toast-action=/g) ?? []).length - lin
 
 test('the manifest declares the action model (sf-toast 1.4.0)', () => {
   const manifest = json('src/smart/toast/component.json');
-  assert.equal(manifest.version, '1.4.8'); // C282: moved on by the language-file patch (Russian is a language file) // group build 5 patch // group build 7: the patch for moved files (the line had 1.4.1) // group build 8: 1.4.2 moved on by the merged branches or a GB8 patch // group build 9: 1.4.3 moved on by the merged branches or a GB9 patch // group build 13: 1.4.7 moved on by the merged branches or the C278 language patch
+  assert.equal(manifest.version, '1.4.9'); // C282: moved on by the language-file patch (Russian is a language file) // group build 5 patch // group build 7: the patch for moved files (the line had 1.4.1) // group build 8: 1.4.2 moved on by the merged branches or a GB8 patch // group build 9: 1.4.3 moved on by the merged branches or a GB9 patch // group build 13: 1.4.7 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
   assert.deepEqual(manifest.settings['action-href'], {...manifest.settings['action-href'], type: 'string', default: ''});
   assert.equal(manifest.settings['secondary-action-text'].default, '');
   assert.equal(manifest.settings['secondary-action'].default, 'secondary');
