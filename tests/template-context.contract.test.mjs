@@ -21,7 +21,15 @@ test('template context: every exemption names a resolving getter and a reason', 
     seen.add(id);
     assert.ok(typeof reason === 'string' && reason.length > 40, `${id}: a reason is required`);
     const source = await read(`src/smart/${component}/index.js`);
-    assert.match(source, new RegExp(`^  get ${prop}\\(\\) \\{`, 'm'), `${id}: no getter`);
+    // The getter is the component's own, or one core/js/element-manifest.js
+    // makes: a setting of its component.json (by its property name), or the
+    // base's §4.1 state `shown`.
+    const own = new RegExp(`^ +get ${prop}\\(\\) \\{`, 'm').test(source);
+    const settings = await read(`src/smart/${component}/component.json`)
+      .then((text) => Object.keys(JSON.parse(text).settings || {}), () => []);
+    const fromManifest = settings.some((name) => name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase()) === prop)
+      || (prop === 'shown' && /\belementFromManifest\b/.test(source));
+    assert.ok(own || fromManifest, `${id}: no getter`);
   }
   const probe = await read(contract.checked_by);
   assert.match(probe, /contracts', 'template-context\.json'/);

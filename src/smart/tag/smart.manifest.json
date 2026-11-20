@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.12.6",
+  "version": "1.12.7",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -438,7 +438,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "a34939bf93180ab71e9bdf3ba408987d2129bac6a1ef66d0d9704d8bbf1d72fc"
+        "sha256": "10485e93155ef805857113d28e149030c8a50dec7870453cfd2b2f529b28e956"
       }
     ],
     "generated_runtime": [

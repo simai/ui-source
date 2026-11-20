@@ -2,7 +2,12 @@
 // Usage: node this-file /absolute/path/to/smart /absolute/path/to/distr
 // The Framework speaks English by default and Russian on a Russian page. Each
 // component is rendered on a page with no lang and on a page with lang="ru",
-// and its own words are read back.
+// and its own words are read back. Since owner decision C282 (2026-11-17) the
+// bundles carry English only: a Russian page includes the Russian language
+// file before core (core/lang/ru.js, as src/core/lang/built-in.json says), so
+// the ru page here does too. The scripts are put in by their contents, with no
+// URL core could fetch a language part from, so without the file the words
+// stay English (what this check reported before it included the file).
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -20,6 +25,7 @@ try {
     const page = await browser.newPage();
     await page.goto('about:blank');
     await page.evaluate((lang) => { if (lang) document.documentElement.lang = lang; }, lang);
+    if (lang) await page.addScriptTag({path: join(distrRoot, 'core', 'lang', `${lang}.js`)});
     await page.addScriptTag({path: join(distrRoot, 'core', 'js', 'smart-base.js')});
     for (const name of ['tag', 'input-country']) await page.addScriptTag({path: join(smartRoot, name, 'js', `${name}.js`)});
     const seen = await page.evaluate(async () => {

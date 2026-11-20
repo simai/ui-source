@@ -354,12 +354,15 @@ class SfRangeSlider extends RangeSliderElement {
       handleLabel: valueDisplay === 'tooltip' ? 'tooltip' : 'none',
       outputText: this.outputText(),
       scaleMarks: scaleMarks(this),
-      field: this.hasAttribute('field') && this.getAttribute('field') !== 'false',
+      // field and ticks: the properties' reading (the base's: present and
+      // empty, or a word for true), so the template and the property agree
+      // (template-context probe).
+      field: this.field,
       fieldLabels: this.fieldLabels(),
       fieldWords: [this.sfWord('from'), this.sfWord('to')],
       fieldUnit: [this.prefixText, this.suffix].map((unit) => String(unit ?? '').trim()).filter(Boolean).join(' '),
       fieldDecimal: String(this.step ?? '').includes('.') || Number(this.getAttribute('precision')) > 0,
-      ticks: this.hasAttribute('ticks') && this.getAttribute('ticks') !== 'false',
+      ticks: this.ticks,
     });
   }
 

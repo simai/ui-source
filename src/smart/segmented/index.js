@@ -266,6 +266,18 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     };
   }
 
+  // spacing and tightness, the two former names of the side padding, read
+  // each other (core/js/control-spacing.js) as the template draws them, so
+  // the properties say what is drawn (template-context probe). The base puts
+  // its setters back beside them.
+  get spacing() {
+    return resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}).spacing;
+  }
+
+  get tightness() {
+    return resolveControlSpacing({spacing: this.getAttribute('spacing'), tightness: this.getAttribute('tightness')}).tightness;
+  }
+
   constructor() {
     super();
     this.addEventListener('click', this.handleClick);

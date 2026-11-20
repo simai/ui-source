@@ -11,6 +11,151 @@
       "reason": "The template takes the text to display: the text attribute, else initials from the heading or the accessible name."
     },
     {
+      "component": "breadcrumbs",
+      "prop": "items",
+      "reason": "The template takes the items with the current crumb, the folded ones and the siblings resolved (normalizedItems): a single item is the current one; the getter returns the items as given."
+    },
+    {
+      "component": "bulk-actions",
+      "prop": "countText",
+      "reason": "The template takes the line drawn: count-text, else the bar's words for the count («0 selected»); the getter returns count-text as given (empty: the bar's words)."
+    },
+    {
+      "component": "bulk-actions",
+      "prop": "shown",
+      "reason": "Two meanings of one name: the template's shown is whether the bar is drawn (a count above 0, a run or a result); the getter is the base's §4.1 state (the element has a box in an opened container)."
+    },
+    {
+      "component": "display-settings",
+      "prop": "shown",
+      "reason": "Two meanings of one name: the template's shown is whether the panel is open (the panel layout, or open); the getter is the base's §4.1 state (the element has a box in an opened container)."
+    },
+    {
+      "component": "file-download",
+      "prop": "value",
+      "reason": "While preparing without a value the template draws the spinner (value absent, null); the getter reads the absent optional number as 0."
+    },
+    {
+      "component": "file-preview",
+      "prop": "downloadLabel",
+      "reason": "The template takes the words with the file's name put in («Download report.pdf»); the getter returns the words' pattern («Download {name}»)."
+    },
+    {
+      "component": "file-preview",
+      "prop": "removeLabel",
+      "reason": "The template takes the words with the file's name put in («Remove report.pdf», «Delete …» for a stored file); the getter returns the words' pattern («Remove {name}»)."
+    },
+    {
+      "component": "input",
+      "prop": "errorMessage",
+      "reason": "The template takes the message shown: only while the field is invalid (sfShownMessage); the getter returns error-message as given."
+    },
+    {
+      "component": "input",
+      "prop": "maxlength",
+      "reason": "The template hands the written maxlength to the native input when the field does not count (a masked field keeps the native limit: the mask decides the length); the getter is the counted limit, a whole number above 0 or null."
+    },
+    {
+      "component": "input-choice",
+      "prop": "flow",
+      "reason": "The template takes the flow drawn: auto resolved to row or column by the options (C165 (3), flowValue); the getter returns the setting as given."
+    },
+    {
+      "component": "input-color",
+      "prop": "errorMessage",
+      "reason": "The template takes the message shown: only while the field is invalid (sfShownMessage); the getter returns error-message as given."
+    },
+    {
+      "component": "input-country",
+      "prop": "errorMessage",
+      "reason": "The template takes the message shown: only while the field is invalid (sfShownMessage); the getter returns error-message as given."
+    },
+    {
+      "component": "input-date",
+      "prop": "errorMessage",
+      "reason": "The template takes the message shown: only while the field is invalid (sfShownMessage); the getter returns error-message as given."
+    },
+    {
+      "component": "input-date",
+      "prop": "readonly",
+      "reason": "The template takes the host's readonly (valueLocked: no typing, no calendar); the getter also counts a range, which is only «not typed» and still opens its calendar (RG-DP-5)."
+    },
+    {
+      "component": "input-image",
+      "prop": "sources",
+      "reason": "The template takes the sources as a list (listOf: device, library, url); the getter returns the setting as written, a string."
+    },
+    {
+      "component": "input-lookup",
+      "prop": "errorMessage",
+      "reason": "The template takes the message shown: only while the field is invalid (sfShownMessage); the getter returns error-message as given."
+    },
+    {
+      "component": "input-rich",
+      "prop": "errorMessage",
+      "reason": "The template takes the message shown: only while the field is invalid (sfShownMessage); the getter returns error-message as given."
+    },
+    {
+      "component": "input-textarea",
+      "prop": "autoGrow",
+      "reason": "The template takes whether the field grows (growing): a flush field and rows given without auto-grow do not; the getter returns the setting as given."
+    },
+    {
+      "component": "input-textarea",
+      "prop": "errorMessage",
+      "reason": "The template takes the message shown: only while the field is invalid (sfShownMessage); the getter returns error-message as given."
+    },
+    {
+      "component": "input-textarea",
+      "prop": "maxRows",
+      "reason": "The template takes the rows a growing field stops at: max-rows, else 10 (a flush field no cap) (growMaxRows); the getter returns the setting as given."
+    },
+    {
+      "component": "input-textarea",
+      "prop": "minRows",
+      "reason": "The template takes the rows a growing field starts at: min-rows, else rows, else 3 (a flush field 1) (growMinRows); the getter returns the setting as given."
+    },
+    {
+      "component": "input-textarea",
+      "prop": "spellCheck",
+      "reason": "The template turns spelling off for code text (text=\"code\"); the getter returns the setting as given."
+    },
+    {
+      "component": "list",
+      "prop": "chosen",
+      "reason": "The template takes the chosen ids as a set while the list selects (empty otherwise); the getter returns them as a list of ids."
+    },
+    {
+      "component": "list",
+      "prop": "leading",
+      "reason": "The template takes the leading place the skeleton rows keep (leadingPlace: auto resolved by the rows shown); the getter returns the setting as given."
+    },
+    {
+      "component": "modal",
+      "prop": "fullscreen",
+      "reason": "The template takes the window drawn full screen: fullscreen, size full, or a phone's full screen (shownFullscreen, C159 (2)); the getter returns the setting as given."
+    },
+    {
+      "component": "modal",
+      "prop": "size",
+      "reason": "The template takes the window's size by name (windowSize, C159 (1)): no size, or auto, is a form; the getter returns the setting as given."
+    },
+    {
+      "component": "progress-scale",
+      "prop": "steps",
+      "reason": "The template takes the level's steps (levelSteps): absent is no level (null); the getter reads the absent optional number as 0."
+    },
+    {
+      "component": "slider-range",
+      "prop": "name",
+      "reason": "Two meanings of one name: the template's name is the field's visible name (label, C153); the getter is the form name the value is submitted under."
+    },
+    {
+      "component": "slider-range",
+      "prop": "precision",
+      "reason": "The template takes the digits the props context reads (0 for a value that is not a number); the getter reads it as unset (null), the digits then come from step."
+    },
+    {
       "component": "slider-range",
       "prop": "start",
       "reason": "The template takes the initial value (value, else start, else 0) as the slider's start; the getter returns the start attribute as given."

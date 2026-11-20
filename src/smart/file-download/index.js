@@ -201,7 +201,9 @@ class SfDownloadFile extends DownloadFileElement {
       // A file link downloads where the person is (decision C25): the
       // download semantics are the default, a tab opened to view has none.
       download: this.download,
-      fullWidth: this.hasAttribute('full-width') && this.getAttribute('full-width') !== 'false',
+      // The property's reading (the base's: present and empty, or a word for
+      // true), so the template and the property agree (template-context probe).
+      fullWidth: this.fullWidth,
       value,
       cancelable: this.hasAttribute('cancelable') && this.getAttribute('cancelable') !== 'false',
       errorText: this.getAttribute('error-text') || '',

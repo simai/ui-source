@@ -306,6 +306,38 @@
       "reason": "recorded by group build 14 from fix/segmented-transform: sf-tabs measures its row, its place and «Ещё» in layout boxes under a scale() or rotate() ancestor; a script of the Smart element, the class tabs measure nothing",
       "decision": "C251",
       "date": "2026-11-19"
+    },
+    {
+      "unit": "smart.file-download",
+      "version": "1.6.2",
+      "twin": "component.download-file",
+      "reason": "recorded by fix/reds-before-gb15 (template-context probe): the Smart template reads full-width as its property does (the base boolean reading); a script of the Smart element, the class sheet has no attribute to read",
+      "decision": "C251",
+      "date": "2026-11-20"
+    },
+    {
+      "unit": "smart.segmented",
+      "version": "1.8.2",
+      "twin": "component.button-group",
+      "reason": "recorded by fix/reds-before-gb15 (template-context probe): the spacing and tightness properties of the Smart element read each other as its template draws them; a property of the Smart element, the class button group has none",
+      "decision": "C251",
+      "date": "2026-11-20"
+    },
+    {
+      "unit": "smart.slider-range",
+      "version": "1.7.4",
+      "twin": "component.range-slider",
+      "reason": "recorded by fix/reds-before-gb15 (template-context probe): the Smart template reads field and ticks as its properties do (the base boolean reading); a script of the Smart element, the class sheet has no attribute to read",
+      "decision": "C251",
+      "date": "2026-11-20"
+    },
+    {
+      "unit": "smart.tag",
+      "version": "1.12.7",
+      "twin": "component.tags",
+      "reason": "recorded by fix/reds-before-gb15 (template-context probe): the height property of the Smart element says the drawn height (the former spacing included); a property of the Smart element, the class tags have none",
+      "decision": "C251",
+      "date": "2026-11-20"
     }
   ]
 }

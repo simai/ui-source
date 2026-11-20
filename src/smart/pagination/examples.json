@@ -146,7 +146,7 @@
         "body": [
           "<main>",
           "  <div id=\"area\"><sf-pagination id=\"pg\" current=\"2\" total=\"80\" page-size=\"10\" page-sizes=\"10,20,40\" top=\"false\" bottom=\"false\"></sf-pagination></div>",
-          "  <sf-pagination id=\"pg-more\" aria-label=\"Ещё записи\" current=\"1\" total=\"40\" page-size=\"10\" bottom=\"false\"></sf-pagination>",
+          "  <sf-pagination id=\"pg-more\" aria-label=\"Ещё записи\" current=\"1\" total=\"40\" page-size=\"10\" top bottom=\"false\"></sf-pagination>",
           "  <sf-pagination id=\"pg-unknown\" current=\"3\" count-known=\"false\" can-count has-next top=\"false\" bottom=\"false\"></sf-pagination>",
           "  <sf-pagination id=\"pg-estimate\" current=\"2\" total=\"450\" total-exact=\"false\" can-count page-size=\"10\" top=\"false\" bottom=\"false\"></sf-pagination>",
           "  <sf-pagination id=\"pg-numbers\" appearance=\"numbers\" aria-label=\"Страницы каталога\" current=\"5\" total=\"120\" page-size=\"10\"></sf-pagination>",
@@ -271,7 +271,7 @@
         },
         {
           "id": "p4-load-more",
-          "title": "«Show more» sends sf-pagination-load-more {direction: after} with data only; sf-show-more keeps its item",
+          "title": "«Show more» sends sf-pagination-load-more {direction: after} with data only; sf-show-more keeps its item (the compatible footer's «Show more» is drawn only when top is written, C97)",
           "covers": "events.load-more, aliases sf-show-more",
           "steps": [
             {
@@ -492,7 +492,7 @@
         },
         {
           "id": "c3-cursor-no-last",
-          "title": "cursor (C97): «В начало · Дальше», no number and never a last page; «Дальше» is off once has-next is",
+          "title": "cursor (C97): «В начало · Дальше», no number and never a last page; «Дальше» is off once has-next is (on page 2: a first page without a next one is a single page, which draws no navigation, Larena LF-11)",
           "covers": "settings.appearance cursor, PG-09, PG-11",
           "steps": [
             {
@@ -500,7 +500,7 @@
               "check": "(() => { const el = document.getElementById('pg-cursor'); return !el.querySelector('.sf-pagination-direction--last') && !el.querySelector('.sf-pagination-page-field') && /Дальше/u.test(el.querySelector('.sf-pagination-direction--next')?.textContent ?? ''); })()"
             },
             {
-              "script": "(document.getElementById('pg-cursor').removeAttribute('has-next'), true)",
+              "script": "(document.getElementById('pg-cursor').setAttribute('current', '2'), document.getElementById('pg-cursor').removeAttribute('has-next'), true)",
               "wait": 200,
               "check": "document.querySelector('#pg-cursor .sf-pagination-direction--next button')?.disabled === true"
             }
