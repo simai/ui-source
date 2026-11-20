@@ -1,7 +1,7 @@
 // Relative days and times in the page's language («вчера», «5 минут назад»),
 // with no top-level side effects (format-intl.js). The same functions as
 // core/js/format.js and SF.format.relativeDay / relativeTime.
-import {formatLocale, intlFormatter, toDate} from './format-intl.js';
+import {formatDateText, formatLocale, intlFormatter, toDate} from './format-intl.js';
 import {calendarDayOffset, knownTimeZone} from './format-date.js';
 
 // The first letter in capitals, by the locale's rule («вчера» → «Вчера»).
@@ -79,7 +79,7 @@ export function formatRelativeDay(value, {now = new Date(), today, yesterday, to
     text = intlFormatter('DateTimeFormat', locale, {weekday: 'long', ...zone}).format(moment);
   } else {
     const year = moment.getFullYear() === toDate(now).getFullYear() ? {} : {year: 'numeric'};
-    text = intlFormatter('DateTimeFormat', locale, {day: 'numeric', month: 'long', ...year, ...zone}).format(moment);
+    text = formatDateText(intlFormatter('DateTimeFormat', locale, {day: 'numeric', month: 'long', ...year, ...zone}), moment);
   }
   return capital ? capitalise(text, locale) : text;
 }

@@ -204,3 +204,17 @@ test('no format module has a top-level statement a bundler must keep', () => {
     }
   }
 });
+
+test('a marker after the year is held to it by a no-break space (group build 15, A4)', () => {
+  const at = new Date(2026, 10, 19, 14, 5);
+  // «19 нояб. 2026 г.» never wraps before «г.»: the space before a marker of letters is U+00A0.
+  for (const [locale, options] of [['ru', {}], ['ru', {date: 'long'}], ['ru', {time: 'short'}], ['uk', {}], ['bg', {date: 'long'}], ['kk', {}], ['lt', {date: 'long'}]]) {
+    const text = formatDate(at, {...options, locale});
+    assert.doesNotMatch(text, /\d{4}[ \t]\p{L}/u, `${locale} ${JSON.stringify(options)}: ${text}`);
+    assert.match(text, /\d{4} \p{L}/u, `${locale} ${JSON.stringify(options)}: ${text}`);
+  }
+  // A comma, a time or no marker after the year is left as the platform writes it.
+  assert.equal(formatDate(at, {locale: 'en'}), new Intl.DateTimeFormat('en', {dateStyle: 'medium'}).format(at));
+  assert.equal(formatDate(at, {locale: 'ru', date: 'short'}), new Intl.DateTimeFormat('ru', {dateStyle: 'short'}).format(at));
+  assert.match(formatRelativeDay(at, {now: new Date(2027, 1, 1), locale: 'ru'}), /2026 г\./u);
+});

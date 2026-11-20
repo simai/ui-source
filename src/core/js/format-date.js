@@ -2,7 +2,7 @@
 // next midnight, with no top-level side effects (format-intl.js). The same
 // functions as core/js/format.js and SF.format; relative days and times are
 // format-relative.js, so a bundle that writes a date does not carry them.
-import {formatLocale, intlFormatter, toDate} from './format-intl.js';
+import {formatDateText, formatLocale, intlFormatter, toDate} from './format-intl.js';
 
 export {toDate};
 
@@ -26,7 +26,9 @@ function hasDateStyle(style) {
  * chart's tick, «14:05» with two-digit hours). `timeZone` (an IANA name,
  * Europe/Moscow) writes the moment on that zone's clock instead of the
  * reader's (owner decision C183 (3): a product that knows the person's zone).
- * Anything that is not a date is `gap`, '' by default.
+ * Anything that is not a date is `gap`, '' by default. A marker after the year
+ * («2026 г.», «2026 р.») is held to it by a no-break space, so it never starts
+ * a line alone.
  */
 export function formatDate(value, {date = 'medium', time = null, intl = null, timeZone = '', gap = '', ...where} = {}) {
   const moment = toDate(value);
@@ -39,7 +41,8 @@ export function formatDate(value, {date = 'medium', time = null, intl = null, ti
     if (!options.dateStyle && !options.timeStyle) options.dateStyle = 'medium';
   }
   if (knownTimeZone(timeZone)) options = {...options, timeZone};
-  return intlFormatter('DateTimeFormat', formatLocale(where), options).format(moment);
+  // The year keeps its marker («2026 г.» never wraps before «г.»): format-intl.js.
+  return formatDateText(intlFormatter('DateTimeFormat', formatLocale(where), options), moment);
 }
 
 /**

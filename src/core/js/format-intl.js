@@ -52,3 +52,25 @@ export function intlFormatter(kind, locale, options) {
   cache.set(key, made);
   return made;
 }
+
+// A date's year keeps the marker that follows it (A4, group build 15): Russian,
+// Ukrainian, Bulgarian, Kazakh and Lithuanian write a word after the year --
+// «19 нояб. 2026 г.», «2026 р.», «2026 m.» -- and the platform joins it with an
+// ordinary space, so a narrow cell or a wrapped line printed «2026» at the end
+// of one line and «г.» alone at the start of the next. The space between the
+// year and a marker made of letters is a no-break space in every language that
+// writes one; a comma, a slash or a time after the year is left as it is.
+
+/** A DateTimeFormat's text of a moment with the year's marker held to the year. */
+export function formatDateText(formatter, moment) {
+  if (typeof formatter?.formatToParts !== 'function') return formatter.format(moment);
+  // A module-level regular expression is a statement a bundler keeps (core-format test): made here.
+  const gap = /^[\s\u00a0\u202f]+(?=\p{L})/u;
+  let text = '';
+  let afterYear = false;
+  for (const part of formatter.formatToParts(moment)) {
+    text += afterYear && part.type === 'literal' ? part.value.replace(gap, '\u00a0') : part.value;
+    afterYear = part.type === 'year';
+  }
+  return text;
+}
