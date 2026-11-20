@@ -3,8 +3,9 @@
 // corner of its own, for its own time -- so messages turned up anywhere and
 // one on top of another (owner, 2026-10-13). Now there is one place for them.
 //
-// SF.notify({status, title, text, action, actions, duration, source, key}), or a
-// string as the text, shows a toast in the page's notification area and says so
+// SF.notify({status, title, text, action, actions, duration, source, key, silent}),
+// or a string as the text (silent: recorded and announced, no toast drawn),
+// shows a toast in the page's notification area and says so
 // with the `sf-notification` event on the document, which a notification centre
 // (Larena's) records. The area lives in the top layer, at one edge of the
 // window; at most four messages at a time and the rest waiting their turn; the

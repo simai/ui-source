@@ -106,3 +106,32 @@ The default template transfers shared `root-class`, `style` and `root-style`
 settings to the visual root. Methods: `close()`, `dismiss()`,
 `setState(nextState)`, `onAction(handler)` and `onClose(handler)`. Events:
 `sf-toast-action` and `sf-toast-close`.
+
+## SF.notify
+
+`SF.notify(options)` (or a string, the text) shows a toast in the page's one
+notification area and announces it with the `sf-notification` event on the
+document, which a notification centre records. It returns `{id, close()}`, or
+`null` with a console warning when there is nothing to show.
+
+| option | what it does |
+|---|---|
+| `status` | `neutral` (default), `info`, `success`, `warning`, `error` |
+| `title`, `text` | the heading and the line under it; one of them is needed |
+| `duration` | milliseconds; `0` keeps it until it is closed; an error or a warning always stays |
+| `action`, `actions` | one or two buttons: `{label, onSelect}` |
+| `source` | who raised it (`sf-bulk-actions`), carried in the event |
+| `key` | the same key again counts up on the toast already shown instead of a second toast |
+| `silent` | `true`: the message is recorded and announced (`sf-notification`, the area's history) but no toast is drawn |
+
+`silent` is for a message the person already sees where it happened: a
+notification centre still writes it down. sf-bulk-actions raises its failures
+with it when its own bar shows the result in place (C387), so the error is not
+said twice on the screen and still reaches «Уведомления».
+
+```js
+SF.notify({status: 'error', title: 'Не удалось удалить 2 записи', source: 'my-list', silent: true});
+```
+
+A centre that cancels the `sf-notification` event takes the showing over: then
+no toast is drawn either, `silent` or not.
