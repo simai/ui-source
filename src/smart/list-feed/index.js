@@ -281,6 +281,17 @@ class SfListFeed extends FeedElement {
         super.afterRender?.(changed);
         this._position.element = this.scroller;
         this.column.setAttribute("aria-label", this.sfWord("log-label"));
+        // The entries are not in the template: their words («Вы», «Новые»)
+        // were chosen when each was drawn, and a later language (the pack
+        // arriving after the feed, SF.language.use(), a changed lang) draws
+        // them again (VS-SITE-4: «You» stayed on a Russian page).
+        if ([...(changed ?? [])].includes("language")) {
+            for (const item of this._items.values()) {
+                if (!item.flags) continue;
+                const [previous, next] = this.neighbours(item);
+                this.draw(item, previous, next);
+            }
+        }
         if (this._pendingLatest) {
             const options = this._pendingLatest;
             this._pendingLatest = null;
