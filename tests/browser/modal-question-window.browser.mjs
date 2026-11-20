@@ -149,7 +149,7 @@ async function measure(page) {
         radius: [sc.borderTopLeftRadius, sc.borderTopRightRadius, sc.borderBottomRightRadius, sc.borderBottomLeftRadius].map(parseFloat),
         borderBottom: parseFloat(sc.borderBottomWidth), background: sc.backgroundColor},
       panel: rect(panel),
-      title: {...rect(title), size: parseFloat(tc.fontSize), height: parseFloat(tc.lineHeight), weight: tc.fontWeight},
+      title: {...rect(title), box: title.getBoundingClientRect().height, size: parseFloat(tc.fontSize), height: parseFloat(tc.lineHeight), weight: tc.fontWeight},
       header: rect(header),
       close: rect(close),
       plate: {...rect(plate), padding: [pc.paddingTop, pc.paddingRight, pc.paddingBottom, pc.paddingLeft].map(parseFloat), radius: parseFloat(pc.borderTopLeftRadius), background: pc.backgroundColor,
@@ -192,10 +192,18 @@ function check(m, ctx) {
   // On a phone the window is the one sheet (owner decision C157 (5)): its
   // top is the handle row, half a control tall, the grab bar in it.
   const top = phone ? t.handleRow : pad;
-  want('frame top', m.title.top - m.surface.top - Math.max(0, (m.header.height - m.title.height) / 2), top);
+  // The title's first line stands at the frame: a title of one line is centred
+  // on the header row the × makes, so its top is half the difference lower; a
+  // title that takes two lines fills the row itself. Group build 15 (A2): the
+  // C396 question window is 26 characters narrower (--sf-measure-52, 364 at
+  // compact text 14 against 416), where «Удалить сайт shop-example?» takes two
+  // lines while the fallback face is drawn and one when Inter is in; the old
+  // reading took the line height for the title's box and read 4 for 16.
+  want('frame top', m.title.top - m.surface.top - Math.max(0, (m.header.height - m.title.box) / 2), top);
   want('× on the corner: end', m.surface.right - m.close.right, pad);
   want('× on the corner: top', m.close.top - m.surface.top, top);
   table.frame = m.close.top - m.surface.top;
+  table.titleLines = Math.round(m.title.box / m.title.height);
   table.closeEnd = m.surface.right - m.close.right;
   // title
   // The question window's title is the heading ladder's h4 step (C39 with
