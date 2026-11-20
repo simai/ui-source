@@ -5,7 +5,7 @@ import {join, resolve} from 'node:path';
 import test from 'node:test';
 import {findRegion, loadCases, runKit} from '../src/core/contracts/ports/simai.document-port/1.0.0/kit/run.mjs';
 
-// simai.document-port 1.0.0 (draft 2): the host storage seam of a composition
+// simai.document-port 1.0.0 (draft 3): the host storage seam of a composition
 // document. One storage element per site, section or page level, a value per
 // language, one revision for every language (owner decision 2026-11-10, item 7),
 // no record lock (item 4), areas inherited by the Recipe rule. The port is
@@ -195,7 +195,8 @@ function memoryHost() {
   const ok = (data) => ({answer: 'applied', data});
   const refused = (reason, data) => ({answer: 'refused', reason, message: `refused: ${reason}`, ...(data ? {data} : {})});
   const has = (capability) => state.capabilities.includes(capability);
-  const published = () => state.publications.find((one) => one.id === state.published) ?? null;
+  // Draft 3: a publication made outside the port is the fixture's object {id: null, ...}.
+  const published = () => (state.published && typeof state.published === 'object' ? structuredClone(state.published) : state.publications.find((one) => one.id === state.published) ?? null);
   const current = () => ({revision: state.revision, values: structuredClone(state.values), published: published(), ...(has('levels') ? resolveAll(state.values) : {})});
   const rights = () => state.rights ?? {save: true, publish: has('publish')};
   const mayWrite = (language) => rights().save && (!rights().languages || rights().languages.includes(language));
@@ -271,7 +272,9 @@ function memoryHost() {
   };
   const remember = (key, params, answer) => { state.keys.set(key, {params, answer: structuredClone(answer)}); return answer; };
   const draft = (values, extra = {}) => {
-    state.drafts.unshift({revision: state.revision, at: state.at, languages: Object.keys(state.values), values: state.values});
+    // Draft 3: versions with equal values are one draft, named by the newest revision.
+    const unchanged = !Object.keys(extra).length && same(values, state.values);
+    if (!unchanged) state.drafts.unshift({revision: state.revision, at: state.at, languages: Object.keys(state.values), values: state.values});
     counter += 1;
     state.revision = String(counter);
     state.at = new Date(Date.UTC(2026, 10, 11, 10, counter)).toISOString();
@@ -305,6 +308,11 @@ function memoryHost() {
         const level = levelValue(language, document);
         if (level.diagnostics) return refused('would-lose', {diagnostics: level.diagnostics});
         next[language] = level.value;
+      }
+      // Draft 3: the whole element's size, when the host announces it.
+      if (state.limits.max_total_bytes) {
+        const total = Object.values(next).reduce((sum, document) => sum + bytes(stripMarks(document)), 0);
+        if (total > state.limits.max_total_bytes) return refused('too-large', {diagnostics: [{code: 'max-total-bytes', severity: 'error', path: '/values', limit: state.limits.max_total_bytes, total}]});
       }
       if (has('levels') || state.parents) {
         const shapes = Object.values(next).map((document) => JSON.stringify(regionsOf(document).map((region) => [region.props.name, stateOf(region)]).sort()));
@@ -468,4 +476,35 @@ test('reasons are matched exactly: a host answering area_locked fails', async ()
   const host = memoryHost();
   const underscored = {setup: (given) => host.setup(given), async send(intent, payload) { const answer = await host.send(intent, payload); return answer.reason ? {...answer, reason: answer.reason.replaceAll('-', '_')} : answer; }};
   assert.deepEqual(await failing(underscored, ['save-into-a-locked-area-is-refused']), ['save-into-a-locked-area-is-refused']);
+});
+
+// ---------------------------------------------------------------------------
+// Draft 3 (group build 15, Larena's first adapter): the kit catches the hosts it names.
+
+test('the kit refuses a host that stores an empty object as an empty list (draft 3)', async () => {
+  const listed = (node) => {
+    for (const key of ['props', 'extensions', 'presentation']) if (node[key] && typeof node[key] === 'object' && !Object.keys(node[key]).length) node[key] = [];
+    for (const list of Object.values(node.slots ?? {})) list.forEach(listed);
+    return node;
+  };
+  const php = altered((payload) => { for (const document of Object.values(payload.values)) if (document) listed(document.root); return payload; });
+  assert.deepEqual(await failing(php, ['save-keeps-empty-objects-where-the-document-has-objects']), ['save-keeps-empty-objects-where-the-document-has-objects']);
+});
+
+test('the kit refuses a host that answers published null for an outside publication, or ignores the total (draft 3)', async () => {
+  const host = memoryHost();
+  const forgetful = {setup: (given) => host.setup({...given, ...(given.published && typeof given.published === 'object' ? {published: null} : {}),
+    limits: Object.fromEntries(Object.entries(given.limits ?? {}).filter(([key]) => key !== 'max_total_bytes'))}), send: (intent, payload) => host.send(intent, payload)};
+  const ids = ['load-describes-a-publication-made-outside-the-port', 'save-over-the-total-byte-limit-is-refused-for-the-element'];
+  assert.deepEqual((await failing(forgetful, ids)).sort(), [...ids].sort());
+});
+
+test('draft 3 is named in the port, the schema and the kit', () => {
+  assert.match(port.compatibility.recheck[0], /draft 3/u);
+  assert.ok(schema.$defs.limits.properties.max_total_bytes);
+  assert.equal(schema.$defs.outside_publication.properties.id.type, 'null');
+  assert.match(port.summary, /template document drawn by the component host/u);
+  assert.match(port.data.values.summary, /empty-object-not-kept/u);
+  assert.match(port.intents['document.save'].summary, /max-total-bytes/u);
+  assert.match(readFileSync(join(at, 'kit/README.md'), 'utf8'), /^# Conformance kit — document host port 1\.0\.0 \(draft 3\)/u);
 });

@@ -1,0 +1,310 @@
+{
+  "id": "save-keeps-empty-objects-where-the-document-has-objects",
+  "intent": "document.save",
+  "capability": null,
+  "summary": "An empty object where the document schema has an object (props, extensions, presentation) comes back an empty object, never an empty list or nothing (draft 3; an empty object elsewhere a host cannot keep is would-lose empty-object-not-kept).",
+  "given": {
+    "capabilities": [],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    }
+  },
+  "when": {
+    "intent": "document.save",
+    "payload": {
+      "expected_revision": "7",
+      "values": {
+        "en": {
+          "schema": "simai.composition.document",
+          "schema_version": 1,
+          "id": "page",
+          "profile": "ui-layout",
+          "locale": "en",
+          "root": {
+            "id": "root",
+            "type": "layout.page",
+            "slots": {
+              "default": [
+                {
+                  "id": "shell",
+                  "type": "layout.regions",
+                  "slots": {
+                    "regions": [
+                      {
+                        "id": "r-main",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "main",
+                          "landmark": "main"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "main-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Team"
+                                  }
+                                ]
+                              },
+                              "props": {},
+                              "extensions": {},
+                              "presentation": {}
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "expect": [
+      {
+        "path": "data.values.en",
+        "equals": {
+          "schema": "simai.composition.document",
+          "schema_version": 1,
+          "id": "page",
+          "profile": "ui-layout",
+          "locale": "en",
+          "root": {
+            "id": "root",
+            "type": "layout.page",
+            "slots": {
+              "default": [
+                {
+                  "id": "shell",
+                  "type": "layout.regions",
+                  "slots": {
+                    "regions": [
+                      {
+                        "id": "r-main",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "main",
+                          "landmark": "main"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "main-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Team"
+                                  }
+                                ]
+                              },
+                              "props": {},
+                              "extensions": {},
+                              "presentation": {}
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "after": [
+    {
+      "when": {
+        "intent": "document.load",
+        "payload": {}
+      },
+      "then": {
+        "answer": "applied",
+        "expect": [
+          {
+            "path": "data.values.en",
+            "equals": {
+              "schema": "simai.composition.document",
+              "schema_version": 1,
+              "id": "page",
+              "profile": "ui-layout",
+              "locale": "en",
+              "root": {
+                "id": "root",
+                "type": "layout.page",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "shell",
+                      "type": "layout.regions",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "r-main",
+                            "type": "layout.region",
+                            "props": {
+                              "name": "main",
+                              "landmark": "main"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "main-1",
+                                  "type": "content.paragraph",
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "text": "Team"
+                                      }
+                                    ]
+                                  },
+                                  "props": {},
+                                  "extensions": {},
+                                  "presentation": {}
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "path": "data.values.en.root.slots.default.0.slots.regions.0.slots.default.0.props",
+            "equals": {}
+          }
+        ]
+      }
+    }
+  ]
+}

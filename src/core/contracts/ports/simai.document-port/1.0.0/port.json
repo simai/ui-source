@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "component": "smart.editor",
   "element": "sf-editor",
-  "summary": "The host storage seam of a composition document: a site, section or page level held as one storage element with a value per language and one revision for all languages. The editor holds no storage: it asks to load, resolve, save, list the history, restore, publish and roll back, and one host answers with one of four answers. A save names the revision it was prepared against, so two writers meet as a conflict, never as a silent overwrite; a publish, a restore and a rollback carry a client_key (a save may), so a repeat after a lost answer is the same operation. The host keeps what it is given: every language value comes back as it was sent, unknown content included, or the write is refused; nothing is stored with less. A level inherits its areas the way a Recipe fills regions: an area the value leaves out inherits, an area it carries replaces, an area it carries empty clears; the resolved document marks every area with its origin. There is no record lock: two writers are told apart by the revision, and a level above may lock an area. The editor that reads the port is sf-editor (simai/ui-editor); Larena, Bitrix (simai.layout) and Docara answer it.",
+  "summary": "The host storage seam of a composition document: a site, section or page level held as one storage element with a value per language and one revision for all languages. The editor holds no storage: it asks to load, resolve, save, list the history, restore, publish and roll back, and one host answers with one of four answers. A save names the revision it was prepared against, so two writers meet as a conflict, never as a silent overwrite; a publish, a restore and a rollback carry a client_key (a save may), so a repeat after a lost answer is the same operation. The host keeps what it is given: every language value comes back as it was sent, unknown content included, or the write is refused; nothing is stored with less. A level inherits its areas the way a Recipe fills regions: an area the value leaves out inherits, an area it carries replaces, an area it carries empty clears; the resolved document marks every area with its origin. There is no record lock: two writers are told apart by the revision, and a level above may lock an area. The editor that reads the port is sf-editor (simai/ui-editor); Larena, Bitrix (simai.layout) and Docara answer it. In the presentation catalogue (C302, the property-view port's type plus template) a field that holds such a document is the template document drawn by the component host: the host's own editor of the element, which this port feeds.",
   "capabilities": {
     "levels": {
       "summary": "The element has parent levels (section, site) and the host resolves inheritance: load answers resolved and areas, and document.resolve previews an unsaved value over its parents. A host of single pages (a folder) does not announce it, and its documents carry every area themselves.",
@@ -71,7 +71,7 @@
       }
     },
     "values": {
-      "summary": "The stored value per language, as the level wrote it (areas it inherits left out). A language without a value is absent. Round trip: a host stores every language value as it was sent, except the simai:area key of a region's extensions, and answers it back equal (key order aside) on save, load, history and restore; that holds for what the host does not know too: an undeclared node type, data and props keys, extensions keys, bindings, a media reference (an opaque media:<id> string in props or data until the media edition). A host that cannot keep a part refuses the save would-lose (or invalid, with a diagnostic per path) and stores nothing; it never answers applied with less. Keys are the language tags of languages exactly (ru is not RU); a value whose locale differs from its key is refused structure-mismatch.",
+      "summary": "The stored value per language, as the level wrote it (areas it inherits left out). A language without a value is absent. Round trip: a host stores every language value as it was sent, except the simai:area key of a region's extensions, and answers it back equal (key order aside) on save, load, history and restore; that holds for what the host does not know too: an undeclared node type, data and props keys, extensions keys, bindings, a media reference (an opaque media:<id> string in props or data until the media edition). A host that cannot keep a part refuses the save would-lose (or invalid, with a diagnostic per path) and stores nothing; it never answers applied with less. Keys are the language tags of languages exactly (ru is not RU); a value whose locale differs from its key is refused structure-mismatch. An empty object stays an empty object: where the document schema has an object (data, props, slots, presentation, extensions) a host keeps {} as {}; a host whose storage cannot tell an empty object from an empty list elsewhere (inside unknown data) refuses the save would-lose with the diagnostic empty-object-not-kept at the path, never stores [] for it (draft 3).",
       "required": true,
       "schema": {
         "$ref": "document-port.schema.json#/$defs/values"
@@ -85,7 +85,7 @@
       }
     },
     "limits": {
-      "summary": "The size a stored language value may have: 200 nodes and 262144 bytes at most in 1.0.0. Bytes are the UTF-8 bytes of the compact serialization of the value as sent with the simai:area keys removed (JSON.stringify with no spacing, non-ASCII written as itself, not escaped). The limits apply to stored values only, never to resolved, which adds the parents' areas.",
+      "summary": "The size a stored language value may have: 200 nodes and 262144 bytes at most in 1.0.0. Bytes are the UTF-8 bytes of the compact serialization of the value as sent with the simai:area keys removed (JSON.stringify with no spacing, non-ASCII written as itself, not escaped). The limits apply to stored values only, never to resolved, which adds the parents' areas. A host may announce limits.max_total_bytes, the bytes of all the language values together (Larena: 1048576): a save past it is refused too-large on the whole element, the diagnostic max-total-bytes at /values naming limit and total (draft 3).",
       "required": true,
       "schema": {
         "$ref": "document-port.schema.json#/$defs/limits"
@@ -104,7 +104,7 @@
       }
     },
     "published": {
-      "summary": "The live publication of the element, or null when it has none. Only with publish.",
+      "summary": "The live publication of the element, or null when it was never published. A publication made outside the port (the host's own publication page, a schedule) is described too, as {id: null, revision, languages} with at when the host knows it (draft 3); null never stands for «published, but not by the port». Only with publish.",
       "schema": {
         "oneOf": [
           {
@@ -112,6 +112,9 @@
           },
           {
             "$ref": "document-port.schema.json#/$defs/publication"
+          },
+          {
+            "$ref": "document-port.schema.json#/$defs/outside_publication"
           }
         ]
       }
@@ -123,7 +126,7 @@
       }
     },
     "drafts": {
-      "summary": "The draft revisions, newest first, the current one first on the first page. A host may prune old drafts by its settings; a pruned revision is answered not-found, and the revision of a live publication is never pruned.",
+      "summary": "The draft revisions, newest first, the current one first on the first page. A host may prune old drafts by its settings; a pruned revision is answered not-found, and the revision of a live publication is never pruned. A draft is listed only when the document values changed (draft 3): versions with the same values -- an edit of the record's other fields, a save of the same values -- are one draft, named by the newest revision of the group; the current revision is still the first entry.",
       "schema": {
         "type": "array",
         "items": {
@@ -215,7 +218,7 @@
       }
     },
     "document.save": {
-      "summary": "Write the languages given, against the revision the editor has. The host compares it with what it stored, never trusts it; an applied save is a new draft revision for the whole element and a history entry. A save never publishes, autosave included; a host may fold the autosaves of one person into one history entry, which is then named by its newest revision. Languages left out keep their values; null removes one (removing the main language, the first of languages, is refused invalid; the removed value stays in history and a restore brings it back). Every language must agree on which areas it inherits, replaces or clears. Round trip: the host stores each value as sent, the simai:area key of a region's extensions removed and every other key of those extensions kept, and answers it back equal; what it cannot keep is refused would-lose and nothing is stored. A resolved document may be saved as it is shown: a region whose mark says state inherited is not stored (the area goes on inheriting), and one marked inherited whose content differs from the parent's area is refused would-lose with a diagnostic per region, since storing it would lose the edit and dropping it would too; the editor marks an area it changed replaced. rights.save false, or a language outside rights.languages (written or removed), is refused access-denied. client_key is optional: with it, a repeat with the same key and values after a lost answer is answered with the revision that save made, not a conflict with itself; the same key with other values is an idempotency-conflict. With levels the applied answer also carries resolved and areas.",
+      "summary": "Write the languages given, against the revision the editor has. The host compares it with what it stored, never trusts it; an applied save is a new draft revision for the whole element and a history entry. A save never publishes, autosave included; a host may fold the autosaves of one person into one history entry, which is then named by its newest revision. Languages left out keep their values; null removes one (removing the main language, the first of languages, is refused invalid; the removed value stays in history and a restore brings it back). Every language must agree on which areas it inherits, replaces or clears. Round trip: the host stores each value as sent, the simai:area key of a region's extensions removed and every other key of those extensions kept, and answers it back equal; what it cannot keep is refused would-lose and nothing is stored. A resolved document may be saved as it is shown: a region whose mark says state inherited is not stored (the area goes on inheriting), and one marked inherited whose content differs from the parent's area is refused would-lose with a diagnostic per region, since storing it would lose the edit and dropping it would too; the editor marks an area it changed replaced. rights.save false, or a language outside rights.languages (written or removed), is refused access-denied. client_key is optional: with it, a repeat with the same key and values after a lost answer is answered with the revision that save made, not a conflict with itself; the same key with other values is an idempotency-conflict. With levels the applied answer also carries resolved and areas. Refusals that explain themselves (draft 3): too-large names the language value over max_bytes or max_nodes, or the whole element past max_total_bytes (diagnostic max-total-bytes at /values with limit and total); would-lose names each part the host cannot keep (inherited-area-changed, empty-object-not-kept).",
       "event": "document-port:save",
       "payload": {
         "type": "object",
@@ -253,7 +256,7 @@
       }
     },
     "history.list": {
-      "summary": "The drafts and the publications of the element, apart, newest first, each list at most limit entries (20 by default). before is a draft revision: the drafts older than it; before_publication is a publication id: the publications older than it. more says whether each list goes on. An unknown before or before_publication is refused not-found.",
+      "summary": "The drafts and the publications of the element, apart, newest first, each list at most limit entries (20 by default). before is a draft revision: the drafts older than it; before_publication is a publication id: the publications older than it. more says whether each list goes on. An unknown before or before_publication is refused not-found. A draft is one change of the document values: versions with equal values are listed once, by the newest revision (draft 3).",
       "event": "document-port:history",
       "payload": {
         "type": "object",
@@ -656,14 +659,14 @@
   },
   "conformance": {
     "kit": "kit",
-    "sha256": "ff40fe17b040aa87a81b829413a9713fb5aa11461d0d5725fa16def1a96d8115",
-    "cases": 39
+    "sha256": "e148c497b50e76bb803b9acff7066eaaf4acce725f51075ce8330471c06826bc",
+    "cases": 43
   },
   "compatibility": {
     "previous_major": null,
     "supported_until": null,
     "recheck": [
-      "a draft edition, 1.0.0 draft 2 (fix/document-port; the host-port format has no pre-release version, so the version field stays 1.0.0): no host or editor implements it yet; it becomes 1.0.0 of record when the first adapter passes the kit, which is its acceptance gate",
+      "a draft edition, 1.0.0 draft 3 (draft 2 fix/document-port, draft 3 group build 15 from Larena's first adapter, msg-e666e84e and msg-f28ab5bf; the host-port format has no pre-release version, so the version field stays 1.0.0): no host or editor implements it yet; it becomes 1.0.0 of record when the first adapter passes the kit, which is its acceptance gate",
       "a new intent, capability or refusal reason is a minor edition; removing one, or changing what an answer must carry, is a major edition",
       "the editor never names a target: the host binds the element, and a different element is a different binding",
       "one revision for the whole element; a save of one language moves it for all, and keeps the languages it does not carry",
@@ -675,7 +678,12 @@
       "a resolved document saved as shown keeps its inherited areas inherited; an inherited area whose content was changed is refused would-lose",
       "reasons are a closed list matched exactly; message is English and for logs only",
       "restore and rollback make new revisions and new publications; nothing is rewound",
-      "limits per stored language value: 200 nodes, 262144 UTF-8 bytes of the compact serialization; a host may announce less"
+      "limits per stored language value: 200 nodes, 262144 UTF-8 bytes of the compact serialization; a host may announce less",
+      "draft 3: a host may announce limits.max_total_bytes; too-large may answer the whole element (diagnostic max-total-bytes at /values, limit and total)",
+      "draft 3: an empty object outside an object-typed slot that a host cannot keep is would-lose with the diagnostic empty-object-not-kept; {} where the document has an object is kept",
+      "draft 3: published describes a publication made outside the port as {id: null, revision, languages, at when known}; null is only an element never published",
+      "draft 3: history lists a draft only when the document values changed; equal versions are one draft named by the newest revision",
+      "draft 3: catalogue words (C302): a composition document field is template document, component host"
     ]
   }
 }

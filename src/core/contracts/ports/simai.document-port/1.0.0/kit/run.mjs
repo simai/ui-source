@@ -1,4 +1,4 @@
-// Conformance runner of simai.document-port 1.0.0 (draft 2). Dependency-free.
+// Conformance runner of simai.document-port 1.0.0 (draft 3). Dependency-free.
 //
 // A host adapter gives the runner three functions and nothing else:
 //
