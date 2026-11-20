@@ -402,7 +402,8 @@
   @include window-footer.window-footer('.sf-drawer-foot', var(--sf-space-1\/3));
 
   /* D-SCROLL (Larena audit, DEV 2026-11-20): the answers the content writes at
-     its end -- an sf-confirm question's, a form's last row of buttons -- stay
+     its end -- an sf-confirm question's, a form's last row of buttons, the
+     body's own last row of buttons -- stay
      at the panel's foot while the body scrolls under them, at every width; a
      panel with its own foot (slot footer) keeps that one alone. Core
      mix/_mix__window-footer.scss content-actions, shared with sf-modal's side
