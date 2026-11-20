@@ -135,7 +135,7 @@ test('(14) STR-2: stripes on a role at step 8 and on space steps', () => {
 test('(16) TYP-6: the C18 exceptions are listed in the foundations standard', () => {
   const doc = read('docs/foundation-standard.md');
   assert.match(doc, /## Exceptions to C18/u);
-  assert.match(doc, /--sf-text--measure.*65ch, 45ch, 80ch/u);
+  assert.match(doc, /--sf-text--measure.*65ch, 45ch, 80ch before C396.*--sf-measure-80/u); // C396: the steps of the width ladder in characters
 });
 
 test('(18): sf-card draws the ring and place shadow its utilities set; they do not inherit', () => {

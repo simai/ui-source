@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.10.5",
+  "version": "1.11.0",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -365,7 +365,7 @@
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "399d1dc4ddd90da7d346e45b50c9bf2fcc4c5300f888d79e643f7bcfc7706a37"
+        "sha256": "cb0843b56629bc353f62c6c43a1c45e0bc324634a7178aeef241e474f7316625"
       },
       {
         "path": "src/smart/input-rich/rule.js",

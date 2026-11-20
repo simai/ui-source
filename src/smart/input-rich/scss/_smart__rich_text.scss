@@ -254,8 +254,8 @@
 
 /* On a phone (below the md breakpoint, 44rem) the link editor is a form, so
    it is a sheet at the bottom of the screen as a form of sf-menu-context is
-   (C32, addendum 2026-11-09; RT-02): the screen's width up to 44rem
-   (--sf-h1), centred, the top corners rounded, the modal shadow and the
+   (C32, addendum 2026-11-09; RT-02): the screen's width up to 96
+   characters (--sf-measure-96, C396; 44rem before), centred, the top corners rounded, the modal shadow and the
    shared scrim (C20, as core's workspace drawer draws it), clear of the
    safe area. sf-input-rich marks the surface data-sf-sheet and lifts it into
    the top layer, so no box of the page clips it or holds it. */
@@ -264,7 +264,7 @@
   z-index: var(--sf-layer--popover);
   inset: auto 0 0;
   inline-size: 100%;
-  max-inline-size: var(--sf-h1);
+  max-inline-size: var(--sf-measure-96);
   max-block-size: calc(100dvh - var(--sf-space-4));
   margin: 0 auto;
   padding-block-end: calc(var(--sf-space-1) + env(safe-area-inset-bottom, var(--sf-a0)));

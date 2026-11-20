@@ -352,7 +352,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "tonal",
             "outline",
             "ghost",
-            "plain"
+            "plain",
+            "toggle"
           ],
           "type": "string"
         },
@@ -519,7 +520,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.13.11"
+    "version": "1.14.0"
   },
   "sf-checkbox": {
     "inputs": {

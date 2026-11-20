@@ -70,7 +70,7 @@ sf-help-mark {
   display: flex;
   flex-direction: column;
   gap: var(--sf-help-mark-gap, var(--sf-a4));
-  max-inline-size: min(var(--sf-help-mark-max-width, var(--sf-g0)), 100vw);
+  max-inline-size: min(var(--sf-help-mark-max-width, var(--sf-measure-44)), 100vw);
   padding: var(--sf-help-mark-padding-block, var(--sf-space-1\/3)) var(--sf-help-mark-padding-inline, var(--sf-space-1\/2));
   /* A window has a shadow, no frame (C59, owner 2026-11-11): the border is
      transparent unless a page names a colour (--sf-help-mark-border-color), so

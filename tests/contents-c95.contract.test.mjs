@@ -76,7 +76,7 @@ test('C95.3 CT-11: expand="all|current", the current branch only', () => {
 });
 
 test('C95.4 CT-08: a bottom sheet below md, a veil, the current link focused on open', () => {
-  assert.match(sheet, /@media not all and \(min-width: 44rem\) \{[^]*?&\.sf-contents--open \.sf-contents-list \{\s*position: fixed;[^]*?inset: auto var\(--sf-0\) var\(--sf-0\);[^]*?max-inline-size: var\(--sf-h1\);/u);
+  assert.match(sheet, /@media not all and \(min-width: 44rem\) \{[^]*?&\.sf-contents--open \.sf-contents-list \{\s*position: fixed;[^]*?inset: auto var\(--sf-0\) var\(--sf-0\);[^]*?max-inline-size: var\(--sf-measure-96\);/u); // C396: 96 characters (44rem before)
   assert.match(sheet, /&\.sf-contents--open \.sf-contents-veil \{\s*position: fixed;/u);
   assert.ok(template.indexOf('sf-contents-veil') < template.indexOf('<ol class="sf-contents-list"'), 'the veil before the list');
   assert.match(source, /if \(this\.compact\) this\._focusCurrent = true;/u);

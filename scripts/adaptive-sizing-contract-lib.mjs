@@ -27,6 +27,7 @@ const expectedTopLevel = [
     "$schema",
     "controls",
     "invariants",
+    "measure",
     "meta",
     "modes",
     "primitives",
@@ -87,6 +88,40 @@ function validateAliasMap(aliasMap, label, candidate)
     }
 }
 
+// The width ladder in characters (owner decision C396): a step is N times
+// half the body text size. The steps grow, every step at the desktop's text
+// (the nominal 16) is a point of the base ladder, and a role names a step.
+export function measurePx(steps, candidate = contract, mode = "desktop")
+{
+    const measure = candidate.measure;
+    const text = aliasPx(candidate.typography.sizes[measure.char.textSize][mode], candidate);
+    return steps.map(step => step * text / measure.char.divisor);
+}
+
+function validateMeasure(candidate)
+{
+    const measure = candidate.measure;
+    assert.ok(measure && Array.isArray(measure.steps), "measure.steps is required");
+    assert.ok(
+        candidate.typography.sizes[measure.char.textSize],
+        `measure.char.textSize ${measure.char.textSize} is not a text size`,
+    );
+    assert.ok(Number.isInteger(measure.char.divisor) && measure.char.divisor > 0);
+    measure.steps.forEach((step, index) => {
+        assert.ok(Number.isInteger(step) && step > 0, `measure step ${step}`);
+        if (index > 0) assert.ok(step > measure.steps[index - 1], "measure steps must grow");
+    });
+    const points = new Set(primitiveValues(candidate).values());
+    measurePx(measure.steps, candidate).forEach((px, index) => assert.ok(
+        points.has(px),
+        `measure step ${measure.steps[index]} is ${px}px at the desktop text, not a point of the base ladder`,
+    ));
+    for (const [role, step] of Object.entries(measure.roles))
+    {
+        assert.ok(measure.steps.includes(step), `measure role ${role} names ${step}, not a step`);
+    }
+}
+
 function rejectForbiddenKeys(value, trail = [])
 {
     if (!value || typeof value !== "object") return;
@@ -144,6 +179,7 @@ export function validateContract(candidate = contract)
         candidate,
     );
     validateAliasMap(candidate.spacing, "spacing", candidate);
+    validateMeasure(candidate);
 
     const titleRoles = Array.from({ length: 12 }, (_, index) => String(index + 1));
     assert.deepEqual(

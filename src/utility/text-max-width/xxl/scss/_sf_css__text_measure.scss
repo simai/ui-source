@@ -16,7 +16,7 @@ $mobile: xxl;
         // Text measure utilities
         @each $measure-name, $measure-value in $text-measure-array {
             .#{$infix}measure#{$measure-name} {
-                max-width: var(--sf-text--measure#{$measure-name});
+                max-width: #{$measure-value};
             }
         }
     }

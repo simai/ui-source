@@ -18603,6 +18603,40 @@
       "source": "src/component/quantity/scss/_css__quantity.scss; src/component/quantity/js/_quantity.js; ui-control control/docs-review/decisions.md C153"
     },
     {
+      "id": "token-c396-text-measure",
+      "recorded_on": "2026-11-19",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "core.styles (owner decision C396, 2026-11-19): the reading measures are steps of the width ladder in characters (--sf-measure-N, N times half the body text size, src/core/figma_variables/figma_measure.scss). --sf-text--measure, -wide and -narrow (65ch, 80ch, 45ch) stay declared as var() of --sf-measure-80, -96 and -52 until remove_after; nothing in the Framework reads them, and the utilities measure, measure-wide, measure-narrow and max-w-prose write the steps (src/core/contracts/token-aliases.v1.json, measures).",
+      "items": [
+        {
+          "from": "--sf-text--measure",
+          "to": "--sf-measure-80",
+          "match": "--sf-text--measure(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--measure-wide",
+          "to": "--sf-measure-96",
+          "match": "--sf-text--measure-wide(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-text--measure-narrow",
+          "to": "--sf-measure-52",
+          "match": "--sf-text--measure-narrow(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-19",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the step: var(--sf-measure-80) for --sf-text--measure, var(--sf-measure-96) for -wide, var(--sf-measure-52) for -narrow; or the class max-w-measure-80 / -96 / -52. The line holds the same number of characters at every density and font size.",
+      "examples": {
+        "before": ".article { max-width: var(--sf-text--measure); }",
+        "after": ".article { max-width: var(--sf-measure-80); }"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/text-max-width/default/scss/_sf_var__text_measure.scss; src/core/scss/_sf_css__typograpy.scss; src/core/contracts/token-aliases.v1.json; ui-control control/docs-review/decisions.md C396"
+    },
+    {
       "id": "behaviour-bulk-actions-result-places",
       "recorded_on": "2026-11-19",
       "stage": "removed",

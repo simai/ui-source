@@ -80,13 +80,14 @@
 
 /* A tooltip a controller shows (role="tooltip"), wherever it stands -- in a
    .sf-tooltip-anchor or not, as the one sf-button-icon makes for its name
-   (C160 (1)) -- is as wide as its text up to the tooltip's cap, 20rem and
+   (C160 (1)) -- is as wide as its text up to the tooltip's cap, 44 characters
+   (--sf-measure-44, owner decision C396; 20rem before) and
    never wider than the window less --sf-space-1 a side. */
 .sf-tooltip[role='tooltip'],
 [role='tooltip'] > .sf-tooltip {
   inline-size: max-content;
   max-inline-size: min(
-    var(--sf-tooltip--max-inline-size, var(--sf-g0)),
+    var(--sf-tooltip--max-inline-size, var(--sf-measure-44)),
     calc(100vw - var(--sf-space-2))
   );
 }
@@ -101,7 +102,7 @@
 .sf-tooltip-anchor > sf-tooltip {
   inline-size: max-content;
   max-inline-size: min(
-    var(--sf-tooltip--max-inline-size, var(--sf-g0)),
+    var(--sf-tooltip--max-inline-size, var(--sf-measure-44)),
     calc(100vw - var(--sf-space-2))
   );
   position: absolute;

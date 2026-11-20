@@ -137,14 +137,14 @@ sf-profile-picker {
 }
 
 /* A phone (owner decisions C32, C106 (8); PP-4): a sheet at the bottom of the
-   screen, the screen's width up to 44rem, over the scrim, clear of the home
+   screen, the screen's width up to 96 characters (C396; 44rem before), over the scrim, clear of the home
    indicator, with the picker's name and a close button at its top (the
    study's proposal, profile-picker-study.html #q-phone). It was a popover by
    the trigger, holding the new-profile form. */
 .sf-profile-picker-panel.sf-profile-picker-panel--sheet {
   inset: auto 0 0;
   inline-size: 100%;
-  max-inline-size: var(--sf-h1);
+  max-inline-size: var(--sf-measure-96);
   max-block-size: calc(100dvh - var(--sf-space-4));
   margin-inline: auto;
   /* No inline border on a sheet, so the whole inset is the padding: a row's

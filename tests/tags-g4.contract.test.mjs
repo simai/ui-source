@@ -16,7 +16,7 @@ const row = read('src/smart/tag/js/tag-row.js');
 
 test('TG-1 (C58): a long name ends in an ellipsis, the tag is at most 20rem, the whole name is its tooltip', () => {
   const base = css.slice(css.indexOf('  .sf-tag {'), css.indexOf('\n  }\n', css.indexOf('  .sf-tag {')));
-  assert.match(base, /max-inline-size: min\(var\(--sf-g0\), 100%\);/u);
+  assert.match(base, /max-inline-size: min\(var\(--sf-measure-44\), 100%\);/u); // C396: 44 characters (20rem, --sf-g0, before)
   const label = css.slice(css.indexOf('  .sf-tag .sf-tag-container {'), css.indexOf('\n  }\n', css.indexOf('  .sf-tag .sf-tag-container {')));
   assert.match(label, /overflow: hidden;\s*text-overflow: ellipsis;\s*white-space: nowrap;/u);
   assert.doesNotMatch(label, /overflow-wrap: anywhere/u);

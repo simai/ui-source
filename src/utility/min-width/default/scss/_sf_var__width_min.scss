@@ -10,4 +10,16 @@ $with-min-array: (
     "fit" : fit-content,
 	"full" : 100%,
 	0 : 0, 
+	// The width ladder in characters (owner decision C396, 2026-11-19): the
+	// container is N characters of the body text wide, N x half its size
+	// (core figma_variables/figma_measure.scss); it follows density and the
+	// browser's font size with the text.
+	"measure-20"	: var(--sf-measure-20),
+	"measure-28"	: var(--sf-measure-28),
+	"measure-36"	: var(--sf-measure-36),
+	"measure-44"	: var(--sf-measure-44),
+	"measure-52"	: var(--sf-measure-52),
+	"measure-64"	: var(--sf-measure-64),
+	"measure-80"	: var(--sf-measure-80),
+	"measure-96"	: var(--sf-measure-96),
 );

@@ -10,6 +10,7 @@
     "primitives",
     "typography",
     "spacing",
+    "measure",
     "controls",
     "invariants",
     "projections",
@@ -106,6 +107,37 @@
       }
     },
     "spacing": { "$ref": "#/$defs/aliasMap" },
+    "measure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["char", "steps", "roles"],
+      "properties": {
+        "note": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "char": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["textSize", "divisor"],
+          "properties": {
+            "textSize": { "type": "string", "minLength": 1 },
+            "divisor": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "roles": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z]+--[a-z]+(?:-[a-z]+)*$" },
+          "additionalProperties": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
     "controls": {
       "type": "object",
       "additionalProperties": false,

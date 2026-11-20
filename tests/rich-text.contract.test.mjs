@@ -257,7 +257,7 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   // RT-02: the form's width step, and a sheet at the bottom of a phone screen in the top layer (C32).
   assert.match(template, /width="var\(--sf-popup-form-wide-width, 24rem\)"/u);
   const sheetRule = sheet.match(/\[slot='content'\]\[data-sf-sheet\] \{([^}]*)\}/u)[1];
-  for (const declaration of ['position: fixed;', 'inset: auto 0 0;', 'max-inline-size: var(--sf-h1);', 'var(--sf-shadow-modal)']) {
+  for (const declaration of ['position: fixed;', 'inset: auto 0 0;', 'max-inline-size: var(--sf-measure-96);' /* C396 */, 'var(--sf-shadow-modal)']) {
     assert.ok(sheetRule.includes(declaration), declaration);
   }
   assert.match(source, /--sf-breakpoint-md/u);

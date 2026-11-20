@@ -75,6 +75,36 @@ ${declarations("desktop", "      ")}
 `;
 }
 
+// The width ladder in characters (owner decision C396, 2026-11-19): one
+// character is half the body text size, a step N characters. Declared again
+// in the desktop block, where the text size changes, as the space ladder is;
+// the density regions declare them once more (scripts/generate-density.mjs).
+// The roles (the field widths) read a step.
+function renderMeasureProjection()
+{
+    const measure = contract.measure;
+    const text = escapedRole(measure.char.textSize);
+    const declarations = indentation => [
+        `${indentation}--sf-measure--char: calc(var(--sf-text--size-${text}) / ${measure.char.divisor});`,
+        ...measure.steps.map(step => `${indentation}--sf-measure-${step}: calc(${step} * var(--sf-measure--char));`),
+        ...Object.entries(measure.roles).map(([role, step]) => `${indentation}--sf-${role}: var(--sf-measure-${step});`),
+    ].join("\n");
+
+    return `${header}
+@layer sf.base {
+  :root {
+${declarations("    ")}
+  }
+
+  ${desktopMedia} {
+    :root {
+${declarations("      ")}
+    }
+  }
+}
+`;
+}
+
 function renderSemanticRoles()
 {
     const declarations = [];
@@ -269,6 +299,7 @@ export function projections()
         ],
         [paths.typographyRoles, renderSemanticRoles()],
         [paths.spacing, renderAliasProjection("space", contract.spacing)],
+        [paths.measure, renderMeasureProjection()],
         [paths.tightnessLow, renderTightnessProjection("low")],
         [paths.tightnessDefault, renderTightnessProjection("default")],
         [paths.tightnessHigh, renderTightnessProjection("high")],

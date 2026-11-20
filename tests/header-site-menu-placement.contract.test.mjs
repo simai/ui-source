@@ -60,7 +60,7 @@ test('header site C104: the head adds the row container centring offset, held in
   assert.match(collapsed, /--sf-site-header--axis-inset: min\(\n      calc\(var\(--sf-site-header--gutter\) \+ var\(--sf-site-header--centring\)\),\n      calc\(var\(--sf-site-header--sheet-size\) - var\(--sf-site-header--control-height\) - var\(--sf-site-header--gutter\)\)\n    \);/u);
   // The panel and its head read one width.
   assert.match(collapsed, /inline-size: var\(--sf-site-header--sheet-size\);/u);
-  assert.match(sheet, /--sf-site-header--sheet-size: var\(--sf-site-header-sheet-inline-size, min\(90vw, var\(--sf-g0\)\)\);/u);
+  assert.match(sheet, /--sf-site-header--sheet-size: var\(--sf-site-header-sheet-inline-size, min\(90vw, var\(--sf-measure-44\)\)\);/u); // C396: 44 characters (20rem before)
 });
 
 test('header site C104 MP-6: while open the scrim and panel stand above the bar parts', () => {

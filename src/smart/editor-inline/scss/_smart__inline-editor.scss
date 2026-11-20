@@ -88,7 +88,7 @@
         flex-direction: column;
         gap: var(--sf-space-1\/2);
         box-sizing: border-box;
-        inline-size: var(--sf-popup-form-wide-width, var(--sf-g1));
+        inline-size: var(--sf-popup-form-wide-width, var(--sf-measure-52));
         max-inline-size: 100vw;
         padding: var(--sf-space-1\/2);
         border-radius: var(--sf-radius--surface);
@@ -110,13 +110,13 @@
 
     /* On a phone the link window is a form, so a sheet at the bottom of the
        screen (C32, as sf-input-rich's), standing on the screen keyboard: the
-       screen's width up to 44rem, the top corners rounded, the modal shadow
+       screen's width up to 96 characters (C396; 44rem before), the top corners rounded, the modal shadow
        and the scrim. */
     .sf-inline-editor-link[data-sf-sheet] {
         z-index: var(--sf-layer--window);
         inset-inline: 0;
         inline-size: 100%;
-        max-inline-size: var(--sf-h1);
+        max-inline-size: var(--sf-measure-96);
         margin-inline: auto;
         border-end-end-radius: 0;
         border-end-start-radius: 0;

@@ -124,32 +124,41 @@ test('a size that is a width is marked as one (manifest x-scale)', () => {
 });
 
 // Owner decision C32 (2026-11-09): a popup's width tied to text follows the
-// text -- compact = normal x 14/16, rounded up to the next step of the size
-// scale; a region of normal density takes the normal width back.
-test('the popup widths follow the text in compact density (C32)', async () => {
+// text. Since owner decision C396 (2026-11-19) each is a step of the width
+// ladder in characters (--sf-measure-N = N x half the body text size), the
+// nearest to its C32 width, a tie to the wider; the step follows the text by
+// itself, so both regions declare the same step again (a compact region reads
+// its own text's step) and the C32 compact table is gone.
+test('the popup widths are steps of the width ladder, declared again in both regions (C32, C396)', async () => {
   const {widths} = await import('../scripts/generate-density.mjs');
   const expected = {
-    '--sf-popup-menu-min-width': ['var(--sf-f0)', 'var(--sf-e8)'],
-    '--sf-popup-menu-max-width': ['var(--sf-f8)', 'var(--sf-f6)'],
-    '--sf-popup-list-max-width': ['var(--sf-g0)', 'var(--sf-f8)'],
-    '--sf-popup-panel-width': ['var(--sf-g0)', 'var(--sf-f8)'],
-    '--sf-popup-form-width': ['var(--sf-g0)', 'var(--sf-f8)'],
-    '--sf-popup-form-wide-width': ['var(--sf-g2)', 'var(--sf-g1)'],
-    // The question window (C39): 28rem, 26rem in compact.
-    '--sf-popup-question-width': ['var(--sf-g4)', 'var(--sf-g3)'],
-    // The window sizes (C159 (1)): form 36rem, 32rem in compact; wide 48rem, 44rem.
-    '--sf-popup--window-form-width': ['var(--sf-g8)', 'var(--sf-g6)'],
-    '--sf-popup--window-wide-width': ['var(--sf-h2)', 'var(--sf-h1)'],
+    '--sf-popup-menu-min-width': 'var(--sf-measure-20)',
+    '--sf-popup-menu-max-width': 'var(--sf-measure-36)',
+    '--sf-popup-list-max-width': 'var(--sf-measure-44)',
+    '--sf-popup-panel-width': 'var(--sf-measure-44)',
+    '--sf-popup-form-width': 'var(--sf-measure-44)',
+    '--sf-popup-form-wide-width': 'var(--sf-measure-52)',
+    // The question window (C39): 52 characters.
+    '--sf-popup-question-width': 'var(--sf-measure-52)',
+    // The window sizes (C159 (1)): form 80, wide 96 characters.
+    '--sf-popup--window-form-width': 'var(--sf-measure-80)',
+    '--sf-popup--window-wide-width': 'var(--sf-measure-96)',
   };
-  const rows = Object.fromEntries(widths().map((row) => [row.variable, [row.normal, row.compact]]));
+  const rows = Object.fromEntries(widths().map((row) => [row.variable, row.normal]));
   assert.deepEqual(rows, expected);
+  for (const row of widths()) assert.equal(row.compact, row.normal, row.variable);
   const compact = block('[data-sf-density="compact"] {');
   const normal = block('[data-sf-density="normal"] {');
-  for (const [name, [wide, narrow]] of Object.entries(expected)) {
-    assert.equal(compact[name], narrow, name);
-    assert.equal(normal[name], wide, name);
+  for (const [name, step] of Object.entries(expected)) {
+    assert.equal(compact[name], step, name);
+    assert.equal(normal[name], step, name);
   }
-  assert.match(read('src/core/scss/_sf_css__size.scss'), /@layer sf\.base \{\s*:root \{[\s\S]*--sf-popup-menu-min-width: var\(--sf-f0\);/u);
+  // The ladder itself is declared again in both regions, from the text step.
+  for (const region of [compact, normal]) {
+    assert.equal(region['--sf-measure--char'], 'calc(var(--sf-text--size-1) / 2)');
+    for (const n of [20, 28, 36, 44, 52, 64, 80, 96]) assert.equal(region[`--sf-measure-${n}`], `calc(${n} * var(--sf-measure--char))`);
+  }
+  assert.match(read('src/core/scss/_sf_css__size.scss'), /@layer sf\.base \{\s*:root \{[\s\S]*--sf-popup-menu-min-width: var\(--sf-measure-20\);/u);
 });
 
 // Headings do not follow density (owner decision C44, 2026-11-10): the compact

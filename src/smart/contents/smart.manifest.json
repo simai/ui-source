@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.contents",
-  "version": "1.8.5",
+  "version": "1.9.0",
   "title": "Contents",
   "summary": "The page's table of contents («Оглавление»): the sections of the page as in-page links, the current one marked while the page scrolls. Four views from one list -- a side column, the sheet (a button with the reading progress), strokes at the edge, a sticky row of anchor tabs -- and auto, the column on a wide screen and the sheet on a narrow one. It collects the headings itself or takes the items a server printed, and works as plain links without the script.",
   "kind": "smart",
@@ -322,7 +322,7 @@
       },
       {
         "path": "src/smart/contents/scss/_smart__contents.scss",
-        "sha256": "31ed3b24b93572f9980a274945b5aeb2a3a48b059a79ccdaf4f15f5476cfd660"
+        "sha256": "049173a401a20cc6b7d904d56fad018bb80bae00c6638fad652986c937d460ed"
       },
       {
         "path": "src/smart/contents/rule.js",

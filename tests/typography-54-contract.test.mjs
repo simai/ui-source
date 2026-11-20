@@ -18,7 +18,7 @@ const expectedTitleHeights = {
 
 test("5.4 title heights and semantic roles are canonical contract data", () => {
     assert.equal(validateContract(), contract);
-    assert.equal(contract.meta.version, "1.7.0");
+    assert.equal(contract.meta.version, "1.8.0"); // C396: the measure section (the width ladder in characters)
 
     for (const mode of ["mobile", "desktop"])
     {

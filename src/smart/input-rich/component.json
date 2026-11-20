@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-rich's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Larena's request for an editor of its html@1 property type; owner approval q-6df38bf0d7.",
   "id": "smart.input-rich",
   "tag": "sf-input-rich",
-  "version": "1.10.5",
+  "version": "1.11.0",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -319,7 +319,8 @@
     "version 1.10.2 (written on the branch as 1.10.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.10.3 (2026-11-17, with sf-popover 1.8.0): a patch, nothing drawn differently. The link editor's sheet reads the popover's open attribute (sf-popover.sf-rich-text-link[open]) where it read data-open=\"true\", which the popover no longer writes (journal behaviour-popover-data-open-retired). Settings, values, events and keys unchanged.",
     "version 1.10.4 (2026-11-18, returns of the component study of Framework orders FO-1..FO-5, ui-control control/research/2026-11-18-framework-parts-fo; numbered above 1.10.3 on origin/feat/button-truncate-appearance): a patch. Files dragged from the computer onto the editor are refused through core's files drop (FO1-4): the cursor says no and the browser does not open the file in place of the page; text and markup dropped are taken as before.",
-    "version 1.10.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (r1-cleaned-on-load r1-form-value r1-textbox); the pair before carried the old checks under the same number. No code, setting, word or drawing changes."
+    "version 1.10.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (r1-cleaned-on-load r1-form-value r1-textbox); the pair before carried the old checks under the same number. No code, setting, word or drawing changes.",
+    "version 1.11.0 (2026-11-19, owner decision C396; research ui-control control/research/2026-11-19-text-measure section 8.3; written above every origin branch, 1.10.5 the highest): a minor. The link editor's phone sheet stops at --sf-measure-96 (44rem before); its desktop popup is core's wide form, now 52 characters (416px at text 16). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "reuse_mode": "whole",

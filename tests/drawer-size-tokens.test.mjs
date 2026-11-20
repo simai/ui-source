@@ -6,7 +6,7 @@ const source = readFileSync(new URL('../src/smart/drawer/scss/_smart__drawer.scs
 test('drawer design lengths use Core tokens and semantic dynamic viewport', () => {
   const withoutComments = source.replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(withoutComments, /(?<![\w-])-?(?:\d*\.)?\d+(?:px|rem|em)\b/);
-  assert.match(source, /width:\s*min\(var\(--sf-drawer-width, var\(--sf-g2\)\), 100vi\)/);
+  assert.match(source, /width:\s*min\(var\(--sf-drawer-width, var\(--sf-measure-52\)\), 100vi\)/); // C396: 52 characters (24rem, --sf-g2, before)
   // The panel's block size is its containing block's (inset-block: 0): the
   // viewport on a page, the box of a [data-sf-drawer-container] inside one. A
   // height of 100vb tied it to the viewport (DEV, 2026-10-18). The top starts

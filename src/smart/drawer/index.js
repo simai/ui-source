@@ -68,9 +68,10 @@ const DRAWER_SELECTOR = 'sf-drawer';
 // record), filled the same way.
 const DRAWER_AREAS = ['edge', 'footer', 'header-action'];
 // The width ladder (owner decision C157 (2)): size, the token the sheet gives
-// the step, the step in words. A host width that is none of them is still
+// the step, the step in words. The steps are widths in characters since owner
+// decision C396 (2026-11-19): 44, 52 and 64 (20, 24 and 30rem before). A host width that is none of them is still
 // drawn until the date and said once (noteOffLadderWidth).
-const LADDER_WIDTHS = [['1/2', 'var(--sf-g0)', '20rem'], ['1', 'var(--sf-g2)', '24rem'], ['2', 'var(--sf-g5)', '30rem']];
+const LADDER_WIDTHS = [['1/2', 'var(--sf-measure-44)', '44 characters'], ['1', 'var(--sf-measure-52)', '52 characters'], ['2', 'var(--sf-measure-64)', '64 characters']];
 const OFF_LADDER_SINCE = '2026-11-15';
 const OFF_LADDER_UNTIL = '2027-01-01';
 const AREA_SELECTORS = [['edge', '[data-sf-drawer-edge]'], ['footer', '[data-sf-drawer-foot]'], ['header-action', '[data-sf-drawer-action]']];
@@ -1578,8 +1579,8 @@ class SfDrawer extends DrawerElement {
     return Math.max(0, Math.round(rtl ? box.left - frame.left : frame.right - box.right));
   }
 
-  // A host width off the ladder (owner decision C157 (2): 20 · 24 · 30rem
-  // and the whole screen, a width of its own only through sf-resizer within
+  // A host width off the ladder (owner decision C157 (2): 44 · 52 · 64
+  // characters since C396, and the whole screen, a width of its own only through sf-resizer within
   // 1/2...2) is still drawn -- an old width keeps working until 2027-01-01,
   // as C157's old names do -- and said once per element in the console and
   // in SF.deprecations.list(), naming the steps. The width and the steps are

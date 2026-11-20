@@ -612,7 +612,7 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
   /* The label's line in the middle, so the box stands on the line by the
      label's baseline, as the drawn tag does. */
   padding-block: calc((var(--sf-tag--box-control) - var(--sf-tag--box-line)) / 2);
-  max-inline-size: min(var(--sf-g0), 100%);
+  max-inline-size: min(var(--sf-measure-44), 100%);
   padding-inline-start: calc(var(--sf-tag--box-edge) + var(--sf-tag--box-lead-on) * (var(--sf-tag--box-lead) - var(--sf-tag--box-pull) + var(--sf-tag--box-gap)));
   padding-inline-end: calc(var(--sf-tag--box-edge) + var(--sf-tag--box-cross-on) * (var(--sf-tag--box-cross) + var(--sf-tag--box-cross-gap)));
 }
