@@ -24,3 +24,18 @@ test('template utilities: the loader asks for them with the component', async ()
   assert.match(loader, /import templateUtilities from '\.\/template-utilities\.generated\.json';/);
   assert.match(loader, /templateUtilities\[name\]/);
 });
+
+/* An attribute's name is not a class. sf-button's shrink (C370) and sf-input's
+   text-start / text-end, read through getAttribute and matched by
+   [shrink="icon"], bound the flex-shrink and text-align sheets to sf-button,
+   sf-header-site and sf-input, which write neither class: one sheet more in
+   the wave of every page with a button, the one the first-paint gate saw
+   arrive after the components' code (pair GB14, 2026-11-20). */
+test('template utilities: attribute names do not ask for utilities', async () => {
+  const table = JSON.parse(await readFile(new URL('src/core/js/template-utilities.generated.json', ROOT), 'utf8'));
+  for (const name of ['cl-button', 'cl-header-site']) {
+    assert.ok(!table[name]?.includes('flex-shrink/default'), `${name} asks for flex-shrink for the shrink attribute`);
+  }
+  assert.ok(!table['cl-input']?.includes('text-align/default'), 'cl-input asks for text-align for its text-start / text-end attributes');
+  assert.ok(table['cl-button']?.includes('display/default'), 'cl-button still asks for the utilities its template writes');
+});

@@ -47,7 +47,13 @@ const utilities = Object.entries(readRules(utilityFiles)).filter(([, rule]) => r
 // sheet to eight components, none of which writes the class (measured
 // 2026-10-31). A component that wants the utility writes `isolate` or
 // `isolation-auto`, which still match.
-const DATED_BARE_WORDS = new Set(['auto']);
+// `shrink`, which flex-shrink/default answers bare, is sf-button's attribute
+// (C370 shrink="icon"): it stands in the button's attribute list, its change
+// handler and its update reason, and no template writes it as a class. Read as
+// one it bound the flex-shrink sheet to sf-button, a sheet more in the wave of
+// every page with a button (pair GB14 first paint, 2026-11-20). A template that
+// wants the utility writes `shrink-none` or a class of its own sheet.
+const DATED_BARE_WORDS = new Set(['auto', 'shrink']);
 // The heading tag names. utility.headers 1.1.0 asks for a whole class token
 // h1..h6, and a template names those words only as tags or tag strings --
 // `<h1 class="sf-h-4">` (header-page), `<h2 id=...>` (modal), BLOCK_TAGS
@@ -81,6 +87,14 @@ const withoutNames = (code) => code
   // A Lit boolean binding is the name of an attribute, as `@name=` is the name
   // of an event: `?hidden=${!open}` writes no class hidden.
   .replace(/\?([a-z][a-z0-9-]*)\s*=/gu, (whole, name) => whole.replace(name, blanked(name)))
+  // The name of an attribute, read or written through the attribute API or
+  // matched by a selector -- getAttribute("shrink"), [shrink="icon"] -- writes
+  // no class: sf-button's shrink (C370) bound the flex-shrink sheet to
+  // sf-button and sf-header-site, one more sheet in the wave of every page
+  // with a button (pair GB14 first paint, 2026-11-20).
+  .replace(/((?:get|set|has|remove|toggle)Attribute(?:NS)?\(\s*)(['"`])([a-z][a-z0-9:-]*)\2/gu,
+    (whole, head, quote, name) => head + quote + blanked(name) + quote)
+  .replace(/\[([a-z][a-z0-9-]*)(?=\s*[~|^$*]?=|\])/gu, (whole, name) => '[' + blanked(name))
   // The keyword before a class member: `static get props()` gave thirty-eight
   // components the position utility, whose classes include `static`.
   .replace(/\bstatic(?=\s+[A-Za-z_$#*[])/gu, (whole) => blanked(whole))

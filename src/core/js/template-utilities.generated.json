@@ -58,7 +58,6 @@
   "cl-button": [
     "align-items/default",
     "display/default",
-    "flex-shrink/default",
     "flex/default",
     "pointer-events/default",
     "sr-only/default",
@@ -163,7 +162,6 @@
   ],
   "cl-header-site": [
     "container/default",
-    "flex-shrink/default",
     "margin/default",
     "position/default",
     "width/default"
@@ -178,7 +176,6 @@
     "align-items/default",
     "display/default",
     "flex-direction/default",
-    "text-align/default",
     "transition-property/default"
   ],
   "cl-input-choice": [
