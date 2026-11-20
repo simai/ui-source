@@ -398,6 +398,7 @@ class SfDrawer extends DrawerElement {
       label: {default: ''},
       closeLabel: {attribute: 'close-label', default: ''},
       width: {default: ''},
+      asideWidth: {attribute: 'aside-width', default: ''},
       stackOffset: {attribute: 'stack-offset', default: ''},
       gutter: {default: ''},
       zIndex: {attribute: 'z-index', default: ''},
@@ -905,6 +906,9 @@ class SfDrawer extends DrawerElement {
       label: this.getAttribute('label') || '',
       closeLabel: this.getAttribute('close-label') || this.defaultCloseLabel,
       width: this.getAttribute('width') || '',
+      // A9 (DEV msg-6aead3f3): an announced aside column, added on top of the
+      // step that measures the content, never taken from it.
+      asideWidth: (this.getAttribute('aside-width') || '').trim(),
       stackOffset: this.stackOffset,
       gutter: this.gutter,
       zIndex: this.drawerZIndex,
@@ -1164,7 +1168,7 @@ class SfDrawer extends DrawerElement {
       : nothing;
     return html`<div
       class=${joinClasses('sf-drawer', context.open && 'is-open', context.rootClass)}
-      style=${`z-index:${context.zIndex};${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.blockStart ? `--sf-drawer-block-start:${context.blockStart};` : ''}${context.rootStyle || ''}`}
+      style=${`z-index:${context.zIndex};${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.asideWidth ? `--sf-drawer-aside-width:${context.asideWidth};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.blockStart ? `--sf-drawer-block-start:${context.blockStart};` : ''}${context.rootStyle || ''}`}
       data-sf-drawer-root
       data-sf-drawer-id=${context.drawerId}
       data-sf-drawer-placement=${context.placement}
@@ -1178,7 +1182,7 @@ class SfDrawer extends DrawerElement {
       <div class=${joinClasses('sf-drawer-overlay', context.overlayClass)} data-sf-drawer-overlay ?hidden=${!context.modal || !context.overlay}></div>
       <section
         class=${joinClasses('sf-drawer-panel', context.panelClass)}
-        style=${`${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.gutter ? `--sf-drawer-gutter:${context.gutter};` : ''}${context.panelStyle || ''}`}
+        style=${`${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.asideWidth ? `--sf-drawer-aside-width:${context.asideWidth};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.gutter ? `--sf-drawer-gutter:${context.gutter};` : ''}${context.panelStyle || ''}`}
         role=${context.docked && !context.modal ? 'region' : 'dialog'}
         aria-modal=${context.modal ? 'true' : nothing}
         aria-label=${context.label || nothing}

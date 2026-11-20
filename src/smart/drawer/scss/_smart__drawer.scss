@@ -84,7 +84,10 @@
     inset-block: var(--sf-drawer-block-start, 0) 0;
     display: flex;
     flex-direction: column;
-    width: min(var(--sf-drawer-width, var(--sf-measure-52)), 100vi);
+    /* A9 (DEV msg-6aead3f3): the step (or width) measures the content; an
+       announced aside (aside-width, e.g. a sections column) is added on top of
+       it, never taken from it. */
+    width: min(calc(var(--sf-drawer-width, var(--sf-measure-52)) + var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))), 100vi);
     max-width: 100vi;
     /* The block size is the containing block's, from inset-block: 0: the
        viewport on a page, and the box of an ancestor that contains its fixed
@@ -488,7 +491,7 @@
        far side of the window. */
     --sf-drawer-edge-inset: calc(
       var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset)
-      + min(var(--sf-drawer-width, var(--sf-measure-52)), 100vi)
+      + min(calc(var(--sf-drawer-width, var(--sf-measure-52)) + var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))), 100vi)
       + var(--sf-space-1\/2)
     );
     position: absolute;
@@ -571,6 +574,7 @@
   @media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
     .sf-drawer:not([data-sf-drawer-placement='bottom']):not([data-sf-drawer-column='true']) .sf-drawer-panel {
       --sf-drawer-width: 100%;
+      --sf-drawer-aside-width: calc(var(--sf-px) * 0);
       --sf-drawer--edge-start: calc(var(--sf-px) * 0);
       --sf-drawer--edge-end: calc(var(--sf-px) * 0);
       inline-size: 100%;

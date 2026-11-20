@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.19.1",
+  "version": "1.20.0",
   "title": "Drawer",
   "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
   "kind": "smart",
@@ -147,6 +147,11 @@
         "type": "string",
         "default": "",
         "description": "The panel's width, a CSS length (sets --sf-drawer-width); empty: the size step's width. A width off the ladder (44 · 52 · 64 characters since C396, the whole screen; owner decision C157 (2)) is still drawn until 2027-01-01 and said once per element in the console and in SF.deprecations.list(); take a size step, and an sf-resizer within 1/2...2 for a width of its own."
+      },
+      "aside-width": {
+        "type": "string",
+        "default": "",
+        "description": "An announced aside column's width (a CSS length, a system value where there is one), added on top of the size step (or width) that measures the content and never taken from it (A9, DEV msg-6aead3f3): size 1 with aside-width 240px is 416 + 240px wide, the content still 52 characters. Sets --sf-drawer-aside-width. Never wider than the window; on a phone the panel is the whole screen and the aside adds nothing. It raises no off-ladder warning."
       },
       "stack-offset": {
         "type": "string",
@@ -924,11 +929,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "367a1fba3fc70e16f2e21f358c6ec1ca40688b1c99b7c818915ae274d26dd3d9"
+        "sha256": "0d1ce445fa4847017ccf541c8a640ab65b142b2d16fc008d0215d752ac0fd2bf"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "b6533049b8c511cce064672ac282d1079252f7e21f4da4c27c338a7470e57fdb"
+        "sha256": "bdd88725e4bcf2ac7bc3d6d6cc8a895e40b4602ad638af71b304ec3eb5b7b229"
       },
       {
         "path": "src/smart/drawer/rule.js",
@@ -936,7 +941,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "301d42c4241864d55e1ad34a20e447ed46ba3c541571bc23844b6c0eee83c8d0"
+        "sha256": "3b3e13e950428ccbdf1238d3314a1fae211f5fdcf058a608115913f9edf8cfd1"
       }
     ],
     "generated_runtime": [

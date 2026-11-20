@@ -67,9 +67,19 @@ CSS value. Ширина вне лестницы (не 44, 52, 64 знака и �
 `SF.deprecations.list()`, называя ступени: возьмите `size`, а для своей ширины —
 `sf-resizer`.
 
+Колонка сбоку — `aside-width` (CSS-длина, лучше значение системы:
+`aside-width="var(--sf-measure-20)"`, или `240px`). Ступень `size` (или `width`)
+меряет содержимое, а объявленная колонка (например, колонка разделов)
+добавляется к ней сверху и никогда не отнимается от неё: при `size="1"` и
+`aside-width="240px"` панель шириной 416 + 240px, содержимое по-прежнему 52
+знака. Панель остаётся на лестнице, предупреждение о своей ширине не меняется,
+`aside-width` его не вызывает. Шире окна панель не становится; на телефоне она
+во весь экран, и колонка в ширину не прибавляется. Свойство `asideWidth`,
+переменная `--sf-drawer-aside-width`.
+
 Компонент поддерживает `open`, `modal`, `size`, `overlay`, `close-on-esc`,
 `close-on-overlay`, `preserve-scroll-gap`, `show-close`,
-`close-placement="inside|outside"`, `title`, `label`, `close-label`, `width`
+`close-placement="inside|outside"`, `title`, `label`, `close-label`, `width`, `aside-width`
 and presentation class attributes. Public methods are `open()`, `close()`,
 `toggle()`, `setState()` and `getState()`. Existing lifecycle events and
 registration helpers (`drawer:ready`, `drawer:update`, `drawer:before-open`,

@@ -18805,6 +18805,27 @@
       "manual": "An editor reads a moved-revision save answered refused or conflict alike: keep what the person typed and read the record again at the revision the answer names.",
       "owner": "ui-source",
       "source": "src/core/contracts/ports/simai.property-view-port/1.22.1/port.json; src/core/contracts/ports/simai.property-view-port/1.22.1/kit"
+    },
+    {
+      "id": "setting-drawer-aside-width",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-drawer 1.20.0 (group build 15, A9, DEV msg-6aead3f3): a new setting aside-width (property asideWidth, variable --sf-drawer-aside-width). The size step (44 / 52 / 64 characters) or width measures the content; an announced aside column is added on top of it, never taken from it: the panel is min(step + aside, the window). Nothing changes for a drawer without it.",
+      "items": [
+        {
+          "component": "sf-drawer",
+          "attribute": "aside-width",
+          "from": "an aside column taken from the step (the content narrower) or a free width off the ladder",
+          "to": "aside-width added on top of the step"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a drawer holds an aside column beside its content, keep size on the content's step and announce the column with aside-width instead of a wider free width.",
+      "owner": "ui-source",
+      "source": "src/smart/drawer/index.js; src/smart/drawer/scss/_smart__drawer.scss"
     }
   ]
 }
