@@ -18763,6 +18763,21 @@
       "manual": "Where a ring must show its number, give it size=\"2\" or larger (class form sf-progress-ring--size-2); a size 1 ring says it in its tooltip and its name.",
       "owner": "ui-source",
       "source": "src/smart/progress-ring/js/templates/default.js; src/component/progress-ring/scss/_css__progress_ring.scss"
+    },
+    {
+      "id": "behaviour-bulk-actions-phone-action-without-icon",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-bulk-actions 1.2.1 (group build 15, A7, view round 9): on a phone an action without an icon no longer stands in the row as an icon button drawn with the «⋯» glyph (two identical «⋯»); it goes in «⋯» with its label, and the first action with an icon stands in the row. The desktop row is unchanged.",
+      "items": [
+        {
+          "component": "sf-bulk-actions",
+          "attribute": "actions[].icon",
+          "from": "phone: an action without an icon drawn as a «⋯» icon button",
+          "to": "phone: an action without an icon in «⋯» with its label"
+        }
+      ]
     }
   ]
 }

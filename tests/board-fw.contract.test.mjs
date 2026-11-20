@@ -81,10 +81,10 @@ test('sf-sortable in a picture adds no live region and takes no keys until it is
   assert.equal(JSON.parse(read('src/smart/sortable/component.json')).version, '1.7.6'); // group build 15: 1.7.6 = VS-SITE-4's words (written as 1.7.4) above reds-before-gb15's 1.7.5; reds-before-gb15: 1.7.5 probe only, above 1.7.4 on fix/ru-words-vs-site-4; // group build 13: 1.7.2 moved on by the merged branches or a GB11 merge
 });
 
-test('sf-view-board is a reserved name of the view set (rule cl-view-board)', () => {
+test('sf-view-board is a preview name of the view set (rule cl-view-board; GB15 A7: the set ships it)', () => {
   const registry = JSON.parse(read('contracts/registry/names.json'));
   const view = registry.owners.find(({id}) => id === 'view');
-  assert.deepEqual(view.names.find(({element}) => element === 'sf-view-board'), {element: 'sf-view-board', status: 'reserved'});
+  assert.deepEqual(view.names.find(({element}) => element === 'sf-view-board'), {element: 'sf-view-board', status: 'preview'});
   assert.ok(view.families.includes('view'));
   const others = registry.owners.filter(({id}) => id !== 'view').flatMap(({names}) => names.map(({element}) => element));
   assert.ok(!others.includes('sf-view-board'), 'one owner per name');

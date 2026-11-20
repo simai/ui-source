@@ -62,13 +62,21 @@ test('up to three labelled actions, the rest in «⋯», the dangerous one alway
   assert.deepEqual([two.visible.map((one) => one.id), two.rest.map((one) => one.id)], [['publish'], ['delete']]);
   const phone = splitActions(SITE, VISIBLE_COMPACT);
   assert.deepEqual(phone.visible.map((one) => one.id), ['publish']);
+  // GB15 A7: on a phone an action is an icon button; one without an icon would
+  // draw as a second «⋯», so it goes in «⋯» with its label.
+  const bare = [{id: 'archive', text: 'В архив'}, {id: 'export', text: 'Экспорт', icon: 'download'}, {id: 'tag', text: 'Метка'}];
+  const phoneBare = splitActions(bare, VISIBLE_COMPACT, {iconOnly: true});
+  assert.deepEqual(phoneBare.visible.map((one) => one.id), ['export']);
+  assert.deepEqual(phoneBare.rest.map((one) => one.id), ['archive', 'tag']);
+  assert.deepEqual(splitActions(bare.filter((one) => !one.icon), VISIBLE_COMPACT, {iconOnly: true}).visible, []);
+  assert.deepEqual(splitActions(bare).visible.map((one) => one.id), ['archive', 'export', 'tag'], 'the desktop row keeps its labels');
   const ranked = splitActions([{id: 'a', text: 'A', priority: 3}, {id: 'b', text: 'B'}, {id: 'c', text: 'C', priority: 'pin'}, {id: 'd', text: 'D', priority: 1}]);
   assert.deepEqual(ranked.visible.map((one) => one.id), ['c', 'd', 'a'], 'pin first, then by C155 priority, none last');
 });
 
 test('the manifest: a new component of family bulk with the contract of C295', () => {
   assert.equal(manifest.tag, 'sf-bulk-actions');
-  assert.equal(manifest.version, '1.2.0');
+  assert.equal(manifest.version, '1.2.1'); // GB15 A7: an action without an icon goes in «⋯» on a phone
   assert.equal(manifest.family, 'bulk');
   for (const name of ['count', 'page-count', 'total', 'all-selected', 'count-text', 'place', 'size', 'label', 'actions']) {
     assert.ok(manifest.settings[name], name);

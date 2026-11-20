@@ -447,15 +447,15 @@
         },
         {
           "element": "sf-view-board",
-          "status": "reserved"
+          "status": "preview"
         },
         {
           "element": "sf-view-calendar",
-          "status": "reserved"
+          "status": "preview"
         },
         {
           "element": "sf-view-cards",
-          "status": "reserved"
+          "status": "preview"
         },
         {
           "element": "sf-view-flow",

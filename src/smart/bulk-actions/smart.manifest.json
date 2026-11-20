@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.bulk-actions",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Group actions",
   "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run, a fast action's result in place of the count and a long one's in a notice, failures written to «Уведомления». One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
   "kind": "smart",
@@ -431,11 +431,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/bulk-actions/index.js",
-        "sha256": "03528607bd241a277c6b3a6fbb99ded968e7eecefa2cac036258d91179f835e3"
+        "sha256": "039638449b5c1a68656a2ef620292069df85361f7fc272ed6c90258044b499a9"
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
-        "sha256": "2dbf90b748c37209de464f23172da36daa4437badba17764a19e1987c4adf2ed"
+        "sha256": "cd4bac549867b349ac16e5eb79059622784fe2ec3ff69f60fbaf2b79898a9433"
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
@@ -447,7 +447,7 @@
       },
       {
         "path": "src/smart/bulk-actions/docs.md",
-        "sha256": "3fe1197591e52ea26889c5674cf166d987e70402d89c710c0c0db06caecc9498"
+        "sha256": "a077b745df1d3feeda46aad4f9dc120429d0b594c039e387b4db1d5a6b166cbc"
       }
     ],
     "generated_runtime": []

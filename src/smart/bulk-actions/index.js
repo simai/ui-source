@@ -610,7 +610,9 @@ class SfBulkActions extends BulkActionsElement {
   }
 
   split() {
-    return splitActions(this.actionList, this._compact ? VISIBLE_COMPACT : VISIBLE);
+    return this._compact
+      ? splitActions(this.actionList, VISIBLE_COMPACT, {iconOnly: true})
+      : splitActions(this.actionList, VISIBLE);
   }
 
   // «Выбрать все N» once the whole page is selected and the total is larger;

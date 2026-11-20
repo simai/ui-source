@@ -22,8 +22,8 @@ test('CV-7: a number keeps its unit in the edit and filter places, as in the vie
 test('the view set reserves sf-view-cards and sf-view-calendar (rules cl-view-cards, cl-view-calendar)', () => {
   const view = json('contracts/registry/names.json').owners.find(({id}) => id === 'view');
   const status = Object.fromEntries(view.names.map(({element, status}) => [element, status]));
-  assert.equal(status['sf-view-cards'], 'reserved');
-  assert.equal(status['sf-view-calendar'], 'reserved');
+  assert.equal(status['sf-view-cards'], 'preview'); // GB15 A7: the set ships it
+  assert.equal(status['sf-view-calendar'], 'preview'); // GB15 A7: the set ships it
   assert.match(view.source, /sf-view-cards \(rule cl-view-cards\)/u);
   assert.match(view.source, /sf-view-calendar \(rule cl-view-calendar\)/u);
   const elements = view.names.map(({element}) => element);

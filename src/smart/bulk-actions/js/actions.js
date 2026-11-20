@@ -55,13 +55,18 @@ export function normalizeAction(item, index = 0) {
   };
 }
 
-/** The visible actions and the ones for «⋯»: by priority, the dangerous ones always in «⋯», last. */
-export function splitActions(actions, cap = VISIBLE) {
+/**
+ * The visible actions and the ones for «⋯»: by priority, the dangerous ones
+ * always in «⋯», last. With iconOnly (a phone, where an action is an icon
+ * button) an action without an icon never stands in the row: it would draw
+ * as a second «⋯»; it goes in «⋯» with its label (GB15 A7).
+ */
+export function splitActions(actions, cap = VISIBLE, {iconOnly = false} = {}) {
   const list = (Array.isArray(actions) ? actions : []).map(normalizeAction).filter(Boolean);
   const safe = list.filter((action) => !action.danger)
     .sort((a, b) => (a.priority - b.priority) || (a.order - b.order));
   const danger = list.filter((action) => action.danger);
-  const visible = safe.length <= cap && !danger.length ? safe : safe.slice(0, cap);
+  const visible = (iconOnly ? safe.filter((action) => action.icon) : safe).slice(0, cap);
   const rest = [...safe.filter((action) => !visible.includes(action)), ...orderActions(danger)];
   return {visible, rest};
 }

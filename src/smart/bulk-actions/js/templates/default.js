@@ -27,7 +27,7 @@ function actionButton(context, action) {
   const description = action.reason || nothing;
   if (compact) {
     return keyed(`${action.id}|icon|${action.status}`, html`<sf-button-icon class="sf-bulk-actions__action" data-sf-bulk-action=${action.id}
-      size=${size} appearance="ghost" scheme="on-surface" status=${action.status || nothing} icon=${action.icon || 'more_horiz'}
+      size=${size} appearance="ghost" scheme="on-surface" status=${action.status || nothing} icon=${action.icon}
       aria-label=${action.text} title=${action.reason ? `${action.text} — ${action.reason}` : action.text}
       aria-disabled=${unavailable} aria-description=${description} @click=${press}></sf-button-icon>`);
   }
