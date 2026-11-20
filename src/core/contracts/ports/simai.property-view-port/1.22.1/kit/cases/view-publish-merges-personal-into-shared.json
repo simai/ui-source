@@ -1,0 +1,28 @@
+{
+  "id": "view-publish-merges-personal-into-shared",
+  "intent": "view.publish",
+  "capability": "view-settings",
+  "summary": "«Сохранить для всех» merges the personal layer into the shared one and clears the personal layer in one write.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.publish",
+    "payload": {
+      "record_id": null,
+      "collection": "crm.deals",
+      "profile": "main",
+      "personal_revision": "p4",
+      "shared_revision": "s3"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "shared"
+    ],
+    "note": "One write: a host that wrote the shared layer and then failed to clear the personal one would leave a person whose own layer still overrides what everyone now has. The answer carries the shared layer after the merge, and personal with a null view."
+  }
+}

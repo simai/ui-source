@@ -202,3 +202,19 @@ test('a group save against a revision another group\'s save moved is a conflict 
   assert.equal(lost.revision, two.revision);
   assert.equal(one.revision, lost.revision);
 });
+
+// GB15 A8 (Larena msg-0f49483a): 1.22.1, a save over a moved revision may be
+// answered refused or conflict; a conflict carries the reason and the revision.
+test('property-view-port 1.22.1: a moved revision is refused or conflict, a conflict carries the reason and the current revision', async () => {
+  const {readFile} = await import('node:fs/promises');
+  const base = 'src/core/contracts/ports/simai.property-view-port/1.22.1/';
+  const port = JSON.parse(await readFile(`${base}port.json`, 'utf8'));
+  assert.equal(port.version, '1.22.1');
+  assert.match(port.summary, /may be answered `refused` or `conflict`/u);
+  const both = JSON.parse(await readFile(`${base}kit/cases/group-save-revision-moved-is-a-conflict.json`, 'utf8'));
+  assert.deepEqual(both.then.answer, ['refused', 'conflict']);
+  const conflict = JSON.parse(await readFile(`${base}kit/cases/group-save-revision-moved-as-a-conflict-carries-the-reason.json`, 'utf8'));
+  assert.equal(conflict.then.answer, 'conflict');
+  assert.equal(conflict.then.if_answer, 'conflict');
+  assert.deepEqual(conflict.then.answer_must_include, ['reason', 'revision']);
+});

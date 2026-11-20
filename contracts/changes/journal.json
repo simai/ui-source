@@ -18784,6 +18784,27 @@
       "manual": "Give every bulk action an icon where it must stand in a phone's row; one without an icon is in «⋯» on a phone.",
       "owner": "ui-source",
       "source": "src/smart/bulk-actions/js/actions.js; src/smart/bulk-actions/index.js"
+    },
+    {
+      "id": "behaviour-property-view-port-moved-revision-conflict",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "simai.property-view-port 1.22.1 (a patch, group build 15, A8, Larena msg-0f49483a): a group.save or record.save over a revision that moved may be answered refused or conflict; a conflict carries the same reason revision_moved and the current revision, nothing written. The kit case group-save-revision-moved-is-a-conflict accepts both answers, and group-save-revision-moved-as-a-conflict-carries-the-reason holds a conflict answer to the reason and the revision. No new key: a 1.22.0 host is a 1.22.1 host.",
+      "items": [
+        {
+          "component": "simai.property-view-port",
+          "attribute": "group.save / record.save answer for a moved revision",
+          "from": "refused revision_moved",
+          "to": "refused or conflict, both with reason revision_moved and the current revision"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "An editor reads a moved-revision save answered refused or conflict alike: keep what the person typed and read the record again at the revision the answer names.",
+      "owner": "ui-source",
+      "source": "src/core/contracts/ports/simai.property-view-port/1.22.1/port.json; src/core/contracts/ports/simai.property-view-port/1.22.1/kit"
     }
   ]
 }

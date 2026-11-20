@@ -1,0 +1,46 @@
+{
+  "id": "view-save-from-a-1-22-component-is-personal",
+  "intent": "view.save",
+  "capability": "view-settings",
+  "summary": "A 1.22.0 component writes its own edits in the personal layer at once, the head included.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "record_id": null,
+      "collection": "crm.deals",
+      "target": {
+        "kind": "personal",
+        "revision": null
+      },
+      "view": {
+        "schema_version": 1,
+        "sections": {},
+        "groups": {},
+        "fields": {
+          "inn": {
+            "hidden": true
+          }
+        },
+        "head": {
+          "subtitle": [
+            "company",
+            "sum"
+          ],
+          "status": "stage"
+        }
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision"
+    ],
+    "note": "target.kind shared is what a component before 1.22.0 sent for a shared profile; a host reads it until 2027-01-01. For everyone is view.publish."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "neighbours-without-the-capability",
+  "intent": "record.neighbours",
+  "capability": "record-neighbours",
+  "summary": "A host that does not announce record-neighbours is never asked: the page finds the neighbour in the list it shows.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.neighbours",
+    "payload": {
+      "record_id": "d17",
+      "collection": "deals"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "The step event carries no next_record_id; the page (sf-view recordBeside) opens the neighbour by its record-id."
+  }
+}

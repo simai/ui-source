@@ -1,0 +1,33 @@
+{
+  "id": "group-save-revision-moved-as-a-conflict-carries-the-reason",
+  "intent": "group.save",
+  "summary": "A host that answers a save over a moved revision with conflict (1.22.1) gives the same reason revision_moved and the current revision as a refusal would, nothing written.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "deals",
+      "section": "main",
+      "group": "pay",
+      "values": {
+        "amount": {
+          "amount": "420000",
+          "currency": "RUB"
+        }
+      },
+      "revision": "8"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "if_answer": "conflict",
+    "answer_must_include": [
+      "reason",
+      "revision"
+    ],
+    "note": "Held only when the host answers conflict (if_answer); a host that refuses passes it by group-save-revision-moved-is-a-conflict. Reason revision_moved and revision \"9\", the current one; nothing is written."
+  }
+}

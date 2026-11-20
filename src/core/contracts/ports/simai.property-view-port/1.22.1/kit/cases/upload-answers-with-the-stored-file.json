@@ -1,0 +1,14 @@
+{
+  "id": "upload-answers-with-the-stored-file",
+  "intent": "field.upload",
+  "capability": "field-upload",
+  "summary": "A file the person chose is stored by the host, which answers with it in the shape the field reads.",
+  "given": {"capabilities": ["field-upload"]},
+  "when": {"intent": "field.upload", "payload": {"record_id": "record-1", "collection": "pages",
+            "field": "document", "file": "<the File the person chose>"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["file"],
+    "note": "The answer carries {value, label, mime?, href?} -- the same shape the field already reads -- so the view shows the stored file without a second read. The File is passed as it is: a component that encoded it to base64 would double the bytes of every upload for nothing."
+  }
+}

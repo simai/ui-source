@@ -1,0 +1,22 @@
+{
+  "id": "create-field-errors-are-refused",
+  "intent": "record.create",
+  "summary": "A create the host will not make comes back refused with errors keyed by field.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.create",
+    "payload": {
+      "collection": "pages",
+      "values": {}
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "errors"
+    ],
+    "note": "Each error stands under its own field; what the person typed stays."
+  }
+}
