@@ -84,7 +84,7 @@
     inset-block: var(--sf-drawer-block-start, 0) 0;
     display: flex;
     flex-direction: column;
-    width: min(var(--sf-drawer-width, var(--sf-g2)), 100vi);
+    width: min(var(--sf-drawer-width, var(--sf-measure-52)), 100vi);
     max-width: 100vi;
     /* The block size is the containing block's, from inset-block: 0: the
        viewport on a page, and the box of an ancestor that contains its fixed
@@ -140,13 +140,16 @@
   }
 
   /* The drawer is on the shared size ladder. The words small, large and medium
-     are legacy values the component still accepts; it renders the step. */
+     are legacy values the component still accepts; it renders the step. The
+     widths are steps of the width ladder in characters (owner decision C396,
+     2026-11-19): 1/2, 1 and 2 take 44, 52 and 64 characters (352, 416, 512px
+     at text 16; 20, 24 and 30rem before), following the text. */
   .sf-drawer[data-sf-drawer-size='1\/2'] {
-    --sf-drawer-width: var(--sf-g0);
+    --sf-drawer-width: var(--sf-measure-44);
   }
 
   .sf-drawer[data-sf-drawer-size='2'] {
-    --sf-drawer-width: var(--sf-g5);
+    --sf-drawer-width: var(--sf-measure-64);
   }
 
   .sf-drawer[data-sf-drawer-size='full'] {
@@ -476,7 +479,7 @@
        far side of the window. */
     --sf-drawer-edge-inset: calc(
       var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset)
-      + min(var(--sf-drawer-width, var(--sf-g2)), 100vi)
+      + min(var(--sf-drawer-width, var(--sf-measure-52)), 100vi)
       + var(--sf-space-1\/2)
     );
     position: absolute;
@@ -659,10 +662,11 @@
     inset-block: auto 0;
     inset-inline: 0;
     width: 100%;
-    /* The sheet's width stops at 44rem (--sf-h1, the md step), centred, as
+    /* The sheet's width stops at 96 characters (--sf-measure-96, C396; 44rem,
+       the md step, before), centred, as
        sf-settings' phone sheet (C106 (8), C32); on a desktop it stretched to
        the window's width (study DR-10). The screen's width below that. */
-    max-width: var(--sf-h1);
+    max-width: var(--sf-measure-96);
     margin-inline: auto;
     max-block-size: calc(var(--sf-drawer-sheet-room) - var(--sf-space-3));
     border-block-start-width: var(--sf-px);

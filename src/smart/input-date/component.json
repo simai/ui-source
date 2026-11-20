@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-date's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-date",
   "tag": "sf-input-date",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -151,6 +151,17 @@
       ],
       "default": "1",
       "summary": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field is an sf-input of this size."
+    },
+    "width": {
+      "type": "enum",
+      "values": [
+        "",
+        "short",
+        "medium",
+        "long"
+      ],
+      "default": "",
+      "summary": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width."
     },
     "input-size": {
       "type": "enum",
@@ -708,7 +719,8 @@
     "version 1.14.3 (written on the branch as 1.14.0; 2026-11-17, group build 10, fix/forms-fm2; component.datepicker 1.10.1; numbered above 1.13.1 on another origin branch): a minor. SM-DP-1: the text box holds a whole value of its format -- two dates and the dash for a period (23 figures), the time with a date-time -- plus its padding, its figures tabular; the field grows to it, so a period's second date is never cut (07.09.2026 – 13.09.2026 stood in 186 of the 191 px it needs). SM-DP-2: the legacy names left-icon (icon-start) and input-size (size) get their date: dated rows in aliases.json (manifest-only, read by the element itself), a change journal record attribute-input-date-legacy-names, and each use noted in SF.deprecations, until 2027-01-01. Settings, values, events and keys otherwise unchanged.",
     "version 1.15.0 (2026-11-17, owner decision C293, the date filter; component.datepicker 1.11.0): a minor, values added and a behaviour. DF-5: the calendar quick ranges are whole periods -- this-week runs to the week's last day, this-month to the month's last day -- where they ended today; last-week, this-year and the forward tomorrow, next-week, next-month join the built-in ids (relative presets and the presets attribute); last-7-days and last-30-days still end today. DF-8: the calendar's markup carries only its own class names (the utility names grid, grid-col-7, grid-col-3, flex, inline-flex, absolute, relative and gap-1/4 are gone), its layout is component.datepicker's, so a host page's unlayered .grid no longer lays the days out in one column. DF-7: the field's wrapper takes the row it stands in, as sf-input does. Settings, events and keys otherwise unchanged.",
     "version 1.16.0 (2026-11-17, Larena record forms msg-9e7b5015, dispatcher decision: one look vocabulary for every field; numbered above 1.15.0 on origin/feat/date-filter-c293): a minor (§4.10). The setting appearance (bordered, the default, or filled) is added: the name and the words of sf-input, sf-input-textarea and sf-dropdown, so a form gives every field one look. input-type, its legacy name, keeps working until 2027-01-01 (aliases row, journal attribute-input-date-input-type-to-appearance): noted in SF.deprecations and said once per page in the console, appearance winning when both are set. The field drawn is the same sf-input as before.",
-    "version 1.17.0 (2026-11-18, CL-6 of the calendar layout study ui-control control/research/2026-11-18-calendar-view, DEV msg-9e2f03e75ea646a9a00e; component.datepicker 1.12.0; numbered above 1.16.0 on origin/integration/pair-next-15): a minor, a setting and an action added. day-marks: a function of the ISO day or a map by ISO day (the attribute JSON of the map) gives a day a mark {count?, tone?, label?}: a 6 px dot (C132: a coloured mark is never under 6) for a count of 1 or none, a small number for 2 and more (99+ over 99), in the tone's ink, in the row under the number every day keeps, so the day's size does not change; on a chosen day the fill's ink, in a period's band the band's, on a disabled day the disabled ink. A holiday's dot (C198) gives way on a marked day. The day's accessible name ends with the label, else the plural count (words mark-count, mark-present). refresh() draws the marks again. The phone ribbon draws them too. Values, events and keys unchanged."
+    "version 1.17.0 (2026-11-18, CL-6 of the calendar layout study ui-control control/research/2026-11-18-calendar-view, DEV msg-9e2f03e75ea646a9a00e; component.datepicker 1.12.0; numbered above 1.16.0 on origin/integration/pair-next-15): a minor, a setting and an action added. day-marks: a function of the ISO day or a map by ISO day (the attribute JSON of the map) gives a day a mark {count?, tone?, label?}: a 6 px dot (C132: a coloured mark is never under 6) for a count of 1 or none, a small number for 2 and more (99+ over 99), in the tone's ink, in the row under the number every day keeps, so the day's size does not change; on a chosen day the fill's ink, in a period's band the band's, on a disabled day the disabled ink. A holiday's dot (C198) gives way on a marked day. The day's accessible name ends with the label, else the plural count (words mark-count, mark-present). refresh() draws the marks again. The phone ribbon draws them too. Values, events and keys unchanged.",
+    "version 1.18.0 (2026-11-20, owner decision C396, WM-4 of the width ladder, feat/field-width; above 1.17.0 on origin/feat/date-day-marks): a minor, setting added. width short | medium | long: the field is at most 20, 28 or 44 characters of the width ladder wide (--sf-field--width-short, -medium, -long on --sf-measure-20, -28, -44: 160 / 224 / 352 px at text 16, 140 / 196 / 308 in compact density and on a phone) and the container's width below that; its root carries sf-field--width-<name>, core's rule (core _sf_css__field_width.scss), so it holds before the field's own sheet comes. The date field draws it on its inner sf-input; the calendar keeps its own width. Without the setting the field draws the same markup as before. Values, events and keys unchanged."
   ],
   "x-registry": {
     "kind": "composite",

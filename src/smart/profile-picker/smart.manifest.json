@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.8.5",
+  "version": "1.9.0",
   "title": "Settings profiles",
   "summary": "Settings profiles: one way to choose, make, rename, remove and reset a named set of settings -- an admin menu's rows, a record's view, a table's columns -- never an account or an organisation. The standard button names the profile in use, and a panel (a bottom sheet on a phone) is where every act happens. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
@@ -476,7 +476,7 @@
       },
       {
         "path": "src/smart/profile-picker/scss/_smart__profile_picker.scss",
-        "sha256": "847b301e5270843f0bdb540a2ff29777769d365a851bace8e1a27017729a1820"
+        "sha256": "ab021aeec85025a785c5832d1c55d7b193714a3e1c1418b0338ccf2c4066be84"
       },
       {
         "path": "src/smart/profile-picker/rule.js",

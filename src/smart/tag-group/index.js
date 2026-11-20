@@ -333,7 +333,7 @@ class SfTagGroup extends GroupElement {
       more.setAttribute('role', 'listitem');
       const popover = doc.createElement('sf-popover');
       popover.setAttribute('placement', 'bottom-start');
-      popover.setAttribute('width', 'var(--sf-g0)');
+      popover.setAttribute('width', 'var(--sf-measure-44)');
       popover.setAttribute('offset', 'var(--sf-space-1\\/4)');
       const trigger = doc.createElement('sf-tag');
       trigger.setAttribute('slot', 'trigger');

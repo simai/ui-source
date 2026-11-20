@@ -371,13 +371,13 @@
 
   /* On a phone a sheet at the bottom of the screen (C32 addendum, as a form of
      sf-menu-context and the link editor of sf-input-rich): the screen's width
-     up to 44rem, centred, the modal shadow over the shared scrim, clear of the
+     up to 96 characters (--sf-measure-96, C396; 44rem before), centred, the modal shadow over the shared scrim, clear of the
      safe area; eight columns of swatches share the width. */
   .sf-color-window[data-sf-sheet] {
     position: fixed;
     inset: auto 0 0;
     inline-size: 100%;
-    max-inline-size: var(--sf-h1);
+    max-inline-size: var(--sf-measure-96);
     max-block-size: calc(100dvh - var(--sf-space-4));
     margin: 0 auto;
     padding: var(--sf-space-1) var(--sf-space-1) calc(var(--sf-space-1) + env(safe-area-inset-bottom, var(--sf-a0)));

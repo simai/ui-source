@@ -166,6 +166,17 @@ const sfDropdownMeta = {
       "default": "1",
       "description": "The step of the field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field as tall as sf-input, sf-button and sf-button-icon of the size (28 / 32 / 40 / 48 / 56 on a desktop), the value on the size's text, the label, help and message a step below, the open list's rows a control of the size."
     },
+    "width": {
+      "kind": "enum",
+      "values": [
+        "",
+        "short",
+        "medium",
+        "long"
+      ],
+      "default": "",
+      "description": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width."
+    },
     "value": {
       "kind": "custom",
       "valueType": "string",

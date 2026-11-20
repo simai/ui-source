@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.input-lookup",
   "tag": "sf-input-lookup",
-  "version": "1.17.5",
+  "version": "1.19.0",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -17,6 +17,17 @@
       ],
       "default": "1",
       "summary": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the padding and the text of the same size; the chips stand on the field's text line, the rows' pictures a rung below."
+    },
+    "width": {
+      "type": "enum",
+      "values": [
+        "",
+        "short",
+        "medium",
+        "long"
+      ],
+      "default": "",
+      "summary": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width."
     },
     "appearance": {
       "type": "enum",
@@ -402,7 +413,9 @@
     "version 1.17.2 (written on the branch as 1.16.2; 2026-11-17, owner decision C268; numbered above 1.16.1 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.17.3 (written on the branch as 1.17.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.17.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
-    "version 1.17.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (l1-max-items l1-remove-chip l3-provider l4-language); the pair before carried the old checks under the same number. No code, setting, word or drawing changes."
+    "version 1.17.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (l1-max-items l1-remove-chip l3-provider l4-language); the pair before carried the old checks under the same number. No code, setting, word or drawing changes.",
+    "version 1.18.0 (2026-11-19, owner decision C396; research ui-control control/research/2026-11-19-text-measure section 8.3; written above every origin branch, 1.17.5 the highest): a minor. A chosen value's chip is never wider than 44 characters, --sf-measure-44, as sf-tag (20rem before). Its list keeps core --sf-popup-list-max-width, now 44 characters (352px at text 16, 320 before). Settings, values, events and keys unchanged.",
+    "version 1.19.0 (2026-11-20, owner decision C396, WM-4 of the width ladder, feat/field-width; above 1.18.0 on origin/feat/width-measure): a minor, setting added. width short | medium | long: the field is at most 20, 28 or 44 characters of the width ladder wide (--sf-field--width-short, -medium, -long on --sf-measure-20, -28, -44: 160 / 224 / 352 px at text 16, 140 / 196 / 308 in compact density and on a phone) and the container's width below that; its root carries sf-field--width-<name>, core's rule (core _sf_css__field_width.scss), so it holds before the field's own sheet comes. Without the setting the field draws the same markup as before. Values, events and keys unchanged."
   ],
   "x-registry": {
     "inputs": {

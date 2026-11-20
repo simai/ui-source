@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-form-width, var(--sf-g8))), 100% - 2 * var(--sf-space-2));
+  inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-form-width, var(--sf-measure-80))), 100% - 2 * var(--sf-space-2));
   max-block-size: calc(100% - 2 * var(--sf-search--inset-block));
   margin-inline: auto;
   overflow: hidden;
@@ -75,7 +75,7 @@
 /* With a host that shows previews the window is the wide step (C175 (5),
    C159 (1)). A public width still wins. */
 .sf-search-window--pane {
-  inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-wide-width, var(--sf-h2))), 100% - 2 * var(--sf-space-2));
+  inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-wide-width, var(--sf-measure-96))), 100% - 2 * var(--sf-space-2));
 }
 
 @media (prefers-reduced-motion: no-preference) {

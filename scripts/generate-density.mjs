@@ -30,12 +30,14 @@
 // blocks), not from a second table: when a ladder step changes, rerun this
 // script; --check fails while the projection is stale.
 //
-// Popup widths (owner decision C32, 2026-11-09): a width tied to text follows
-// the text. The compact width of each --sf-popup-*-width (core/scss/
-// _sf_css__size.scss) is its normal width times the ratio of the compact body
-// text to the normal one (14/16), rounded up to the next step of the size
-// scale (C18), so the common row never clips: 160 -> 144, 288 -> 256,
-// 320 -> 288, 384 -> 352.
+// Widths tied to text (owner decision C396, 2026-11-19, replacing the C32
+// compact table): the width ladder in characters, --sf-measure--char (half the
+// body text size) and the steps --sf-measure-N, follows the text by itself.
+// Its declarations and the popup widths that read its steps (core/scss/
+// _sf_css__size.scss) are declared again in each region, as the role tokens
+// are, so a compact container reads its own text's steps; nothing is computed
+// here any more (before C396 each popup width took normal x 14/16 rounded up
+// to the next step of the size scale).
 //
 // Usage: node scripts/generate-density.mjs [--check] [--print-table]
 import {createHash} from 'node:crypto';
@@ -94,7 +96,18 @@ const DERIVED = [
   // compact region would read the root's step (RT-15). Written by
   // scripts/generate-role-tokens.mjs from src/core/contracts/role-tokens.v1.json.
   ['figma_role_tokens.scss', roleTokenNames()],
+  // The width ladder in characters and its roles (C396), written by
+  // scripts/generate-adaptive-sizing-contract.mjs.
+  ['figma_measure.scss', measureNames()],
 ];
+
+// The names the measure projection declares on :root, in its order.
+function measureNames() {
+  const text = readFileSync(join(root, VARIABLES, 'figma_measure.scss'), 'utf8');
+  const names = [...text.slice(0, text.indexOf('@media')).matchAll(/(--sf-[^:\s]+)\s*:/gu)].map((match) => match[1]);
+  if (!names.length) throw new Error('figma_measure.scss: no root declarations');
+  return names;
+}
 
 // The popup widths, declared on :root in the size tokens.
 const WIDTHS_FILE = 'src/core/scss/_sf_css__size.scss';
@@ -225,20 +238,16 @@ export function textRatio() {
   return compact / normal;
 }
 
-// Each popup width at both densities: the compact one is the first step at or
-// above normal x ratio.
+// Each popup width, declared again in both regions with its own value (a
+// step of the width ladder in characters, C396).
 export function widths() {
   const text = readFileSync(join(root, WIDTHS_FILE), 'utf8');
-  const ratio = textRatio();
   return WIDTHS.map((variable) => {
     const match = new RegExp(`${variable}\\s*:\\s*([^;]+);`, 'u').exec(text);
     if (!match) throw new Error(`${WIDTHS_FILE}: no declaration of ${variable}`);
-    const normal = match[1].trim();
-    const px = stepPx(normal);
-    if (px === null) throw new Error(`${variable}: ${normal} is not a step of the size scale`);
-    const target = px * ratio;
-    const [step] = STEPS.find(([, length]) => length >= target - 1e-9);
-    return {variable, normal, compact: `var(${step})`};
+    const value = match[1].trim();
+    if (!/^var\(--sf-measure-\d+\)$/u.test(value)) throw new Error(`${variable}: ${value} is not a step of the width ladder (C396)`);
+    return {variable, normal: value, compact: value};
   });
 }
 
@@ -274,8 +283,9 @@ export function render() {
  * normal ladder back for an element or a region. Desktop only: below 60rem
  * the phone ladder already is the dense one.
  *
- * The popup widths (C32) follow the text: normal x 14/16, rounded up to the
- * next step of the size scale.
+ * The widths in characters (C396) follow the text: the measure ladder and
+ * the popup widths on its steps are declared again here, with the same
+ * values, so a region reads its own text's steps.
  *
  * Headings do not follow density (C44): the compact block writes the heading
  * sizes with their normal values, so h1-h6 and the titles drawn from the

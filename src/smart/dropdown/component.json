@@ -2,7 +2,7 @@
   "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.dropdown",
   "tag": "sf-dropdown",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "kind": "leaf",
   "family": "dropdown",
   "traits": [
@@ -145,6 +145,17 @@
       ],
       "default": "1",
       "summary": "The step of the field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field as tall as sf-input, sf-button and sf-button-icon of the size (28 / 32 / 40 / 48 / 56 on a desktop), the value on the size's text, the label, help and message a step below, the open list's rows a control of the size."
+    },
+    "width": {
+      "type": "enum",
+      "values": [
+        "",
+        "short",
+        "medium",
+        "long"
+      ],
+      "default": "",
+      "summary": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width."
     }
   },
   "values": {
@@ -499,7 +510,8 @@
     "version 1.20.6 (2026-11-18; numbered above 1.20.5, the highest on any origin branch): a patch, field orders open point 1. The options given as sf-list-item children are taken out of the page when they are read, and their owner's template still writes them (a Lit repeat updates the nodes it made): a page whose language changed redrew the parent, which rewrote each option's text, and the list kept the words it was first drawn with. The taken elements are watched and read again when an attribute changes; the chosen value stays chosen. Settings, values, events and keys unchanged; evidence ui-control control/evidence/2026-11-18-form-fields.",
     "version 1.21.0 (2026-11-18, owner decision C308 FO-4; numbered above 1.20.5 on origin): a minor. An option's color (C302's one data word: a scheme, a hue of the static palette or a hex) draws the option's name as a tonal label in that colour in its row (sf-badge tight, line 1, through helpers/option-badge.js), as a cell, a view, a checklist and segmented buttons draw it. An option without color is unchanged. The same minor (filter field study 2026-11-18): a search that finds nothing says «Ничего не найдено» / \"Nothing found\" under the header (FF-1, word nothing-found); setting list-width field|list (FF-2); in a multiple list the box of a text or icon row stands at the row's end, as on avatar rows (FF-3, C308 (4)).",
     "version 1.22.0 (2026-11-18, Larena LF-2, fix/larena-lf-data; above 1.21.0 on origin/feat/view-orders-fo1-5): a minor. An option given as data is named by label, as sf-input-choice's and sf-input-lookup's options (one option shape, {value, label}); text, the first spelling, is still read until 2027-01-01 and noted once in SF.deprecations (property options, text -> label; journal sf-dropdown-option-text-to-label). A string or a number option is unchanged. The sf-list-item children, their text attribute included, are unchanged. Values, events and keys unchanged.",
-    "version 1.23.0 (2026-11-18, owner decisions C313 (1), C314 (4); Framework orders FF-10, FF-11; numbered above 1.22.0 on origin): a minor. appearance band: the field as a band across its place -- no frame and no radius, the height of a dropping panel's search header (48 at size 1, 44 on a phone) with a hairline under it, the container grey fill (a page tints it with --sf-dropdown-background-color), the text and the chevron's glyph at the open list's row edge (16 / 12); --sf-dropdown-band-edge (public) lets it reach past its place (a phone sheet's inset). list-width trigger: the menu takes the trigger's (the field's) width, in place and portaled. An option's dot (data dot, attribute dot): primary, tertiary, info, success, warning, error or neutral -- sf-dot's 8 px disc before the name (relation dot, lazy). Nothing renamed or retired."
+    "version 1.23.0 (2026-11-18, owner decisions C313 (1), C314 (4); Framework orders FF-10, FF-11; numbered above 1.22.0 on origin): a minor. appearance band: the field as a band across its place -- no frame and no radius, the height of a dropping panel's search header (48 at size 1, 44 on a phone) with a hairline under it, the container grey fill (a page tints it with --sf-dropdown-background-color), the text and the chevron's glyph at the open list's row edge (16 / 12); --sf-dropdown-band-edge (public) lets it reach past its place (a phone sheet's inset). list-width trigger: the menu takes the trigger's (the field's) width, in place and portaled. An option's dot (data dot, attribute dot): primary, tertiary, info, success, warning, error or neutral -- sf-dot's 8 px disc before the name (relation dot, lazy). Nothing renamed or retired.",
+    "version 1.24.0 (2026-11-20, owner decision C396, WM-4 of the width ladder, feat/field-width; above 1.23.0 on origin/feat/filter-window-top): a minor, setting added. width short | medium | long: the field is at most 20, 28 or 44 characters of the width ladder wide (--sf-field--width-short, -medium, -long on --sf-measure-20, -28, -44: 160 / 224 / 352 px at text 16, 140 / 196 / 308 in compact density and on a phone) and the container's width below that; its root carries sf-field--width-<name>, core's rule (core _sf_css__field_width.scss), so it holds before the field's own sheet comes. Without the setting the field draws the same markup as before. Values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [

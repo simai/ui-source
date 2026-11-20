@@ -87,7 +87,7 @@ test('the panel is not the action menu: a dialog popup or a group, its own closi
   // The one sheet (owner decision C157 (5)): drawn from the core sheet mixin.
   assert.match(css, /\.sf-settings-panel\[data-sf-sheet\] \{[^}]*@include sheet\.sheet-surface;/su);
   const mixin = readFileSync(new URL('../src/core/scss/mix/_mix__sheet.scss', import.meta.url), 'utf8');
-  assert.match(mixin, /@mixin sheet-surface \{[^}]*position: fixed;[^}]*max-inline-size: var\(--sf-h1\);/su);
+  assert.match(mixin, /@mixin sheet-surface \{[^}]*position: fixed;[^}]*max-inline-size: var\(--sf-measure-96\);/su); // C396: 96 characters (44rem before)
 });
 
 test('a list is one Tab stop with the arrows inside; Alt+arrows move a row and say its place (DP-4, C106 (6))', () => {
@@ -173,7 +173,7 @@ test('C166 follow-up, C144: the footer labels stay on one line; the buttons grow
   assert.doesNotMatch(share, /flex: 1 1 0;/u);
   assert.match(css, /\.sf-settings-panel-footer \.sf-button-text-container \{\s*white-space: nowrap;\s*\}/u);
   const component = JSON.parse(read('src/smart/settings/component.json'));
-  assert.equal(component.version, '1.9.1'); // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch
+  assert.equal(component.version, '1.10.0'); // C396: moved on by the width ladder in characters // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch
 });
 
 // The SIMAI Framework order of the sf-view-table move (C106; ui-control

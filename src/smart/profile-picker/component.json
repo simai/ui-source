@@ -2,7 +2,7 @@
   "$comment": "The source of sf-profile-picker's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/profile-picker (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.profile-picker",
   "tag": "sf-profile-picker",
-  "version": "1.8.5",
+  "version": "1.9.0",
   "kind": "leaf",
   "family": "profile",
   "settings": {
@@ -342,7 +342,8 @@
     "version 1.8.2 (written on the branch as 1.7.8; 2026-11-17, owner decision C268; numbered above 1.7.7 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.8.3 (written on the branch as 1.8.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.8.4 (2026-11-18, owner decision C311 (5), group build 13 A2): a patch, words only. The reset button at the foot says «Вернуть как у всех» (en «Back to everyone's view»; every shipped pack, machine draft outside ru and en) for «Сбросить к стандартному»: the person's own layer goes back to what everyone sees. Settings, events and drawing unchanged.",
-    "version 1.8.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (p5-escape regular); the pair before carried the old checks under the same number. No code, setting, word or drawing changes."
+    "version 1.8.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (p5-escape regular); the pair before carried the old checks under the same number. No code, setting, word or drawing changes.",
+    "version 1.9.0 (2026-11-19, owner decision C396; research ui-control control/research/2026-11-19-text-measure section 8.3; written above every origin branch, 1.8.5 the highest): a minor. The phone sheet stops at --sf-measure-96 (44rem before); the panel is core --sf-popup-panel-width, now 44 characters (352px at text 16, 320 before). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

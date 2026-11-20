@@ -470,8 +470,9 @@
     /* The window less its edges: 100% of the fixed area's containing block
        (the viewport without a classic scrollbar), not 100vw, which counts
        the scrollbar and pushed the area 2 px past the left edge at 390
-       (RG-TS-2). */
-    inline-size: min(var(--sf-g4), calc(100% - 2 * var(--sf-space-1)));
+       (RG-TS-2). The area is 52 characters wide (--sf-measure-52, owner
+       decision C396; 28rem before), following the text. */
+    inline-size: min(var(--sf-measure-52), calc(100% - 2 * var(--sf-space-1)));
     max-block-size: calc(100vh - 2 * var(--sf-space-1));
     pointer-events: none;
     z-index: var(--sf-layer--message);

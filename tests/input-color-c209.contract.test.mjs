@@ -33,7 +33,7 @@ const own = template.slice(template.indexOf('function renderOwn'));
 
 test('the version and the new relations', () => {
   const manifest = json(`${base}/component.json`);
-  assert.equal(manifest.version, '1.19.6'); // 1.17.1: the ratio by Intl, no decimal word (C177 follow-up #86) // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch // C282: 1.18.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.19.2 moved on by the merged branches or a GB10 patch // group build 13: 1.19.4 moved on by the merged branches or the C278 language patch // group build 14: 1.19.5 moved on by the merged branches or the C278 language patch
+  assert.equal(manifest.version, '1.20.0'); // C396: moved on by the width ladder in characters // 1.17.1: the ratio by Intl, no decimal word (C177 follow-up #86) // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch // C282: 1.18.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.19.2 moved on by the merged branches or a GB10 patch // group build 13: 1.19.4 moved on by the merged branches or the C278 language patch
   for (const name of ['cl-button', 'cl-button-copy']) {
     assert.ok(manifest.relations.some((relation) => relation.name === name && relation.lazy), `${name}, lazy`);
   }

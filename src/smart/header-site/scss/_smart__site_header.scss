@@ -327,9 +327,10 @@
      product sets it, else the window. Zero below the first step. */
   --sf-site-header--centring: calc(var(--sf-px) * 0);
   /* The open panel's width, read by the panel and by its head: the side
-     panel's step 1/2, 20rem (owner decision C157 (2): the three steps 20 ·
-     24 · 30rem, and 22rem moves to a step; it was --sf-g1, 22rem). */
-  --sf-site-header--sheet-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g0)));
+     panel's step 1/2 (owner decision C157 (2)), since owner decision C396
+     44 characters (--sf-measure-44, 352px at text 16; 20rem before, and
+     --sf-g1, 22rem, before C157). */
+  --sf-site-header--sheet-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-measure-44)));
   /* The bar collapses at a step of its own width (C181 (2), C104): it is the
      container its parts query, so a bar narrower than the window -- a
      column, a card, an example frame -- collapses as its nav and actions run

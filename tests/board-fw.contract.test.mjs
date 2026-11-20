@@ -77,6 +77,7 @@ test('sf-sortable in a picture adds no live region and takes no keys until it is
     const component = JSON.parse(read(`src/smart/${name}/component.json`));
     // group build 14: a later note (the manifest probe patch) may follow it
     assert.ok(component['x-decisions'].some((note) => /fix\/board-fw/u.test(note)), `${name} notes the plain host`);
+    assert.ok(component['x-decisions'].some((note) => /fix\/board-fw/u.test(note)), `${name} notes the plain host`); // C396: a later note (editor-inline 1.13.0)
   }
   assert.equal(JSON.parse(read('src/smart/sortable/component.json')).version, '1.7.3'); // group build 13: 1.7.2 moved on by the merged branches or a GB11 merge
 });

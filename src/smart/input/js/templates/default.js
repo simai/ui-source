@@ -1,6 +1,7 @@
 import { html, nothing } from 'lit';
 import { renderFieldHelp } from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
+import { fieldWidthClass } from '../../../../component/field-size';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 import { ariaKeyShortcuts, parseShortcut, shortcutView } from '../../../../component/kbd/js/shortcut';
 import './default.css'
@@ -158,6 +159,9 @@ export function renderInputTemplate(context) {
       rootClass,
     'flex',
     'flex-col',
+    // The field's width (C396, WM-4): its class only when it has one, so a
+    // field without the setting draws the same markup as before.
+    ...[fieldWidthClass(context.width)].filter(Boolean),
   ];
 
   if(type === 'hidden') {

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.typography",
   "kind": "tokens",
-  "version": "1.8.8",
+  "version": "1.8.9",
   "owner": "simai/ui-source",
   "summary": "Text sizes, line heights, the typography roles and styles, and links.",
   "includes": [
@@ -28,7 +28,7 @@
     "src/core/scss/mix/_mix__card_title.scss",
     "src/core/scss/vars/_sf_var__link.scss"
   ],
-  "content_sha256": "9d8acaf1e9a6429f3f5b6cde967b8466f004c03eec7dcf5356f186c8dd702296",
+  "content_sha256": "211001e6b418a722f926b635c07bece7b38a55f85f0faf24941c4aaf74e75428",
   "dependencies": [
     {
       "id": "font.inter",
@@ -69,10 +69,6 @@
     },
     {
       "id": "utility.line-height",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "utility.text-max-width",
       "range": "^1.0.0"
     }
   ]

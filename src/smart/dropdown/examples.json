@@ -167,6 +167,18 @@
       "expect": {
         "value": ""
       }
+    },
+    {
+      "name": "width",
+      "title": "Среднее поле",
+      "settings": {
+        "label": "Город",
+        "placeholder": "Выберите город",
+        "width": "medium"
+      },
+      "expect": {
+        "width": "medium"
+      }
     }
   ],
   "pages": [

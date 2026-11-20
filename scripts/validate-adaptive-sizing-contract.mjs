@@ -3,6 +3,7 @@ import fs from "node:fs";
 import {
     computedControlHeights,
     contract,
+    measurePx,
     contractSha256,
     primitiveValues,
     repositoryPath,
@@ -83,6 +84,8 @@ process.stdout.write(`${JSON.stringify({
     typography_line_height_roles:
         Object.keys(contract.typography.lineHeights).length,
     spacing_roles: Object.keys(contract.spacing).length,
+    measure_steps: contract.measure.steps,
+    measure_desktop_px: measurePx(contract.measure.steps),
     control_sizes: Object.keys(contract.controls.sizeRoles).length,
     tightness_modes: Object.keys(contract.controls.tightness).length,
     default_control_heights_px: {

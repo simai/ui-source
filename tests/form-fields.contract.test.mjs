@@ -53,6 +53,11 @@ test('a link\'s address box is text with the address keyboard: a path and an anc
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
   assert.equal(json('src/smart/dropdown/component.json').version, '1.23.0'); // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 14: 1.22.0 moved on by the merged branches or the C278 language patch
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.27.0'); // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+});
+
+test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.24.0'); // C396 WM-4: the width setting // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge
   const source = read('src/smart/dropdown/index.js');
   assert.match(source, /this\.watchOptionNodes\(optionNodes\);/u);
   assert.match(source, /this\._optionWatch\.observe\(node, \{attributes: true\}\);/u);

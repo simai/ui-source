@@ -40,7 +40,8 @@ test('drawer r-077 (1): the close is first outside and last in the head (C14)', 
 });
 
 test('drawer r-077 (2): a width off the ladder is drawn and said once, naming the steps', () => {
-  assert.match(source, /const LADDER_WIDTHS = \[\['1\/2', 'var\(--sf-g0\)', '20rem'\], \['1', 'var\(--sf-g2\)', '24rem'\], \['2', 'var\(--sf-g5\)', '30rem'\]\];/u);
+  // C396 (2026-11-19): the steps are widths in characters, 44 · 52 · 64 (20 · 24 · 30rem before).
+  assert.match(source, /const LADDER_WIDTHS = \[\['1\/2', 'var\(--sf-measure-44\)', '44 characters'\], \['1', 'var\(--sf-measure-52\)', '52 characters'\], \['2', 'var\(--sf-measure-64\)', '64 characters'\]\];/u);
   assert.match(source, /const OFF_LADDER_UNTIL = '2027-01-01';/u);
   assert.match(source, /if \(!width \|\| this\._offLadderWidth === width/u);
   assert.match(source, /measure\('100vi'\)/u);
@@ -68,7 +69,7 @@ test('drawer r-077 (3): content headings start below the panel title, by role to
 
 test('drawer r-077: the version and its migration step', () => {
   // 1.16.0 or a later patch (1.16.1: owner decision C205, docs and gates only).
-  assert.match(manifest.version, /^1\.1[678]\.\d+$/u); // C282: moved on by the language-file patch (Russian is a language file)
+  assert.match(manifest.version, /^1\.(?:1[6-9]|2\d)\.\d+$/u); // C282: moved on by the language-file patch (Russian is a language file); C396: 1.19.0
   const steps = JSON.stringify(manifest);
   assert.match(steps, /"from":"1\.15\.0","to":"1\.16\.0"/u);
 });

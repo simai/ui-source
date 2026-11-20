@@ -72,6 +72,17 @@
       "expect": {
         "name": "Телефон для связи"
       }
+    },
+    {
+      "name": "width",
+      "title": "Среднее поле",
+      "settings": {
+        "label": "Телефон",
+        "width": "medium"
+      },
+      "expect": {
+        "width": "medium"
+      }
     }
   ],
   "pages": [

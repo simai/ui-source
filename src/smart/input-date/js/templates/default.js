@@ -1,5 +1,6 @@
 import {html, nothing} from 'lit';
 import {ref} from 'lit/directives/ref.js';
+import {fieldWidth} from '../../../../component/field-size';
 
 function joinClasses(...tokens) {
     return tokens.flat().filter(Boolean).join(' ');
@@ -116,6 +117,7 @@ function renderDatepickerInput(context) {
             aria-label=${context.label ? nothing : (context.ariaLabel || nothing)}
             placeholder=${context.placeholder || nothing} icon-start=${context.iconStart || nothing}
             root-class=${context.inputRootClass || nothing} value=${context.displayValue || ''}
+            width=${fieldWidth(context.width) || nothing}
             ?disabled=${context.disabled} ?required=${context.required} ?invalid=${context.invalid}
             error-message=${context.errorMessage || nothing}
             hint=${context.hint || nothing}

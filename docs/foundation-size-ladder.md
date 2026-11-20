@@ -44,6 +44,13 @@ drift apart.
     (C89).
 11. A spinner fits the icon field of its step, not the square: inside a 24 icon
     the ring is 20 (C11).
+12. A width that holds text is a step of the width ladder in characters,
+    `--sf-measure-20`, `-28`, `-36`, `-44`, `-52`, `-64`, `-80`, `-96`: one
+    character is half the body text size (`--sf-measure--char`), a step N of
+    them. At text 16 every step is a point of the base ladder; compact density,
+    a phone and the browser's font size move it with the text, so a line keeps
+    its characters. A role takes the nearest step, a tie the wider one; no text
+    container's width reads `--sf-g*` or `--sf-h*` (C396).
 
 ## Numbers
 
@@ -103,6 +110,39 @@ formula and the multi-line rows are in
 §2 and §4; density in detail in
 [foundation-control-spacing.md](foundation-control-spacing.md).
 
+## Widths in characters
+
+The ladder of rule 12 (C396; contract `measure` in
+`src/core/contracts/adaptive-sizing.v1.json`, projected to
+`src/core/figma_variables/figma_measure.scss`). The width is the container's
+outer width; the container subtracts its own insets. Utilities:
+`w-measure-N`, `max-w-measure-N`, `min-w-measure-N`.
+
+| Step | Growth | Text 16 | Compact, phone (14) | Browser 125 % (20) | Base ladder point at 16 | What it is for |
+| --- | --- | --- | --- | --- | --- | --- |
+| `--sf-measure-20` | — | 160 | 140 | 200 | f0 | a menu's narrowest; a short value (date, number, code) |
+| `--sf-measure-28` | +8 | 224 | 196 | 280 | f4 | a medium value (name, phone) |
+| `--sf-measure-36` | +8 | 288 | 252 | 360 | f8 | a menu's widest |
+| `--sf-measure-44` | +8 | 352 | 308 | 440 | g1 | a popup list, panel or form; a tooltip, a help, a tag; drawer 1/2; a long value (path, e-mail, address) |
+| `--sf-measure-52` | +8 | 416 | 364 | 520 | g3 | a wide popup form; a question window; the notification area; drawer 1 |
+| `--sf-measure-64` | +12 | 512 | 448 | 640 | g6 | drawer 2; a greeting in a chat |
+| `--sf-measure-80` | +16 | 640 | 560 | 800 | h0 | a form window; a reading column (`measure`) |
+| `--sf-measure-96` | +16 | 768 | 672 | 960 | h2 | a wide window; a bottom sheet's widest; a wide reading column |
+
+Roles on the steps: `--sf-popup-menu-min-width` 20, `--sf-popup-menu-max-width`
+36, `--sf-popup-list-max-width`, `--sf-popup-panel-width`,
+`--sf-popup-form-width` 44, `--sf-popup-form-wide-width` and
+`--sf-popup-question-width` 52, `--sf-popup--window-form-width` 80,
+`--sf-popup--window-wide-width` 96; the field widths
+`--sf-field--width-short` 20, `-medium` 28, `-long` 44, which a field reads
+through its `width="short | medium | long"` setting (sf-input, sf-input-quantity,
+sf-input-date, sf-dropdown, sf-input-lookup, sf-input-textarea,
+sf-input-country; core class `sf-field--width-<name>`) and the field renderers
+through the template parameter `templateParams.width` (WM-4). The former reading
+measures `--sf-text--measure`, `-wide`, `-narrow` (65, 80, 45ch) are aliases of
+80, 96 and 52 until 2027-01-01; they are contract roles too, so a density
+region redeclares them with the steps.
+
 ## Known gaps
 
 - C27 `height="low"` at size 1/3 sums to 20 on a phone (16 + 2 × 2), under the
@@ -120,6 +160,10 @@ formula and the multi-line rows are in
   with the ladder files (C22, C27, C44, C79).
 - `tests/adaptive-sizing-contract.test.mjs`: the vertical sizing contract
   (C27).
+- `tests/measure-c396.contract.test.mjs`: the width ladder in characters, its
+  roles and the grep gate on text containers (C396);
+  `tests/browser/measure-c396.browser.mjs`: the characters per line at text 16,
+  14 and 20 on the built bytes.
 - `tests/button-height.contract.test.mjs`, `tests/field-sizes.contract.test.mjs`:
   one height per size (C01).
 - `tests/title-line-height.contract.test.mjs`: the card title line (C89).

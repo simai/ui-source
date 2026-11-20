@@ -2,8 +2,8 @@
 // control/research/2026-11-14-drawer.md #q-sheet): sf-drawer
 // placement="bottom" is the sheet, and every phone sheet -- the forms of
 // sf-menu-context, sf-settings' panel, sf-popover's form, sf-modal's window
-// on a phone -- draws the same one from here: the screen's width up to 44rem
-// (--sf-h1, C32), centred, the top corners rounded, a grab bar in a handle
+// on a phone -- draws the same one from here: the screen's width up to 96
+// characters (--sf-measure-96, C396; 44rem, --sf-h1, before; C32), centred, the top corners rounded, a grab bar in a handle
 // row half a control tall, the modal shadow, clear of the home indicator. A
 // swipe down closes it (core/js/sheet-swipe.js). There were six sheets with
 // different grab bars (24 x 4 on-surface-variant, 16 x 4 on a phone, 20 x 4
@@ -24,7 +24,7 @@
   position: fixed;
   inset: auto 0 0;
   inline-size: 100%;
-  max-inline-size: var(--sf-h1);
+  max-inline-size: var(--sf-measure-96);
   max-block-size: calc(100dvh - var(--sf-space-4));
   margin-inline: auto;
   margin-block-end: 0;

@@ -4,7 +4,6 @@
 // TYPOGRAPHY CSS
 @use '../../utility/line-height/default/scss/sf_var__line_height' as lineHeightVars;
 @use '../../utility/letter-spacing/default/scss/sf_var__letter_spacing' as letterSpacingVars;
-@use '../../utility/text-max-width/default/scss/sf_var__text_measure' as textMeasureVars;
 @use 'mix/mix__breakpoint' as mq;
 @use 'mix/mix__card_title' as card-title;
 @use '../figma_variables/figma_input_floating_the_others.scss';
@@ -208,10 +207,10 @@
       --sf-text--tracking-#{$tracking-name}: #{$tracking-value};
     }
 
-    // Text measure utilities variables
-    @each $measure-name, $measure-value in textMeasureVars.$text-measure-array {
-      --sf-text--measure#{$measure-name}: #{$measure-value};
-    }
+    // Text measures --sf-text--measure, -wide, -narrow: since C396 aliases of the
+    // width ladder steps 80 / 96 / 52 until 2027-01-01, declared with the ladder in
+    // figma_measure.scss (adaptive-sizing contract, measure.roles) so density regions
+    // redeclare them.
 
   }
 

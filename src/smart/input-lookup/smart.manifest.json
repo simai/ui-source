@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-lookup",
-  "version": "1.17.5",
+  "version": "1.19.0",
   "title": "Lookup",
   "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
   "kind": "smart",
@@ -76,6 +76,17 @@
           "1",
           "2",
           "3"
+        ]
+      },
+      "width": {
+        "type": "string",
+        "default": "",
+        "description": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width.",
+        "enum": [
+          "",
+          "short",
+          "medium",
+          "long"
         ]
       },
       "appearance": {
@@ -475,7 +486,7 @@
       },
       {
         "path": "src/smart/input-lookup/js/templates/default.js",
-        "sha256": "8486fdfba8329b3a8d0d8c11fb8be05c13c2e449e31b944f3cd452ff9da4b1b0"
+        "sha256": "f706a696e520160e4bd36558d6abd881a63fed50255011ac03f2e1a2076aa7c7"
       },
       {
         "path": "src/smart/input-lookup/js/lookup-model.mjs",
@@ -483,7 +494,7 @@
       },
       {
         "path": "src/smart/input-lookup/scss/_smart__lookup.scss",
-        "sha256": "d58bb40ff1a8184a7e6b31cc6167bda36db570c7b4401a39550e89a7fe827c38"
+        "sha256": "391553941acba62aba8d8e289e1296dc1478449f323310d876b0acb3b53d7367"
       },
       {
         "path": "src/smart/input-lookup/rule.js",
@@ -491,7 +502,7 @@
       },
       {
         "path": "src/smart/input-lookup/docs.md",
-        "sha256": "e3d74ed2a33cd0d65633ca603e5ca639b0c6417576d2df8e3fe1445cfbbde429"
+        "sha256": "673d715d171428092b7ed7af3375e90f5a0f877a692de46b9e7ad3bbf43e7929"
       }
     ],
     "generated_runtime": []

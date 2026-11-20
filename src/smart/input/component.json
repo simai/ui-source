@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/input (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how. The folder was `inputs`; it takes the tag's name (§3, §21, §16 item 16).",
   "id": "smart.input",
   "tag": "sf-input",
-  "version": "1.16.1",
+  "version": "1.17.0",
   "kind": "leaf",
   "family": "input",
   "traits": [
@@ -20,6 +20,17 @@
       ],
       "default": "1",
       "summary": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input and every field of the family (lookup, quantity, date, code, colour, phone, textarea, rich text, dropdown, file upload, image) stand on all five steps."
+    },
+    "width": {
+      "type": "enum",
+      "values": [
+        "",
+        "short",
+        "medium",
+        "long"
+      ],
+      "default": "",
+      "summary": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width."
     },
     "radius": {
       "type": "enum",
@@ -479,7 +490,8 @@
     "version 1.15.2 (written on the branch as 1.15.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.15.3 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
     "version 1.16.0 (2026-11-18, owner decision C313 (4); Framework order FF-12; numbered above 1.15.3 on origin): a minor. appearance plain: the field with no frame, no fill and no radius, its text at its own edge; under the focus its foot turns primary in place of the ring, as a dropping panel's search header line; an error keeps it in the error colour. The text insets of the bordered and filled looks are unchanged (measured equal to sf-dropdown's: 16 at size 1, 12 at 1/2 and on a phone). Nothing renamed or retired.",
-    "version 1.16.1 (2026-11-19; numbered above 1.16.0 on the origin branches; DEV order msg-cfe379b5d6aa492c8ba6 item 3; component.inputs 1.14.1): a patch, a look. On a touch screen the password eye's hit square (C191 (2)) stood out past its glyph by more than the field counted, so the value ended 12 before the eye at size 2 and 10 at size 1 on a phone instead of half an inset, 6 (C123 (4); the spacing gate on the sign-in showcase). The field layer gives the extra back on the eye's start side; the square keeps its width and overlaps the value's padding, a clear beside it stands half an inset from it. A mouse screen draws as before. Settings, values, events and keys unchanged."
+    "version 1.16.1 (2026-11-19; numbered above 1.16.0 on the origin branches; DEV order msg-cfe379b5d6aa492c8ba6 item 3; component.inputs 1.14.1): a patch, a look. On a touch screen the password eye's hit square (C191 (2)) stood out past its glyph by more than the field counted, so the value ended 12 before the eye at size 2 and 10 at size 1 on a phone instead of half an inset, 6 (C123 (4); the spacing gate on the sign-in showcase). The field layer gives the extra back on the eye's start side; the square keeps its width and overlaps the value's padding, a clear beside it stands half an inset from it. A mouse screen draws as before. Settings, values, events and keys unchanged.",
+    "version 1.17.0 (2026-11-20, owner decision C396, WM-4 of the width ladder, feat/field-width; above 1.16.1 on origin/feat/signin-parts): a minor, setting added. width short | medium | long: the field is at most 20, 28 or 44 characters of the width ladder wide (--sf-field--width-short, -medium, -long on --sf-measure-20, -28, -44: 160 / 224 / 352 px at text 16, 140 / 196 / 308 in compact density and on a phone) and the container's width below that; its root carries sf-field--width-<name>, core's rule (core _sf_css__field_width.scss), so it holds before the field's own sheet comes. Without the setting the field draws the same markup as before. Values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment-after": [

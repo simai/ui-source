@@ -2352,7 +2352,7 @@
           "name": "--sf-help-mark-max-width",
           "role": "max-inline-size",
           "summary": "The explanation's widest line, never wider than the viewport.",
-          "default": "var(--sf-g0)",
+          "default": "var(--sf-measure-44)",
           "since": "2026-10-27"
         },
         {
@@ -3201,7 +3201,7 @@
           "name": "--sf-site-header-sheet-inline-size",
           "role": "inline-size",
           "summary": "The open side panel's width.",
-          "default": "min(90vw, var(--sf-g0))",
+          "default": "min(90vw, var(--sf-measure-44))",
           "state": "open",
           "since": "2026-10-28"
         },
@@ -3222,7 +3222,7 @@
           "name": "--sf-search-inline-size",
           "role": "inline-size",
           "summary": "The window's width on a wide screen; a phone shows a full-screen sheet.",
-          "default": "var(--sf-g8)",
+          "default": "var(--sf-measure-80)",
           "state": "open",
           "since": "2026-10-30"
         },

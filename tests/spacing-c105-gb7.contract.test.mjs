@@ -38,7 +38,7 @@ test('(2) the colour frame spaces its value and its glyphs by C123, not by the i
   // 1.13.0: without an action the value -> chevron step is half the inset too
   // (C123 (3), (6)), no longer H5's --sf-space-1/3.
   assert.match(frame, /gap: calc\(var\(--sf-color--space-x\) \/ 2\);/u);
-  assert.equal(json('src/smart/input-color/component.json').version, '1.19.6'); // C209 (fix/input-color-c209), above group build 7's 1.14.0 // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch // C282: 1.18.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.19.2 moved on by the merged branches or a GB10 patch // group build 13: 1.19.4 moved on by the merged branches or the C278 language patch // group build 14: 1.19.5 moved on by the merged branches or the C278 language patch
+  assert.equal(json('src/smart/input-color/component.json').version, '1.20.0'); // C396: moved on by the width ladder in characters // C209 (fix/input-color-c209), above group build 7's 1.14.0 // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch // C282: 1.18.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.19.2 moved on by the merged branches or a GB10 patch // group build 13: 1.19.4 moved on by the merged branches or the C278 language patch
 });
 
 test('(3) the brand clear has words of its own; the field keeps the inherited ones', () => {
