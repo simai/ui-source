@@ -267,6 +267,13 @@ class SfTag extends TagElement {
     return super.size;
   }
 
+  // The height drawn: height, else the former spacing's step until
+  // 2027-01-01 (tagHeight), so the property says what the template draws
+  // (template-context probe). The base puts its setter back beside it.
+  get height() {
+    return tagHeight(this);
+  }
+
   // In a table cell or beside other text the tag takes the text line of a form
   // size, so the row keeps its control height.
   get line() {
