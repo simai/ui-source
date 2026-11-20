@@ -2594,6 +2594,7 @@
         "uses": [
           "component.avatars",
           "component.progress-ring",
+          "component.tooltip",
           "smart.avatar"
         ]
       },
@@ -2606,7 +2607,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "20566264919e834ca138dad780e2ed509adb2b623d3e22a87ee600d736302c73",
+      "manifest_sha256": "209494e210a811f5827257a2a150a0a02dcee704daeee2b646eeade0ccab0762",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

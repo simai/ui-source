@@ -6,8 +6,11 @@ const SIZES = ['1/4', '1/3', '1/2', '1', '2', '3'];
 // No status (empty) is the theme's primary and carries no class; neutral is
 // grey (C131 (1)).
 const STATUSES = ['neutral', 'info', 'success', 'warning', 'error'];
-// Below size 1 the box leaves no room for a percentage on the text ladder.
-const TEXTLESS = new Set(['1/4', '1/3', '1/2']);
+// Up to size 1 the middle holds no percentage (DEV look answer 2026-11-20,
+// msg-1c3a4f0b: below 1 the letters fall off the text ladder; at 1 «100%» ran
+// 1-3 px past the 32 px middle and a smaller step would fall off it too). The
+// value stays in the ring's name and in its tooltip; text from size 2 up.
+const TEXTLESS = new Set(['1/4', '1/3', '1/2', '1']);
 
 // A number from 0 to 100; anything else reads 0.
 export function normalizeValue(value) {
@@ -49,6 +52,14 @@ export function renderProgressRingTemplate(context) {
   // (aria-valuetext below), as every other place does.
   const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? ringPercent(percentText(value, context.component ?? null)) : '';
   const content = context.content && context.content !== nothing ? context.content : null;
+  // Where the percentage asked for has no room (show-text up to size 1), it is
+  // the ring's tooltip: the Framework's tooltip composition (component.tooltip),
+  // the root its trigger (the ring line takes no pointer), a dark tooltip of
+  // size 1/3 the controller shows on hover and hides on Escape and a press; the
+  // text is the spoken one, «100 %». A ring with content or an unknown value
+  // has none.
+  const tip = on(context.showText) && !unknown && !content && TEXTLESS.has(size) && context.tipId
+    ? percentText(value, context.component ?? null) : '';
   // A ring around a picture is about something of the person's own -- a
   // profile filled in, a photo being sent (owner decision C191 (4)). At 100 %
   // nothing is left to do, so the ring goes away (C191 (7) #q-ar-done): no
@@ -67,7 +78,8 @@ export function renderProgressRingTemplate(context) {
   const style = [`--sf-progress-ring--value: ${unknown ? 0 : value}`, context.rootStyle].filter(Boolean).join('; ');
 
   return html`
-    <div class=${rootClasses} style=${style} data-value=${String(value)} data-status=${status}>
+    <div class=${rootClasses} style=${style} data-value=${String(value)} data-status=${status}
+      data-tooltip=${tip ? context.tipId : nothing}>
       ${done ? nothing : html`<span
         class="sf-progress-ring-indicator"
         role=${role}
@@ -82,6 +94,8 @@ export function renderProgressRingTemplate(context) {
         : text
           ? html`<span class="sf-progress-ring-content" aria-hidden="true">${text}</span>`
           : nothing}
+      ${tip ? html`<span class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-progress-ring-tooltip" id=${context.tipId}
+        hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${tip}</span></span></span>` : nothing}
     </div>
   `;
 }

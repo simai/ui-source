@@ -44,6 +44,9 @@ export function showChunk(element, done, total) {
 // more serious of the page's status and the threshold the value reached. The
 // thresholds are the page's, in per cent like the value; unset is none.
 const RANK = { warning: 1, error: 2 };
+
+// The tooltips' ids, one per element on the page (stable across renders).
+let tipSequence = 0;
 export function drawnStatus(status, value, warningAt, errorAt) {
   const number = Number(value);
   let reached = '';
@@ -124,14 +127,27 @@ class SfProgressRing extends ProgressRingElement {
     globalThis.console?.warn?.(`[SIMAI Framework] sf-progress-ring${this.id ? ` #${this.id}` : ''}: an sf-avatar inside the ring beside other content is drawn beside the ring, not in it. Give the sf-avatar slot="content" (decision C152 (8)).`);
   }
 
+  // The tooltip's id, one per element on the page (stable across renders),
+  // asked for only where the ring shows its value as a tooltip (show-text up to
+  // size 1, DEV msg-1c3a4f0b); the tooltip relation is lazy.
+  tooltipId(props) {
+    const shown = props.showText === true || props.showText === '' || props.showText === 'true';
+    if (!shown || !['1/4', '1/3', '1/2', '1'].includes(String(props.size ?? '1')) || this.hasSlotContent?.('content')) return '';
+    if (!this._tipId) this._tipId = this.id ? `${this.id}--tooltip` : `sf-progress-ring-tip-${++tipSequence}`;
+    globalThis.SF?.Loader?.ensurePlugin?.('tooltip');
+    return this._tipId;
+  }
+
   templateContext() {
     this.noteUnslottedAvatar();
     const status = this.drawnStatus;
     this.sfHostState('data-status', status);
+    const props = this.getPropsContext();
     return this.createTemplateContext({
-      ...this.getPropsContext(),
+      ...props,
       drawnStatus: status,
       label: this.accessibleLabel,
+      tipId: this.tooltipId(props),
       content: this.hasSlotContent?.('content') ? this.getSlotContent('content') : null,
       rootClass: this.getRootClass(),
       component: this,

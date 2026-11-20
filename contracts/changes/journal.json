@@ -18737,6 +18737,32 @@
       "manual": "Nothing to rewrite in markup: sf-icon's grade and optical-size attributes and the --sf-icon--grade / --sf-icon--optical-size variables are unchanged. A host that builds its own subset URL asks with grad and opsz.",
       "owner": "ui-source",
       "source": "ui-control control/evidence/2026-11-19-icons-axes; simai/ui-icons feat/variable-opsz-grad"
+    },
+    {
+      "id": "behaviour-progress-ring-size-1-no-text",
+      "recorded_on": "2026-11-20",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-progress-ring 1.7.0 and the class ring 1.7.0 (DEV look answer 2026-11-20, msg-1c3a4f0b): a ring of size 1 draws no text inside. show-text writes the percentage from size 2 up; up to size 1 sf-progress-ring shows the value as its tooltip («62 %», a dark tooltip of size 1/3 on hover) and keeps it in aria-valuenow and aria-valuetext; the class ring hides an aria-hidden percentage at size 1 as below it. A visible change: a size 1 ring with show-text loses its middle text.",
+      "items": [
+        {
+          "component": "sf-progress-ring",
+          "attribute": "show-text",
+          "from": "size 1: the percentage in the middle",
+          "to": "size 1: the value as the ring's tooltip; text from size 2 up"
+        },
+        {
+          "component": "component.progress-ring",
+          "from": ".sf-progress-ring--size-1 .sf-progress-ring-content[aria-hidden] drawn",
+          "to": "hidden, as below size 1"
+        }
+      ],
+      "deprecated_on": "2026-11-20",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Where a ring must show its number, give it size=\"2\" or larger (class form sf-progress-ring--size-2); a size 1 ring says it in its tooltip and its name.",
+      "owner": "ui-source",
+      "source": "src/smart/progress-ring/js/templates/default.js; src/component/progress-ring/scss/_css__progress_ring.scss"
     }
   ]
 }

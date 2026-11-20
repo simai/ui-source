@@ -6,6 +6,7 @@
       "settings": {
         "label": "Загрузка файлов",
         "value": 62,
+        "size": "2",
         "show-text": true
       },
       "expect": {
@@ -18,6 +19,7 @@
         "props": {
           "label": "Загрузка файлов",
           "value": "62",
+          "size": "2",
           "show-text": true
         },
         "scenario": {
@@ -196,11 +198,11 @@
       "checks": [
         {
           "id": "r1-role-and-value",
-          "title": "the ring is a progressbar named by label, its valuenow the value; the percentage is shown and hidden from the reader",
+          "title": "the ring is a progressbar named by label, its valuenow the value; at size 1 no percentage inside (DEV msg-1c3a4f0b): the value is the ring's tooltip, «62 %»",
           "covers": "accessibility (role, name, valuenow), settings.value, settings.show-text",
           "steps": [
             {
-              "check": "(() => { const r = document.querySelector('#r1 .sf-progress-ring-indicator'); const c = document.querySelector('#r1 .sf-progress-ring-content'); return r.getAttribute('role') === 'progressbar' && r.getAttribute('aria-label') === 'Загрузка файлов' && r.getAttribute('aria-valuenow') === '62' && r.getAttribute('aria-valuemin') === '0' && r.getAttribute('aria-valuemax') === '100' && !r.hasAttribute('tabindex') && c.textContent.trim() === '62%' && r.getAttribute('aria-valuetext') === '62\\u00a0%' && c.getAttribute('aria-hidden') === 'true'; })()",
+              "check": "(() => { const r = document.querySelector('#r1 .sf-progress-ring-indicator'); const c = document.querySelector('#r1 .sf-progress-ring-content[aria-hidden]'); return r.getAttribute('role') === 'progressbar' && r.getAttribute('aria-label') === 'Загрузка файлов' && r.getAttribute('aria-valuenow') === '62' && r.getAttribute('aria-valuemin') === '0' && r.getAttribute('aria-valuemax') === '100' && !r.hasAttribute('tabindex') && !c && r.getAttribute('aria-valuetext') === '62\\u00a0%' && (() => { const root = document.querySelector('#r1 .sf-progress-ring'); const tip = document.getElementById(root.getAttribute('data-tooltip') || '-'); return Boolean(tip) && tip.textContent.trim() === '62\\u00a0%' && tip.closest('.sf-progress-ring') === root; })(); })()",
               "expect": {
                 "values": {
                   "#r1.value": 62
@@ -253,7 +255,7 @@
             {
               "script": "(document.getElementById('r1').value = 150, true)",
               "wait": 300,
-              "check": "document.querySelector('#r1 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '100' && document.querySelector('#r1 .sf-progress-ring-content').textContent.trim() === '100%'"
+              "check": "document.querySelector('#r1 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '100' && document.querySelector('#r1 .sf-progress-ring .sf-tooltip-text').textContent.trim() === '100\\u00a0%'"
             }
           ]
         },

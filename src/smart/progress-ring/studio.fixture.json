@@ -8,6 +8,7 @@
   "props": {
     "label": "Загрузка файлов",
     "value": "62",
+    "size": "2",
     "show-text": true
   },
   "children": [],

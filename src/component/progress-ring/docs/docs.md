@@ -10,7 +10,7 @@ name in step; a page that prints the class markup itself keeps them in step.
 ## Anatomy
 
 ```html
-<div class="sf-progress-ring sf-progress-ring--size-1 sf-progress-ring--warning"
+<div class="sf-progress-ring sf-progress-ring--size-2 sf-progress-ring--warning"
      style="--sf-progress-ring--value: 85">
   <span class="sf-progress-ring-indicator" role="meter" aria-label="Использовано"
         aria-valuemin="0" aria-valuemax="100" aria-valuenow="85"></span>
@@ -24,7 +24,9 @@ name in step; a page that prints the class markup itself keeps them in step.
   screen, 16 / 20 / 28 / 36 / 44 / 52 on a phone, 16 / 20 / 24 / 32 / 40 / 48
   in a compact region (1.4.0: 1/4 is 16 on every screen, as sf-avatar 1/4,
   owner decision C132). Size 3 is also the circle of a page's empty state. The
-  percentage is 12 / 14 / 16 px at 1 / 2 / 3 and is not shown below 1.
+  percentage is 14 / 16 px at 2 / 3 and is not shown up to size 1 (1.7.0, DEV
+  look answer 2026-11-20): an aria-hidden percentage there is hidden; the value
+  stays the ring's name (sf-progress-ring shows it as a tooltip).
 - `.sf-progress-ring-indicator` is the ring: the track and the filled part,
   one line 2 px wide inside the box. It carries `role="progressbar"` (a task)
   or `role="meter"` (an amount in a known range, such as a quota) and the

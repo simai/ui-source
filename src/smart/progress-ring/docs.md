@@ -39,10 +39,13 @@ page's, which passes `status`.
   ring and no value is said.
 - `meter` — the ring shows an amount within a known range (a quota used), not
   a task's progress: role `meter`.
-- `show-text` — the percentage in the middle, 12 / 14 / 16 px at 1 / 2 / 3.
-  Below size 1 no percentage is shown: the box leaves letters below the text
-  ladder. The
-  value stays the ring's `aria-valuenow`, so a screen reader still says it.
+- `show-text` — the percentage in the middle, 14 / 16 px at 2 / 3 (1.7.0, DEV
+  look answer 2026-11-20). Up to size 1 the middle holds no percentage: below 1
+  the letters fall off the text ladder, and at 1 «100%» ran past the 32 px
+  middle. There the value is the ring's tooltip, «62 %», on hover (the
+  Framework's dark tooltip of size 1/3); it stays the ring's `aria-valuenow`
+  and `aria-valuetext`, so a screen reader still says it. A ring with content
+  in its middle or an unknown value has no tooltip.
 
 The ring carries the role and the value; what stands in the middle is beside
 it, so a picture keeps its own name. It is not interactive and never takes the
@@ -155,6 +158,6 @@ gap. The fill moves between two values, and stands still under
 ## Example
 
 ```html
-<sf-progress-ring label="Загрузка файлов" value="40" show-text></sf-progress-ring>
+<sf-progress-ring label="Загрузка файлов" value="40" size="2" show-text></sf-progress-ring>
 <sf-progress-ring label="Подготовка" indeterminate></sf-progress-ring>
 ```

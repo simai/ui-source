@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
   "id": "smart.progress-ring",
   "tag": "sf-progress-ring",
-  "version": "1.6.5",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -66,7 +66,7 @@
     "show-text": {
       "type": "boolean",
       "default": false,
-      "summary": "Shows the percentage in the middle; the slot content takes its place when given."
+      "summary": "Shows the percentage in the middle from size 2 up; up to size 1 the value is the ring's tooltip instead (1.7.0); the slot content takes its place when given."
     },
     "label": {
       "type": "string",
@@ -108,12 +108,23 @@
     {
       "name": "avatars",
       "lazy": true,
-      "$comment": ["An avatar in the ring's content (slot=\"content\", C152 (8)): the ring sheet sizes .sf-avatar from the avatar's own variables, and the element warns about an sf-avatar put in without the slot (C250: declared, fetched after the page is ready)."]
+      "$comment": [
+        "An avatar in the ring's content (slot=\"content\", C152 (8)): the ring sheet sizes .sf-avatar from the avatar's own variables, and the element warns about an sf-avatar put in without the slot (C250: declared, fetched after the page is ready)."
+      ]
     },
     {
       "name": "cl-avatar",
       "lazy": true,
-      "$comment": ["The sf-avatar element the ring holds or warns about (C250)."]
+      "$comment": [
+        "The sf-avatar element the ring holds or warns about (C250)."
+      ]
+    },
+    {
+      "name": "tooltip",
+      "lazy": true,
+      "$comment": [
+        "The value as a tooltip where the middle holds no percentage (show-text up to size 1, DEV msg-1c3a4f0b): the tooltip composition, fetched when such a ring draws."
+      ]
     }
   ],
   "templates": {
@@ -205,7 +216,8 @@
     "1.6.2: the avatars sheet and sf-avatar are declared lazy relations (C250): the ring's sheet sizes an avatar in its content and the element warns about one without the slot, and neither was declared.",
     "version 1.6.3 (2026-11-17, feat/lang-file-c282; numbered above 1.6.2 on origin/fix/smart-pass-sp1): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.6.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
-    "version 1.6.5 (2026-11-20, DEV look answer to the held r6-size-3 question, (c) and (b); above 1.6.4, the highest on every origin branch): a patch, a look. The percentage in the middle of the ring is written with no space before the sign, «100%» (the no-break space of «100 %», C203 (3), ran it past the middle of size 3); its spoken value (aria-valuetext) keeps the space, as everywhere else. The middle clips what still does not fit at its own edge (component.progress-ring 1.6.1), so text never runs over the line. Settings, values, events and keys unchanged."
+    "version 1.6.5 (2026-11-20, DEV look answer to the held r6-size-3 question, (c) and (b); above 1.6.4, the highest on every origin branch): a patch, a look. The percentage in the middle of the ring is written with no space before the sign, «100%» (the no-break space of «100 %», C203 (3), ran it past the middle of size 3); its spoken value (aria-valuetext) keeps the space, as everywhere else. The middle clips what still does not fit at its own edge (component.progress-ring 1.6.1), so text never runs over the line. Settings, values, events and keys unchanged.",
+    "version 1.7.0 (2026-11-20, group build 15, A1, DEV look answer msg-1c3a4f0b; above 1.6.5, the highest on every origin branch): a minor, a look and a relation. Size 1 draws no text inside the ring: show-text writes the percentage from size 2 up (14 / 16 px at 2 / 3); at 1 «100%» ran 1-3 px past the 32 px middle and a smaller step would fall off the text ladder. Up to size 1 the value asked for is the ring's tooltip: the root names a dark tooltip of size 1/3 by data-tooltip (the tooltip composition, component.tooltip, a lazy relation fetched when such a ring draws), its text the spoken percentage «62 %»; aria-valuenow and aria-valuetext are unchanged. A ring with content or an unknown value has none. The class twin (component.progress-ring 1.7.0) hides an aria-hidden percentage at size 1 as below it. The reference example is size 2. Journal: behaviour-progress-ring-size-1-no-text."
   ],
   "x-registry": {
     "capabilities": [

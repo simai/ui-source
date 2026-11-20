@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.6.5",
+  "version": "1.7.0",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -26,6 +26,7 @@
     "uses": [
       "component.avatars",
       "component.progress-ring",
+      "component.tooltip",
       "smart.avatar"
     ],
     "public_parts": []
@@ -107,7 +108,7 @@
       "show-text": {
         "type": "boolean",
         "default": false,
-        "description": "Shows the percentage in the middle; the slot content takes its place when given."
+        "description": "Shows the percentage in the middle from size 2 up; up to size 1 the value is the ring's tooltip instead (1.7.0); the slot content takes its place when given."
       },
       "label": {
         "type": "string",
@@ -263,19 +264,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-ring/index.js",
-        "sha256": "ec1730607133f2c31644b54aee4265d99903391cfa72d9222c077ad1534c60a7"
+        "sha256": "3e57063a39908d1ee59dae5684486fe87b74c113783d2534fcc480baa92c888e"
       },
       {
         "path": "src/smart/progress-ring/js/templates/default.js",
-        "sha256": "7b778b16e74938372454e18afac7362f6131441d865cfc74824041ad9ba97159"
+        "sha256": "1e8c03aea26d9b3743e3e1e50b6d9244a6c13387279895caf60b8cc42edba3f5"
       },
       {
         "path": "src/smart/progress-ring/rule.js",
-        "sha256": "8d24e932250dfb6563dfd3bf0377a7c47e1144dce2a2c0c89b2331a16de5d948"
+        "sha256": "45657c58e242b717f815b1a26f7abda7ad62ade8170302e8a2c9bdc4cf2c47ee"
       },
       {
         "path": "src/smart/progress-ring/docs.md",
-        "sha256": "9887033d28080bb27d33f2f699b0bc66fa9ed3aefd4eef1389ed4cddcfd27775"
+        "sha256": "ad178a1cc740816ede9a86307cb9de402a67a51d0fccb71abc76be946b13b385"
       }
     ],
     "generated_runtime": []

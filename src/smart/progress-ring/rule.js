@@ -10,5 +10,7 @@ SF.RuleLoader['cl-progress-ring'] = {
     { name: 'avatars', lazy: true },
     // The sf-avatar element the ring holds or warns about (C250).
     { name: 'cl-avatar', lazy: true },
+    // The value as a tooltip where the middle holds no percentage (show-text up to size 1, DEV msg-1c3a4f0b): the tooltip composition, fetched when such a ring draws.
+    { name: 'tooltip', lazy: true },
   ],
 };
