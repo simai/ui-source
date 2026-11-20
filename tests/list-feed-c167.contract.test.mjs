@@ -42,5 +42,5 @@ test('C167 (4): the feed\'s default entry is a comment, the author over it, no f
   assert.doesNotMatch(text, /background|padding|border-radius/u, 'no capsule');
   assert.doesNotMatch(sheet, /\.sf-list-feed__item--own \.sf-list-feed__(?:entry|text)/u, 'one\'s own comment is not set apart');
   assert.match(sheet, /\.sf-list-feed__entry \{[^}]*align-self: stretch;/u);
-  assert.ok(['1.2.0', '1.3.0', '1.3.1', '1.3.2', '1.4.0', '1.4.1', '1.5.1', '1.5.3', '1.5.4'].includes(json('src/smart/list-feed/component.json').version)); // 1.3.1: group build 7 patch
+  assert.ok(['1.2.0', '1.3.0', '1.3.1', '1.3.2', '1.4.0', '1.4.1', '1.5.1', '1.5.3', '1.5.4', '1.5.5'].includes(json('src/smart/list-feed/component.json').version)); // 1.3.1: group build 7 patch
 });
