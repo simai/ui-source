@@ -18,6 +18,13 @@ export function normalizeValue(value) {
 
 const on = (value) => value === true || value === '' || value === 'true';
 
+// The percentage as the middle draws it: no space of any kind between the
+// number and the sign, on either side (a language that writes the sign first,
+// «%72», keeps its order); the direction marks of a right-to-left language stay.
+export function ringPercent(text) {
+  return String(text).replace(/[\s\u00a0\u202f]+(?=[\u200e\u200f\u061c]*[%\u066a])|(?<=[%\u066a][\u200e\u200f\u061c]*)[\s\u00a0\u202f]+/gu, '');
+}
+
 // The class markup of the ring (src/component/progress-ring): the root holds
 // the value as --sf-progress-ring--value, the ring (.sf-progress-ring-indicator)
 // carries the role and the value, and the middle holds the slot content or the
@@ -35,7 +42,12 @@ export function renderProgressRingTemplate(context) {
   // Below size 1 no percentage is shown (PG-10, C131 (5)): the box leaves
   // 8 px letters, below the text ladder. The value stays the ring's
   // (aria-valuenow), so a screen reader still says it; the eye reads the arc.
-  const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? percentText(value, context.component ?? null) : '';
+  // Inside the ring the sign stands against the number, «100%» (DEV look
+  // answer 2026-11-20, (c)): the middle holds four characters at most, and the
+  // no-break space the progress family writes elsewhere («100 %», C203 (3))
+  // ran «100 %» past the middle of size 3. The ring's spoken value keeps it
+  // (aria-valuetext below), as every other place does.
+  const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? ringPercent(percentText(value, context.component ?? null)) : '';
   const content = context.content && context.content !== nothing ? context.content : null;
   // A ring around a picture is about something of the person's own -- a
   // profile filled in, a photo being sent (owner decision C191 (4)). At 100 %

@@ -222,6 +222,16 @@
     --sf-progress-ring--font-size: var(--sf-text-size-1);
   }
 
+  /* The percentage keeps to the middle (DEV look answer 2026-11-20, (b)): the
+     guard behind «100%» written without a space, so a longer number in some
+     language or a larger text never runs over the line -- what does not fit
+     is cut at the middle's edge, never drawn on the ring. */
+  .sf-progress-ring .sf-progress-ring-content[aria-hidden="true"] {
+    max-inline-size: var(--sf-progress-ring--content-size);
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
   /* Below size 1 the middle holds a picture or nothing, never the percentage. */
   .sf-progress-ring:is(.sf-progress-ring--size-1\/4, .sf-progress-ring--size-1\/3, .sf-progress-ring--size-1\/2) .sf-progress-ring-content[aria-hidden="true"] {
     display: none;

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.steps",
-  "version": "1.4.6",
+  "version": "1.5.0",
   "title": "Steps",
   "summary": "Where a person is in an ordered process of their own: a list of steps, each a marker (number or dot) and a label joined by a progress line, drawn as a row, a column or a «Step N of M» line by its own width. Passive by default; navigation makes the reachable steps buttons.",
   "kind": "smart",
@@ -400,7 +400,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/steps/index.js",
-        "sha256": "51ca4839eaa8b01498f4839880f5e88d1d8e959a4a1eadd6da8488f14e06b8d2"
+        "sha256": "e07ed37c9026cc9f14bab3b429befdb37b595fff1a68792c4091672d95b85cbd"
       }
     ],
     "generated_runtime": [

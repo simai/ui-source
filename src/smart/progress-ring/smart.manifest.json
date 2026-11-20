@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -267,7 +267,7 @@
       },
       {
         "path": "src/smart/progress-ring/js/templates/default.js",
-        "sha256": "1fb7ac9057ccd220049bebc8e6ee3e392ef71c81a16bca68b243f23b0cd94c2f"
+        "sha256": "7b778b16e74938372454e18afac7362f6131441d865cfc74824041ad9ba97159"
       },
       {
         "path": "src/smart/progress-ring/rule.js",

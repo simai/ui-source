@@ -13,9 +13,9 @@ SIMAI Framework `field-renderers` (`SF.fieldRenderers`, `renderEditField` и
      "fields": [
        {"key": "text", "label": "Текст", "propertyType": "string", "required": true, "group": "content", "hint": "Не длиннее 30 знаков"},
        {"key": "url", "label": "Ссылка", "propertyType": "string", "required": true, "group": "content"},
-       {"key": "tone", "label": "Тон", "propertyType": "choice", "width": "m", "group": "look",
+       {"key": "tone", "label": "Тон", "propertyType": "choice", "width": "medium", "group": "look",
         "options": [{"value": "accent", "label": "Акцент"}, {"value": "quiet", "label": "Тихая"}]},
-       {"key": "radius", "label": "Скругление, px", "propertyType": "number", "decimals": 0, "width": "s", "min": 0, "max": 24,
+       {"key": "radius", "label": "Скругление, px", "propertyType": "number", "decimals": 0, "width": "short", "min": 0, "max": 24,
         "help": "Только для залитой кнопки", "group": "look"}],
      "value": {"text": "Подробнее", "url": "https://simai.io", "tone": "accent", "radius": 8}}
   </script>
@@ -41,7 +41,7 @@ SIMAI Framework `field-renderers` (`SF.fieldRenderers`, `renderEditField` и
 | `label` | подпись над полем; ею же назван элемент управления |
 | `hint` | подсказка под полем; ошибка встаёт на её место; экранный диктор читает её вместе с полем (`aria-describedby`) |
 | `help` | пояснение за «?» (`sf-help-mark`) после подписи |
-| `width` | `s` — поле не шире 8rem, `m` — 16rem, `full` — во всю строку |
+| `width` | `short` — поле не шире 20 знаков (160 px при тексте 16), `medium` — 28 знаков (224 px), `full` — во всю строку; это шаги ширины поля `--sf-field--width-short` и `-medium`, те же, что у настройки `width` самих полей. Прежние `s` и `m` (8rem и 16rem) до 2027-01-01 рисуются как `short` и `medium` и один раз отмечаются в `SF.deprecations` |
 | `group` | ключ группы из `groups` |
 
 Короткий выбор — `choice` или `choices` не больше чем из пяти вариантов — форма

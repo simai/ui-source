@@ -19,6 +19,7 @@
 // §17.4): the settings and values are made by core/js/element-manifest.js;
 // value, valid, check-validity and reset are the aggregating form's contract.
 import SfBaseElement from '../../core/js/smart-base';
+import {noteDeprecated} from '../../core/js/deprecations';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {nothing, html} from 'lit';
@@ -77,7 +78,25 @@ export function chosenFiles(items) {
   }).filter((one) => one && one.name);
 }
 
-export const WIDTHS = ['s', 'm', 'full'];
+// The field widths are the field width steps (DEV look answer 2026-11-20,
+// C396): short (20 characters, 160 px at text 16) and medium (28, 224), the
+// roles --sf-field--width-short / -medium the fields' own width setting takes,
+// or full. s and m, the former names (8rem and 16rem), draw short and medium
+// until WIDTH_ALIASES_UNTIL and are said once (change journal
+// value-form-field-width-s-m).
+export const WIDTHS = ['short', 'medium', 'full'];
+export const WIDTH_ALIASES = {s: 'short', m: 'medium'};
+const WIDTH_ALIASES_SINCE = '2026-11-20';
+const WIDTH_ALIASES_UNTIL = '2027-01-01';
+
+/** A field's width as drawn: a step, full, or '' (none); s and m read as short and medium, told to note(from, to). */
+export function fieldWidth(width, note = null) {
+  if (WIDTHS.includes(width)) return width;
+  const to = WIDTH_ALIASES[width];
+  if (!to) return '';
+  note?.(width, to);
+  return to;
+}
 
 // apply answer (owner decision C291 (3), FO-8): the states of the confirm
 // surface, of which open and pending draw the fields to answer.
@@ -164,8 +183,8 @@ export function answeredByValue(field) {
   return drawn.type === 'boolean' && drawn.template !== 'buttons';
 }
 
-/** The fields as given, made safe: objects with a key and a type, each key once, width one of s, m, full or none. */
-export function normalizeFields(list) {
+/** The fields as given, made safe: objects with a key and a type, each key once, width one of short, medium, full or none (s, m read as short, medium). */
+export function normalizeFields(list, noteWidth = null) {
   const seen = new Set();
   const fields = [];
   for (const item of Array.isArray(list) ? list : []) {
@@ -174,7 +193,7 @@ export function normalizeFields(list) {
     const type = text(item.propertyType || item.type || item.dataType);
     if (!key || !type || seen.has(key)) continue;
     seen.add(key);
-    const width = WIDTHS.includes(item.width) ? item.width : '';
+    const width = fieldWidth(item.width, noteWidth);
     fields.push({...item, key, label: text(item.label) || key, propertyType: type, width, group: text(item.group)});
   }
   return fields;
@@ -318,7 +337,8 @@ class SfForm extends FormElement {
   }
 
   get list() {
-    return normalizeFields(this.fields);
+    return normalizeFields(this.fields, (from, to) => noteDeprecated({component: 'sf-form', tag: 'sf-form', kind: 'value',
+      attribute: 'fields[].width', from, to, since: WIDTH_ALIASES_SINCE, remove_after: WIDTH_ALIASES_UNTIL}));
   }
 
   // The fields the form shows now: every field the renderers draw whose

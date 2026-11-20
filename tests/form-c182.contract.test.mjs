@@ -15,12 +15,12 @@ const sheet = read('src/smart/form/scss/_smart__form.scss');
 test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, footer, the descriptor list', () => {
   assert.equal(manifest.tag, 'sf-form');
   assert.equal(manifest.family, 'form');
-  assert.equal(manifest.version, '1.12.3'); // GB13 notes: 1.12.3 (a required yes/no as buttons asks for an answer) // group build 13: 1.12.0 (written as 1.9.0 on fix/larena-lf-data, LF-12) // 1.11.0 (written as 1.8.0 and 1.6.0, above 1.9.0 on origin) // 1.10.0 (written as 1.4.0, above HEAD's released 1.4.0): field conditions (FO-3) // 1.7.0 form fields: a hidden field is not sent (FO3-1) // 1.4.0: field conditions (FO-3) // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.13.0'); // look answers: widths short and medium // GB13 notes: 1.12.3 (a required yes/no as buttons asks for an answer) // group build 13: 1.12.0 (written as 1.9.0 on fix/larena-lf-data, LF-12) // 1.11.0 (written as 1.8.0 and 1.6.0, above 1.9.0 on origin) // 1.10.0 (written as 1.4.0, above HEAD's released 1.4.0): field conditions (FO-3) // 1.7.0 form fields: a hidden field is not sent (FO3-1) // 1.4.0: field conditions (FO-3) // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
   assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'field-host', 'apply', 'size', 'state', 'labels', 'footer', 'label']);
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.ok(manifest.settings.labels.values.includes('start'));
   assert.ok(manifest.settings.footer.values.includes('sticky'));
-  assert.deepEqual(manifest.settings.fields.schema.items.properties.width.enum, ['s', 'm', 'full']);
+  assert.deepEqual(manifest.settings.fields.schema.items.properties.width.enum, ['short', 'medium', 'full', 's', 'm']); // look answers: the field width steps, s and m dated until 2027-01-01
   for (const key of ['key', 'label', 'hint', 'help', 'width', 'group', 'propertyType']) {
     assert.ok(manifest.settings.fields.schema.items.properties[key], key);
   }
@@ -91,7 +91,12 @@ test('the pure parts: fields normalized, grouped in order, values counted as giv
   const body = source.slice(source.indexOf('export const WIDTHS'), source.indexOf('const FormElement'));
   const module = await import(`data:text/javascript,${encodeURIComponent(body)}`);
   const fields = module.normalizeFields([{key: 'a', label: 'A', propertyType: 'string', width: 'xl'}, {key: 'a', propertyType: 'string'}, {label: 'no key'}, {key: 'b', propertyType: 'integer', group: 'g', width: 's'}]);
-  assert.deepEqual(fields.map((field) => `${field.key}:${field.width}`), ['a:', 'b:s']);
+  assert.deepEqual(fields.map((field) => `${field.key}:${field.width}`), ['a:', 'b:short']);
+  // s and m are the dated names of short and medium (DEV look answer 2026-11-20), told to the note once each read.
+  const told = [];
+  const widths = module.normalizeFields([{key: 'c', propertyType: 'string', width: 'm'}, {key: 'd', propertyType: 'string', width: 'medium'}, {key: 'e', propertyType: 'string', width: 'full'}], (from, to) => told.push(`${from}>${to}`));
+  assert.deepEqual(widths.map((field) => field.width), ['medium', 'medium', 'full']);
+  assert.deepEqual(told, ['m>medium']);
   const groups = module.groupFields(fields, [{key: 'g', label: 'G'}, {key: 'empty', label: 'E'}]);
   assert.deepEqual(groups.map((group) => `${group.key}:${group.fields.map((field) => field.key).join(',')}`), ['g:b', ':a']);
   assert.equal(module.hasValue(''), false);

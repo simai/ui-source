@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.12.3",
+  "version": "1.13.0",
   "title": "Form",
   "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "kind": "smart",
@@ -121,7 +121,7 @@
       "fields": {
         "type": "array",
         "default": [],
-        "description": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type, its template and its parameters (propertyType, template and templateParams -- variant is the former name of template until 2027-01-01 --, required, readonly, placeholder, options, min, max, step, unit, decimals, currency, currencies, currencyDisplay, holder (a ru.inn field: any, organization -- 10 digits -- or person -- 12), defaultCountry (a phone field: the ISO 3166 alpha-2 country an empty field starts on, else the page's) … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width s (8rem), m (16rem) or full; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
+        "description": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type, its template and its parameters (propertyType, template and templateParams -- variant is the former name of template until 2027-01-01 --, required, readonly, placeholder, options, min, max, step, unit, decimals, currency, currencies, currencyDisplay, holder (a ru.inn field: any, organization -- 10 digits -- or person -- 12), defaultCountry (a phone field: the ISO 3166 alpha-2 country an empty field starts on, else the page's) … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width short (the field width step of 20 characters, 160 px at text 16), medium (28, 224 px) or full -- s and m, the former names, read as short and medium until 2027-01-01; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
       },
       "groups": {
         "type": "array",
@@ -413,7 +413,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "38d2db59e9f529fe8bbaae23fa0306ecdf37608dff1f57a340d9dbdc86ca3668"
+        "sha256": "e4307c10586d251058792f89e6cf852de07b9c6d4d4569804fe95121788731ec"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
@@ -429,7 +429,7 @@
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "5425ad9a7dba90638ba92afc9ab531bbd39979c7acd8b9f4592b4043d2f43886"
+        "sha256": "d27e294d3656990c2a91b2b9f20e2726356e2398715835928abf6da3485b16c4"
       }
     ],
     "generated_runtime": []

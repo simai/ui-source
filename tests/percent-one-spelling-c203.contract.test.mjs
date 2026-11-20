@@ -72,9 +72,9 @@ test('sf-progress-bar: the script, the sheet and the words follow the same spell
   assert.match(sheet, /\[data-sf-density="compact"\] \.sf-progress-bar--size-1:not\(\.sf-progress-bar--inline\):not\(\[data-sf-density="normal"\] \*\) \.sf-progress-bar-main \{\s*--sf-progress-bar-main--height: var\(--sf-a4\);/u);
 });
 
-test('sf-progress-ring shows and says «72 %»', () => {
-  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '1', showText: true})), [`72${NBSP}%`, `72${NBSP}%`]);
-  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '1', showText: true, valueText: '3 из 4'})), [`72${NBSP}%`]);
+test('sf-progress-ring says «72 %» and shows «72%» in its middle (DEV look answer 2026-11-20)', () => {
+  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '1', showText: true})), [`72${NBSP}%`, '72%']);
+  assert.deepEqual(percents(renderProgressRingTemplate({value: 72, size: '1', showText: true, valueText: '3 из 4'})), ['72%']);
 });
 
 test('sf-progress-scale shows «72 %»', async () => {

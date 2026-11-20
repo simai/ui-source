@@ -2,7 +2,7 @@ import SfBaseElement, { toAttributeName, toNumber } from '../../core/js/smart-ba
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderStepsTemplate } from './js/templates/default';
 import {
-  COUNT_BELOW_REM, LAYOUTS, MARKERS, NAVIGATION, noteOld, parseItems, reachable, resolveStates,
+  COLUMN_BELOW_REM, COUNT_BELOW_REM, LAYOUTS, MARKERS, NAVIGATION, noteOld, parseItems, reachable, resolveStates,
 } from './js/items';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -171,8 +171,8 @@ class SfSteps extends StepsElement {
   }
 
   // The layout drawn: an explicit one, or for auto what the list's own width
-  // allows (checkFit, after each drawing): a row while it fits, else a column,
-  // and under 20rem the count line.
+  // allows (checkFit, after each drawing): under 20rem the count line, under
+  // 30rem a column, above that a row while it fits, else a column.
   get drawnLayout() {
     if (this.layout !== 'auto') return this.layout;
     return this._fit || 'row';
@@ -381,6 +381,8 @@ class SfSteps extends StepsElement {
     if (!fit || !fit.room) return;
     let next = 'row';
     if (fit.room < COUNT_BELOW_REM * fit.rem) next = 'count';
+    // Under 30rem a column, as the sheet draws it before this measure.
+    else if (fit.room < COLUMN_BELOW_REM * fit.rem) next = 'column';
     // A pixel of slack: a row that fits exactly is a row.
     else if (fit.need > fit.room + 1) next = 'column';
     if (next === (this._fit || 'row')) return;

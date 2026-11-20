@@ -14,7 +14,7 @@ const json = (path) => JSON.parse(read(path));
 
 test('sf-form 1.7.0 takes a field host, a property only, and an action to draw again', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.12.3'); // GB13 notes: 1.12.3 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
+  assert.equal(manifest.version, '1.13.0'); // look answers: widths short and medium // GB13 notes: 1.12.3 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
   const setting = manifest.settings['field-host'];
   assert.equal(setting.type, 'object');
   assert.equal(setting.default, null);
@@ -48,11 +48,11 @@ test('a link\'s address box is text with the address keyboard: a path and an anc
   const edit = source.slice(source.indexOf('function renderLinkEdit'), source.indexOf('function renderInnEdit'));
   assert.doesNotMatch(edit, /input-type="url"/u);
   assert.match(edit, /inputmode="url"/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.26.1'); // GB13 notes: 1.26.1 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.27.0'); // feat/field-width merged: the width parameter (C396) // GB13 notes: 1.26.1 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.23.0'); // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 14: 1.22.0 moved on by the merged branches or the C278 language patch
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.24.0'); // feat/field-width merged: the width setting (C396) // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 14: 1.22.0 moved on by the merged branches or the C278 language patch
   assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.27.0'); // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 

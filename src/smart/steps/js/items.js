@@ -14,6 +14,10 @@ export const LAYOUTS = ['auto', 'row', 'column', 'count'];
 export const NAVIGATION = ['', 'visited', 'free'];
 // Under this many rem of its own width an automatic list is the count line.
 export const COUNT_BELOW_REM = 20;
+// Under this many rem of its own width an automatic list is a column (DEV look
+// answer 2026-11-20): the sheet draws it so before the code measures (a container
+// query of _css__steps.scss), and the code agrees; above it a row while it fits.
+export const COLUMN_BELOW_REM = 30;
 
 // The old forms (sf-steps 1.3 and before) are read until 2027-01-01 and each
 // use is noted in SF.deprecations with its dates: the item state words
