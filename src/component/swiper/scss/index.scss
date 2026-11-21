@@ -23,10 +23,15 @@
   }
 }
 
-/* The strip takes horizontal drags (the script pages on them); a vertical
-   move stays the page's scroll, and pinch zoom stays the browser's. */
+/* The transform strip (cssMode false) takes horizontal drags (the script
+   pages on them); a vertical move stays the page's scroll, and pinch zoom
+   stays the browser's. The scroll track leaves touch to the browser. */
 .swiper-touch {
   touch-action: pan-y pinch-zoom;
+}
+
+.swiper-css-mode.swiper-touch {
+  touch-action: auto;
 }
 
 /* While a drag pulls the strip, it follows the pointer without travelling and
@@ -43,6 +48,49 @@
   flex: 0 0 100%;
   inline-size: 100%;
   min-inline-size: 0;
+}
+
+/* The scroll track (cssMode, the default since component.swiper 2.0.0, owner
+   decision 2026-11-21): the strip is the browser's own horizontal scroll and
+   stops at a slide. A finger, a pen, a trackpad's two fingers and the wheel
+   move it with the platform's momentum; a vertical move scrolls the page; at
+   an end the strip gives as the platform does and the page does not move
+   with it. The bar is not drawn: the arrows, the dots and the counter say
+   where the strip is. */
+.swiper-css-mode > .swiper-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  transition: none;
+}
+
+.swiper-css-mode > .swiper-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.swiper-css-mode > .swiper-wrapper > .swiper-slide {
+  scroll-snap-align: start;
+  /* One slide per gesture: a fast flick stops at the next slide, as a press
+     of the arrow does. */
+  scroll-snap-stop: always;
+}
+
+/* allowTouchMove false: the strip moves by its buttons only. */
+.swiper-css-mode:not(.swiper-touch) > .swiper-wrapper {
+  overflow-x: hidden;
+}
+
+/* The mouse pulls the strip (simulateTouch): it says so, and while it pulls
+   the snap waits until the strip arrives. */
+.swiper-css-mode.swiper-mouse-drag > .swiper-wrapper {
+  cursor: grab;
+}
+
+.swiper-css-mode.swiper-dragging > .swiper-wrapper {
+  cursor: grabbing;
+  scroll-snap-type: none;
 }
 
 /* An edge control with nowhere to go. A <button> is disabled by the engine

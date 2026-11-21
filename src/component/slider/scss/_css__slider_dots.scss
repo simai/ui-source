@@ -218,6 +218,55 @@
   padding-inline-start: 0;
   padding-inline-end: 0;
 }
+
+/* The timed position (sf-slider-dots--timed, owner decision 2026-11-21, as
+   Apple's dotnav-timed): only while the slides turn by themselves, beside
+   the pause button. The current dot is a longer pill (--sf-c6, 32) that
+   fills in the current colour for the slide's time (the slider writes
+   --sf-slider-dots--delay); a pointer over the slider or a hidden tab
+   freezes the fill where it is, as it freezes the turn; stopped, the pill
+   stays full. Under reduced motion nothing turns, so nothing fills. */
+.sf-slider-dots.sf-slider-dots--timed {
+  --sf-slider-dots--fill-color: var(--sf-slider-dots-dot--active-color, var(--sf-slider-dots-dot--color));
+  --sf-slider-dots-dot--active-width: var(--sf-c6);
+}
+
+.sf-slider[data-rotation="playing"] .sf-slider-dots--timed .sf-slider-dots-dot.active {
+  /* The pill's track is a dot's own colour; the fill runs over it. */
+  --sf-slider-dots-dot--active-color: var(--sf-slider-dots-dot--color);
+}
+
+.sf-slider-dots.sf-slider-dots--timed .sf-slider-dots-dot.active::after {
+  border-end-end-radius: inherit;
+  border-end-start-radius: inherit;
+  border-start-end-radius: inherit;
+  border-start-start-radius: inherit;
+  content: '';
+  inline-size: calc(100% + 2 * var(--sf-slider-dots-dot--stroke-width, var(--sf-px)));
+  inset-block: calc(-1 * var(--sf-slider-dots-dot--stroke-width, var(--sf-px)));
+  inset-inline-start: calc(-1 * var(--sf-slider-dots-dot--stroke-width, var(--sf-px)));
+  position: absolute;
+}
+
+.sf-slider[data-rotation="playing"] .sf-slider-dots--timed .sf-slider-dots-dot.active::after {
+  animation: sf-slider-dots-fill var(--sf-slider-dots--delay) linear both;
+}
+
+.sf-slider[data-rotation="playing"][data-rotation-held] .sf-slider-dots--timed .sf-slider-dots-dot.active::after {
+  animation-play-state: paused;
+}
+
+@keyframes sf-slider-dots-fill {
+  from {
+    inline-size: var(--sf-slider-dots-dot--height);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-slider .sf-slider-dots--timed .sf-slider-dots-dot.active::after {
+    animation: none;
+  }
+}
 }
 
 // Paint (C273): the fill, edge and place colour of these parts stand in
@@ -234,6 +283,9 @@
   }
   .sf-slider-dots .sf-slider-dots-dot.active {
     color: var(--sf-slider-dots-dot--active-color, var(--sf-slider-dots-dot--color));
+  }
+  .sf-slider-dots.sf-slider-dots--timed .sf-slider-dots-dot.active::after {
+    background-color: var(--sf-slider-dots--fill-color);
   }
   @media (forced-colors: active) {
     .sf-slider-dots .sf-slider-dots-dot {

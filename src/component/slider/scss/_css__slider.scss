@@ -112,51 +112,118 @@
   object-fit: cover;
 }
 
-.sf-slider .sf-slider-controls {
-  inset: 0;
+/* Pictures (owner decision 2026-11-21, carousel study): the strip, the
+   arrows over it and the bar under it. The arrows stand in the strip's own
+   row, centred on it, a space step inside each edge (--sf-space-2, 20 / 16),
+   never on the edge; the position (dots or «2 / 12») and the pause button
+   stand under the strip, the block's gap below it (--sf-space-1, 16 / 12),
+   never over the picture. The controls box lends its parts to the block's
+   grid: the arrows to the strip's row, the bar parts to a row of their own,
+   centred as one group, the pause button a space step after the dots. */
+.sf-slider:not(.sf-slider--content) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto minmax(0, 1fr);
+  column-gap: 0;
+}
+
+.sf-slider:not(.sf-slider--content) > * {
+  grid-column: 1 / -1;
+}
+
+.sf-slider:not(.sf-slider--content) > .sf-slider-main {
+  grid-row: 1;
+}
+
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls {
+  display: contents;
+}
+
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows {
+  align-self: center;
+  display: flex;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-content: space-between;
+  padding-inline: var(--sf-slider-arrow-offset-inline, var(--sf-space-2));
+  /* A swipe over the arrows' row is the strip's; only the buttons take a press. */
   pointer-events: none;
-  position: absolute;
   z-index: 2;
 }
 
-.sf-slider .sf-slider-controls .sf-slider-arrows {
-  inset-block-start: 50%;
-  inset-inline: 0;
-  pointer-events: none;
-  position: absolute;
-  transform: translateY(-50%);
-}
-
-.sf-slider .sf-slider-controls .sf-slider-arrows .sf-icon-button {
-  inset-block-start: 50%;
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button {
   pointer-events: auto;
-  position: absolute;
-  transform: translateY(-50%);
 }
 
-.sf-slider .sf-slider-controls .sf-slider-button-prev {
-  inset-inline-start: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
+/* The bar's distance under the strip (--sf-slider-dots-offset-block, by
+   default --sf-space-1, the block's gap): the bar stands that far below. */
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination, .sf-slider-rotation-place) {
+  align-self: center;
+  margin-block-start: calc(var(--sf-slider-dots-offset-block, var(--sf-space-1)) - var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1))));
 }
 
-.sf-slider .sf-slider-controls .sf-slider-button-next {
-  inset-inline-end: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination) {
+  grid-column: 2;
+  justify-self: center;
+  order: 1;
 }
 
-.sf-slider .sf-slider-controls .sf-slider-dots,
-.sf-slider .sf-slider-controls .sf-slider-pagination {
-  inset-block-end: var(--sf-slider-dots-offset-block, var(--sf-space-1));
-  inset-inline-start: 50%;
-  pointer-events: auto;
-  position: absolute;
-  transform: translateX(-50%);
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-rotation-place {
+  grid-column: 3;
+  order: 2;
 }
 
-/* The pause button over a picture: the top end corner, on its plate. */
-.sf-slider .sf-slider-controls .sf-slider-rotation-place {
-  inset-block-start: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
-  inset-inline-end: var(--sf-slider-arrow-offset-inline, var(--sf-space-1));
-  pointer-events: auto;
-  position: absolute;
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination) ~ .sf-slider-rotation-place,
+.sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-rotation-place:has(~ :is(.sf-slider-dots, .sf-slider-pagination)) {
+  margin-inline-start: var(--sf-space-1);
+}
+
+/* Over a picture the arrows show where a pointer that can hover is (a
+   mouse, a trackpad) and while the keyboard is in the slider
+   (:focus-visible: a mouse press on an arrow does not keep them shown);
+   on a touch screen they are always there. They come in over
+   --sf-duration-normal (0.3 s) with --sf-ease-move: a fade, a --sf-a4 (4 px)
+   slide in from their edge and a scale from 0.9 (DEV msg-0bea9d3c); under
+   reduced motion only the fade. An arrow with nowhere to go is not shown
+   there. */
+@media (hover: hover) and (pointer: fine) {
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button {
+    opacity: 0;
+    scale: 0.9;
+    transition-duration: var(--sf-duration-normal);
+    transition-property: opacity, scale, translate;
+    transition-timing-function: var(--sf-ease-move);
+  }
+
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-prev {
+    translate: calc(-1 * var(--sf-a4)) 0;
+  }
+
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-next {
+    translate: var(--sf-a4) 0;
+  }
+
+  .sf-slider:not(.sf-slider--content):dir(rtl) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-prev {
+    translate: var(--sf-a4) 0;
+  }
+
+  .sf-slider:not(.sf-slider--content):dir(rtl) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-next {
+    translate: calc(-1 * var(--sf-a4)) 0;
+  }
+
+  .sf-slider:not(.sf-slider--content):is(:hover, :has(:focus-visible)) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button:not(:disabled, .swiper-button-disabled) {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button,
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows :is(.sf-slider-button-prev, .sf-slider-button-next) {
+    scale: none;
+    transition-property: opacity;
+    translate: none;
+  }
 }
 
 .sf-slider .sf-slider-dots.swiper-pagination-lock,
@@ -255,6 +322,16 @@
 
 .sf-slider .sf-slider-thumbnails .swiper-slide-thumb-active {
   opacity: var(--sf-slider-thumbnails-slide-active--opacity, 1);
+  /* The shown thumbnail is ringed, as sf-gallery's (C150), the ring drawn
+     inside its edge (DEV msg-0bea9d3c), so the strip cannot cut it. */
+  outline: var(--sf-focus--width) solid var(--sf-slider-thumbnails-ring--color, var(--sf-primary));
+  outline-offset: calc(-1 * var(--sf-focus--width));
+}
+
+/* A strip longer than its place starts at its start, not centred past it
+   (the shown thumbnail is scrolled into view by the slider). */
+.sf-slider .sf-slider-thumbnails > .swiper-wrapper {
+  justify-content: safe center;
 }
 
 /* A thumbnail is a button (GL-2): it has the thumbnail's radius, so its focus
@@ -267,12 +344,8 @@
   outline-offset: var(--sf-focus--inset);
 }
 
-/* With thumbnails the controls over a picture stand on the slides only: the
-   arrows centred on the picture, the place at its bottom, not over the
-   thumbnails under it (GL-3). */
-.sf-slider:not(.sf-slider--content):has(> .sf-slider-thumbnails) > .sf-slider-controls {
-  inset-block-end: calc(var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1))) + var(--sf-slider-thumbnail--block-size, var(--sf-slider-thumbnail-size, var(--sf-d2))));
-}
+/* With thumbnails the arrows still stand on the slides only (GL-3): they
+   take the strip's row, the thumbnails and the bar their own rows. */
 }
 
 // Paint (C273): the fill, edge and place colour of these parts stand in

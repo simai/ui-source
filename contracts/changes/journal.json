@@ -19327,6 +19327,87 @@
       "manual": "Nothing to rewrite; Pro applies its held chat-head patch after the pair.",
       "owner": "ui-source",
       "source": "src/core/contracts/packages/pro.package.json"
+    },
+    {
+      "id": "behaviour-swiper-scroll-track",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.swiper 2.0.0 (owner decision relayed by DEV msg-b19a2893, carousel study ui-control control/research/2026-11-21-carousel): the strip is the browser's own horizontal scroll with snap points (cssMode on by default). A finger, a trackpad's two fingers and a horizontal wheel page with the platform's momentum, the mouse drags, a vertical move stays the page's; arrows, dots and keys scroll to the slide's stop. Loop and autoplay go from the last slide to the first. autoplay.pause() / resume() keep the time left. sf-slider 2.0.0, smart.slider 1.4.0 and the deprecated .sf-carousel (1.6.0) run on it.",
+      "items": [
+        {
+          "component": "sf-slider",
+          "option": "cssMode",
+          "from": "transform strip, pointer drag only (no trackpad, no momentum)",
+          "to": "native scroll with snap (cssMode true); data-swiper-css-mode=\"false\" keeps the transform strip"
+        },
+        {
+          "component": "sf-carousel",
+          "option": "cssMode",
+          "from": "transform strip",
+          "to": "native scroll with snap"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that moved .swiper-wrapper by transform itself, or relied on the strip not scrolling, writes data-swiper-css-mode=\"false\" (Smart: on sf-slider) or cssMode: false.",
+      "owner": "ui-source",
+      "source": "src/component/swiper/js/index.js; src/component/swiper/scss/index.scss"
+    },
+    {
+      "id": "behaviour-slider-picture-bar-under",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.slider 2.0.0 and smart.slider 1.4.0 (owner decision 2026-11-21, carousel study): over a picture the arrows stand --sf-space-2 inside each edge (was --sf-space-1) and show on hover or keyboard focus with a fade, always on touch; the position (dots, «2 / 12» from eight) and the pause button stand under the picture, the block's gap below it, not over it; the Smart template draws bare dots there (was the popup plate). With autoplay the dots are the timed position sf-slider-dots--timed (a 32 px pill that fills for the slide's time, frozen while the pointer is over the slider). The arrows come in over 0.3 s with a 4 px slide and a scale from 0.9 (only the fade under reduced motion). The shown thumbnail is ringed inside its edge and scrolled into view in a long strip. Cards are unchanged.",
+      "items": [
+        {
+          "component": "sf-slider",
+          "attribute": "dots",
+          "from": "a popup plate over the picture, --sf-space-1 above its bottom",
+          "to": "bare dots under the picture, the block's gap below it"
+        },
+        {
+          "component": "sf-slider",
+          "attribute": "arrows",
+          "from": "always shown, --sf-space-1 inside the edge",
+          "to": "--sf-space-2 inside the edge, shown on hover or focus (always on touch)"
+        },
+        {
+          "component": "sf-slider",
+          "attribute": "data-autoplay",
+          "from": "pause button over the picture's top end corner, plain dots",
+          "to": "pause button beside the timed dots under the picture"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that drew its own caption at the bottom of the picture no longer has the dots over it; a page that wants the arrows always shown sets opacity on .sf-slider-arrows .sf-icon-button.",
+      "owner": "ui-source",
+      "source": "src/component/slider/scss/_css__slider.scss; src/component/slider/scss/_css__slider_dots.scss; src/smart/slider/js/templates/default.js"
+    },
+    {
+      "id": "behaviour-slider-keys-on",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.slider 2.0.0 and smart.slider 1.4.0 (owner decision 2026-11-21, carousel study): ArrowLeft and ArrowRight page while the focus is in the slider by default (mirrored right to left, never in a field); they waited for data-swiper-keyboard=\"true\". The deprecated .sf-carousel takes the same keys.",
+      "items": [
+        {
+          "component": "sf-slider",
+          "attribute": "data-swiper-keyboard",
+          "from": "off unless true",
+          "to": "on unless false"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite; a page that uses the arrow keys for something else inside the slider writes data-swiper-keyboard=\"false\".",
+      "owner": "ui-source",
+      "source": "src/component/slider/js/_slider.js"
     }
   ]
 }

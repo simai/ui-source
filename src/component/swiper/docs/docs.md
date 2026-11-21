@@ -63,3 +63,40 @@ and lifecycle methods without an external runtime dependency.
   (`breakpointsBase: 'container'`, a component follows the width of its
   place, C181 (2)), and again when that width changes; `breakpointsBase:
   'window'` keeps the window width.
+
+## The scroll track (2.0.0, owner decision 2026-11-21)
+
+- `cssMode` (Swiper's name) is on by default: the wrapper is the browser's own
+  horizontal scroll (`overflow-x: auto`, `scroll-snap-type: x mandatory`, each
+  slide `scroll-snap-align: start` and `scroll-snap-stop: always`,
+  `overscroll-behavior-x: contain`, no scroll bar). A finger, a pen, a
+  trackpad's two fingers and a horizontal wheel move it with the platform's
+  momentum and stop at a slide; a vertical move and a vertical wheel stay the
+  page's. `cssMode: false` keeps the 1.x transform strip and its pointer drag.
+- The engine follows the scroll: the slide whose stop is nearest becomes the
+  active one (`slideChange`), the last stop at the end of the strip; the
+  slides in view are measured, and the hidden ones stay `inert`. A scroll the
+  person makes stops autoplay (`disableOnInteraction`).
+- `slideTo`, the arrows, the dots and the keys scroll to the slide's stop,
+  smoothly unless the speed is 0 or the person asked for reduced motion; the
+  travel is the browser's own smooth scroll. A loop goes from the last slide
+  back to the first, and from the first to the last.
+- A trackpad's two-finger swipe (and Shift with a wheel) is a stream of
+  horizontal wheel steps: the strip follows the stream, its momentum
+  included, with the snap held, and when the stream stops it pages past 15 %
+  of a slide (else goes back), as a drag does; left to the browser, a stream
+  that paused between steps snapped back before it crossed half a slide. A
+  finger let go past 15 % of a slide pages too (the browser would snap it
+  back short of half); a flick carries on by itself.
+- The mouse has no scroll gesture, so a press and horizontal drag pulls the
+  strip (`swiper-mouse-drag`, a grab cursor; snap off while it pulls) and
+  pages past 15 % of a slide or with a flick; `simulateTouch: false` leaves the
+  mouse out, `allowTouchMove: false` leaves the strip to the buttons
+  (`overflow-x: hidden`). The click after a drag is swallowed.
+- When the strip's width changes the active slide is laid at its stop again.
+- Autoplay: `autoplay.pause()` holds the time left and `resume()` goes on from
+  it (events `autoplayPause`, `autoplayResume`); `stop()` / `start()` stay the
+  person's. At the last slide it goes back to the first (`stopOnLastSlide`
+  stops there); `reverseDirection` turns backwards; a slide changed by other
+  means starts its own full time.
+

@@ -185,3 +185,47 @@ square corner and stand `--sf-slider-thumbnails--space-between` apart.
   the 192 floor stood under it and the window cut 34 px off the slide (about
   72 at 21/9), with the slide's number and its caption on the scrim. A content
   slider and a slider without a ratio (or `data-ratio="auto"`) keep the floor.
+
+## Scroll track, arrows and the bar (2.0.0, owner decision 2026-11-21)
+
+Carousel study ui-control `control/research/2026-11-21-carousel`; a major,
+because the defaults change.
+
+- **Track**: component.swiper 2.0.0 scrolls the strip natively with snap
+  points (`swiper-css-mode`): a finger, a trackpad's two fingers and a
+  horizontal wheel page with the platform's momentum, a vertical move scrolls
+  the page, the mouse drags (grab cursor). `data-swiper-css-mode="false"` on
+  the block or the strip keeps the transform strip of 1.x.
+- **Pictures** (no `sf-slider--content`): the block is a grid. The arrows take
+  the strip's row, centred, `--sf-slider-arrow-offset-inline` inside each edge
+  (default `--sf-space-2`, 20 / 16; it was `--sf-space-1`, so a slide inset by
+  the same step put the arrow on its edge). Under `(hover: hover) and
+  (pointer: fine)` they are hidden until the pointer is over the block or the
+  keyboard focus is in it (`:focus-visible`: a mouse press on an arrow does
+  not keep them shown). They come in over `--sf-duration-normal` (0.3 s) with
+  `--sf-ease-move`: a fade, a `--sf-a4` (4 px) slide in from their edge and a
+  scale from 0.9; under reduced motion only the fade. An arrow with nowhere to
+  go stays hidden there. On touch they are always shown. The position
+  (`.sf-slider-dots`) and the pause button (`.sf-slider-rotation-place`) take
+  a row under the strip (and the thumbnails), the block's gap below it, centred
+  as one group, the pause button `--sf-space-1` after the dots. Markup is
+  unchanged: `.sf-slider-controls` lends its parts to the grid
+  (`display: contents`).
+- **Cards** (`sf-slider--content`): unchanged — one row under the cards, the
+  position at the start, the arrows at the end; the next card peeks (1.15, 2.2
+  from the sm step).
+- **Timed position** (`sf-slider-dots--timed`): with autoplay and dots the
+  slider marks the dots timed and writes `--sf-slider-dots--delay`. While
+  `data-rotation="playing"` the current dot is a `--sf-c6` (32) pill whose fill
+  (the current colour) grows for the slide's time; `data-rotation-held` (the
+  pointer over the block, a hidden tab) freezes it, and the turn waits with it
+  (the engine's `autoplay.pause()` keeps the time left). Stopped, the pill
+  stays full. The counter («2 / 12») is never timed.
+- **Keys**: ArrowLeft and ArrowRight page wherever the focus is in the block,
+  by default; `data-swiper-keyboard="false"` turns them off.
+- **Thumbnails**: the shown one has a `--sf-focus--width` ring in
+  `--sf-slider-thumbnails-ring--color` (default `--sf-primary`), drawn inside
+  its edge, so the strip cannot cut it; a strip longer than its place starts at
+  its start (`justify-content: safe center`) and the shown thumbnail is
+  scrolled into view inside it (the page does not move).
+

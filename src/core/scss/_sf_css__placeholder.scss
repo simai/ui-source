@@ -1077,7 +1077,30 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
   padding-block-end: calc(var(--sf-space-1) + var(--sf-ui-1--control-height));
 }
 
-:where(sf-slider:not(:defined)[thumbs]:not([thumbs="false"])):not(:has(> [data-sf-static])) {
+/* A picture slider's position and pause button stand under the picture
+   (owner decision 2026-11-21, carousel study), the thumbnails under it too,
+   each a gap below the row before: the box keeps room for them. The bar is
+   as high as a dot's target, or a button with the pause button
+   (data-autoplay). */
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])):not(:has(> [data-sf-static])) {
+  --sf-slider--box-bar: 0px;
+  --sf-slider--box-thumbs: 0px;
+  padding-block-end: calc(var(--sf-slider--box-bar) + var(--sf-slider--box-thumbs));
+}
+
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"]):not([dots="false"])):not(:has(> [data-sf-static])) {
+  --sf-slider--box-bar: calc(var(--sf-space-1) + var(--sf-ui-1\/3--control-height));
+}
+
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])[data-autoplay]:not([data-autoplay="false"])):not(:has(> [data-sf-static])) {
+  --sf-slider--box-bar: calc(var(--sf-space-1) + var(--sf-ui-1--control-height));
+}
+
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])[thumbs]:not([thumbs="false"])):not(:has(> [data-sf-static])) {
+  --sf-slider--box-thumbs: calc(var(--sf-space-1) + var(--sf-d2));
+}
+
+:where(sf-slider:not(:defined)[root-class~="sf-slider--content"][thumbs]:not([thumbs="false"])):not(:has(> [data-sf-static])) {
   padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
 }
 

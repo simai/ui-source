@@ -15,6 +15,15 @@ const DRAG_SLOP = 6;
 // A drag pages when it travelled this part of one slide, or moved fast.
 const DRAG_RATIO = 0.15;
 const FLICK_SPEED = 0.4; // px per ms
+// A scroll that has not moved for this long has come to rest (where the
+// browser has no scrollend event). A gesture timing, not something drawn.
+const SCROLL_REST = 120;
+// A programmatic scroll that never arrives (the strip was hidden, the person
+// took it over) gives up after its own speed and this much more.
+const SCROLL_GIVE_UP = 700;
+// A wheel step counted in lines (deltaMode 1) is this many pixels, as
+// browsers scroll a line. A gesture tolerance, not something drawn.
+const WHEEL_LINE = 40;
 const EDITABLE = 'input, textarea, select, [contenteditable=""], [contenteditable="true"], .swiper-no-swiping';
 const prefersReducedMotion = () => typeof window.matchMedia === 'function'
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -58,15 +67,24 @@ class SimaiSlider {
     this.enabled = true;
     this.rtlTranslate = getComputedStyle(root).direction === 'rtl';
     this.wrapperEl = root.querySelector('.swiper-wrapper') || root.firstElementChild;
+    // The track is the browser's own scroll with snap points (owner decision
+    // 2026-11-21, carousel study): a finger, a trackpad's two fingers, the
+    // momentum and the rubber band at an end are the browser's; the arrows,
+    // the dots, the keys and the mouse drag move the scroll. cssMode false
+    // (Swiper's name) keeps the former transform strip.
+    this.css = options.cssMode !== false;
+    this._target = null;
     this.navigation = {};
     this.pagination = {};
     this.autoplay = this.createAutoplay();
     this.attachControls();
     this.attachKeyboard();
-    this.attachPointer();
+    if (this.css) this.attachScrollTrack();
+    else this.attachPointer();
     this.attachResize();
     root.swiper = this;
     root.classList.add('swiper-initialized', 'swiper-horizontal');
+    if (this.css) root.classList.add('swiper-css-mode');
     this.update();
     this.slideTo(numeric(options.initialSlide, 0), 0, false);
     queueMicrotask(() => this.emit('init'));
@@ -204,6 +222,303 @@ class SimaiSlider {
     this.el.addEventListener('dragstart', this._dragStart);
   }
 
+  // The scroll track (cssMode, the default since 2.0.0). The browser moves
+  // the strip for a finger, a pen, a trackpad and the wheel: a horizontal
+  // move pages and snaps to a slide, a vertical one scrolls the page
+  // (touch-action stays the browser's). The engine follows the scroll: the
+  // slide nearest to it becomes the active one. The mouse has no scroll
+  // gesture of its own, so a press and drag pulls the strip (simulateTouch
+  // false leaves the mouse out); allowTouchMove false leaves the strip to the
+  // buttons alone. A drag never ends in a click on a link under it.
+  attachScrollTrack() {
+    const track = this.wrapperEl;
+    if (!track) return;
+    const userMoves = this.params.allowTouchMove !== false;
+    if (userMoves) this.el.classList.add('swiper-touch');
+    if (userMoves && this.params.simulateTouch !== false) this.el.classList.add('swiper-mouse-drag');
+    this._scrollFrame = 0;
+    this._restTimer = 0;
+    this._scroll = () => {
+      if (this.destroyed) return;
+      window.clearTimeout(this._restTimer);
+      this._restTimer = window.setTimeout(() => this.scrollRest(), SCROLL_REST);
+      if (this._scrollFrame) return;
+      this._scrollFrame = window.requestAnimationFrame(() => {
+        this._scrollFrame = 0;
+        this.followScroll();
+      });
+    };
+    this._scrollEnd = () => this.scrollRest();
+    // A person's own scroll takes over from a programmatic one; a vertical
+    // wheel scrolls the page and is not one.
+    this._takeOver = (event) => {
+      if (this._drag?.state === 'drag') return;
+      if (event?.type === 'wheel' && Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      this.releaseTarget();
+      this._userScroll = true;
+    };
+    this._drag = null;
+    const allowed = () => userMoves && this.params.simulateTouch !== false && this.enabled && !this.destroyed;
+    this._pointerDown = (event) => {
+      this._takeOver();
+      if (event.pointerType !== 'mouse' || event.button !== 0 || !event.isPrimary || !allowed()) return;
+      if (event.target instanceof Element && event.target.closest(EDITABLE)) return;
+      if (!this.params.loop && this.lastIndex() === 0) return;
+      this._drag = {
+        id: event.pointerId, x: event.clientX, y: event.clientY, t: event.timeStamp,
+        from: this.activeIndex, start: this.scrollPosition(), dx: 0, state: 'pending',
+      };
+    };
+    this._pointerMove = (event) => {
+      const drag = this._drag;
+      if (!drag || event.pointerId !== drag.id || drag.state === 'off') return;
+      const dx = event.clientX - drag.x;
+      const dy = event.clientY - drag.y;
+      if (drag.state === 'pending') {
+        if (Math.abs(dx) < DRAG_SLOP && Math.abs(dy) < DRAG_SLOP) return;
+        if (Math.abs(dy) >= Math.abs(dx)) { drag.state = 'off'; return; }
+        drag.state = 'drag';
+        try { this.el.setPointerCapture(event.pointerId); } catch { /* the pointer is gone */ }
+        this.el.classList.add('swiper-dragging');
+        this.emit('touchStart');
+      }
+      event.preventDefault();
+      drag.dx = dx;
+      // The strip follows the pointer: content moves with it, mirrored right to left.
+      this.setScrollPosition(drag.start - (this.isRtl() ? -dx : dx), 'instant');
+      this.emit('sliderMove');
+    };
+    this._pointerUp = (event) => {
+      const drag = this._drag;
+      if (!drag || event.pointerId !== drag.id) return;
+      this._drag = null;
+      if (drag.state !== 'drag') return;
+      try { this.el.releasePointerCapture(event.pointerId); } catch { /* released */ }
+      const step = this.stepSize();
+      const elapsed = Math.max(1, event.timeStamp - drag.t);
+      const travelled = Math.abs(drag.dx);
+      const pages = event.type !== 'pointercancel'
+        && (travelled > step * DRAG_RATIO || (travelled > DRAG_SLOP * 2 && travelled / elapsed > FLICK_SPEED));
+      const swallow = (click) => { click.preventDefault(); click.stopPropagation(); };
+      this.el.addEventListener('click', swallow, {capture: true, once: true});
+      window.setTimeout(() => this.el.removeEventListener('click', swallow, {capture: true}), 0);
+      const forward = this.isRtl() ? drag.dx > 0 : drag.dx < 0;
+      // The snap stays off until the strip arrives: turned on under a moving
+      // strip it would jump to the nearest slide first.
+      this._releaseDragging = true;
+      const before = this.activeIndex;
+      this.slideTo(pages ? drag.from + (forward ? 1 : -1) : drag.from);
+      if (this.activeIndex !== before && this.params.autoplay?.disableOnInteraction) this.autoplay.stop();
+      this.emit('touchEnd');
+    };
+    this._dragStart = (event) => { if (userMoves) event.preventDefault(); };
+    // A trackpad's two-finger swipe (and Shift with a wheel) is a stream of
+    // horizontal wheel steps, its momentum included. The strip follows the
+    // stream with the snap held, and when it stops it pages as a drag does:
+    // past 15 % of a slide forward or back, else back to its slide. Left to
+    // the browser, a stream that paused between steps was snapped back to the
+    // nearest slide before it crossed half of one. A vertical wheel and a
+    // pinch (ctrl) stay the page's.
+    this._wheelGesture = null;
+    this._wheel = (event) => {
+      if (!userMoves || !this.enabled || this.destroyed || event.ctrlKey) return;
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      if (!this.params.loop && this.lastIndex() === 0) return;
+      event.preventDefault();
+      this.releaseTarget();
+      this._userScroll = true;
+      const unit = event.deltaMode === 1 ? WHEEL_LINE : (event.deltaMode === 2 ? track.clientWidth : 1);
+      let gesture = this._wheelGesture;
+      if (!gesture) {
+        gesture = {from: this.activeIndex, start: this.stopPosition(this.activeIndex), travel: 0};
+        this._wheelGesture = gesture;
+        this.el.classList.add('swiper-dragging');
+        this.emit('touchStart');
+      }
+      const step = this.stepSize();
+      gesture.travel = clamp(gesture.travel + event.deltaX * unit * (this.isRtl() ? -1 : 1), -step, step);
+      this.setScrollPosition(gesture.start + gesture.travel, 'instant');
+      this.emit('sliderMove');
+      window.clearTimeout(gesture.timer);
+      gesture.timer = window.setTimeout(() => this.endWheel(), SCROLL_REST);
+    };
+    // A finger let go short of half a slide is snapped back by the browser;
+    // past 15 % of one it pages, as the mouse drag does (a flick carries on
+    // by itself).
+    this._touchStart = (event) => {
+      this._takeOver(event);
+      this._touch = {from: this.activeIndex, start: this.stopPosition(this.activeIndex)};
+    };
+    this._touchEnd = () => {
+      const touch = this._touch;
+      this._touch = null;
+      if (!touch || !userMoves || !this.enabled) return;
+      window.requestAnimationFrame(() => {
+        if (this.destroyed || this._target !== null || this.activeIndex !== touch.from) return;
+        const travel = this.scrollPosition() - touch.start;
+        if (Math.abs(travel) <= this.stepSize() * DRAG_RATIO) return;
+        this.slideTo(touch.from + (travel > 0 ? 1 : -1));
+        if (this.params.autoplay?.disableOnInteraction !== false) this.autoplay.stop();
+      });
+    };
+    track.addEventListener('scroll', this._scroll, {passive: true});
+    track.addEventListener('scrollend', this._scrollEnd);
+    track.addEventListener('wheel', this._wheel, {passive: false});
+    track.addEventListener('touchstart', this._touchStart, {passive: true});
+    track.addEventListener('touchend', this._touchEnd, {passive: true});
+    track.addEventListener('touchcancel', this._touchEnd, {passive: true});
+    this.el.addEventListener('pointerdown', this._pointerDown);
+    this.el.addEventListener('pointermove', this._pointerMove);
+    this.el.addEventListener('pointerup', this._pointerUp);
+    this.el.addEventListener('pointercancel', this._pointerUp);
+    this.el.addEventListener('dragstart', this._dragStart);
+  }
+
+  // The scroll in the reading direction: 0 at the first slide, growing
+  // towards the last, right to left too (there scrollLeft runs negative).
+  scrollPosition() {
+    const left = this.wrapperEl?.scrollLeft || 0;
+    return this.isRtl() ? -left : left;
+  }
+
+  setScrollPosition(position, behavior = 'instant') {
+    if (!this.wrapperEl) return;
+    const value = clamp(position, 0, this.maxScroll());
+    this.wrapperEl.scrollTo({left: this.isRtl() ? -value : value, behavior});
+  }
+
+  maxScroll() {
+    const track = this.wrapperEl;
+    return track ? Math.max(0, track.scrollWidth - track.clientWidth) : 0;
+  }
+
+  // Where slide i starts, measured from the first slide in the reading direction.
+  slideStart(index) {
+    const slides = this.slides;
+    const first = slides[0];
+    const slide = slides[index];
+    if (!first || !slide) return 0;
+    const a = first.getBoundingClientRect();
+    const b = slide.getBoundingClientRect();
+    return this.isRtl() ? a.right - b.right : b.left - a.left;
+  }
+
+  // The scroll at which slide i is the active one: its start, short of the end.
+  stopPosition(index) {
+    return Math.min(this.slideStart(index), this.maxScroll());
+  }
+
+  stepSize() {
+    if (this.css && this.slides.length > 1) return Math.abs(this.slideStart(1)) || this.el.clientWidth / this.perView();
+    return this.el.clientWidth / this.perView();
+  }
+
+  // The stop nearest to the scroll: the last one at the end of the strip.
+  nearestStop() {
+    const position = this.scrollPosition();
+    const last = this.lastIndex();
+    if (position >= this.maxScroll() - 1) return last;
+    let best = 0;
+    let distance = Infinity;
+    for (let index = 0; index <= last; index += 1) {
+      const gap = Math.abs(this.stopPosition(index) - position);
+      if (gap < distance) { distance = gap; best = index; }
+    }
+    return best;
+  }
+
+  // The wheel stream stopped: page past DRAG_RATIO of a slide, else go back.
+  endWheel() {
+    const gesture = this._wheelGesture;
+    this._wheelGesture = null;
+    if (!gesture || this.destroyed) return;
+    const pages = Math.abs(gesture.travel) > this.stepSize() * DRAG_RATIO;
+    this._releaseDragging = true;
+    const before = this.activeIndex;
+    this.activeIndex = gesture.from;
+    this.slideTo(pages ? gesture.from + (gesture.travel > 0 ? 1 : -1) : gesture.from);
+    if (this.activeIndex !== before || pages) {
+      if (this.params.autoplay?.disableOnInteraction !== false) this.autoplay.stop();
+    }
+    this.emit('touchEnd');
+  }
+
+  // Scroll to the active slide's stop; smooth unless the speed is 0, the
+  // person asked for less motion, or the strip is placed without travelling.
+  scrollToActive(speed = this.params.speed) {
+    if (!this.wrapperEl) return;
+    const target = this.stopPosition(this.activeIndex);
+    if (Math.abs(target - this.scrollPosition()) < 1) {
+      this.releaseTarget();
+      this.arrive();
+      return;
+    }
+    const smooth = numeric(speed, 300) > 0 && !prefersReducedMotion();
+    this._target = this.activeIndex;
+    window.clearTimeout(this._giveUp);
+    this._giveUp = window.setTimeout(() => { this.releaseTarget(); this.arrive(); }, (smooth ? numeric(speed, 300) : 0) + SCROLL_GIVE_UP);
+    this.setScrollPosition(target, smooth ? 'smooth' : 'instant');
+    if (!smooth) {
+      this.releaseTarget();
+      this.arrive();
+    }
+  }
+
+  releaseTarget() {
+    this._target = null;
+    window.clearTimeout(this._giveUp);
+  }
+
+  // The strip came to rest where it was sent: the snap comes back after a drag.
+  arrive() {
+    if (this._releaseDragging) {
+      this._releaseDragging = false;
+      this.el.classList.remove('swiper-dragging');
+    }
+    this.syncVisibility();
+  }
+
+  // While the strip scrolls, the slides in view are counted again; a scroll
+  // the person made moves the active slide with it (a programmatic one keeps
+  // the slide it was sent to).
+  followScroll() {
+    if (this.destroyed) return;
+    this.syncVisibility();
+    if (this._target !== null) {
+      if (Math.abs(this.stopPosition(this._target) - this.scrollPosition()) < 1) {
+        this.releaseTarget();
+        this.arrive();
+      }
+      return;
+    }
+    if (this._drag?.state === 'drag' || this._wheelGesture) return;
+    const next = this.nearestStop();
+    if (next === this.activeIndex) return;
+    this.previousIndex = this.activeIndex;
+    this.activeIndex = next;
+    this.realIndex = next;
+    this.syncControls();
+    this.emit('slideChange');
+    if (this._userScroll && this.autoplay.running && this.params.autoplay?.disableOnInteraction !== false) this.autoplay.stop();
+    else this.autoplay.restart?.();
+  }
+
+  scrollRest() {
+    if (this.destroyed) return;
+    window.clearTimeout(this._restTimer);
+    if (this._target !== null) {
+      this.releaseTarget();
+      this.arrive();
+    } else if (this._releaseDragging && !this._drag) {
+      this.arrive();
+    } else {
+      this.followScroll();
+    }
+    const user = this._userScroll;
+    this._userScroll = false;
+    if (user) this.emit('transitionEnd');
+  }
+
   perView() {
     return Math.max(1, numeric(this.params.slidesPerView, 1));
   }
@@ -233,12 +548,18 @@ class SimaiSlider {
         this._resizeFrame = 0;
         if (this.destroyed) return;
         const before = this.perView();
-        this.update();
+        const width = this.el.clientWidth;
+        // The scroll track lays the active slide at its stop again when its
+        // width changed (a height change, a phone's address bar, is not one).
+        const moved = width !== this._width;
+        this._width = width;
+        if (!this.css || this.originalParams.breakpoints || moved) this.update();
+        if (this.css && moved && !this._drag) this.scrollToActive(0);
         if (this.perView() !== before) this.emit('breakpoint');
         this.emit('resize');
       });
     };
-    if (!this.originalParams.breakpoints) return;
+    if (!this.originalParams.breakpoints && !this.css) return;
     if (this.breakpointsBase() === 'window' || typeof ResizeObserver !== 'function') {
       window.addEventListener('resize', this._resize);
       return;
@@ -282,30 +603,80 @@ class SimaiSlider {
       : `translate3d(${shift}, 0, 0)`;
   }
 
+  // Autoplay turns a slide every delay. pause() holds the time left (a
+  // pointer over the slider, a hidden tab) and resume() goes on from it, so a
+  // timed indicator that froze with it stays true; stop() and start() are
+  // the person's. At the last slide it goes back to the first
+  // (stopOnLastSlide stops there), reverseDirection turns backwards.
   createAutoplay() {
     let timer = null;
+    let startedAt = 0;
+    let left = 0;
     const settings = this.params.autoplay;
+    const delay = () => numeric(this.params.autoplay?.delay ?? settings?.delay, 5000);
+    const clear = () => { if (timer !== null) window.clearTimeout(timer); timer = null; };
+    const schedule = (ms) => {
+      clear();
+      startedAt = Date.now();
+      left = ms;
+      timer = window.setTimeout(turn, ms);
+    };
+    const turn = () => {
+      timer = null;
+      if (!api.running || api.paused || this.destroyed) return;
+      const options = this.params.autoplay || {};
+      const back = Boolean(options.reverseDirection);
+      const last = this.lastIndex();
+      const atEnd = back ? this.activeIndex <= 0 : this.activeIndex >= last;
+      if (atEnd && !this.params.loop) {
+        if (options.stopOnLastSlide) { api.stop(); return; }
+        this.slideTo(back ? last : 0);
+      } else if (back) this.slidePrev();
+      else this.slideNext();
+      if (api.running && !api.paused && timer === null) schedule(delay());
+    };
     const api = {
       running: false,
+      paused: false,
       start: () => {
         if (!settings || settings.enabled === false || api.running) return false;
         // Under reduced motion the slides do not turn by themselves (C245).
         if (a11yOn(this.params) && prefersReducedMotion()) return false;
         api.running = true;
-        timer = window.setInterval(() => this.slideNext(), numeric(settings.delay, 5000));
+        api.paused = false;
+        schedule(delay());
         this.emit('autoplayStart');
         return true;
       },
       stop: () => {
-        if (timer !== null) window.clearInterval(timer);
-        timer = null;
+        clear();
         const wasRunning = api.running;
         api.running = false;
+        api.paused = false;
         if (wasRunning) this.emit('autoplayStop');
         return wasRunning;
       },
-      pause: () => api.stop(),
-      resume: () => api.start(),
+      pause: () => {
+        if (!api.running || api.paused) return false;
+        clear();
+        left = Math.max(0, left - (Date.now() - startedAt));
+        api.paused = true;
+        this.emit('autoplayPause');
+        return true;
+      },
+      resume: () => {
+        if (!api.running || !api.paused) return false;
+        api.paused = false;
+        schedule(left);
+        this.emit('autoplayResume');
+        return true;
+      },
+      // A slide changed: its own full time starts (held, it waits whole).
+      restart: () => {
+        if (!api.running) return;
+        if (api.paused) { left = delay(); return; }
+        schedule(delay());
+      },
     };
     return api;
   }
@@ -363,6 +734,7 @@ class SimaiSlider {
     this.realIndex = this.activeIndex;
     this.renderPagination();
     this.sync();
+    if (this.css && this._target === null && !this._drag) this.scrollToActive(0);
     if (this.params.autoplay && !this.autoplay.running) this.autoplay.start();
     this.emit('update');
     return this;
@@ -424,15 +796,37 @@ class SimaiSlider {
   }
 
   sync() {
+    this.syncVisibility();
+    if (this.wrapperEl && !this.css) {
+      this.place();
+      this.wrapperEl.style.transitionDuration = `${numeric(this.params.speed, 300)}ms`;
+    }
+    return this.syncControls();
+  }
+
+  // In view: every slide the window shows a part of. The transform strip
+  // counts it from the offset (short of the end at the last stop) to offset +
+  // slidesPerView; the scroll track measures it, as a finger may hold the
+  // strip anywhere (a strip not laid out yet is counted as the transform's).
+  syncVisibility() {
     const slides = this.slides;
     const a11y = a11yOn(this.params);
     const slidesPerView = this.perView();
-    // In view: every slide the window shows a part of, from the offset (short
-    // of the end at the last stop) to offset + slidesPerView.
     const offset = this.offsetSlides();
+    const track = this.wrapperEl;
+    const measured = this.css && track && track.clientWidth > 0;
+    const position = measured ? this.scrollPosition() : 0;
+    const width = measured ? track.clientWidth : 0;
     slides.forEach((slide, index) => {
       const active = index === this.activeIndex;
-      const visible = index + 1 > offset + 1e-6 && index < offset + slidesPerView - 1e-6;
+      let visible;
+      if (measured) {
+        const start = this.slideStart(index);
+        const size = slide.getBoundingClientRect().width;
+        visible = start + size > position + 1 && start < position + width - 1;
+      } else {
+        visible = index + 1 > offset + 1e-6 && index < offset + slidesPerView - 1e-6;
+      }
       slide.classList.toggle('swiper-slide-active', active);
       slide.classList.toggle('swiper-slide-visible', visible);
       slide.setAttribute('aria-hidden', String(!visible));
@@ -443,10 +837,12 @@ class SimaiSlider {
         slide.toggleAttribute('inert', !visible || slide.__sfAuthoredInert);
       }
     });
-    if (this.wrapperEl) {
-      this.place();
-      this.wrapperEl.style.transitionDuration = `${numeric(this.params.speed, 300)}ms`;
-    }
+  }
+
+  // The arrows at an edge, the dots or the counter, after the active slide moved.
+  syncControls() {
+    const slides = this.slides;
+    const a11y = a11yOn(this.params);
     const disabledClass = this.params.navigation?.disabledClass || 'swiper-button-disabled';
     const looping = Boolean(this.params.loop);
     const edges = [
@@ -509,8 +905,17 @@ class SimaiSlider {
     if (changed) this.previousIndex = this.activeIndex;
     this.activeIndex = next;
     this.realIndex = next;
+    if (this.css) {
+      this.syncControls();
+      this.scrollToActive(speed);
+      if (changed) this.autoplay.restart();
+      if (changed && runCallbacks) this.emit('slideChange');
+      if (runCallbacks) queueMicrotask(() => this.emit('transitionEnd'));
+      return this;
+    }
     if (this.wrapperEl) this.wrapperEl.style.transitionDuration = `${numeric(speed, 300)}ms`;
     this.sync();
+    if (changed) this.autoplay.restart();
     if (changed && runCallbacks) this.emit('slideChange');
     if (runCallbacks) queueMicrotask(() => this.emit('transitionEnd'));
     return this;
@@ -541,7 +946,19 @@ class SimaiSlider {
     this.el.removeEventListener('pointerup', this._pointerUp);
     this.el.removeEventListener('pointercancel', this._pointerUp);
     this.el.removeEventListener('dragstart', this._dragStart);
-    this.el.classList.remove('swiper-touch', 'swiper-dragging');
+    if (this.css && this.wrapperEl) {
+      this.wrapperEl.removeEventListener('scroll', this._scroll);
+      this.wrapperEl.removeEventListener('scrollend', this._scrollEnd);
+      this.wrapperEl.removeEventListener('wheel', this._wheel);
+      this.wrapperEl.removeEventListener('touchstart', this._touchStart);
+      this.wrapperEl.removeEventListener('touchend', this._touchEnd);
+      this.wrapperEl.removeEventListener('touchcancel', this._touchEnd);
+    }
+    if (this._wheelGesture) window.clearTimeout(this._wheelGesture.timer);
+    if (this._scrollFrame) window.cancelAnimationFrame(this._scrollFrame);
+    window.clearTimeout(this._restTimer);
+    window.clearTimeout(this._giveUp);
+    this.el.classList.remove('swiper-touch', 'swiper-dragging', 'swiper-mouse-drag', 'swiper-css-mode');
     if (cleanStyles && this.wrapperEl) this.wrapperEl.removeAttribute('style');
     this.slides.forEach(slide => {
       slide.classList.remove('swiper-slide-active', 'swiper-slide-visible');

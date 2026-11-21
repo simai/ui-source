@@ -197,17 +197,18 @@ function renderArrows(context) {
 }
 
 // The pause button (C143 (6)): drawn only when the page asks for autoplay,
-// first in the Tab order; the slider turns only while it is shown.
+// first in the Tab order; the slider turns only while it is shown. It stands
+// in the bar under the slides, beside the position (owner decision
+// 2026-11-21), so it is the soft grey button on the page, not a plate.
 function renderRotation(context) {
   if (!context.autoplay) return nothing;
-  const plated = !context.content;
   return html`
-    <div class=${joinClasses('sf-slider-rotation-place', plated && 'sf-slider-arrows--plate')}>
+    <div class="sf-slider-rotation-place">
       <sf-button-icon
         root-class="sf-slider-rotation sf-slider-button-rotation"
         icon="pause"
         size=${context.buttonSize || '1'}
-        appearance=${plated ? 'ghost' : 'tonal'}
+        appearance="tonal"
         scheme="on-surface"
         aria-label=${context.pauseLabel}
       ></sf-button-icon>
@@ -215,10 +216,12 @@ function renderRotation(context) {
   `;
 }
 
+// The position stands under the slides in both places (owner decision
+// 2026-11-21): bare dots, no plate over a picture any more.
 function renderPosition(context) {
   if (!context.dots) return nothing;
   const authored = context.component?.hasAttribute?.('dots-type');
-  const place = authored ? '' : (context.content ? 'bare' : 'plate');
+  const place = authored ? '' : 'bare';
   return html`<div class=${getDotsClasses(context.dotsType, context.dotsSize, place)}></div>`;
 }
 

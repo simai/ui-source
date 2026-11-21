@@ -33,6 +33,9 @@ const SLIDER_PARTS = {
   speed: undefined,
   delay: 3000,
   stopped: 'stopped',
+  // While the slides turn by themselves the dots are the timed position
+  // (sf-slider-dots--timed, owner decision 2026-11-21).
+  timed: true,
 };
 const SLIDER_BOUND_FLAG = 'sfSliderBound';
 const SLIDER_WAITING_FLAG = 'sfSliderWaiting';
@@ -310,6 +313,22 @@ function linkThumbnails(root, slider, thumbs) {
     slide.setAttribute('role', 'button');
     slide.setAttribute('aria-label', names[index]);
   });
+  // The shown thumbnail is scrolled into view inside its strip (DEV
+  // msg-0bea9d3c): a strip longer than its place showed the first ones only.
+  // Only the strip moves, never the page.
+  const reveal = () => {
+    const strip = thumbs.wrapperEl;
+    const slide = slides[slider.activeIndex];
+    if (!(strip instanceof HTMLElement) || !slide || strip.scrollWidth <= strip.clientWidth + 1) return;
+    const box = strip.getBoundingClientRect();
+    const own = slide.getBoundingClientRect();
+    const inset = Number.parseFloat(getComputedStyle(strip).paddingInlineStart) || 0;
+    let delta = 0;
+    if (own.left < box.left + inset) delta = own.left - box.left - inset;
+    else if (own.right > box.right - inset) delta = own.right - box.right + inset;
+    if (Math.abs(delta) < 1) return;
+    strip.scrollTo({left: strip.scrollLeft + delta, behavior: prefersReducedMotion() ? 'instant' : 'smooth'});
+  };
   const mark = () => {
     slides.forEach((slide, index) => {
       const active = index === slider.activeIndex;
@@ -318,6 +337,7 @@ function linkThumbnails(root, slider, thumbs) {
       if (active) slide.setAttribute('aria-current', 'true');
       else slide.removeAttribute('aria-current');
     });
+    reveal();
   };
   const listeners = slides.map((slide, index) => {
     const listener = () => slider.slideTo(index);
@@ -345,12 +365,14 @@ function linkThumbnails(root, slider, thumbs) {
     next = Math.min(Math.max(next, 0), last);
     slider.slideTo(next);
     mark();
-    slides[next]?.focus?.();
+    slides[next]?.focus?.({ preventScroll: true });
   };
   // The thumbnails' engine names its slides again on every update.
   const onUpdate = () => { name(); mark(); };
   thumbs.el.addEventListener('keydown', onKey);
   thumbs.on?.('update', onUpdate);
+  // The thumbnails' engine lays its own first stop again on a resize.
+  thumbs.on?.('resize', reveal);
   slider.on?.('slideChange', mark);
   name();
   mark();
@@ -358,6 +380,7 @@ function linkThumbnails(root, slider, thumbs) {
     listeners.forEach(([slide, listener]) => slide.removeEventListener('click', listener));
     thumbs.el.removeEventListener('keydown', onKey);
     thumbs.off?.('update', onUpdate);
+    thumbs.off?.('resize', reveal);
     slider.off?.('slideChange', mark);
     slides.forEach((slide, index) => {
       if (!slide.isConnected) return;
@@ -525,13 +548,19 @@ function createAutoplayGuard(root, slider, rotationButton, words = {}) {
     }
     root.dataset.rotation = stopped ? (words.stopped || 'stopped') : 'playing';
   };
+  // Stopped is the person's; a hold (the pointer over the slider, a hidden
+  // tab) only pauses the turn and keeps its time, so the timed position
+  // freezes with it and goes on from there (data-rotation-held).
   const apply = () => {
-    const run = !stopped && holds.size === 0 && root.isConnected;
-    if (run === slider.autoplay.running) return;
+    const run = !stopped && root.isConnected;
+    const held = run && holds.size > 0;
     applying = true;
-    if (run) slider.autoplay.start();
-    else slider.autoplay.stop();
+    if (run && !slider.autoplay.running) slider.autoplay.start();
+    else if (!run && slider.autoplay.running) slider.autoplay.stop();
+    if (held) slider.autoplay.pause?.();
+    else if (run) slider.autoplay.resume?.();
     applying = false;
+    root.toggleAttribute('data-rotation-held', held && slider.autoplay.running);
   };
   const stop = () => { stopped = true; paint(); apply(); };
   const start = () => { stopped = false; paint(); apply(); };
@@ -540,7 +569,12 @@ function createAutoplayGuard(root, slider, rotationButton, words = {}) {
 
   // The engine stops by itself on a swipe (disableOnInteraction): that is the
   // person's stop too, and the button says so.
-  const onEngineStop = () => { if (!applying) { stopped = true; paint(); } };
+  const onEngineStop = () => {
+    if (applying) return;
+    stopped = true;
+    paint();
+    root.removeAttribute('data-rotation-held');
+  };
   const onRotation = (event) => {
     event.preventDefault();
     if (stopped) start();
@@ -577,6 +611,7 @@ function createAutoplayGuard(root, slider, rotationButton, words = {}) {
     root.removeEventListener('pointerleave', onPointerLeave);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     delete root.dataset.rotation;
+    root.removeAttribute('data-rotation-held');
   };
 }
 
@@ -754,9 +789,19 @@ function bindSlider(root, parts) {
   if (thumbs) {
     sliderOptions.thumbs = { swiper: thumbs };
   }
+  // The timed position while the slides turn (sf-slider-dots--timed): the
+  // current dot fills for the slide's time.
+  const timed = Boolean(parts.timed && sliderOptions.autoplay && pagination && pagination.type !== 'fraction');
+  paginationEl?.classList.toggle('sf-slider-dots--timed', timed);
+  if (timed) paginationEl.style.setProperty('--sf-slider-dots--delay', `${toNumber(sliderOptions.autoplay.delay, parts.delay)}ms`);
+  root._sfSliderTimed = timed ? paginationEl : null;
   // The keys listen on the whole block: the arrows and the dots, where the
-  // focus is, sit outside the strip (SL-3).
-  if (sliderOptions.keyboard === true || sliderOptions.keyboard?.enabled) {
+  // focus is, sit outside the strip (SL-3). ArrowLeft / ArrowRight page while
+  // the focus is in the slider unless the page turns them off
+  // (data-swiper-keyboard="false"; on by default since sf-slider 2.0.0, the
+  // carousel study 2026-11-21).
+  const keyboardOff = sliderOptions.keyboard === false || (isPlainObject(sliderOptions.keyboard) && sliderOptions.keyboard.enabled === false);
+  if (!keyboardOff) {
     sliderOptions.keyboard = {
       ...(isPlainObject(sliderOptions.keyboard) ? sliderOptions.keyboard : {}),
       enabled: true,
@@ -818,6 +863,11 @@ function unbindSlider(root) {
     else element.setAttribute('aria-label', authored);
   });
   if (root._sfSliderRotationHidden) root._sfSliderRotationHidden.hidden = false;
+  if (root._sfSliderTimed) {
+    root._sfSliderTimed.classList.remove('sf-slider-dots--timed');
+    root._sfSliderTimed.style.removeProperty('--sf-slider-dots--delay');
+  }
+  delete root._sfSliderTimed;
   delete root._sfSliderRotationHidden;
   restoreRegionSemantics(root, root._sfSliderRegion);
   delete root._sfSliderRegion;
