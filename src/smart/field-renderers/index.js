@@ -3951,11 +3951,21 @@ export {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fiel
 // (the fill family, 12 % light, 24 % dark) through the band's public
 // variable; the text keeps the text ink. Every menu item carries an 8 px dot
 // of its condition's colour, grey for the rest.
+// The window is one step (VR11-4, group build 16 G8): its condition band,
+// its value fields and its rows stand on the rows' step, the choice list's
+// own -- the panel's, 1, which the opener's density brings down (C22, C79:
+// 40 rows and a 48 band, compact 32 and 40). The band took the list's size
+// (filterSize), so in a size 1/2 list it was 41 with 14 px text over a 48
+// search and 40 rows of 16 px text.
+function windowStep() {
+    return '1';
+}
+
 function renderConditionControl(field, host, conditions, selected) {
     if (conditions.length < 2) return nothing;
     const tone = filterConditionTone(selected);
     const style = tone ? `--sf-dropdown-background-color: var(--sf-${tone}-container)` : '';
-    return html`<sf-dropdown class="sf-filter-window-condition" size=${filterSize(host)} appearance="band" mode="select"
+    return html`<sf-dropdown class="sf-filter-window-condition" size=${windowStep()} appearance="band" mode="select"
             search=${conditions.length >= 10 ? 'true' : 'false'} list-width="trigger" aria-label=${setText(host, 'filterCondition')}
             data-tone=${tone || 'neutral'} style=${style || nothing}
             .options=${conditions.map((operator) => ({value: operator, text: host.getFilterOperatorLabel(operator), label: host.getFilterOperatorLabel(operator),
@@ -3988,7 +3998,7 @@ function valueRow(content) {
 }
 
 function renderStringWindow(field, host, value, operator) {
-    return valueRow(html`<sf-input size=${filterSize(host)} appearance="plain" root-class="flex-1 min-w-0" aria-label=${`${field.label || field.key}: ${host.getFilterOperatorLabel(operator)}`}
+    return valueRow(html`<sf-input size=${windowStep()} appearance="plain" root-class="flex-1 min-w-0" aria-label=${`${field.label || field.key}: ${host.getFilterOperatorLabel(operator)}`}
             placeholder=${setText(host, 'filterTextPlaceholder')}
             value=${typeof value.value === 'string' ? value.value : ''} name="sf_filter_${field.key || 'text'}"
             @change=${(event) => host.patchTempFilterValue(field.key, {operator, value: event.target?.value || ''})}></sf-input>`);
@@ -4002,7 +4012,7 @@ function renderNumberWindow(field, host, value, operator) {
     const label = field.label || field.key;
     if (operator !== 'between') {
         const one = Array.isArray(value.value) ? value.value[0] : value.value;
-        return valueRow(html`<sf-input size=${filterSize(host)} appearance="plain" root-class="flex-1 min-w-0" inputmode="decimal"
+        return valueRow(html`<sf-input size=${windowStep()} appearance="plain" root-class="flex-1 min-w-0" inputmode="decimal"
                 aria-label=${named(`${label}: ${host.getFilterOperatorLabel(operator)}`)} placeholder=${sign || nothing}
                 value=${one ?? ''} name="sf_filter_${field.key || 'number'}"
                 @change=${(event) => host.patchTempFilterValue(field.key, {operator, value: event.target?.value || ''})}></sf-input>`);
@@ -4016,10 +4026,10 @@ function renderNumberWindow(field, host, value, operator) {
     const from = setText(host, 'rangeFromWord');
     const to = setText(host, 'rangeToWord');
     return valueRow(html`<span class="sf-filter-window-word" aria-hidden="true">${from}</span>
-        <sf-input size=${filterSize(host)} appearance="plain" root-class="flex-1 min-w-0" inputmode="decimal" placeholder=${sign || nothing}
+        <sf-input size=${windowStep()} appearance="plain" root-class="flex-1 min-w-0" inputmode="decimal" placeholder=${sign || nothing}
                   aria-label=${named(`${label}: ${from}`)} value=${range[0] ?? ''} name="sf_filter_${field.key || 'number'}" @change=${(event) => patch(0, event.target?.value)}></sf-input>
         <span class="sf-filter-window-word" aria-hidden="true">${to}</span>
-        <sf-input size=${filterSize(host)} appearance="plain" root-class="flex-1 min-w-0" inputmode="decimal" placeholder=${sign || nothing}
+        <sf-input size=${windowStep()} appearance="plain" root-class="flex-1 min-w-0" inputmode="decimal" placeholder=${sign || nothing}
                   aria-label=${named(`${label}: ${to}`)} value=${range[1] ?? ''} name="sf_filter_${field.key || 'number'}_second" @change=${(event) => patch(1, event.target?.value)}></sf-input>`);
 }
 

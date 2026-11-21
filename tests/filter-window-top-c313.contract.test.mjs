@@ -23,7 +23,9 @@ test('C313 (1), FF-11: sf-dropdown band -- no frame, no radius, the search heade
   assert.match(block, /--sf-dropdown--band-inset: calc\(#\{panel\.\$inset\} \+ #\{panel\.\$row-padding\} \+ var\(--sf-dropdown--band-edge\)\);/u);
   assert.match(block, /--sf-dropdown-field--border-end-end-radius: 0;/u);
   assert.match(block, /--sf-dropdown-field--background-color: var\(--sf-dropdown-background-color, var\(--sf-surface-container\)\);/u);
-  assert.match(block, /min-block-size: calc\(var\(--sf-dropdown--band-row\) \+ 2 \* #\{panel\.\$inset\} \+ var\(--sf-px\)\);/u);
+  assert.match(block, /min-block-size: calc\(var\(--sf-dropdown--band-row\) \+ 2 \* #\{panel\.\$inset\}\);/u);
+  // VR11-4 (group build 16): the band's hairline sits inside the search's height, not one pixel more.
+  assert.doesNotMatch(block, /min-block-size: calc\(var\(--sf-dropdown--band-row\) \+ 2 \* #\{panel\.\$inset\} \+ var\(--sf-px\)\);/u);
   assert.match(block, /background-image: linear-gradient\(var\(--sf-surface-state-hover\), var\(--sf-surface-state-hover\)\);/u);
   assert.match(block, /@layer sf\.paint \{\n\s+\.sf-dropdown\.sf-dropdown--band\.sf-dropdown--band > \.sf-dropdown-field\.sf-dropdown-field \{\n\s+border-block-end-color: var\(--sf-outline-variant\);/u);
 });
@@ -58,7 +60,7 @@ test('C314: excluding conditions are error red, presence tertiary purple, the re
 
 test('C313 (1), C314: the window\'s condition is a band with a menu the band\'s width, size 1 rows, search from ten, a tint only for unusual conditions', () => {
   const source = read('src/smart/field-renderers/index.js');
-  assert.match(source, /<sf-dropdown class="sf-filter-window-condition" size=\$\{filterSize\(host\)\} appearance="band" mode="select"/u);
+  assert.match(source, /<sf-dropdown class="sf-filter-window-condition" size=\$\{windowStep\(\)\} appearance="band" mode="select"/u);
   assert.match(source, /search=\$\{conditions\.length >= 10 \? 'true' : 'false'\} list-width="trigger"/u);
   assert.match(source, /tone \? `--sf-dropdown-background-color: var\(--sf-\$\{tone\}-container\)` : ''/u);
   assert.match(source, /dot: filterConditionTone\(operator\) \|\| 'neutral'/u);
@@ -105,7 +107,7 @@ test('C313 (5), C312 (2): a boolean has no band and no footer; a press applies; 
   const shell = read('src/smart/field-renderers/filter-window.js');
   assert.match(shell, /footer: withFooter = true/u);
   // The footer's buttons a step below the rows, as the accepted study draws them: «Применить (N)» stays on one line in 20rem.
-  assert.match(shell, /const footSize = sheet \? size : '1\/2';/u);
+  assert.match(shell, /const footSize = sheet \? '1' : '1\/2';/u);
   assert.match(shell, /<sf-button size=\$\{footSize\} scheme="primary" text=\$\{applyText\(\)\}/u);
   assert.match(shell, /applyTempFilterValue: \(key, patch\) => \{/u);
   assert.match(shell, /resetFilter: \(\) => finish\('reset'\),/u);

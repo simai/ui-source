@@ -19137,6 +19137,51 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/component/avatars/scss/_css__avatars.scss photo over initials"
+    },
+    {
+      "id": "behaviour-filter-window-one-step",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "module.smart-field-renderers 1.27.1 and component.dropdown 1.18.2 (group build 16 G8; owner remark VR11-4, study ui-control control/research/2026-11-21-popup-head): the filter field window is one step. Its condition band and value fields stand on the rows' step (the panel's, 1, which the opener's density brings down), not the list's size: in a size 1/2 list the band was 41 with 14 px text over a 48 search and 40 rows of 16 px. The band is the search header's height, the hairline inside (it was one pixel taller: 49 / 41), and while the options' scrollbar takes room the band's end gives the track (--sf-dropdown-band-end, public), so the chevron stays in the checks' column. A phone sheet's footer is on the rows' step too.",
+      "items": [
+        {
+          "component": "module.smart-field-renderers",
+          "from": "the band and value fields take filterWindow.open's size",
+          "to": "the window keeps its rows' step; size only names the list's"
+        },
+        {
+          "component": "component.dropdown",
+          "from": "band = row + 2 insets + 1 px; the chevron fixed",
+          "to": "band = row + 2 insets, the line inside; --sf-dropdown-band-end moves the chevron beside a scrolling list"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "A page that wanted a smaller window sets data-sf-density=\"compact\" on the opener's region (C22, C79).",
+      "owner": "ui-source",
+      "source": "src/smart/field-renderers/index.js windowStep, filter-window.js followTrack, src/component/dropdown/scss/_css__custom.scss band"
+    },
+    {
+      "id": "value-settings-panel-head-step",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-settings 1.10.1 (group build 16 G8; owner remark VR11-4): the panel look's head is as tall as its search (48 at size 1, 40 at 1/2 and compact; it was 45 / 41 / 37) and the close button's glyph ends in the rows' end column, where the checks end, with and without the body's scrollbar (+8 and +19 before); the search icon moves in with the scrollbar.",
+      "items": [
+        {
+          "component": "sf-settings",
+          "from": "head 45 / 41 / 37, close 8 px past the checks",
+          "to": "head = search (48 / 40 / 40), close in the checks' column"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/settings/scss/_smart__settings.scss head"
     }
   ]
 }

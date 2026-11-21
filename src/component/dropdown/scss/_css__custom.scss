@@ -813,6 +813,11 @@
     --sf-dropdown--band-edge: var(--sf-dropdown-band-edge, calc(var(--sf-px) * 0));
     --sf-dropdown--band-inset: calc(#{panel.$inset} + #{panel.$row-padding} + var(--sf-dropdown--band-edge));
     --sf-dropdown--band-row: var(--sf-ui-1--control-height);
+    /* --sf-dropdown-band-end (public): room the band's end gives beside a
+       list whose scrollbar takes room -- the track's width -- so the
+       chevron's glyph stays in the rows' end column, as the rows' checks
+       move in by the track (the filter window writes it, VR11-4). */
+    --sf-dropdown--band-end: var(--sf-dropdown-band-end, calc(var(--sf-px) * 0));
     gap: 0;
     margin-inline: calc(-1 * var(--sf-dropdown--band-edge));
   }
@@ -834,10 +839,12 @@
     --sf-dropdown-field--padding-top: 0;
     --sf-dropdown-field--padding-bottom: 0;
     --sf-dropdown-field--padding-inline-start: var(--sf-dropdown--band-inset);
-    --sf-dropdown-field--padding-inline-end: var(--sf-dropdown--band-inset);
+    --sf-dropdown-field--padding-inline-end: calc(var(--sf-dropdown--band-inset) + var(--sf-dropdown--band-end));
     --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-container));
     box-sizing: border-box;
-    min-block-size: calc(var(--sf-dropdown--band-row) + 2 * #{panel.$inset} + var(--sf-px));
+    /* The search header's height, its hairline inside (VR11-4: one pixel
+       more stood the band at 49 over a 48 search, 41 over 40). */
+    min-block-size: calc(var(--sf-dropdown--band-row) + 2 * #{panel.$inset});
     border-block-end-width: var(--sf-px);
     border-block-end-style: solid;
   }

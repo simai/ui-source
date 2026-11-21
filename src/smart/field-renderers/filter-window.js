@@ -10,7 +10,9 @@
 //     anchor,                  the control it opens from (required)
 //     field,                   the Framework field descriptor with its filter
 //     value,                   the filter's value now: {value?, values?, operator?}
-//     size,                    the step of the controls ('1' or '1/2'), the list's own
+//     size,                    the list's step ('1' or '1/2'); the window keeps its rows'
+//                              step whatever it is (VR11-4, group build 16): one step for
+//                              the band, the search, the rows and a phone sheet's footer
 //     placement,               sf-popover's (bottom-start)
 //   });
 //   answer: {action: 'apply', value} -- the value the person set
@@ -211,13 +213,42 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     };
     // «Применить (N)» (FO5-1, C157 (3)): the number of values chosen when the
     // condition is a list; plain «Применить» otherwise or with none chosen.
-    const footSize = sheet ? size : '1/2';
+    const footSize = sheet ? '1' : '1/2';
     const applyText = () => {
       const number = typeof count === 'function' ? count(temp) : (Array.isArray(temp?.values) ? temp.values.length : 0);
       return number ? `${word('filterApply', anchor)} (${number})` : word('filterApply', anchor);
     };
+    // The band's chevron stays in the rows' check column (VR11-4, group
+    // build 16 G8): while the options' scrollbar takes room the checks move
+    // in by its track, so the band's end gives the same room
+    // (--sf-dropdown-band-end, the page's track --sf-scroll-bg-width). It
+    // stood 14 px past the checks. The list draws after the window, so the
+    // scroller is looked for whenever the content changes.
+    let track = null;
+    const followTrack = () => {
+      const scroller = body.querySelector('.sf-choice-scroll');
+      if (track?.scroller === scroller) return;
+      track?.observer.disconnect();
+      track = null;
+      body.style.removeProperty('--sf-dropdown-band-end');
+      if (!scroller || typeof ResizeObserver !== 'function') return;
+      const write = () => {
+        if (scroller.offsetWidth - scroller.clientWidth > 0) body.style.setProperty('--sf-dropdown-band-end', 'var(--sf-scroll-bg-width)');
+        else body.style.removeProperty('--sf-dropdown-band-end');
+      };
+      // Written on the next frame: the observer's own call must not resize
+      // what it watches (a ResizeObserver loop).
+      const observer = new ResizeObserver(() => requestAnimationFrame(write));
+      observer.observe(scroller);
+      track = {scroller, observer};
+      write();
+    };
+    const content = typeof MutationObserver === 'function' ? new MutationObserver(followTrack) : null;
+    content?.observe(body, {childList: true, subtree: true});
+
     function draw() {
       render(html`${renderControl(field, host)}`, body);
+      followTrack();
       if (!foot) return;
       // The popover's footer buttons are a step below the rows (the accepted
       // study #top3, C313): at size 1 «Применить (N)» and «Сбросить» did not
@@ -235,6 +266,8 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     OPEN.set(anchor, {close});
     const closed = () => {
       OPEN.delete(anchor);
+      content?.disconnect();
+      track?.observer.disconnect();
       // The sheet gives the focus back to the anchor, as the popover does
       // (the anchor does not name the drawer, so the drawer does not know it).
       if (sheet && anchor.isConnected) {

@@ -84,24 +84,48 @@
 }
 
 /* The head: the title, or the groups as tabs, and the close button. It never
-   scrolls; one hairline under it across the whole panel. */
+   scrolls; one hairline under it across the whole panel.
+   VR11-4 (group build 16 G8; study ui-control control/research/
+   2026-11-21-popup-head): as tall as the search under it -- the panel's row
+   and its inset above and below, the hairline inside (48 at size 1, 40 at
+   1/2 and in a compact region; it was 45 / 41 / 37) -- and its close
+   button's glyph ends in the rows' end column, where their checks end: the
+   head's end is the rows' (the inset and the row's padding) and the button
+   gives back the room around its glyph (it stood 8 px past the checks, 6 at
+   1/2). The tabs keep their line on the head's. */
 .sf-settings-panel-head {
   --sf-tabs-top-container--border-width: 0;
+  --sf-settings-panel--head-end: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad));
   display: flex;
   flex: none;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--sf-settings-panel--inset);
-  padding-block: var(--sf-settings-panel--inset) 0;
-  padding-inline: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad)) var(--sf-settings-panel--inset-inline);
+  box-sizing: border-box;
+  min-block-size: calc(var(--sf-settings-panel--row-height) + 2 * var(--sf-settings-panel--inset));
+  padding-block: 0;
+  padding-inline: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad)) var(--sf-settings-panel--head-end);
   border-block-end-width: var(--sf-px);
   border-block-end-style: solid;
+}
+
+.sf-settings-panel-head:has(> .sf-settings-panel-tabs) {
+  align-items: flex-end;
+}
+
+/* While the body's scrollbar takes room the rows' end column moves in by
+   the track less the inline inset the body gives up (C07, C106: the inset
+   and the thumb, and the border's pixel the inline inset keeps): the head's
+   close and the search's icon move with it (the close stood 19 px past the
+   checks). */
+.sf-settings-panel:has(.sf-settings-panel-body--scrollbar) .sf-settings-panel-head {
+  --sf-settings-panel--head-end: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad) + var(--sf-settings-panel--inset) + var(--sf-scroll-thumb-width) + var(--sf-px));
 }
 
 .sf-settings-panel-title {
   flex: 1 1 auto;
   align-self: center;
   min-inline-size: 0;
-  padding-block: var(--sf-space-1\/3);
+  padding-block: 0;
   overflow: hidden;
   font-weight: var(--sf-font-weight-medium);
   text-overflow: ellipsis;
@@ -133,6 +157,12 @@
   align-self: center;
 }
 
+/* The button gives back the room around its glyph at the end: its box is
+   the panel's control height, its glyph the row's line. */
+.sf-settings-panel-close > button {
+  margin-inline-end: calc((var(--sf-settings-panel--line) - var(--sf-settings-panel--row-height)) / 2);
+}
+
 /* The search (C06): a header over the rows, its text over the rows' text
    and its icon at the end (FF-6), a hairline under it that turns primary while it has the focus. */
 .sf-settings-panel-search {
@@ -144,6 +174,10 @@
   padding-inline: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad));
   border-block-end-width: var(--sf-px);
   border-block-end-style: solid;
+}
+
+.sf-settings-panel:has(.sf-settings-panel-body--scrollbar) .sf-settings-panel-search {
+  padding-inline-end: calc(var(--sf-settings-panel--inset-inline) + var(--sf-settings-panel--pad) + var(--sf-settings-panel--inset) + var(--sf-scroll-thumb-width) + var(--sf-px));
 }
 
 .sf-settings-panel-search-icon {
