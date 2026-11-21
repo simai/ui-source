@@ -390,6 +390,12 @@
   },
   "exempt_properties": [
     {
+      "component": "slider",
+      "property": "indicator-ink",
+      "reason": "the value names the ink of the position over a picture (owner decision C398): light, dark, or outline -- light dots with a 1 px dark ring, the study's way A -- or auto, measured from the picture. outline names that ring, not an appearance of the control; the slider's look is not chosen here.",
+      "kept_for": "smart.slider 1.5.0 (feat/carousel-inside-ink, 2026-11-21): the words are the carousel study's (#inside-r3) and the owner's decision."
+    },
+    {
       "component": "chart-heatmap",
       "property": "scheme",
       "package": "chart",
