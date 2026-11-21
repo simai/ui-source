@@ -18847,6 +18847,27 @@
       "manual": "Nothing to rewrite. A page that set --sf-page-header-star-color for the old ghost star now sees that colour on the pressed toggle glyph as well; unset it there if the toggle's own ink is wanted.",
       "owner": "ui-source",
       "source": "src/smart/header-page/scss/_smart__page_header.scss"
+    },
+    {
+      "id": "port-document-1-0-1-draft-3",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "simai.document-port 1.0.1 (group build 15, A5; DEV GB15-1, msg-d8ee9b8f): draft 3 of the document port is its own edition. 1.0.0 stays draft 2, byte for byte as ui-b654460cad2a released it: a released edition folder is never changed, a draft included. 1.0.1 adds limits.max_total_bytes with the diagnostic max-total-bytes, empty objects kept (would-lose empty-object-not-kept), a publication made outside the port ({id: null, revision, languages, at}), one draft per change of the values, paging by a folded draft's newest revision and a client_key kept at least 7 days; kit 44 cases (1.0.0: 39). No host or editor implements either edition yet.",
+      "items": [
+        {
+          "component": "simai.document-port",
+          "attribute": "version",
+          "from": "1.0.0 (draft 2)",
+          "to": "1.0.1 (draft 3)"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "An adapter that ran the draft 2 kit (Larena, 39/39) runs the 1.0.1 kit (44 cases) and announces 1.0.1; the 1.0.0 folder is unchanged and may be passed as before.",
+      "owner": "ui-source",
+      "source": "src/core/contracts/ports/simai.document-port/1.0.1"
     }
   ]
 }

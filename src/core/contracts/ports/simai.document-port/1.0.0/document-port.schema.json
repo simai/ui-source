@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/ports/simai.document-port/1.0.0/document-port.schema.json",
-  "title": "SIMAI Document Port 1.0.0 (draft 3): the stored element, its levels and its answers",
+  "title": "SIMAI Document Port 1.0.0 (draft 2): the stored element, its levels and its answers",
   "description": "The data a host of simai.document-port answers with. One storage element holds one page, section or site level: a value per language, every value a simai.composition.document, and one revision for all of them. A level's value is written the way a Recipe fills regions: an area the value leaves out inherits, an area it carries replaces, an area it carries empty ([]) clears. The resolved document is what the editor shows: the level's value over its parents, every layout.region marked with where it came from. A host answers every stored value back as it was sent, unknown content included, or refuses the write would-lose; nothing is stored with less.",
   "$defs": {
     "key": {
@@ -20,7 +20,7 @@
     },
     "client_key": {
       "$ref": "#/$defs/key",
-      "description": "A stable key per write the editor makes once and keeps until the write is answered. A repeat with the same key and the same parameters is the same write and is answered with the stored result; the same key with other parameters is an idempotency-conflict. Kept by the host at least 7 days (draft 3); past that a repeat is a new operation."
+      "description": "A stable key per write the editor makes once and keeps until the write is answered. A repeat with the same key and the same parameters is the same write and is answered with the stored result; the same key with other parameters is an idempotency-conflict."
     },
     "language": {
       "type": "string",
@@ -209,7 +209,7 @@
         "max_nodes",
         "max_bytes"
       ],
-      "description": "Per stored language value. 1.0.0 holds a host to at most 200 nodes and 262144 bytes; a host may announce less, never more. Nodes are every node of the document (root, layout shells, regions and content). Bytes are the UTF-8 bytes of the compact serialization of the value as sent, simai:area keys removed: JSON with no spacing and non-ASCII written as itself (JSON.stringify), not escaped. resolved is not limited. A host may also announce max_total_bytes, the bytes of every language value together.",
+      "description": "Per stored language value. 1.0.0 holds a host to at most 200 nodes and 262144 bytes; a host may announce less, never more. Nodes are every node of the document (root, layout shells, regions and content). Bytes are the UTF-8 bytes of the compact serialization of the value as sent, simai:area keys removed: JSON with no spacing and non-ASCII written as itself (JSON.stringify), not escaped. resolved is not limited.",
       "properties": {
         "max_nodes": {
           "type": "integer",
@@ -220,11 +220,6 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 262144
-        },
-        "max_total_bytes": {
-          "type": "integer",
-          "minimum": 1,
-          "description": "Optional (draft 3): the bytes all the element's stored language values may have together, counted as max_bytes counts one (Larena: 1048576, its record cap). A host that announces it refuses a save whose stored values would pass it too-large on the whole element, with the diagnostic max-total-bytes at /values naming limit and total, though each language is within max_bytes."
         }
       }
     },
@@ -313,8 +308,7 @@
         "restored_from": {
           "$ref": "#/$defs/revision"
         }
-      },
-      "description": "A draft revision as history.list lists it (draft 3): one entry per change of the document values. Versions of the element whose values are equal (an edit of the record's other fields, a save of the same values) are one draft, named by the newest of their revisions, at its time."
+      }
     },
     "diagnostic": {
       "type": "object",
@@ -364,9 +358,6 @@
             },
             {
               "$ref": "#/$defs/publication"
-            },
-            {
-              "$ref": "#/$defs/outside_publication"
             }
           ]
         },
@@ -392,41 +383,6 @@
         },
         "publications": {
           "type": "boolean"
-        }
-      }
-    },
-    "outside_publication": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "revision",
-        "languages"
-      ],
-      "description": "A publication made outside the port (the host's own publication page, a schedule): it has no port id, so id is null; revision and languages say what is live and at when the host knows it (draft 3). published is null only for an element never published.",
-      "properties": {
-        "id": {
-          "type": "null"
-        },
-        "revision": {
-          "$ref": "#/$defs/revision"
-        },
-        "at": {
-          "$ref": "#/$defs/at"
-        },
-        "languages": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/language"
-          }
-        },
-        "author": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "maxLength": 300
         }
       }
     }

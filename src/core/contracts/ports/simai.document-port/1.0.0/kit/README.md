@@ -1,6 +1,6 @@
-# Conformance kit — document host port 1.0.0 (draft 3)
+# Conformance kit — document host port 1.0.0 (draft 2)
 
-Forty-four cases a host runs to show it speaks `simai.document-port`. The kit
+Thirty-nine cases a host runs to show it speaks `simai.document-port`. The kit
 is the port's acceptance gate: an adapter (Larena, Bitrix) is accepted against
 1.0.0 when it passes every case. The kit
 is transport-neutral: it describes intents, payloads and answers, not HTTP and
@@ -15,16 +15,14 @@ and applies the same checks in its own test harness.
     capability is absent here checks the refusal);
   - `target` — the bound storage element and its `parents`, nearest first;
   - `languages`, `revision`, `at`, `values` — the element as stored;
-  - `limits` — `max_nodes` and `max_bytes` per language value, and the optional
-    `max_total_bytes` of every language value together (draft 3);
+  - `limits` — `max_nodes` and `max_bytes` per language value;
   - `rights` — what the reader may do (`save`, `publish`, `languages`); absent:
     the reader may save, and publish when the host announces `publish`;
   - `parents` — with `levels`: each parent level's stored `values` and the
     areas it `locked`;
   - `drafts`, `publications`, `published` — with `history` and `publish`: the
     earlier drafts (with their values), the publications (newest first) and the
-    id of the live one, or (draft 3) an object `{id: null, revision, languages, at}`:
-    a publication made outside the port that the harness puts live;
+    id of the live one;
   - `fault` — a failure the harness puts on the host: `storage-unavailable`
     (answered `unavailable`) or `session-expired` (answered `refused`).
 - `when` — the intent and its payload. A step may take payload values from
@@ -69,49 +67,6 @@ as written.
 every file, sorted by path, the line `<path relative to the kit> <sha256 of the
 bytes>\n`, then the sha256 of that listing (`tests/host-port-kits.contract.test.mjs`).
 `run.mjs` is part of the kit and of the digest.
-
-## Draft 3 (group build 15, from Larena's first adapter)
-
-What Larena's server side found while passing draft 2 (39/39), and what the
-port now says:
-
-- **Empty objects.** A host keeps `{}` as `{}` where the document schema has an
-  object (`data`, `props`, `slots`, `presentation`, `extensions`). A host whose
-  storage cannot tell an empty object from an empty list elsewhere (a PHP
-  decoder, inside unknown `data`) refuses the save `would-lose` with the
-  diagnostic `empty-object-not-kept` at the path; it never stores `[]` for it.
-- **The whole element's size.** A host may announce `limits.max_total_bytes`
-  (Larena: 1048576, its record cap). A save whose stored values together pass it
-  is refused `too-large` on the whole element, with the diagnostic
-  `{code: "max-total-bytes", severity: "error", path: "/values", limit, total}`,
-  though each language is within `max_bytes`.
-- **Catalogue words (C302).** In the presentation catalogue (type plus
-  template, the property-view port) a field holding a composition document is
-  template `document`, component `host`: the host's own editor of the element.
-- **A publication made outside the port** (the host's publication page, a
-  schedule) is answered `published: {id: null, revision, languages}` with `at`
-  when the host knows it. `null` is only an element never published.
-- **One draft per change of the values.** `history.list` lists a draft only
-  when the document values changed: versions with the same values (an edit of
-  the record's other fields, a save of the same values) are one draft, named by
-  the newest revision of the group, at its time.
-- **Paging over a folded draft.** `before` names a draft by the revision
-  `history.list` answered for it, the newest of its group; a host may answer
-  `not-found` for an older version folded inside it.
-- **client_key lifetime.** A host keeps a `client_key` at least 7 days (it may
-  keep it longer; Larena keeps 30). Past that a repeat is a new operation: a
-  save or a publish is compared with the revision it names (usually
-  `stale-revision`), a restore or a rollback makes a new draft or publication.
-  The editor never repeats a write older than 7 days with the same key. Not a
-  kit case: the kit does not move a host's clock.
-
-| case | what it holds the host to |
-|:---|:---|
-| `save-over-the-total-byte-limit-is-refused-for-the-element` | with `max_total_bytes`: values together past it are `too-large`, diagnostic `max-total-bytes` at `/values` with `limit` and `total`; nothing written |
-| `save-keeps-empty-objects-where-the-document-has-objects` | `{}` in `props`, `extensions` and `presentation` comes back `{}` on save and load |
-| `load-describes-a-publication-made-outside-the-port` | an outside publication is `published` with `id` null, its revision and languages |
-| `history-lists-a-draft-only-when-the-values-changed` | a save of the stored values is applied and listed as the draft it equals, by the newest revision |
-| `history-pages-from-a-folded-draft-by-its-newest-revision` | `before` set to a folded draft's newest revision pages on from the next draft |
 
 ## 1.0.0 (draft 2)
 
