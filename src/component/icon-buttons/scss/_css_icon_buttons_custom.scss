@@ -243,7 +243,8 @@
    sf-icon-button--pressed, plain markup says aria-pressed="true". One look
    whatever the appearance or scheme: the primary container fill, the icon in
    --sf-on-primary-container and filled -- two cues, not colour alone. The edge
-   keeps its width (the height holds) and is transparent over the fill. Hover
+   keeps its width (the height holds); an outline toggle keeps its frame over
+   the fill (C393, G14), a ghost or link one's edge is transparent. Hover
    and press step the container; focus keeps the fill and draws the ring;
    disabled wears the disabled look.
    Only a toggle wears it (1.13.0, owner decision C211 (1)), as on sf-button:
@@ -254,9 +255,16 @@
 @layer sf.states {
   .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
     --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container));
-    --sf-icon-button--border-color: transparent;
     --sf-icon-button--focus-ink: transparent;
     --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  /* A pressed outline toggle keeps its frame over the fill (group build 16
+     G14, SEG-1; C393: a fill and a frame): in a group of segments the
+     pressed one drew no edge and the group's outline had a gap. A ghost or
+     link toggle has no frame to keep. */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+    --sf-icon-button--border-color: transparent;
   }
 
   .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible) {

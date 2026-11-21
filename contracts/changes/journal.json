@@ -19448,6 +19448,31 @@
       "manual": "Nothing to rewrite; a caller passing size to filterWindow.open may drop it.",
       "owner": "ui-source",
       "source": "src/smart/field-renderers/filter-window.js"
+    },
+    {
+      "id": "behaviour-pressed-outline-toggle-keeps-frame",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.icon-buttons 1.20.1 and component.buttons 1.22.4 (group build 16 G14, DEV return SEG-1, C393): a pressed outline toggle (aria-pressed or the --pressed class) keeps its frame's colour over the primary container fill, standalone and in a group of segments, so a group's outline has no gap. A ghost or link toggle's edge stays transparent.",
+      "items": [
+        {
+          "component": "component.icon-buttons",
+          "from": "pressed outline toggle: border transparent",
+          "to": "pressed outline toggle: the outline's frame kept"
+        },
+        {
+          "component": "component.buttons",
+          "from": "pressed outline toggle: border transparent",
+          "to": "pressed outline toggle: the outline's frame kept"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/component/icon-buttons/scss/_css_icon_buttons_custom.scss"
     }
   ]
 }

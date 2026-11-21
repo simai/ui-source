@@ -345,9 +345,9 @@
    (below, outside the layers). Two cues, the fill and the filled glyph, so the
    state is not told by colour alone; the same roles in both themes. The edge
    keeps its width -- the padding has given it back, so the size's one height
-   holds (C01) -- and is transparent: the fill shows through it, which is
-   "the border takes the fill's colour" without the alpha fill drawn twice on
-   the edge. Before, the pressed toggle drew the momentary press (a grey fill
+   holds (C01). An outline toggle keeps its frame's colour over the fill (C393:
+   a fill and a frame; group build 16 G14, a gap in a group's outline); a
+   ghost or link toggle's edge is transparent, the fill showing through it. Before, the pressed toggle drew the momentary press (a grey fill
    inside the outline) and its icon stayed outlined; beside a tonal button it
    was not clear which one was pressed.
    Hover and press over it step the container (+4 and +8 of the fill family,
@@ -365,8 +365,15 @@
 @layer sf.states {
   .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
     --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container));
-    --sf-button--border-color: transparent;
     --sf-button--focus-ink: transparent;
+  }
+
+  /* A pressed outline toggle keeps its frame over the fill (group build 16
+     G14, SEG-1; C393: a fill and a frame): in a group of segments the
+     pressed one drew no edge and the group's outline had a gap. A ghost or
+     link toggle has no frame to keep. */
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+    --sf-button--border-color: transparent;
   }
 
   .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
