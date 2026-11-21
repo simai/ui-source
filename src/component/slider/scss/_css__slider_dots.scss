@@ -222,7 +222,7 @@
 /* Inside the picture (owner decision C398): the bare dots take the slider's
    ink (--sf-slider-indicator--ink, light or dark by the picture; the page's
    --sf-slider-indicator-ink wins), the current one full, the others at
-   --sf-opacity-80 -- the weakest dot keeps 3:1 against an even picture
+   --sf-slider-indicator--dot-opacity (--sf-opacity-80) -- the weakest dot keeps 3:1 against an even picture
    whichever ink is chosen. With data-ink="outline" every dot is the light
    ink with a 1 px ring of --sf-scrim-color. The ink changes over
    --sf-duration-normal; under reduced motion at once. */
@@ -242,7 +242,7 @@
 }
 
 .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare .sf-slider-dots-dot:not(.active) {
-  opacity: var(--sf-opacity-80);
+  opacity: var(--sf-slider-indicator--dot-opacity);
 }
 
 .sf-slider[data-indicator="inside"][data-ink="outline"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare .sf-slider-dots-dot {

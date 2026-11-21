@@ -52,7 +52,9 @@ test('C398: the inks are roles, the same in both themes; the weakest dot at --sf
   assert.match(sheet, /--sf-slider-indicator--ring: var\(--sf-scrim-color\);/);
   assert.match(sheet, /\[data-ink="dark"\][^{]*\{\s*--sf-slider-indicator--ink: var\(--sf-slider-indicator--ink-dark\);/);
   assert.match(dots, /--sf-slider-dots-dot--color: var\(--sf-slider-indicator-ink, var\(--sf-slider-indicator--ink\)\);/);
-  assert.match(dots, /\.sf-slider-dots-dot:not\(\.active\) \{\s*opacity: var\(--sf-opacity-80\);/);
+  assert.match(sheet, /--sf-slider-indicator--dot-opacity: var\(--sf-opacity-80\);/);
+  assert.match(dots, /\.sf-slider-dots-dot:not\(\.active\) \{\s*opacity: var\(--sf-slider-indicator--dot-opacity\);/);
+  assert.match(adapter, /getPropertyValue\('--sf-slider-indicator--dot-opacity'\)/);
   assert.match(dots, /\[data-ink="outline"\][^{]*\.sf-slider-dots-dot \{\s*box-shadow: 0 0 0 var\(--sf-px\) var\(--sf-slider-indicator--ring\);/);
   // No literal colour in the inside rules.
   const inside = [sheet, dots].join('\n').split('\n').filter((line) => line.includes('indicator'));
@@ -65,11 +67,11 @@ test('C398: the ink is measured from the strip behind the row and falls back to 
   assert.match(adapter, /context\.drawImage\(media, source\.x, source\.y, source\.width, source\.height, 0, 0, INK_SAMPLE_WIDTH, INK_SAMPLE_HEIGHT\);/);
   assert.match(adapter, /return \{reason: 'cross-origin'\};/);
   assert.match(adapter, /if \(!\(media instanceof HTMLImageElement\)\) return \{reason: 'media'\};/);
-  assert.match(adapter, /if \(!media\.complete \|\| !media\.naturalWidth\) return \{reason: 'loading', img: media\};/);
+  assert.match(adapter, /if \(!media\.complete \|\| !media\.naturalWidth\) return \{reason: 'loading'\};/);
   assert.match(adapter, /ink: scores\[best\] >= INK_MIN_CONTRAST \? best : 'outline',/);
   assert.match(adapter, /const INK_MIN_CONTRAST = 3;/);
   assert.match(adapter, /const events = \['slideChange', 'resize', 'update'\];/);
-  assert.match(adapter, /waiting\?\.addEventListener\('load', schedule, \{once: true\}\);/);
+  assert.match(adapter, /root\.addEventListener\('load', schedule, true\);/);
   assert.match(adapter, /if \(INK_WORDS\.has\(authored\)\) return \{ink: authored, reason: 'author'\};/);
   assert.match(adapter, /createIndicatorInk\(root, slider\),/);
 });

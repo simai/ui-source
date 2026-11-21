@@ -785,7 +785,7 @@ function stripPixels(slide, box) {
   const media = under.filter((element) => element.matches('img, video, canvas, svg, iframe, object, embed')).pop();
   if (media) {
     if (!(media instanceof HTMLImageElement)) return {reason: 'media'};
-    if (!media.complete || !media.naturalWidth) return {reason: 'loading', img: media};
+    if (!media.complete || !media.naturalWidth) return {reason: 'loading'};
     const source = sourceBox(media, box);
     if (!source) return {reason: 'outside'};
     try {
@@ -828,13 +828,16 @@ function measureInk(root, slider, bar) {
   const box = bar.getBoundingClientRect();
   if (!box.width || !box.height) return {ink: 'outline', reason: 'hidden'};
   const strip = stripPixels(slide, box);
-  if (!strip.pixels) return {ink: 'outline', reason: strip.reason, img: strip.img};
+  if (!strip.pixels) return {ink: 'outline', reason: strip.reason};
   const light = readInk(root, '--sf-slider-indicator--ink-light');
   const dark = readInk(root, '--sf-slider-indicator--ink-dark');
   if (!light || !dark) return {ink: 'outline', reason: 'no-ink'};
-  // The weakest dot is a dot that is not the current one (its opacity).
-  const dot = bar.querySelector('.sf-slider-dots-dot:not(.active)');
-  const weak = dot ? Number.parseFloat(getComputedStyle(dot).opacity) || 1 : 1;
+  // The weakest dot is one that is not the current one: the sheet's opacity
+  // for it (read from the block, not from a dot that may be fading).
+  const share = getComputedStyle(root).getPropertyValue('--sf-slider-indicator--dot-opacity').trim();
+  const weak = bar.querySelector('.sf-slider-dots-dot') && share
+    ? Math.min(1, Math.max(0, Number.parseFloat(share) / (share.endsWith('%') ? 100 : 1))) || 1
+    : 1;
   const lums = strip.pixels.map(luminance);
   const score = (ink) => percentile(strip.pixels.map((rgb, i) => contrast(inkOver(ink, ink.alpha * weak, rgb), lums[i])), 0.1);
   const scores = {light: score(light), dark: score(dark)};
@@ -852,27 +855,21 @@ function createIndicatorInk(root, slider) {
   const bar = indicatorBar(root);
   if (!bar || typeof slider?.on !== 'function') return () => {};
   let frame = 0;
-  let waiting = null;
-  const wait = (img) => {
-    if (waiting === img) return;
-    waiting?.removeEventListener('load', schedule);
-    waiting = img || null;
-    waiting?.addEventListener('load', schedule, {once: true});
-  };
   const apply = () => {
     frame = 0;
     if (!root.isConnected) return;
     const result = measureInk(root, slider, bar);
-    wait(result.img);
-    delete result.img;
     if (root.dataset.ink !== result.ink) root.dataset.ink = result.ink;
     root._sfSliderInk = result;
   };
-  function schedule() {
+  const schedule = () => {
     if (!frame) frame = window.requestAnimationFrame(apply);
-  }
+  };
   const events = ['slideChange', 'resize', 'update'];
   events.forEach((name) => slider.on(name, schedule));
+  // A picture's load does not bubble; the block hears it on the way down, a
+  // picture that was still loading and one whose source changed alike.
+  root.addEventListener('load', schedule, true);
   const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(schedule) : null;
   observer?.observe(root);
   // At once (the first frame shows the ink), and again once the layout settles.
@@ -880,9 +877,9 @@ function createIndicatorInk(root, slider) {
   schedule();
   return () => {
     events.forEach((name) => slider.off?.(name, schedule));
+    root.removeEventListener('load', schedule, true);
     observer?.disconnect();
     if (frame) window.cancelAnimationFrame(frame);
-    waiting?.removeEventListener('load', schedule);
     delete root.dataset.ink;
     delete root._sfSliderInk;
   };

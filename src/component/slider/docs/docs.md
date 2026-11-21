@@ -261,15 +261,17 @@ A minor: nothing changes unless the page asks.
   (one half light, one half dark). It is also the ink before the first measure.
 - **Inks** are roles, the same in both themes: light `--sf-on-surface-media`,
   dark `--sf-surface-media-active`, ring `--sf-scrim-color`; the current dot is
-  the full ink, the others `--sf-opacity-80`. The timed pill's track is the ink
+  the full ink, the others `--sf-opacity-80`
+  (`--sf-slider-indicator--dot-opacity`). The timed pill's track is the ink
   at `--sf-opacity-40`, its fill the ink. The ink changes over
   `--sf-duration-normal`; under reduced motion at once.
 - **By hand**: `data-indicator-ink="light" | "dark" | "outline"` fixes the ink
   (no measuring); the public variable `--sf-slider-indicator-ink` sets the dots'
   colour and wins over both.
-- The pause button keeps its own soft grey look inside (it is a button with its
-  own fill, not the position); a `dots-type` plate the page wrote keeps its
-  plate and its colours.
+- The pause button is a button, not the position: inside it stands on the
+  arrows' plate over a picture (`--sf-surface-popup`, `--sf-shadow-overlay`,
+  C143 (2)) with its own soft grey fill over it. A `dots-type` plate the page
+  wrote keeps its plate and its colours (the ink is for bare dots).
 - core.styles keeps no room for a bar under an undrawn `sf-slider
   indicator="inside"`.
 

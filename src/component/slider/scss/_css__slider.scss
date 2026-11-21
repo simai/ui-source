@@ -193,6 +193,8 @@
   --sf-slider-indicator--ink-dark: var(--sf-surface-media-active);
   --sf-slider-indicator--ring: var(--sf-scrim-color);
   --sf-slider-indicator--ink: var(--sf-slider-indicator--ink-light);
+  /* The dots that are not the current one (read by the slider's measure too). */
+  --sf-slider-indicator--dot-opacity: var(--sf-opacity-80);
 }
 
 .sf-slider[data-indicator="inside"][data-ink="dark"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) {
@@ -218,6 +220,12 @@
   grid-column: 4;
   justify-self: end;
   margin-inline-end: var(--sf-space-2);
+}
+
+/* The pause button over the picture stands on the arrows' plate (C143 (2)):
+   the popup surface and the overlay shadow, its own fill over it. */
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-rotation-place .sf-icon-button {
+  box-shadow: var(--sf-shadow-overlay);
 }
 
 /* Over a picture the arrows show where a pointer that can hover is (a
@@ -404,6 +412,10 @@
 }
 
 @layer sf.states {
+  .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-rotation-place .sf-icon-button {
+    background-color: var(--sf-surface-popup);
+    background-image: linear-gradient(var(--sf-icon-button--background-color), var(--sf-icon-button--background-color));
+  }
   .sf-slider .sf-slider-arrows--plate .sf-icon-button {
     background-color: var(--sf-surface-popup);
     background-image: linear-gradient(var(--sf-icon-button--background-color), var(--sf-icon-button--background-color));
