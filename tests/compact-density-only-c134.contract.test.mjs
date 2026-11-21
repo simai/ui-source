@@ -26,7 +26,7 @@ const record = (id) => journal.find((entry) => entry.id === id);
 
 test('C134 sf-language: labels name|code replaces the boolean compact, read in code and noted with its dates', () => {
   const manifest = json('src/smart/language/component.json');
-  assert.ok(['1.3.0', '1.4.0', '1.4.2', '1.4.3', '1.4.4', '1.5.0', '1.5.2', '1.5.3', '1.6.0', '1.6.1', '1.7.0', '1.7.1'].includes(manifest.version), manifest.version); // 1.4.2: group build 5 patch; 1.4.3: group build 7 (the GB6 note renumbered); 1.4.4: TT-11 tooltip (fix/returns-gb67); 1.5.0: the field look on the five-step ladder (#70)
+  assert.ok(['1.3.0', '1.4.0', '1.4.2', '1.4.3', '1.4.4', '1.5.0', '1.5.2', '1.5.3', '1.6.0', '1.6.1', '1.7.0', '1.7.1', '1.7.2'].includes(manifest.version) /* 1.7.2: group build 15, the p5-menu probe reads the C396 step */, manifest.version); // 1.4.2: group build 5 patch; 1.4.3: group build 7 (the GB6 note renumbered); 1.4.4: TT-11 tooltip (fix/returns-gb67); 1.5.0: the field look on the five-step ladder (#70)
   assert.ok(!('compact' in manifest.settings), 'compact leaves the settings');
   assert.deepEqual(manifest.settings.labels.values, ['name', 'code']);
   assert.equal(manifest.settings.labels.default, 'name');

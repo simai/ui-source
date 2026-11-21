@@ -58,7 +58,7 @@ try {
     const events = [];
     menu.addEventListener('sf-context-menu-tab', (event) => events.push(['tab', event.detail]));
     menu.addEventListener('sf-context-menu-close', () => events.push(['close']));
-    const result = {width0: Math.round(content.getBoundingClientRect().width), height: Math.round(content.getBoundingClientRect().height)};
+    const result = {step: ((at) => { const x = document.createElement('div'); x.style.cssText = 'position:absolute;visibility:hidden;inline-size:var(--sf-measure-44)'; at.append(x); const w = x.getBoundingClientRect().width; x.remove(); return Math.round(w * 10) / 10; })(content.parentElement), width0: Math.round(content.getBoundingClientRect().width), height: Math.round(content.getBoundingClientRect().height)};
     const headTop = head.getBoundingClientRect().top;
     const footTop = footer.getBoundingClientRect().top;
     body.scrollTop = 300;
@@ -89,7 +89,8 @@ try {
   if (!got.scrolled.bodyScrolls || got.scrolled.body < 100) note({case: 'the body scrolls', got: got.scrolled});
   if (got.scrolled.headMoved !== 0 || got.scrolled.footMoved !== 0) note({case: 'the head and the footer stay while the body scrolls', got: got.scrolled});
   if (got.width1 !== got.width0 || got.width2 !== got.width0) note({case: 'the panel keeps its width', got});
-  if (got.width0 !== 320) note({case: 'the panel is eight controls wide by default', got: got.width0});
+  // C396 (GB15): the popup panel role is the 44-character step, read where the panel stands.
+  if (Math.abs(got.width0 - got.step) > 1) note({case: 'the panel is the 44-character step by default (C396)', got: got.width0, step: got.step});
   if (got.active !== 'Вид' || !got.events.some(([kind, detail]) => kind === 'tab' && detail?.id === 'Вид' && detail.index === 1)) note({case: 'a tab chosen is said', got});
   if (!got.events.some(([kind]) => kind === 'close')) note({case: 'the close button asks the host to close', got: got.events});
   console.log(JSON.stringify(got));

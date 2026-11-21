@@ -2,7 +2,7 @@
   "$comment": "The source of sf-time's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C40 (2026-11-09; research ui-control control/research/2026-11-09-timeline-parts.md §5, prototype prototypes/timeline-parts.html#time).",
   "id": "smart.time",
   "tag": "sf-time",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "kind": "leaf",
   "family": "time",
   "settings": {
@@ -136,7 +136,8 @@
     "version 1.7.1 (2026-11-16, C177 follow-up, queue item 113; above 1.7.0 on every origin branch): a patch. A zone is named by the component's word in any language that has one (a pack's or a product's), not only ru and en; elsewhere the platform names it. «вчера, 09:05» on a page in a language the browser has no relative-time words for says that language's day word: core takes it from its language files (sf-relative-day).",
     "version 1.8.1 (2026-11-17, feat/lang-file-c282; numbered above 1.8.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.8.2 (written on the branch as 1.8.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
-    "version 1.8.3 (2026-11-18): a patch. «just now» and the zone names read the page language through the registry aliases (core/lang/index.json aliases): a zh-CN, zh-SG or zh page says the zh-hans pack's words, a pt or pt-PT page the pt-br ones, where it said the browser's. Settings, values, events and keys unchanged."
+    "version 1.8.3 (2026-11-18): a patch. «just now» and the zone names read the page language through the registry aliases (core/lang/index.json aliases): a zh-CN, zh-SG or zh page says the zh-hans pack's words, a pt or pt-PT page the pt-br ones, where it said the browser's. Settings, values, events and keys unchanged.",
+    "version 1.8.4 (2026-11-21, group build 15; above 1.8.3, the highest on every origin branch): a patch, no behaviour of its own. The first paint snapshots of older and datetime draw the year with A4's no-break space before «г.» (core format-intl formatDateText), and the manifest probe p1-auto reads «30 декабря 2025 г.» with that space. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

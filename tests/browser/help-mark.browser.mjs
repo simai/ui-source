@@ -75,6 +75,7 @@ try {
     const panel = element.querySelector('.sf-help-mark-panel');
     return {expanded: button?.getAttribute('aria-expanded'), name: button?.getAttribute('aria-label'), open: panel?.matches(':popover-open') ?? false,
       live: element.querySelector('.sf-help-mark-live')?.textContent.trim(), width: Math.round(panel?.getBoundingClientRect().width ?? 0),
+      step: panel ? ((at) => { const x = document.createElement('div'); x.style.cssText = 'position:absolute;visibility:hidden;inline-size:var(--sf-measure-44)'; at.append(x); const w = x.getBoundingClientRect().width; x.remove(); return Math.round(w * 10) / 10; })(panel.parentElement) : 0,
       focused: document.activeElement === button};
   }, id);
   const lines = await page.evaluate(() => ({
@@ -182,7 +183,7 @@ try {
   const left = await state('linked');
   const after = await page.evaluate(() => document.activeElement?.id);
   if (hovered.open || hovered.expanded !== 'false') note({case: 'a hover opens nothing', got: hovered});
-  if (!opened.open || opened.expanded !== 'true' || !opened.live?.startsWith('Код решения') || opened.width > 320 || opened.name !== 'Подробнее: код решения') note({case: 'a press opens', got: opened});
+  if (!opened.open || opened.expanded !== 'true' || !opened.live?.startsWith('Код решения') || opened.width > opened.step + 1 || /* C396 (GB15): at most the 44-character step */ opened.name !== 'Подробнее: код решения') note({case: 'a press opens', got: opened});
   if (escaped.open || escaped.expanded !== 'false' || !escaped.focused) note({case: 'Escape closes, focus stays', got: escaped});
   if (intoPanel !== '#access' || left.open || after !== 'after') note({case: 'Tab into the link, then out closes', got: {intoPanel, left, after}});
   console.log(JSON.stringify({hovered, opened, escaped, intoPanel, left, after}, null, 1));

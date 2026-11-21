@@ -74,7 +74,7 @@ test('sf-list-description: a dl of label and value, the columns a subgrid, stack
 
 test('sf-list-timeline: the host\'s order, runs of one day, the shared parts (C40), the connector, load-more after', () => {
   const manifest = json('src/smart/list-timeline/component.json');
-  assert.equal(manifest.version, '1.5.5'); // C204 (C61 round 5 was 1.3.2) // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch // C282: 1.4.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // group build 13: 1.5.3 moved on by the merged branches or the C278 language patch // group build 14: 1.5.4 moved on by the merged branches or the C278 language patch
+  assert.equal(manifest.version, '1.5.6'); // C204 (C61 round 5 was 1.3.2) // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch // C282: 1.4.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // group build 13: 1.5.3 moved on by the merged branches or the C278 language patch // group build 14: 1.5.4 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'title']);
   assert.deepEqual(manifest.settings.group.values, ['day', 'none']);
   assert.deepEqual(manifest.settings['time-format'].values, ['auto', 'relative', 'exact']);

@@ -640,6 +640,7 @@ try {
       correction: document.querySelector('.sf-search-correction')?.textContent.trim() ?? '',
       notice: document.querySelector('.sf-search-notice')?.textContent.trim() ?? '',
       width: document.querySelector('.sf-search-window')?.getBoundingClientRect().width ?? 0,
+      step: document.querySelector('.sf-search-window') ? ((at) => { const x = document.createElement('div'); x.style.cssText = 'position:absolute;visibility:hidden;inline-size:var(--sf-measure-80)'; at.append(x); const w = x.getBoundingClientRect().width; x.remove(); return Math.round(w * 10) / 10; })(document.querySelector('.sf-search-window').parentElement) : 0,
     }));
 
     // Everything announced, everything wanted.
@@ -710,7 +711,7 @@ try {
     // and the setting cannot turn it on.
     await openPort('?caps=');
     const none = await blocks();
-    expect('port-nothing-announced', none.recent === 0 && none.popular === 0 && none.commands === 0 && none.pane === 0 && Math.abs(none.width - 576) < 1, none);
+    expect('port-nothing-announced', none.recent === 0 && none.popular === 0 && none.commands === 0 && none.pane === 0 && Math.abs(none.width - none.step) < 1, none); // C396 (GB15): the window is the 80-character step
     await typeQuery(tab, 'т');
     const noneQuery = await blocks();
     const rowsNone = await rowsInfo(tab);

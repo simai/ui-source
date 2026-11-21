@@ -138,6 +138,7 @@ const MEASURE = () => {
   const under = el.querySelector('.sf-context-menu-item-under');
   const longLabel = [...el.querySelectorAll('.sf-context-menu-item-label')].find((label) => label.textContent.length > 30);
   return {
+    step: content ? ((at) => { const x = document.createElement('div'); x.style.cssText = 'position:absolute;visibility:hidden;inline-size:var(--sf-measure-36)'; at.append(x); const w = x.getBoundingClientRect().width; x.remove(); return Math.round(w * 10) / 10; })(content.parentElement) : 0,
     look: el.getAttribute('data-look'), width: content && r(content).width, left: content && r(content).left, right: content && r(content).right,
     heights: [...new Set(plain.map((row) => Math.round(r(row).height * 10) / 10))],
     glyphs: [...new Set(glyphs)], withIcons,
@@ -168,7 +169,7 @@ for (const theme of ['light', 'dark']) {
       ok(`${label}: the look is ${CASES[name].look}`, m.look === CASES[name].look, m.look);
       const sheet = popup && width < 600;
       if (sheet) ok(`${label}: on a phone the popup is a bottom sheet of the window width (C176, C157)`, near(m.width, width) && near(m.bottom, 760, 1) && !m.overflow, JSON.stringify({width: m.width, bottom: m.bottom, overflow: m.overflow}));
-      else ok(`${label}: the panel is 288 px (the menu's ceiling, C32) and stays in the window`, near(m.width, 288) && m.left >= -0.5 && m.right <= width + 0.5 && !m.overflow, JSON.stringify({width: m.width, left: m.left, right: m.right, overflow: m.overflow}));
+      else ok(`${label}: the panel is the menu's ceiling, the 36-character step (C32, C396), and stays in the window`, near(m.width, m.step) && m.left >= -0.5 && m.right <= width + 0.5 && !m.overflow, JSON.stringify({width: m.width, step: m.step, left: m.left, right: m.right, overflow: m.overflow}));
       ok(`${label}: one-line rows are the menu's rung ${size} (${row} px)`, m.heights.length === 1 && near(m.heights[0], row) && (width < 600 || near(row, size === '1' ? 40 : 32)), JSON.stringify({heights: m.heights, row}));
       const roles = await tab.evaluate(`[${colour('--sf-on-surface')}, ${colour('--sf-on-surface-variant')}]`);
       ok(`${label}: the glyphs are the on-surface or on-surface-variant role`, m.withIcons === (m.glyphs.length > 0) && m.glyphs.every((one) => roles.includes(one)), JSON.stringify({glyphs: m.glyphs, roles}));

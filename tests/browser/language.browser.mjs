@@ -199,6 +199,7 @@ for (const theme of ['light', 'dark']) {
             count: rows.length, heights: [...new Set(rows.map((row) => Math.round(r(row).height * 10) / 10))],
             de: de && {label: de.querySelector('.sf-context-menu-item-label')?.textContent.trim(), value: de.querySelector('.sf-context-menu-item-value')?.textContent.trim()},
             langs: rows.every((row) => row.lang), checked: rows.filter((row) => row.getAttribute('aria-checked') === 'true').map((row) => row.lang),
+            step: surface ? ((at) => { const x = document.createElement('div'); x.style.cssText = 'position:absolute;visibility:hidden;inline-size:var(--sf-measure-44)'; at.append(x); const w = x.getBoundingClientRect().width; x.remove(); return Math.round(w * 10) / 10; })(surface.parentElement) : 0,
             panel: surface && r(surface), search: Boolean(field), focusOnField: document.activeElement === field, sheet: Boolean(surface?.hasAttribute('data-sf-sheet')),
             overflow: document.documentElement.scrollWidth > innerWidth,
           };
@@ -208,7 +209,7 @@ for (const theme of ['light', 'dark']) {
         if (CASES[name].languages.split(' ').includes('de')) ok(`${label}: a row is the native name with its name in the page's language beside it (C142 (3))`, m.de?.label === 'Deutsch' && m.de?.value === 'немецкий', JSON.stringify(m.de));
         const sheet = name === 'twelve' && width < 600;
         if (sheet) ok(`${label}: from eight languages on a phone the menu is the sheet at the bottom, the screen's width (C142 (5))`, m.sheet && m.panel && near(m.panel.width, width, 1) && near(m.panel.bottom, 760, 1), JSON.stringify(m.panel));
-        else ok(`${label}: the menu is the C32 panel, 20rem (C142 (3))`, m.panel && near(m.panel.width, 320, 1), JSON.stringify(m.panel));
+        else ok(`${label}: the menu is the C32 panel, the 44-character step (C142 (3), C396)`, m.panel && near(m.panel.width, m.step, 1), JSON.stringify({panel: m.panel, step: m.step}));
         // The menu's own rung (sf-menu-context size 1/2): a row is a control
         // of the rung (owner C05, R029) -- 32 px wide, less on a phone where
         // the ladder is tighter.

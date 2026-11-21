@@ -141,12 +141,12 @@ for (const theme of ['light', 'dark']) {
   // 2. Date and datetime read.
   const views = await tab.evaluate(() => Object.fromEntries(['date', 'datetime', 'date-odd'].map((key) => [key, document.querySelector(`[data-row="${key}"] [data-view]`)?.textContent.trim()])).valueOf());
   const hostedView = await tab.evaluate(() => document.getElementById('hosted').textContent.trim());
-  ok(`${t} date view: 25 окт. 2026 г.`, views.date === '25 окт. 2026 г.', views);
-  ok(`${t} datetime view: 25 окт. 2026 г., 10:30, the record's own clock`, views.datetime === '25 окт. 2026 г., 10:30', views);
+  ok(`${t} date view: 25 окт. 2026\u00a0г.`, views.date === '25 окт. 2026\u00a0г.', views);
+  ok(`${t} datetime view: 25 окт. 2026\u00a0г., 10:30, the record's own clock`, views.datetime === '25 окт. 2026\u00a0г., 10:30', views);
   ok(`${t} a value that is not a date is shown as it came`, views['date-odd'] === 'когда-нибудь', views);
   ok(`${t} the host's formatFieldValue still wins`, hostedView === '25 октября 2026' && drawn.hostedCell === '25 октября 2026', {hostedView, cell: drawn.hostedCell});
   ok(`${t} under lang="en": Nov 2, 2026 and Nov 15, 2026, 10:30 AM`, drawn.englishCells.date === 'Nov 2, 2026' && /^Nov 15, 2026, 10:30\s?AM$/u.test(drawn.englishCells.datetime ?? ''), drawn.englishCells);
-  ok(`${t} date and datetime cells read as the view does`, drawn.cells.date === '25 окт. 2026 г.' && drawn.cells.datetime === '25 окт. 2026 г., 10:30' && drawn.cells['date-odd'] === null, drawn.cells);
+  ok(`${t} date and datetime cells read as the view does`, drawn.cells.date === '25 окт. 2026\u00a0г.' && drawn.cells.datetime === '25 окт. 2026\u00a0г., 10:30' && drawn.cells['date-odd'] === null, drawn.cells);
 
   // 3. The date edits stay in their column.
   const boxes = await tab.evaluate(() => Object.fromEntries(['date', 'datetime'].map((key) => {
