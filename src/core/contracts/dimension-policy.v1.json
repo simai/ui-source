@@ -52,6 +52,14 @@
       "reason": "The phone ribbon's bottom sheet stops a step 1 under the field it fills (owner decision C62, prototypes/datepicker.html#lenta): the field's bottom edge is measured with getBoundingClientRect when the sheet opens, in CSS pixels, and is kept exact; the step itself is the space token."
     },
     {
+      "id": "settings-drag-drop-line",
+      "category": "runtime-review",
+      "filePattern": "^smart/settings/index\\.js$",
+      "contextPattern": "Object\\.assign\\(line\\.style, \\{left: `\\$\\{box\\.left",
+      "status": "accepted-runtime-geometry",
+      "reason": "A drag by the handle in sf-settings draws SF.Sortable's drop line (owner remark VR11-5, group build 16): its place is the measured list box and row edge in CSS pixels, its thickness SORTABLE_DROP_LINE (2), the rect of the drag module's line preview (core/js/composition/sortable.mjs listIndicatorRect), kept exact."
+    },
+    {
       "id": "list-rows-window-spacers",
       "category": "runtime-review",
       "filePattern": "^smart/list/js/templates/default\\.js$",

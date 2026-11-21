@@ -348,7 +348,13 @@ test('C96 5 (T2): vertical tabs are the menu column, and a row with More on the 
   assert.match(column, /:hover[^{]*\{[^}]*--sf-button--background-color: var\(--sf-surface-state-hover\)/u);
   assert.match(column, /justify-content: flex-start/u);
   assert.match(column, /text-align: start/u);
-  assert.match(source, /if \(type === 'vertical'\) return this\._narrow \? 'underline' : 'vertical';/u);
+  assert.match(source, /if \(type === 'vertical'\) return this\._narrow && this\.getAttribute\('fold'\) !== 'never' \? 'underline' : 'vertical';/u);
+  // VR11-1 (group build 16): fold="never" keeps the vertical list on a narrow place.
+  assert.equal(look.call(host({type: 'vertical', fold: 'never'}, {_narrow: true})), 'vertical');
+  assert.equal(look.call(host({type: 'vertical', fold: 'auto'}, {_narrow: true})), 'underline');
+  assert.equal(look.call(host({type: 'vertical', fold: 'never'}, {_narrow: false})), 'vertical');
+  assert.deepEqual(manifest.settings.fold.values, ['auto', 'never']);
+  assert.equal(manifest.settings.fold.default, 'auto');
 });
 
 test('C96 6 (T7): a per-tab error count is said with the name; go-to-error opens the first and focuses its field', () => {

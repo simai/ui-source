@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.4.8",
+  "version": "1.5.0",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -117,6 +117,15 @@
         "enum": [
           "auto",
           "always",
+          "never"
+        ]
+      },
+      "fold": {
+        "type": "string",
+        "default": "auto",
+        "description": "Whether vertical tabs turn into the line with «Ещё» on a narrow place (owner remark VR11-1): auto (the default) below 44rem of their place (C181 (2)), never -- the vertical list stays at any width of its place, for a host that sizes the column itself. Only for type=\"vertical\".",
+        "enum": [
+          "auto",
           "never"
         ]
       },
@@ -562,7 +571,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "735edf073bfc10e12b7b4624fa778eba23a59aa742d064cb6773f462d28538bb"
+        "sha256": "982ab6421ae07b48a7308a89824f696c203b29bf911d6551aa8eba54d9d0d2dc"
       }
     ],
     "generated_runtime": [

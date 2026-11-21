@@ -382,14 +382,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.sf-settings-row--drop-before {
-  box-shadow: inset 0 calc(2 * var(--sf-px)) 0 var(--sf-primary);
-}
-
-.sf-settings-row--drop-after {
-  box-shadow: inset 0 calc(-2 * var(--sf-px)) 0 var(--sf-primary);
-}
-
 .sf-settings-panel-empty {
   margin: 0;
   padding-block: var(--sf-space-1\/3);

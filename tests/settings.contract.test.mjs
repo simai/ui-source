@@ -27,7 +27,7 @@ const ITEMS = [
 test('the manifest: a leaf of family settings with items, look, apply, search, size, for, remember, label; change, changed, reset, open, opened, close, closed; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.10.1'); // group build 16: VR11-4 head step; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order (template rows, words, open/close): 1.8.0 above 1.7.4 on every origin branch // group build 8: C208's patch (written as 1.6.1) above fix/returns-gb67's 1.6.2 (snapshots follow TT-11) // group build 7: fix/settings-menu-c176's 1.4.0 above the line's 1.4.2 // group build 9: 1.6.3 moved on by the merged branches or a GB9 patch // C282: 1.6.5 moved on by the language-file patch (Russian is a language file) // group build 10: 1.7.1 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(manifest.version, '1.10.2'); // group build 16: VR11-4 head step, G10 drop line; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order (template rows, words, open/close): 1.8.0 above 1.7.4 on every origin branch // group build 8: C208's patch (written as 1.6.1) above fix/returns-gb67's 1.6.2 (snapshots follow TT-11) // group build 7: fix/settings-menu-c176's 1.4.0 above the line's 1.4.2 // group build 9: 1.6.3 moved on by the merged branches or a GB9 patch // C282: 1.6.5 moved on by the language-file patch (Russian is a language file) // group build 10: 1.7.1 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'apply', 'search', 'size', 'for', 'remember', 'label',
     'apply-count', 'close-label', 'search-placeholder', 'empty-text', 'pin-label', 'unpin-label', 'move-label']);
   // C106: the panel is a value of look (the setting «вид»); view is reserved (standard §3.1).
@@ -54,7 +54,7 @@ test('the manifest: a leaf of family settings with items, look, apply, search, s
   assert.equal(manifest.events.reset.cancelable, true);
   assert.equal(manifest.events.changed.cancelable, undefined);
   assert.deepEqual(Object.keys(manifest.actions), ['set-value', 'set-all', 'show', 'reset', 'open', 'close']);
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-menu-context', 'cl-input-color', 'cl-button', 'cl-button-icon', 'cl-tabs', 'cl-switch'], 'the colour window of the colour rows (C85) and the panel look\'s parts (C106)');
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-menu-context', 'cl-input-color', 'cl-button', 'cl-button-icon', 'cl-sortable', 'cl-tabs', 'cl-switch'], 'the colour window of the colour rows (C85) and the panel look\'s parts (C106); the drop line of SF.Sortable (VR11-5)');
   assert.ok(manifest.relations.slice(1).every((relation) => relation.lazy), 'the panel look\'s parts do not hold up a menu look');
   assert.equal(manifest['css-variables'], undefined, 'no public variables');
   assert.equal(manifest.styles, 'scss/_smart__settings.scss');

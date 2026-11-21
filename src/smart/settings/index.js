@@ -116,6 +116,42 @@ function choiceFits(row) {
   return options.every((option) => option.scrollWidth <= option.clientWidth + 1 && lineCount(option) <= 1);
 }
 
+
+// The drop line of a drag by the handle (owner remark VR11-5, group build 16):
+// SF.Sortable's one line (SORTABLE_DROP_LINE, 2 px, .sf-sortable-indicator in
+// sf-sortable's sheet), owned by the panel so the drag module never takes it.
+// It stands in the panel (the panel may be in the top layer, over anything on
+// the body) at the place the row lands: the top of the row it goes before, or
+// the bottom of the last row, across the list -- the rect of SF.Sortable's
+// line preview (listIndicatorRect).
+const DROP_LINE = 2;
+function dropLine(panel) {
+  const line = document.createElement('div');
+  line.className = 'sf-sortable-indicator';
+  line.setAttribute('aria-hidden', 'true');
+  line.setAttribute('data-sf-drop-line-owner', 'sf-settings');
+  line.hidden = true;
+  panel?.append(line);
+  return line;
+}
+
+function placeDropLine(line, list, before, after) {
+  if (!before && !after) {
+    line.hidden = true;
+    return;
+  }
+  const box = list.getBoundingClientRect();
+  const y = before ? before.getBoundingClientRect().top : after.getBoundingClientRect().bottom;
+  line.hidden = false;
+  Object.assign(line.style, {left: `${box.left}px`, top: `${y - DROP_LINE / 2}px`, width: `${box.width}px`, height: `${DROP_LINE}px`});
+  // position: fixed is the viewport's unless a box round the panel makes its
+  // own containing block (a transform); the line is moved by what it missed.
+  const drawn = line.getBoundingClientRect();
+  const dx = box.left - drawn.left;
+  const dy = y - DROP_LINE / 2 - drawn.top;
+  if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) Object.assign(line.style, {left: `${box.left + dx}px`, top: `${y - DROP_LINE / 2 + dy}px`});
+}
+
 class SfSettings extends SettingsElement {
   constructor() {
     super();
@@ -1005,10 +1041,13 @@ class SfSettings extends SettingsElement {
     const id = main.dataset.sfSetting;
     const option = main.dataset.sfOption;
     row.classList.add('sf-settings-row--dragging');
-    // The rows stay where the drawing put them (lit owns their order); a line
-    // shows where the row will land.
+    // The rows stay where the drawing put them (lit owns their order); the
+    // drop line of SF.Sortable shows where the row will land (owner remark
+    // VR11-5): one straight 2 px line across the list, .sf-sortable-indicator
+    // of sf-sortable's sheet (the cl-sortable relation), never a look of the
+    // panel's own -- the row's inset shadow bent at the row's corners.
     let before = undefined;
-    const marks = () => list.querySelectorAll(':scope > .sf-settings-row--drop-before, :scope > .sf-settings-row--drop-after');
+    const line = dropLine(this.panel);
     const move = (moved) => {
       const rows = [...list.querySelectorAll(':scope > .sf-settings-row:not([hidden])')].filter((one) => one !== row);
       const over = rows.find((one) => {
@@ -1016,16 +1055,14 @@ class SfSettings extends SettingsElement {
         return moved.clientY < box.top + box.height / 2;
       });
       before = over ? rowKey(over.querySelector(`:scope > ${ROW}`)) : null;
-      for (const one of marks()) one.classList.remove('sf-settings-row--drop-before', 'sf-settings-row--drop-after');
-      if (over) over.classList.add('sf-settings-row--drop-before');
-      else rows[rows.length - 1]?.classList.add('sf-settings-row--drop-after');
+      placeDropLine(line, list, over ?? null, over ? null : rows[rows.length - 1] ?? null);
     };
     const up = async () => {
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
       document.removeEventListener('pointercancel', up);
       row.classList.remove('sf-settings-row--dragging');
-      for (const one of marks()) one.classList.remove('sf-settings-row--drop-before', 'sf-settings-row--drop-after');
+      line.remove();
       const item = findItem(this.shownItems(), id);
       const value = before === undefined || !item ? null : placedField(item, option, before);
       if (!value) return;

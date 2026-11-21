@@ -210,6 +210,11 @@ class SfTabs extends TabsElement {
       // scrolling row, wrap wraps the rows.
       overflow: { default: 'more' },
       fit: { default: 'auto' },
+      // fold (owner remark VR11-1, group build 16): auto -- vertical tabs turn
+      // into the line with «Ещё» on a narrow place (C181 (2)); never -- the
+      // vertical list stays at any width of its place (a host that sizes the
+      // column itself, as sf-view-properties' section column does).
+      fold: { default: 'auto', values: ['auto', 'never'] },
       // A gear at the end of the tabs: the person orders and hides them; the
       // host keeps the choice (sf-tabs-settings-change, setSettings).
       configurable: { type: Boolean, default: false },
@@ -924,12 +929,14 @@ class SfTabs extends TabsElement {
   }
 
   // The look drawn (C96 item 1): line unless pills or vertical; vertical on a
-  // narrow place is the line with «Ещё» (item 5). type="full" is the line with fit
+  // narrow place is the line with «Ещё» (item 5) unless fold="never" (VR11-1;
+  // an unknown value is auto). The place is still watched and read under
+  // never, so fold back to auto folds a list on a narrow place at once. type="full" is the line with fit
   // always; no type and the scheme fills draw the line.
   get look() {
     const type = this.getAttribute('type');
     if (type === 'pills') return 'pills';
-    if (type === 'vertical') return this._narrow ? 'underline' : 'vertical';
+    if (type === 'vertical') return this._narrow && this.getAttribute('fold') !== 'never' ? 'underline' : 'vertical';
     return 'underline';
   }
 

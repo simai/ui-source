@@ -19182,6 +19182,46 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/settings/scss/_smart__settings.scss head"
+    },
+    {
+      "id": "behaviour-tabs-fold-never",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.5.0 (group build 16, G9, owner remark VR11-1): new setting fold=\"auto|never\" (default auto). never keeps vertical tabs a vertical list at any width of their place; auto folds them into the line with «Ещё» below 44rem of the place, as before (C181 (2)).",
+      "items": [
+        {
+          "component": "smart.tabs",
+          "from": "vertical tabs always fold on a narrow place",
+          "to": "vertical tabs fold on a narrow place unless fold=\"never\""
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite; a host that sizes the column itself may write fold=\"never\".",
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "value-settings-drop-line-sortable",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-settings 1.10.2 (group build 16, G10, owner remark VR11-5): a drag by the handle marks the landing place with SF.Sortable's drop line (.sf-sortable-indicator, 2 px, across the list); the classes sf-settings-row--drop-before and sf-settings-row--drop-after and their inset shadow on the row are gone.",
+      "items": [
+        {
+          "component": "smart.settings",
+          "from": ".sf-settings-row--drop-before / --drop-after inset shadow on the landing row",
+          "to": ".sf-sortable-indicator line owned by the panel (data-sf-drop-line-owner=\"sf-settings\")"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "A page that styled .sf-settings-row--drop-before or --drop-after styles .sf-sortable-indicator[data-sf-drop-line-owner=\"sf-settings\"] instead.",
+      "owner": "ui-source",
+      "source": "src/smart/settings/index.js"
     }
   ]
 }

@@ -2932,6 +2932,7 @@
           "smart.button-icon",
           "smart.input-color",
           "smart.menu-context",
+          "smart.sortable",
           "smart.switch",
           "smart.tabs"
         ]
@@ -2945,7 +2946,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/settings/smart.manifest.json",
-      "manifest_sha256": "cd1a753f349702dd3c5af609e21e615e44e1c81c06aa93dcf0b9b92f93979d57",
+      "manifest_sha256": "b711008d65c2ff259d876f671d865c53ad2926e7c1125d775007108cc90a361a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3258,7 +3259,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "c5f3084dafe32c96256d47277566972752b0469fcdae24936cb972008b095f83",
+      "manifest_sha256": "a426bdb36bcfe4701f7575e22e48b8f64568a6cf6763481ff58eca15ce12fb4b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
