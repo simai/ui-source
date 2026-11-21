@@ -826,8 +826,15 @@ function measureInk(root, slider, bar) {
   if (INK_WORDS.has(authored)) return {ink: authored, reason: 'author'};
   const slide = slider.slides?.[slider.activeIndex];
   if (!(slide instanceof HTMLElement)) return {ink: 'outline', reason: 'no-slide'};
-  const box = bar.getBoundingClientRect();
-  if (!box.width || !box.height) return {ink: 'outline', reason: 'hidden'};
+  const row = bar.getBoundingClientRect();
+  if (!row.width || !row.height) return {ink: 'outline', reason: 'hidden'};
+  // The row over the slide where the slide will rest: a slide still on its
+  // way (a smooth scroll after an arrow or a dot) is read at its stop.
+  const frame = slider.el?.getBoundingClientRect?.();
+  const own = slide.getBoundingClientRect();
+  const dx = frame ? own.left - frame.left : 0;
+  const dy = frame ? own.top - frame.top : 0;
+  const box = {left: row.left + dx, right: row.right + dx, top: row.top + dy, bottom: row.bottom + dy, width: row.width, height: row.height};
   const strip = stripPixels(slide, box);
   if (!strip.pixels) return {ink: 'outline', reason: strip.reason};
   const light = readInk(root, '--sf-slider-indicator--ink-light');
@@ -866,7 +873,7 @@ function createIndicatorInk(root, slider) {
   const schedule = () => {
     if (!frame) frame = window.requestAnimationFrame(apply);
   };
-  const events = ['slideChange', 'resize', 'update'];
+  const events = ['slideChange', 'transitionEnd', 'resize', 'update'];
   events.forEach((name) => slider.on(name, schedule));
   // A picture's load does not bubble; the block hears it on the way down, a
   // picture that was still loading and one whose source changed alike.

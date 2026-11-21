@@ -70,7 +70,9 @@ test('C398: the ink is measured from the strip behind the row and falls back to 
   assert.match(adapter, /if \(!media\.complete \|\| !media\.naturalWidth\) return \{reason: 'loading'\};/);
   assert.match(adapter, /ink: scores\[best\] >= INK_MIN_CONTRAST \? best : 'outline',/);
   assert.match(adapter, /const INK_MIN_CONTRAST = 3;/);
-  assert.match(adapter, /const events = \['slideChange', 'resize', 'update'\];/);
+  // A slide on its way is read where it will rest.
+  assert.match(adapter, /const dx = frame \? own\.left - frame\.left : 0;/);
+  assert.match(adapter, /const events = \['slideChange', 'transitionEnd', 'resize', 'update'\];/);
   assert.match(adapter, /root\.addEventListener\('load', schedule, true\);/);
   assert.match(adapter, /if \(INK_WORDS\.has\(authored\)\) return \{ink: authored, reason: 'author'\};/);
   assert.match(adapter, /createIndicatorInk\(root, slider\),/);
