@@ -49,8 +49,8 @@ page's, which passes `status`.
   («100%») takes the next smaller text step, 12 px at 2 and 14 px at 3
   (1.7.1); the figures are tabular, so the width does not move with the
   digits. Size 2 in a compact region on a wide screen has a 32 px middle and
-  12 px is the floor of the text ladder: «100%» is not drawn inside there, and
-  the value stays the ring's name.
+  12 px is the floor of the text ladder: «100%» is not drawn inside there; the
+  value is the ring's tooltip, as up to size 1 (1.7.2), and stays its name.
 
 The ring carries the role and the value; what stands in the middle is beside
 it, so a picture keeps its own name. It is not interactive and never takes the

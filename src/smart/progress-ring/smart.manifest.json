@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-ring",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "title": "Progress Ring",
   "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
   "kind": "smart",
@@ -108,7 +108,7 @@
       "show-text": {
         "type": "boolean",
         "default": false,
-        "description": "Shows the percentage in the middle from size 2 up; up to size 1 the value is the ring's tooltip instead (1.7.0); a four-character value («100%») takes the next smaller text step at 2 and 3, and is not drawn at size 2 in a compact region on a wide screen (1.7.1); the slot content takes its place when given."
+        "description": "Shows the percentage in the middle from size 2 up; up to size 1 the value is the ring's tooltip instead (1.7.0); a four-character value («100%») takes the next smaller text step at 2 and 3, and is not drawn at size 2 in a compact region on a wide screen (1.7.1), where the value is the ring's tooltip as up to size 1 (1.7.2); the slot content takes its place when given."
       },
       "label": {
         "type": "string",
@@ -264,11 +264,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-ring/index.js",
-        "sha256": "3e57063a39908d1ee59dae5684486fe87b74c113783d2534fcc480baa92c888e"
+        "sha256": "2c1e25d90c37cc0ab1622f0215a94d2c1562c8e8f09c9366d28a5c709cc66286"
       },
       {
         "path": "src/smart/progress-ring/js/templates/default.js",
-        "sha256": "c6a120f3c1c0f5ad42a5727d9d0cb8183a6efec9a801dc81ebcd5d92ad06b938"
+        "sha256": "748ad856854a001c5e4e02f65772348446ddf92d6ad7acaa6f8026b3818b8ce8"
       },
       {
         "path": "src/smart/progress-ring/rule.js",
@@ -276,7 +276,7 @@
       },
       {
         "path": "src/smart/progress-ring/docs.md",
-        "sha256": "c90d207ce6a47929c53e74a93f02c428b475796c063e598aec2e7e5ad0d2b62e"
+        "sha256": "f6845544bcf347bc098974082b43185cc25296812e7fa2aa38421df9fdcb1293"
       }
     ],
     "generated_runtime": []

@@ -34,7 +34,7 @@ test('AR-4: a lone avatar child is the ring\'s content', async () => {
   // One the ring cannot take is still said.
   assert.match(ring, /an sf-avatar inside the ring beside other content is drawn beside the ring/u);
   assert.match(docs, /A lone sf-avatar child written without it\nis taken as the content too \(1\.6\.0\)/u);
-  assert.equal(manifest.version, '1.7.1'); // look answers: «100%» in the middle // C282: 1.6.0 moved on by the language-file patch (Russian is a language file) // group build 13: 1.6.3 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(manifest.version, '1.7.2'); // look answers: «100%» in the middle // C282: 1.6.0 moved on by the language-file patch (Russian is a language file) // group build 13: 1.6.3 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
   assert.ok(manifest['x-decisions'].some((note) => /^version 1\.6\.0 \(2026-11-16, fix\/avatar-ring-ar1/u.test(note))); // C282: moved on by the language-file patch (Russian is a language file)
 });
 

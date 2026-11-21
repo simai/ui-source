@@ -63,7 +63,10 @@ export function renderProgressRingTemplate(context) {
   // size 1/3 the controller shows on hover and hides on Escape and a press; the
   // text is the spoken one, «100 %». A ring with content or an unknown value
   // has none.
-  const tip = on(context.showText) && !unknown && !content && TEXTLESS.has(size) && context.tipId
+  // A value that fits no text step (the sheet hides it, 1.7.1) takes the same
+  // tooltip (1.7.2, DEV look answer msg-8e6b1330); the host says when.
+  const hiddenText = Boolean(context.textHidden) && Boolean(text);
+  const tip = on(context.showText) && !unknown && !content && (TEXTLESS.has(size) || hiddenText) && context.tipId
     ? percentText(value, context.component ?? null) : '';
   // A ring around a picture is about something of the person's own -- a
   // profile filled in, a photo being sent (owner decision C191 (4)). At 100 %

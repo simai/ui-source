@@ -172,6 +172,19 @@
       ]
     },
     {
+      "id": "r6-hidden-text-tooltip",
+      "title": "a ring whose value fits no text step («100%» at size 2 of a compact region on a wide screen) draws no inner text and names the A1 tooltip with the spoken value; a ring that draws its text names none",
+      "covers": "settings.showText, the tooltip of a ring without inner text (1.7.2, DEV msg-8e6b1330)",
+      "steps": [
+        {
+          "wait": 400
+        },
+        {
+          "check": "(() => { const ring = (id) => document.querySelector(`#${id} .sf-progress-ring`); const tipOf = (id) => { const t = ring(id).getAttribute('data-tooltip'); return t ? document.getElementById(t) : null; }; const wide = window.innerWidth >= 960; const hiddenOk = wide ? Boolean(tipOf('rc-full-2')) && tipOf('rc-full-2').textContent.trim() === '100\\u00a0%' && getComputedStyle(ring('rc-full-2').querySelector('.sf-progress-ring-content')).display === 'none' : !ring('rc-full-2').hasAttribute('data-tooltip'); return hiddenOk && !ring('r-full-2').hasAttribute('data-tooltip') && !ring('r-full-3').hasAttribute('data-tooltip') && !ring('rc-full-3').hasAttribute('data-tooltip') && !ring('rc-part-2').hasAttribute('data-tooltip') && document.querySelector('#rc-full-2 [role]').getAttribute('aria-valuetext') === '100\\u00a0%'; })()"
+        }
+      ]
+    },
+    {
       "id": "r8-half-no-text",
       "title": "size 1/2 shows no percentage; the value stays the ring's (PG-10)",
       "covers": "settings.show-text, settings.size",

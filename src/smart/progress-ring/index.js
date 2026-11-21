@@ -1,6 +1,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
+import { breakpointMedia } from '../../core/js/breakpoints.js';
 import { renderProgressRingTemplate } from './js/templates/default';
 import manifest from './component.json';
 import {files as languageFiles} from './lang/index.mjs';
@@ -132,7 +133,8 @@ class SfProgressRing extends ProgressRingElement {
   // size 1, DEV msg-1c3a4f0b); the tooltip relation is lazy.
   tooltipId(props) {
     const shown = props.showText === true || props.showText === '' || props.showText === 'true';
-    if (!shown || !['1/4', '1/3', '1/2', '1'].includes(String(props.size ?? '1')) || this.hasSlotContent?.('content')) return '';
+    const textless = ['1/4', '1/3', '1/2', '1'].includes(String(props.size ?? '1')) || this._textHidden;
+    if (!shown || !textless || this.hasSlotContent?.('content')) return '';
     if (!this._tipId) this._tipId = this.id ? `${this.id}--tooltip` : `sf-progress-ring-tip-${++tipSequence}`;
     globalThis.SF?.Loader?.ensurePlugin?.('tooltip');
     return this._tipId;
@@ -148,6 +150,7 @@ class SfProgressRing extends ProgressRingElement {
       drawnStatus: status,
       label: this.accessibleLabel,
       tipId: this.tooltipId(props),
+      textHidden: Boolean(this._textHidden),
       content: this.hasSlotContent?.('content') ? this.getSlotContent('content') : null,
       rootClass: this.getRootClass(),
       component: this,
@@ -156,6 +159,37 @@ class SfProgressRing extends ProgressRingElement {
 
   template() {
     return renderProgressRingTemplate(this.templateContext());
+  }
+
+  // A value that fits no text step is not drawn inside (1.7.1: «100%» at
+  // size 2 of a compact region on a wide screen, where 12 px is the floor of
+  // the text ladder); then it carries the same tooltip as a ring of size 1
+  // (1.7.2, DEV look answer msg-8e6b1330). The sheet decides, so the ring
+  // reads what it drew after each draw and when the screen crosses 60rem, the
+  // width the sheet's rule starts at (lg).
+  afterRender() {
+    const view = this.ownerDocument?.defaultView;
+    if (!this._wideQuery && view?.matchMedia) {
+      // lg, the step the sheet's @media (min-width: 60rem) is written at.
+      this._wideQuery = breakpointMedia('lg', {view});
+      this._onWide = () => this.readTextHidden();
+      this._wideQuery.addEventListener?.('change', this._onWide);
+    }
+    this.readTextHidden();
+  }
+
+  readTextHidden() {
+    const text = this.querySelector('.sf-progress-ring-content--long[aria-hidden="true"]');
+    const hidden = Boolean(text) && this.ownerDocument.defaultView.getComputedStyle(text).display === 'none';
+    if (hidden === Boolean(this._textHidden)) return;
+    this._textHidden = hidden;
+    this.requestComponentUpdate('text-hidden');
+  }
+
+  disconnectedCallback() {
+    this._wideQuery?.removeEventListener?.('change', this._onWide);
+    this._wideQuery = null;
+    super.disconnectedCallback?.();
   }
 }
 

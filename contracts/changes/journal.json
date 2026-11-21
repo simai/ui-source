@@ -18931,6 +18931,27 @@
       "manual": "Nothing to rewrite. A page that sized its content to the step subtracts the window inset (2 × --sf-space-2).",
       "owner": "ui-source",
       "source": "src/smart/drawer/component.json; src/smart/drawer/docs.md"
+    },
+    {
+      "id": "behaviour-progress-ring-hidden-text-tooltip",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-progress-ring 1.7.2 (group build 15, DEV look answer msg-8e6b1330): every ring that draws no inner text carries the A1 tooltip: up to size 1 as since 1.7.0, and now a value that fits no text step (1.7.1: «100%» at size 2 of a compact region on a wide screen). The value stays the accessible name and aria-valuetext; a ring that draws its text has no tooltip.",
+      "items": [
+        {
+          "component": "sf-progress-ring",
+          "attribute": "show-text",
+          "from": "«100%» not drawn at size 2 of a wide compact region, and no tooltip",
+          "to": "the dark tooltip of size 1/3 with the spoken value, as at size 1"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/progress-ring/index.js; src/smart/progress-ring/js/templates/default.js"
     }
   ]
 }
