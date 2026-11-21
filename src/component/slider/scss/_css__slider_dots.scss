@@ -224,7 +224,10 @@
    --sf-slider-indicator-ink wins), the current one full, the others at
    --sf-slider-indicator--dot-opacity (--sf-opacity-80) -- the weakest dot keeps 3:1 against an even picture
    whichever ink is chosen. With data-ink="outline" every dot is the light
-   ink with a 1 px ring of --sf-scrim-color. The ink changes over
+   ink at full strength with a 1 px ring of the dark ink
+   (--sf-surface-media-active): one of the two reads at 3:1 or more against
+   any pixel, fine stripes too (CAR-2); the current dot is told by its
+   length, not by strength. The ink changes over
    --sf-duration-normal; under reduced motion at once. */
 .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare {
   --sf-slider-dots-dot--color: var(--sf-slider-indicator-ink, var(--sf-slider-indicator--ink));
@@ -247,6 +250,10 @@
 
 .sf-slider[data-indicator="inside"][data-ink="outline"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare .sf-slider-dots-dot {
   box-shadow: 0 0 0 var(--sf-px) var(--sf-slider-indicator--ring);
+}
+
+.sf-slider[data-indicator="inside"][data-ink="outline"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare .sf-slider-dots-dot:not(.active) {
+  opacity: 1;
 }
 
 .sf-slider[data-indicator="inside"][data-ink="outline"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare.sf-slider-dots--count {

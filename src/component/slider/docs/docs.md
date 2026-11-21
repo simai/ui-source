@@ -243,7 +243,8 @@ A minor: nothing changes unless the page asks.
   one centre line. The counter («2 / 12») stands in the end corner. Without the
   attribute the position stays under the picture (2.0.0).
 - **Ink, measured** (`data-indicator-ink` absent or `auto`): the slider reads
-  the strip of the shown picture behind the row on a 48 x 12 canvas (the
+  the strip of the shown picture behind the row on a canvas of the row's own
+  pixel size, at most 320 x 48, so fine detail is not averaged away (the
   picture's `object-fit` and `object-position` are followed) — or the opaque
   fill of the slide under the row — and writes `data-ink="light"` or
   `data-ink="dark"` on the block, whichever ink stands out more from the
@@ -252,16 +253,21 @@ A minor: nothing changes unless the page asks.
   about 0.2, where the two inks give the same contrast; the weakest dot keeps
   3.3:1 there. It measures again on every slide change, when the picture under
   the row loads, and when the block changes size. The result is on
-  `root._sfSliderInk` (`ink`, `reason`, `luminance`, `contrast`).
+  `root._sfSliderInk` (`ink`, `reason`, `luminance`, `spread`, `contrast`).
 - **Ink, fallback** (`data-ink="outline"`, the study's way A): light dots with
-  a 1 px ring of `--sf-scrim-color` (the counter a 1 / 2 px halo). Taken where
+  a 1 px ring of the dark ink, `--sf-surface-media-active`, every dot at full
+  strength (the current one is told by its length), so that the fill or the
+  ring reads at 3:1 or more against any part of the picture, fine stripes too
+  (WCAG 1.4.11; return CAR-2). The counter has a 1 / 2 px halo. Taken where
   the picture cannot be measured — another site without CORS (a tainted
   canvas), a video, a canvas, a background image, a picture still loading
-  (measured again on its `load`) — and where no ink holds 3:1 over the strip
-  (one half light, one half dark). It is also the ink before the first measure.
+  (measured again on its `load`) — where the strip is of high variance (its
+  90th- and 10th-percentile luminance 3:1 or more apart: one half light, one
+  half dark, or fine stripes; `reason: "high-variance"`), and where the better
+  ink still holds less than 3:1 over the strip (`reason: "low-contrast"`). It is also the ink before the first measure.
 - **Inks** are roles, the same in both themes: light `--sf-on-surface-media`,
-  dark `--sf-surface-media-active`, ring `--sf-scrim-color`; the current dot is
-  the full ink, the others `--sf-opacity-80`
+  dark `--sf-surface-media-active`, ring the dark ink; the current dot is
+  the full ink, the others `--sf-opacity-80` (full strength in outline)
   (`--sf-slider-indicator--dot-opacity`). The timed pill's track is the ink
   at `--sf-opacity-40`, its fill the ink. The ink changes over
   `--sf-duration-normal`; under reduced motion at once.

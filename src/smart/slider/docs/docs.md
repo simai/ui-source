@@ -230,8 +230,10 @@ keep the position under. The dots take a light or a dark ink by the measured
 strip of the shown picture behind them, measured again on every slide change,
 picture load and resize, changing over `--sf-duration-normal`. A picture that
 cannot be measured (another site without CORS, a video, a background image,
-still loading) or a strip no ink holds at 3:1 gets light dots with a 1 px dark
-ring. `indicator-ink="light" | "dark" | "outline"` fixes the ink;
+still loading), a strip of high variance (one half light, one half dark, fine
+stripes) or a strip the better ink holds at less than 3:1 gets light dots at
+full strength with a 1 px ring of the dark ink: the fill or the ring reads at
+3:1 or more against any part of the picture. `indicator-ink="light" | "dark" | "outline"` fixes the ink;
 `--sf-slider-indicator-ink` sets the colour by hand and wins. Details in the
 component.slider docs (2.1.0).
 

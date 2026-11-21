@@ -148,7 +148,7 @@
       "indicator-ink": {
         "type": "string",
         "default": "auto",
-        "description": "The ink of the position inside the picture (indicator=\"inside\", owner decision C398). auto (the default): the strip of the shown picture behind the row is measured on every slide change, picture load and resize, and the dots take the light ink (--sf-on-surface-media) or the dark one (--sf-surface-media-active), whichever stands out more, over --sf-duration-normal; a picture that cannot be measured (another site without CORS, a video, a background image, still loading) or a strip no ink holds at 3:1 takes outline. light, dark: that ink always. outline: light dots with a 1 px --sf-scrim-color ring. The public variable --sf-slider-indicator-ink wins over all of them.",
+        "description": "The ink of the position inside the picture (indicator=\"inside\", owner decision C398). auto (the default): the strip of the shown picture behind the row is measured on every slide change, picture load and resize, and the dots take the light ink (--sf-on-surface-media) or the dark one (--sf-surface-media-active), whichever stands out more, over --sf-duration-normal; a picture that cannot be measured (another site without CORS, a video, a background image, still loading) a strip of high variance (light and dark parts 3:1 apart, fine stripes too) or a strip the better ink holds at less than 3:1 takes outline. light, dark: that ink always. outline: light dots at full strength with a 1 px ring of the dark ink, one of the two at 3:1 or more against any part of the picture. The public variable --sf-slider-indicator-ink wins over all of them.",
         "enum": [
           "auto",
           "light",

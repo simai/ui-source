@@ -56,10 +56,11 @@ test('C398: the row stands over the picture a space step above its edge, no plat
   assert.match(placeholder, /\[indicator="inside"\]:not\(\[thumbs\]:not\(\[thumbs="false"\]\)\)\):not\(:has\(> \[data-sf-static\]\)\) \{\s*--sf-slider--box-bar: 0px;/);
 });
 
-test('C398: the inks are roles, the same in both themes; the weakest dot at --sf-opacity-80; outline is a 1 px scrim ring', () => {
+test('C398: the inks are roles, the same in both themes; the weakest dot at --sf-opacity-80; outline is a 1 px ring of the dark ink at full strength (CAR-2)', () => {
   assert.match(sheet, /--sf-slider-indicator--ink-light: var\(--sf-on-surface-media\);/);
   assert.match(sheet, /--sf-slider-indicator--ink-dark: var\(--sf-surface-media-active\);/);
-  assert.match(sheet, /--sf-slider-indicator--ring: var\(--sf-scrim-color\);/);
+  assert.match(sheet, /--sf-slider-indicator--ring: var\(--sf-slider-indicator--ink-dark\);/);
+  assert.match(dots, /\[data-ink="outline"\][^{]*\.sf-slider-dots-dot:not\(\.active\) \{\s*opacity: 1;/);
   assert.match(sheet, /\[data-ink="dark"\][^{]*\{\s*--sf-slider-indicator--ink: var\(--sf-slider-indicator--ink-dark\);/);
   assert.match(dots, /--sf-slider-dots-dot--color: var\(--sf-slider-indicator-ink, var\(--sf-slider-indicator--ink\)\);/);
   assert.match(sheet, /--sf-slider-indicator--dot-opacity: var\(--sf-opacity-80\);/);
@@ -78,7 +79,13 @@ test('C398: the ink is measured from the strip behind the row and falls back to 
   assert.match(adapter, /return \{reason: 'cross-origin'\};/);
   assert.match(adapter, /if \(!\(media instanceof HTMLImageElement\)\) return \{reason: 'media'\};/);
   assert.match(adapter, /if \(!media\.complete \|\| !media\.naturalWidth\) return \{reason: 'loading'\};/);
-  assert.match(adapter, /ink: scores\[best\] >= INK_MIN_CONTRAST \? best : 'outline',/);
+  // CAR-2: a strip of high variance (fine stripes too) or one the better ink holds under 3:1 is outline,
+  // and the strip is read at the row's own pixel size, not averaged on a small canvas.
+  assert.match(adapter, /const busy = spread >= INK_MIN_CONTRAST;/);
+  assert.match(adapter, /const holds = !busy && scores\[best\] >= INK_MIN_CONTRAST;/);
+  assert.match(adapter, /ink: holds \? best : 'outline',/);
+  assert.match(adapter, /reason: holds \? strip\.from : busy \? 'high-variance' : 'low-contrast',/);
+  assert.match(adapter, /Math\.round\(box\.width\)/);
   assert.match(adapter, /const INK_MIN_CONTRAST = 3;/);
   // A slide on its way is read where it will rest.
   assert.match(adapter, /const dx = frame \? own\.left - frame\.left : 0;/);

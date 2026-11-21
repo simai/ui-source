@@ -186,12 +186,16 @@
    on theirs. The counter stands in the end corner, as in a photo gallery.
    The default stays under the picture. The ink: light or dark by the
    picture's strip behind the row (the slider measures it and writes
-   data-ink), or a light dot with a 1 px dark ring where it cannot
-   (data-ink="outline", also before the first measure). */
+   data-ink), or a light dot with a 1 px dark ring where it cannot or where
+   the strip is of high variance (data-ink="outline", also before the first
+   measure). */
 .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) {
   --sf-slider-indicator--ink-light: var(--sf-on-surface-media);
   --sf-slider-indicator--ink-dark: var(--sf-surface-media-active);
-  --sf-slider-indicator--ring: var(--sf-scrim-color);
+  /* The ring of the outline dots: the dark ink itself (black at 80, the top
+     of the ink family), so that the light fill or the ring reads at 3:1 or
+     more against any part of the picture (CAR-2). */
+  --sf-slider-indicator--ring: var(--sf-slider-indicator--ink-dark);
   --sf-slider-indicator--ink: var(--sf-slider-indicator--ink-light);
   /* The dots that are not the current one (read by the slider's measure too). */
   --sf-slider-indicator--dot-opacity: var(--sf-opacity-80);

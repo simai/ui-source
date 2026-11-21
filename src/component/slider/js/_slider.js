@@ -682,15 +682,21 @@ function createLiveRegionGuard(slider, mainEl) {
 // for an even picture the switch falls at a relative luminance of about 0.2,
 // where both give the same contrast, the weakest dot at 3.3:1 or more. A
 // picture that cannot be measured (another site without CORS, a video, one
-// still loading, a background image) and a strip no ink can hold at 3:1 (one
-// half light, one half dark) take way A: light dots with a 1 px dark ring.
+// still loading, a background image), a strip of high variance (light and
+// dark parts at 3:1 or more to each other: one half light, one half dark, or
+// fine detail such as stripes; read at the row's own pixel size so that fine
+// detail is not averaged away) and a strip where the better ink still holds
+// less than 3:1 take way A: light dots with a 1 px dark ring, every dot at
+// full strength, so that the fill or the ring reads at 3:1 or more against
+// any part of the picture (WCAG 1.4.11; owner return CAR-2, 2026-11-21).
 // It is measured again on every slide change, when a picture loads and when
 // the block changes size; the ink changes over --sf-duration-normal (the
 // sheet; at once under reduced motion). The page may set the ink:
 // data-indicator-ink="light | dark | outline" (auto, the default, measures),
 // or the public variable --sf-slider-indicator-ink, which wins over both.
-const INK_SAMPLE_WIDTH = 48;
-const INK_SAMPLE_HEIGHT = 12;
+// The strip is read at the row's own size in CSS pixels, at most this many.
+const INK_SAMPLE_MAX_WIDTH = 320;
+const INK_SAMPLE_MAX_HEIGHT = 48;
 const INK_MIN_CONTRAST = 3;
 const INK_WORDS = new Set(['light', 'dark', 'outline']);
 
@@ -787,15 +793,18 @@ function stripPixels(slide, box) {
     if (!drawn) return {reason: 'outside'};
     try {
       // The whole picture as it is drawn, scaled so the row's box fills the
-      // small canvas; what lies outside the picture stays transparent.
+      // canvas at the row's own pixel size (fine detail stays); what lies
+      // outside the picture stays transparent.
+      const width = Math.max(1, Math.min(INK_SAMPLE_MAX_WIDTH, Math.round(box.width)));
+      const height = Math.max(1, Math.min(INK_SAMPLE_MAX_HEIGHT, Math.round(box.height)));
       const canvas = document.createElement('canvas');
-      canvas.width = INK_SAMPLE_WIDTH;
-      canvas.height = INK_SAMPLE_HEIGHT;
+      canvas.width = width;
+      canvas.height = height;
       const context = canvas.getContext('2d', {willReadFrequently: true});
-      const kx = INK_SAMPLE_WIDTH / box.width;
-      const ky = INK_SAMPLE_HEIGHT / box.height;
+      const kx = width / box.width;
+      const ky = height / box.height;
       context.drawImage(media, (drawn.left - box.left) * kx, (drawn.top - box.top) * ky, drawn.width * kx, drawn.height * ky);
-      const data = context.getImageData(0, 0, INK_SAMPLE_WIDTH, INK_SAMPLE_HEIGHT).data;
+      const data = context.getImageData(0, 0, width, height).data;
       const pixels = [];
       for (let i = 0; i < data.length; i += 4) {
         if (data[i + 3] < 128) continue;
@@ -851,10 +860,17 @@ function measureInk(root, slider, bar) {
   const scores = {light: score(light), dark: score(dark)};
   const best = scores.dark > scores.light ? 'dark' : 'light';
   const mean = lums.reduce((sum, value) => sum + value, 0) / lums.length;
+  // High variance: the strip's light parts and its dark parts stand 3:1 or
+  // more apart (the 90th and the 10th percentile), so no single ink reads
+  // over all of it.
+  const spread = contrast(percentile(lums, 0.9), percentile(lums, 0.1));
+  const busy = spread >= INK_MIN_CONTRAST;
+  const holds = !busy && scores[best] >= INK_MIN_CONTRAST;
   return {
-    ink: scores[best] >= INK_MIN_CONTRAST ? best : 'outline',
-    reason: scores[best] >= INK_MIN_CONTRAST ? strip.from : 'low-contrast',
+    ink: holds ? best : 'outline',
+    reason: holds ? strip.from : busy ? 'high-variance' : 'low-contrast',
     luminance: Math.round(mean * 1000) / 1000,
+    spread: Math.round(spread * 100) / 100,
     contrast: {light: Math.round(scores.light * 100) / 100, dark: Math.round(scores.dark * 100) / 100},
   };
 }
