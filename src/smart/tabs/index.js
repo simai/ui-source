@@ -1216,6 +1216,17 @@ class SfTabs extends TabsElement {
     // 2026-11-19, section 9).
     const width = (host) => layoutWidth(tabBox(host));
     const widths = hosts.map(width);
+    // A tab's own width, the label it cuts included (1.5.0, group build 16
+    // G12, view record study VRS-2): a tab is at most as wide as the row
+    // (max-inline-size 100 %), so a row narrower than the current tab measured
+    // it at the row's width -- it "fitted", stayed unshortened, and its label
+    // was cut hard («Зака»). With the cut added back it does not fit: it is
+    // the shortened one, with an ellipsis, or the row takes others instead.
+    const cut = (host) => {
+      const text = tabBox(host)?.querySelector(':scope > .sf-button-text-container');
+      return text ? Math.max(0, text.scrollWidth - text.clientWidth) : 0;
+    };
+    const own = widths.map((value, at) => value + cut(hosts[at]));
     const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
     // The row's arithmetic is the shared row engine (core/js/overflow-row.js,
     // taken out of these tabs for sf-contents' bar): the tabs in their order
@@ -1226,7 +1237,7 @@ class SfTabs extends TabsElement {
     const room = () => layoutRowRoom(list);
     showMore(false);
     this.syncMoreErrors(more, 0);
-    let kept = fitInOrder(widths, gap, room());
+    let kept = fitInOrder(own, gap, room());
     // A shared row gives the first and the last tab back the padding of their
     // outer edges, which a row of their own widths leaves off (owner decision
     // C99, TS-5 and TS-7): the tabs share the row only when they fit with it.
@@ -1239,7 +1250,7 @@ class SfTabs extends TabsElement {
       const back = (style, outer, inner) => Math.max(0, (parseFloat(style[inner]) || 0) - (parseFloat(style[outer]) || 0));
       return back(start, 'paddingInlineStart', 'paddingInlineEnd') + back(end, 'paddingInlineEnd', 'paddingInlineStart');
     };
-    if (!kept && this.fitsEqually(hosts.length) && !fitInOrder(widths, gap, room() - edgesBack())) {
+    if (!kept && this.fitsEqually(hosts.length) && !fitInOrder(own, gap, room() - edgesBack())) {
       // Every tab fits: they share the row, each at least its own width. The
       // shared widths are what the observer will report, not a change.
       container?.setAttribute('data-sf-tabs-fit', '');
@@ -1262,7 +1273,7 @@ class SfTabs extends TabsElement {
       const label = (count) => `${this.text('more')} (${count})`;
       const textBox = more?.querySelector(':scope > button .sf-button-text-container');
       const place = () => {
-        const laid = fitBesideMore({widths, gap, room: room(), must, current, extra: triggerExtra(textBox, label)});
+        const laid = fitBesideMore({widths: own, gap, room: room(), must, current, extra: triggerExtra(textBox, label)});
         this._overflowed = hosts.filter((_, at) => !laid.kept.includes(at)).map((host) => tabIndexOf(host));
         return laid;
       };

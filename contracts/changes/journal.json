@@ -19287,6 +19287,26 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/component/buttons/scss/_css__buttons.scss"
+    },
+    {
+      "id": "behaviour-tabs-current-never-cut",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.5.0 (group build 16, G12, view record study VRS-2): with overflow=\"more\" a tab is measured with the part of its label it cuts, so a current tab wider than a narrow row is shortened with an ellipsis (sf-tabs-squeezed) instead of standing at the row's width with its label cut hard.",
+      "items": [
+        {
+          "component": "smart.tabs",
+          "from": "a current tab wider than a narrow row is cut mid-word with no ellipsis",
+          "to": "the current tab is shortened with an ellipsis, or the row keeps the others"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/tabs/index.js"
     }
   ]
 }
