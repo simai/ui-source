@@ -19307,6 +19307,26 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/tabs/index.js"
+    },
+    {
+      "id": "value-pro-reference-chat-window-header-page",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "Pro package reference (pro.package.json and its larena alias, group build 16 G13, Pro C161): cl-chat-window may require smart.header-page, so Pro can draw the chat head with sf-header-page without the package receipt being refused (PACKAGE_RECEIPT_ERROR).",
+      "items": [
+        {
+          "component": "core.contracts.packages",
+          "from": "smart.chat-window requirements without smart.header-page",
+          "to": "smart.chat-window requirements include smart.header-page"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite; Pro applies its held chat-head patch after the pair.",
+      "owner": "ui-source",
+      "source": "src/core/contracts/packages/pro.package.json"
     }
   ]
 }

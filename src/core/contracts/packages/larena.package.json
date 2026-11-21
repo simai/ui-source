@@ -116,6 +116,7 @@
         "smart.chat-threads",
         "smart.confirm-change",
         "smart.empty-state",
+        "smart.header-page",
         "smart.icon",
         "smart.input",
         "smart.input-lookup",
