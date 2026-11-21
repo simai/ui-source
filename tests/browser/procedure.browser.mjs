@@ -8,7 +8,9 @@
 // size, an empty circle with no fill; the title stands centred on its marker; a line runs
 // from under each marker to the next step, none after the last, however tall
 // a step's content is; the content's blocks stand one text gap apart; the
-// complete marker is filled with primary, the current one ringed;
+// complete marker is filled with primary and drawn with a check instead of
+// its number, the current one filled and ringed by an outline (2 px through
+// a 2 px gap, Pr1-Pr2), the line keeping its 4 off that ring;
 // sf-procedure--list draws no line; long code scrolls inside its step and
 // the page never scrolls sideways.
 import {readFileSync} from 'node:fs';
@@ -49,7 +51,8 @@ try {
           return {
             content: before.content, size: before.height, width: before.width, radius: before.borderTopLeftRadius,
             border: before.borderTopWidth, edge: before.borderTopStyle, fontSize: before.fontSize,
-            background: before.backgroundColor, shadow: before.boxShadow,
+            background: before.backgroundColor, image: before.backgroundImage,
+            ring: before.outlineStyle === 'solid' ? {width: parseFloat(before.outlineWidth), offset: parseFloat(before.outlineOffset)} : null,
             titleCentre: Math.abs((title.top + title.height / 2) - (rect.top + markerSize / 2)),
             line: after.content === 'none' || after.content === 'normal' ? null : {top: rect.top + parseFloat(after.top), bottom: rect.bottom - parseFloat(after.bottom), width: after.width},
             top: rect.top, markerBottom: rect.top + markerSize,
@@ -77,7 +80,8 @@ try {
       seen[where] = state;
       const check = (ok, said) => { if (!ok) failures.push({where, said, state}); };
       const [first, second, third] = state.markers;
-      check(state.markers.every((marker) => marker.content === 'counter(sf-procedure)') && state.counters.every((value) => value === 'sf-procedure 1'), 'each step is counted and its marker shows the count');
+      // A done step draws a check in place of its number (Pr1); the others show the count.
+      check(first.content === '""' && first.image.includes('linear-gradient') && [second, third].every((marker) => marker.content === 'counter(sf-procedure)') && state.counters.every((value) => value === 'sf-procedure 1'), 'each step is counted; the done marker draws a check, the others show the count');
       check(state.listStyle === 'none', 'the list\'s own markers are off');
       check(state.markers.every((marker) => marker.size === state.line && marker.width === state.line && marker.radius !== '0px'), 'round markers of the body text line height');
       check(state.markers.every((marker) => marker.size === state.steps.size && marker.width === state.steps.width && marker.radius === state.steps.radius && marker.border === state.steps.border && marker.fontSize === state.steps.fontSize), 'the marker box equals the sf-steps number marker: size, edge width, radius, number size');
@@ -86,13 +90,17 @@ try {
       check(third.background === 'rgba(0, 0, 0, 0)' && third.border === '1px' && third.edge === 'solid', 'a neutral marker is an empty circle with a thin edge');
       check(state.markers.every((marker) => marker.titleCentre <= 1), 'the title stands centred on its marker');
       check(first.line && second.line && third.line === null, 'a line after every marker but the last');
+      // The ring reaches past the marker by its gap and width; the line keeps its 4 off it.
+      const reach = (marker) => (marker.ring ? marker.ring.width + marker.ring.offset : 0);
       for (const [index, marker] of [[0, first], [1, second]]) {
         const next = state.markers[index + 1];
-        check(marker.line && marker.line.top >= marker.markerBottom && marker.line.top - marker.markerBottom <= 4 && next.top - marker.line.bottom >= 0 && next.top - marker.line.bottom <= 4, `line ${index + 1} runs from under its marker to the next step`);
+        const start = marker.markerBottom + reach(marker);
+        const end = next.top - reach(next);
+        check(marker.line && marker.line.top >= start && marker.line.top - start <= 4 && end - marker.line.bottom >= 0 && end - marker.line.bottom <= 4, `line ${index + 1} runs from under its marker (and ring) to the next step (and its ring)`);
       }
       check(Math.abs(state.gap - state.textGap) <= 1, 'the content\'s blocks stand one text gap apart');
       check(first.background === state.primary, 'a complete marker is filled with primary');
-      check(second.shadow !== 'none', 'the current marker is ringed');
+      check(second.background === state.primary && second.ring && second.ring.width === 2 && second.ring.offset === 2 && [first, third].every((marker) => marker.ring === null), 'the current marker is filled and ringed: 2 through a 2 gap, no other marker');
       check(state.listLines.every((content) => content === 'none'), 'sf-procedure--list draws no line');
       check(state.scrollWidth <= state.viewport, 'nothing wider than the window');
       await page.close();
