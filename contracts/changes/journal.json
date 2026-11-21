@@ -18826,6 +18826,27 @@
       "manual": "Where a drawer holds an aside column beside its content, keep size on the content's step and announce the column with aside-width instead of a wider free width.",
       "owner": "ui-source",
       "source": "src/smart/drawer/index.js; src/smart/drawer/scss/_smart__drawer.scss"
+    },
+    {
+      "id": "header-page-star-color-toggle",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-header-page 1.11.2 (group build 15, DEV answer msg-e6758728): the public variable --sf-page-header-star-color is kept and now reaches the toggle look (C393) too: a pressed star's glyph takes it, else the toggle's pressed ink (--sf-icon-button-pressed-color, then --sf-on-primary-container). A disabled star keeps the disabled ink. Nothing changes for a page that does not set the variable.",
+      "items": [
+        {
+          "component": "sf-header-page",
+          "attribute": "--sf-page-header-star-color",
+          "from": "read only by the ghost star (the toggle look ignored it)",
+          "to": "read by the pressed star in both looks"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that set --sf-page-header-star-color for the old ghost star now sees that colour on the pressed toggle glyph as well; unset it there if the toggle's own ink is wanted.",
+      "owner": "ui-source",
+      "source": "src/smart/header-page/scss/_smart__page_header.scss"
     }
   ]
 }

@@ -166,6 +166,16 @@
           ]
         },
         {
+          "id": "p2-star-color",
+          "title": "a pressed star in the toggle look takes --sf-page-header-star-color (set by the page around it) on its glyph, else the toggle's pressed ink",
+          "covers": "public variable --sf-page-header-star-color (1.11.2, toggle look C393)",
+          "steps": [
+            {
+              "check": "(() => { const h = document.querySelector('#h-on'); const host = h.querySelector('.sf-page-header-star--toggle.sf-page-header-star--on'); const btn = host && host.querySelector('button[aria-pressed=\"true\"]'); const g = btn && btn.querySelector('.sf-icon'); if (!g) return false; const before = getComputedStyle(g).color; const page = h.parentElement; page.style.setProperty('--sf-page-header-star-color', 'rgb(1, 2, 3)'); const set = getComputedStyle(g).color; page.style.removeProperty('--sf-page-header-star-color'); return set === 'rgb(1, 2, 3)' && getComputedStyle(g).color === before && before !== set; })()"
+            }
+          ]
+        },
+        {
           "id": "p3-toggle",
           "title": "pressing the star sends sf-page-header-toggle {on}, then the dated sf-page-header-star, and the star turns on",
           "covers": "events.toggle, aliases.json sf-page-header-star, keyboard Enter/Space (the native button)",

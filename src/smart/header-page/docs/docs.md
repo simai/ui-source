@@ -48,7 +48,9 @@ Attributes:
   appearance="toggle"`), the star is that toggle — off a quiet ghost, on the
   soft primary plate with a 1 px primary ring inside, the glyph kept outline;
   it carries `aria-pressed` and one name and tooltip, «В избранное», so the
-  state is said once (C12). Where the toggle look is not there, the star
+  state is said once (C12). A page that sets `--sf-page-header-star-color`
+  colours the pressed toggle's glyph with it (1.11.2); unset, the glyph keeps
+  the toggle's pressed ink. Where the toggle look is not there, the star
   draws the filled glyph in `--sf-page-header-star-color` and says its state
   by its name («В избранное» / «Убрать из избранного»). The header checks the
   icon button's own interface, not the page's sheets.
