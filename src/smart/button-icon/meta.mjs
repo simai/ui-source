@@ -220,7 +220,7 @@ const sfButtonIconMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, no visible edge and the icon filled (rule C12), on a toggle: outline or ghost in the neutral scheme (owner decision C211 (1)), and a filled (default) button of any scheme at its scheme's pressed step, its own ink and the icon filled (owner decision C309 (2)); the toggle look (owner decision C393) draws on as the primary container and a 1 px primary ring inside, the icon kept outline; another look keeps its own with aria-pressed and the console says once that it is no toggle; one choice among several is sf-segmented. pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
+      "description": "Whether this toggle button is on: aria-pressed on the native button and the pressed look -- the primary container fill, its ink, an outline toggle's edge kept (group build 16 G14, C393: a fill and a frame; a ghost toggle has none) and the icon filled (rule C12), on a toggle: outline or ghost in the neutral scheme (owner decision C211 (1)), and a filled (default) button of any scheme at its scheme's pressed step, its own ink and the icon filled (owner decision C309 (2)); the toggle look (owner decision C393) draws on as the primary container and a 1 px primary ring inside, the icon kept outline; another look keeps its own with aria-pressed and the console says once that it is no toggle; one choice among several is sf-segmented. pressed=\"false\" says off; absent, the button is not a toggle and nothing is said"
     },
     "label-pressed": {
       "kind": "custom",

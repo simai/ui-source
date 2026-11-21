@@ -180,9 +180,9 @@ toggle too and draws its own on state: the plate and a ring, the icon kept
 outline.
 Pressed, it wears the pressed look (1.3.0, owner decision 2026-11-07, rule
 C12): the primary container fill, the icon in `--sf-on-primary-container` and
-filled (`FILL 1`) -- two cues, not colour alone -- and no visible edge (the
-border keeps its width and is transparent over the fill, so the height does
-not move). Hover and press step the container. Focus draws the ring; disabled
+filled (`FILL 1`) -- two cues, not colour alone -- an outline toggle keeping
+its edge (group build 16 G14, C393: a fill and a frame; a ghost toggle keeps
+the border's width transparent, so the height does not move). Hover and press step the container. Focus draws the ring; disabled
 wears the disabled look. A `tonal` or `surface` icon button, or an outline or
 ghost in another scheme, keeps its own look under `aria-pressed`, and the
 runtime says once per button in the console that it is no toggle (the tonal

@@ -19538,6 +19538,31 @@
       "manual": "A page that tinted the band with --sf-dropdown-background-color keeps it; option dot stays for other menus.",
       "owner": "ui-source",
       "source": "src/component/dropdown/scss/_css__custom.scss"
+    },
+    {
+      "id": "behaviour-pressed-toggle-words-keep-frame",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-button 1.18.2 and sf-button-icon 1.14.1 (group build 16 G14, DEV return SEG-1, C393): the pressed setting's words and the docs follow component.buttons 1.22.4 and component.icon-buttons 1.20.1 -- an outline toggle keeps its edge over the primary container fill (a fill and a frame), a ghost or link toggle none. The look itself changed in the twins' sheets.",
+      "items": [
+        {
+          "component": "smart.button",
+          "from": "pressed: no visible edge",
+          "to": "pressed: an outline toggle keeps its edge"
+        },
+        {
+          "component": "smart.button-icon",
+          "from": "pressed: no visible edge",
+          "to": "pressed: an outline toggle keeps its edge"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/button/component.json"
     }
   ]
 }

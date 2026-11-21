@@ -410,22 +410,6 @@
       "reason": "recorded by group build 16 (G11): a link drawn as a button with a bare label takes the appearance's on-colour; sf-button renders a <button> or an <a> with the text container and takes the fix as it is",
       "decision": "G11 DEV msg-0bea9d3c",
       "date": "2026-11-21"
-    },
-    {
-      "unit": "component.buttons",
-      "version": "1.22.4",
-      "twin": "smart.button",
-      "reason": "recorded by group build 16 (G14, SEG-1): a pressed outline toggle keeps its frame over the fill, so a group of outline segments has no gap; the Smart element draws the class markup and takes the fix as it is",
-      "decision": "G14 DEV msg-c2ce1374, C393",
-      "date": "2026-11-21"
-    },
-    {
-      "unit": "component.icon-buttons",
-      "version": "1.20.1",
-      "twin": "smart.button-icon",
-      "reason": "recorded by group build 16 (G14, SEG-1): a pressed outline toggle keeps its frame over the fill, so a group of outline segments has no gap; the Smart element draws the class markup and takes the fix as it is",
-      "decision": "G14 DEV msg-c2ce1374, C393",
-      "date": "2026-11-21"
     }
   ]
 }

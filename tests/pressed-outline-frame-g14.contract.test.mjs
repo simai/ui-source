@@ -22,3 +22,13 @@ test('G14: versions', () => {
   assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.1');
   assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.4');
 });
+
+test('G14: the Smart twins say what the sheets draw -- an outline toggle keeps its edge when pressed', () => {
+  for (const [path, version] of [['src/smart/button/component.json', '1.18.2'], ['src/smart/button-icon/component.json', '1.14.1']]) {
+    const manifest = JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'));
+    assert.equal(manifest.version, version, path);
+    const text = JSON.stringify(manifest);
+    assert.match(text, /an outline toggle's edge kept \(group build 16 G14, C393/u, path);
+    assert.doesNotMatch(text, /the primary container fill, its ink, no visible edge/u, path);
+  }
+});

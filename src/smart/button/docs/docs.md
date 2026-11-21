@@ -167,7 +167,9 @@ Main attributes:
   button and, while on, the pressed look (`pressed="false"` says off);
   absent, the button is not a toggle and nothing is said. The pressed look
   (1.6.0, rule C12): the primary container fill, the label and the icons in
-  `--sf-on-primary-container`, no visible edge (the height does not move) and
+  `--sf-on-primary-container`, an outline toggle keeping its edge (group build
+  16 G14, C393: a fill and a frame; a ghost toggle has none; the height does
+  not move) and
   the icons filled -- two cues, not colour alone, in both themes. Only a
   toggle wears it (component.buttons 1.17.0, owner decision C211 (1)):
   `appearance="outline"` or `"ghost"` with `scheme="on-surface"`. A

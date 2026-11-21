@@ -15,9 +15,10 @@ the Smart `sf-button` projection.
   `"false"` and keeps one label («Жирный»). Pressed, it wears the pressed look
   (1.5.0, owner decision 2026-11-07, rule C12) whatever its emphasis or
   scheme: the primary container fill (`--sf-primary-container`), the label
-  and the icons in `--sf-on-primary-container`, no visible edge (the border
-  keeps its width and is transparent over the fill, so the height of the size
-  does not move) and the icons filled (`FILL 1`): two cues, not colour alone,
+  and the icons in `--sf-on-primary-container`, an outline toggle keeping its
+  edge (group build 16 G14, C393: a fill and a frame; a ghost or link toggle
+  keeps the border's width transparent, so the height of the size does not
+  move) and the icons filled (`FILL 1`): two cues, not colour alone,
   the same roles in both themes. Hover and press over it step the container;
   a tonal toggle (1.10.2, TB-3), whose resting plate is already the container,
   takes the container's pressed step when pressed (`--sf-primary-container-active`,

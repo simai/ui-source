@@ -8,9 +8,12 @@
 //   - not pressed, a toggle keeps its own look (an outline button: its edge,
 //     no fill, the icon outlined);
 //   - pressed -- sf-button / sf-button-icon pressed, or plain markup's
-//     aria-pressed="true" -- it wears --sf-primary-container, no visible edge
-//     (the border keeps its width, transparent), the label and the icon in
-//     --sf-on-primary-container, the icon filled (FILL 1): two cues;
+//     aria-pressed="true" -- it wears --sf-primary-container (the border
+//     keeps its width), the label and the icon in
+//     --sf-on-primary-container, the icon filled (FILL 1): two cues; an
+//     outline toggle keeps its edge (group build 16 G14, C393: a fill and a
+//     frame, so a pressed segment leaves no gap in its group's outline), a
+//     link toggle has none;
 //   - the height of a size does not move between off and on (C01);
 //   - the ink on the fill (composited over the page) is at least 4.5:1;
 //   - hover over a pressed toggle steps the container (-hover);
@@ -242,11 +245,12 @@ try {
 
     const {cells, pc, pcHover, onPc, outline, hover, flip, pressedFill} = report[theme];
     const fail = (message) => failures.push(`${theme}: ${message}`);
-    const pressedLook = (key, {label = true} = {}) => {
+    const pressedLook = (key, {label = true, frame = true} = {}) => {
       const cell = cells[key];
       if (!cell) return fail(`${key} not drawn`);
       if (cell.fill !== pc) fail(`${key} fill ${cell.fill}, --sf-primary-container ${pc}`);
-      if (cell.borderColor !== 'rgba(0, 0, 0, 0)') fail(`${key} edge ${cell.borderColor}, transparent expected`);
+      if (frame && cell.borderColor !== outline) fail(`${key} edge ${cell.borderColor}, the outline's edge ${outline} expected (G14, C393)`);
+      if (!frame && cell.borderColor !== 'rgba(0, 0, 0, 0)') fail(`${key} edge ${cell.borderColor}, transparent expected`);
       if (label && cell.label !== onPc) fail(`${key} label ${cell.label}, --sf-on-primary-container ${onPc}`);
       if (cell.icon !== null && cell.icon !== onPc) fail(`${key} icon ${cell.icon}, --sf-on-primary-container ${onPc}`);
       if (cell.icon !== null && !cell.iconFill) fail(`${key} icon not filled`);
@@ -284,7 +288,7 @@ try {
     if (favOff?.ariaPressed !== null || favOn?.ariaPressed !== null) fail(`text-pressed: aria-pressed ${favOff?.ariaPressed} / ${favOn?.ariaPressed}, none expected`);
     if (favOff?.fill === pc || favOff?.iconFill) fail('text-pressed off wears the pressed look');
     const iconFav = cells['extra icon-fav-on'];
-    pressedLook('extra icon-fav-on', {label: false});
+    pressedLook('extra icon-fav-on', {label: false, frame: false});
     if (iconFav?.name !== 'Убрать из избранного' || iconFav?.ariaPressed !== null) fail(`label-pressed: name «${iconFav?.name}», aria-pressed ${iconFav?.ariaPressed}`);
     for (const [key, scheme] of [['extra default-on', 'primary'], ['extra default-on-surface-on', 'on-surface'], ['extra default-danger-on', 'danger'], ['extra icon-default-on', 'primary']]) {
       const cell = cells[key];
@@ -294,7 +298,7 @@ try {
       if (cell.label !== null && cell.labelContrast < 4.5) fail(`${key} label contrast ${cell.labelContrast}:1 under 4.5:1`);
       if (cell.iconContrast !== null && cell.iconContrast < 3) fail(`${key} icon contrast ${cell.iconContrast}:1 under 3:1`);
     }
-    pressedLook('extra link-on');
+    pressedLook('extra link-on', {frame: false});
     pressedLook('extra plain-on');
     const disabled = cells['extra disabled-on'];
     if (!disabled || disabled.fill === pc || !disabled.iconFill) fail(`disabled pressed: fill ${disabled?.fill}, icon filled ${disabled?.iconFill}`);
@@ -304,7 +308,7 @@ try {
     const [b, i, u] = ['b', 'i', 'u'].map((key) => cells[`group ${key}`]);
     if (!b || !i || !u) fail('the B / I / U group is not drawn');
     else {
-      if (b.fill !== pc || !b.iconFill || b.ariaPressed !== 'true') fail(`group: B ${JSON.stringify(b)}`);
+      if (b.fill !== pc || !b.iconFill || b.ariaPressed !== 'true' || b.borderColor !== outline) fail(`group: B ${JSON.stringify(b)}`);
       for (const [name, cell] of [['I', i], ['U', u]]) {
         if (cell.fill === pc || cell.iconFill || cell.ariaPressed !== 'false') fail(`group: ${name} ${JSON.stringify(cell)}`);
       }
