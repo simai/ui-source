@@ -154,14 +154,17 @@
   z-index: 2;
 }
 
+/* A space step inside each edge (--sf-space-2, 20 / 16), never on it (owner
+   decision 2026-11-21, carousel study): at --sf-space-1 a slide inset by the
+   same step put the switch exactly on the card's edge. */
 .sf-carousel .sf-carousel-switch--right,
 .sf-carousel .sf-carousel-switch--next {
-  inset-inline-end: var(--sf-space-1);
+  inset-inline-end: var(--sf-space-2);
 }
 
 .sf-carousel .sf-carousel-switch--left,
 .sf-carousel .sf-carousel-switch--prev {
-  inset-inline-start: var(--sf-space-1);
+  inset-inline-start: var(--sf-space-2);
 }
 
 .sf-carousel .sf-carousel-rotation {

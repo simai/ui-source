@@ -167,10 +167,10 @@ Public variables: `--sf-slider-gap`, `--sf-slider-arrow-offset-inline`,
 sf-slider is the one content slider; the class block `sf-carousel` is an old
 name until 2027-01-01 (noted once in `SF.deprecations.list()`).
 
-- **Pictures** (the default): the arrows, the dots and the pause button stand
-  over the picture on popup plates with the overlay shadow
-  (`--sf-surface-popup`, `--sf-shadow-overlay`). An arrow with nowhere to go
-  dims its glyph and keeps its plate.
+- **Pictures** (the default): the arrows stand over the picture on popup
+  plates with the overlay shadow (`--sf-surface-popup`, `--sf-shadow-overlay`).
+  An arrow with nowhere to go dims its glyph and keeps its plate. Since 1.4.0
+  the dots and the pause button stand under the picture (see below).
 - **Cards** (`root-class="sf-slider--content"`: news, reviews, products): one
   row under the cards, a control high — the position at the start, the quiet
   grey arrows at the end, 8 apart (`--sf-space-1/3`, 4 when dense; C105 H5),
@@ -190,3 +190,32 @@ name until 2027-01-01 (noted once in `SF.deprecations.list()`).
   box of an `sf-slider` whose code has not come yet (the first slide in the
   ratio box; cards in their row with room for the controls) — so nothing
   jumps when the code arrives. A `dots-type` you write keeps its plate.
+
+## Scroll track, arrows and the bar (1.4.0, owner decision 2026-11-21)
+
+Carousel study ui-control `control/research/2026-11-21-carousel` (page
+`prototypes/carousel-study.html`), through component.swiper 2.0.0 and
+component.slider 2.0.0.
+
+- **Gestures**: the strip is the browser's own horizontal scroll that stops at
+  each slide. A finger, a trackpad's two fingers and a horizontal wheel page it
+  with the platform's momentum; a vertical move scrolls the page; the mouse
+  drags it (`data-swiper-simulate-touch="false"` leaves the mouse out).
+  `data-swiper-css-mode="false"` keeps the former transform strip.
+- **Arrows**: the button ladder (40, 36 on a phone, 32 in compact density),
+  round, `--sf-space-2` (20 / 16) inside each edge, never on it. Over a
+  picture they show where a pointer can hover and while the keyboard is in the
+  slider, with a fade (`--sf-duration-normal`, none under reduced motion), and
+  are always there on a touch screen. Cards keep the arrows under the row, at
+  its end.
+- **Position**: under the content, the block's gap below it (`--sf-space-1`,
+  16 / 12), never over the picture: dots up to seven slides, «2 / 12» from
+  eight. With `data-autoplay` the dots are the timed position
+  (`sf-slider-dots--timed`): the current dot is a 32 px pill that fills for the
+  slide's time, the pause button stands beside it; the pointer over the slider
+  freezes the fill and the turn, and the turn goes on from there.
+- **Keys**: ArrowLeft and ArrowRight page while the focus is in the slider;
+  `data-swiper-keyboard="false"` turns them off.
+- **Loop**: `loop` and autoplay go from the last slide back to the first.
+- **Thumbnails**: the shown thumbnail is ringed (`--sf-primary`), and the strip
+  keeps room for the ring.

@@ -15,7 +15,10 @@ test('Slider reserves semantic pointer targets while retaining geometric marker 
 test('Slider content mode is opt-in and retains explicit media dimension overrides',()=>{
   assert.match(slider,/\.sf-slider--content \.sf-slider-slide\s*\{\s*height: var\(--sf-slider-slide--height, auto\);\s*min-height: var\(--sf-slider-slide--min-height, 0\)/);
   assert.match(slider,/\.sf-slider--content \.sf-slider-controls\s*\{\s*position: static/);
-  assert.match(slider,/\.sf-slider \.sf-slider-controls\s*\{[^}]*position: absolute/s);
+  // Pictures (carousel study 2026-11-21): the controls lend their parts to the
+  // block's grid; the arrows take the strip's row, the position a row under it.
+  assert.match(slider,/\.sf-slider:not\(\.sf-slider--content\) > \.sf-slider-controls \{\s*display: contents;/);
+  assert.match(slider,/> \.sf-slider-arrows \{[^}]*grid-row: 1;[^}]*padding-inline: var\(--sf-slider-arrow-offset-inline, var\(--sf-space-2\)\);/s);
 });
 test('Smart Slider fallback surfaces use the semantic surface radius',()=>{
   assert.match(template,/class="radius-surface bg-primary/);

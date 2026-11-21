@@ -32,6 +32,8 @@ const CAROUSEL_PARTS = {
   delay: 5000,
   // Its former word for a stopped rotation (data-rotation="paused").
   stopped: 'paused',
+  // Its own dots keep their look: no timed position.
+  timed: false,
 };
 
 function emitChange(root) {

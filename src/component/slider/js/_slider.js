@@ -33,6 +33,9 @@ const SLIDER_PARTS = {
   speed: undefined,
   delay: 3000,
   stopped: 'stopped',
+  // While the slides turn by themselves the dots are the timed position
+  // (sf-slider-dots--timed, owner decision 2026-11-21).
+  timed: true,
 };
 const SLIDER_BOUND_FLAG = 'sfSliderBound';
 const SLIDER_WAITING_FLAG = 'sfSliderWaiting';
@@ -525,13 +528,19 @@ function createAutoplayGuard(root, slider, rotationButton, words = {}) {
     }
     root.dataset.rotation = stopped ? (words.stopped || 'stopped') : 'playing';
   };
+  // Stopped is the person's; a hold (the pointer over the slider, a hidden
+  // tab) only pauses the turn and keeps its time, so the timed position
+  // freezes with it and goes on from there (data-rotation-held).
   const apply = () => {
-    const run = !stopped && holds.size === 0 && root.isConnected;
-    if (run === slider.autoplay.running) return;
+    const run = !stopped && root.isConnected;
+    const held = run && holds.size > 0;
     applying = true;
-    if (run) slider.autoplay.start();
-    else slider.autoplay.stop();
+    if (run && !slider.autoplay.running) slider.autoplay.start();
+    else if (!run && slider.autoplay.running) slider.autoplay.stop();
+    if (held) slider.autoplay.pause?.();
+    else if (run) slider.autoplay.resume?.();
     applying = false;
+    root.toggleAttribute('data-rotation-held', held && slider.autoplay.running);
   };
   const stop = () => { stopped = true; paint(); apply(); };
   const start = () => { stopped = false; paint(); apply(); };
@@ -540,7 +549,12 @@ function createAutoplayGuard(root, slider, rotationButton, words = {}) {
 
   // The engine stops by itself on a swipe (disableOnInteraction): that is the
   // person's stop too, and the button says so.
-  const onEngineStop = () => { if (!applying) { stopped = true; paint(); } };
+  const onEngineStop = () => {
+    if (applying) return;
+    stopped = true;
+    paint();
+    root.removeAttribute('data-rotation-held');
+  };
   const onRotation = (event) => {
     event.preventDefault();
     if (stopped) start();
@@ -577,6 +591,7 @@ function createAutoplayGuard(root, slider, rotationButton, words = {}) {
     root.removeEventListener('pointerleave', onPointerLeave);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     delete root.dataset.rotation;
+    root.removeAttribute('data-rotation-held');
   };
 }
 
@@ -754,9 +769,19 @@ function bindSlider(root, parts) {
   if (thumbs) {
     sliderOptions.thumbs = { swiper: thumbs };
   }
+  // The timed position while the slides turn (sf-slider-dots--timed): the
+  // current dot fills for the slide's time.
+  const timed = Boolean(parts.timed && sliderOptions.autoplay && pagination && pagination.type !== 'fraction');
+  paginationEl?.classList.toggle('sf-slider-dots--timed', timed);
+  if (timed) paginationEl.style.setProperty('--sf-slider-dots--delay', `${toNumber(sliderOptions.autoplay.delay, parts.delay)}ms`);
+  root._sfSliderTimed = timed ? paginationEl : null;
   // The keys listen on the whole block: the arrows and the dots, where the
-  // focus is, sit outside the strip (SL-3).
-  if (sliderOptions.keyboard === true || sliderOptions.keyboard?.enabled) {
+  // focus is, sit outside the strip (SL-3). ArrowLeft / ArrowRight page while
+  // the focus is in the slider unless the page turns them off
+  // (data-swiper-keyboard="false"; on by default since sf-slider 2.0.0, the
+  // carousel study 2026-11-21).
+  const keyboardOff = sliderOptions.keyboard === false || (isPlainObject(sliderOptions.keyboard) && sliderOptions.keyboard.enabled === false);
+  if (!keyboardOff) {
     sliderOptions.keyboard = {
       ...(isPlainObject(sliderOptions.keyboard) ? sliderOptions.keyboard : {}),
       enabled: true,
@@ -818,6 +843,11 @@ function unbindSlider(root) {
     else element.setAttribute('aria-label', authored);
   });
   if (root._sfSliderRotationHidden) root._sfSliderRotationHidden.hidden = false;
+  if (root._sfSliderTimed) {
+    root._sfSliderTimed.classList.remove('sf-slider-dots--timed');
+    root._sfSliderTimed.style.removeProperty('--sf-slider-dots--delay');
+  }
+  delete root._sfSliderTimed;
   delete root._sfSliderRotationHidden;
   restoreRegionSemantics(root, root._sfSliderRegion);
   delete root._sfSliderRegion;
