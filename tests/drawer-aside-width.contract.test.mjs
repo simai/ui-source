@@ -16,7 +16,7 @@ const ASIDE = 'var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))';
 test('A9: aside-width is a setting of sf-drawer 1.20.0, in its manifest and docs', () => {
   for (const file of ['src/smart/drawer/component.json', 'src/smart/drawer/smart.manifest.json']) {
     const manifest = json(file);
-    assert.equal(manifest.version, '1.20.0', file);
+    assert.equal(manifest.version, '1.20.1', file); // group build 15: moved on by the merged branches or a GB15 assembly item
   }
   const setting = json('src/smart/drawer/component.json').settings['aside-width'];
   assert.equal(setting.type, 'string');
