@@ -19032,6 +19032,31 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss"
+    },
+    {
+      "id": "value-progress-ring-status-primary",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-progress-ring's status primary is the empty status (owner decision C131 (1), 2026-11-13: no status is the theme's primary, neutral is grey). The ring kept primary as a value alias of the empty status since then without a journal record; recorded after the fact in group build 16 (G7, change-lifecycle). The alias draws what no status draws and is noted in SF.deprecations until remove_after.",
+      "items": [
+        {
+          "component": "sf-progress-ring",
+          "attribute": "status",
+          "from": "primary",
+          "to": "(no status)"
+        }
+      ],
+      "deprecated_on": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-progress-ring status=\"primary\" value=\"40\">",
+        "after": "<sf-progress-ring value=\"40\">"
+      },
+      "manual": "Remove status=\"primary\" from sf-progress-ring; a ring without a status is drawn in the theme's primary.",
+      "owner": "ui-source",
+      "source": "src/smart/progress-ring/index.js props.status valueAliases"
     }
   ]
 }
