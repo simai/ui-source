@@ -125,6 +125,18 @@ function choiceFits(row) {
 // the bottom of the last row, across the list -- the rect of SF.Sortable's
 // line preview (listIndicatorRect).
 const DROP_LINE = 2;
+// The line's look is sf-sortable's sheet, a lazy relation: asked for when a
+// panel with a handle opens and when a drag starts (a lazy relation is fetched
+// when it is first used; the Loader asks once).
+function askDropLineSheet(panel) {
+  if (!panel?.querySelector?.('.sf-settings-row-handle') || globalThis.customElements?.get('sf-sortable')) return;
+  try {
+    globalThis.SF?.Loader?.ensure?.(['sf-sortable'])?.catch?.(() => {});
+  } catch {
+    // No Loader on the page: the line keeps the panel's place, unstyled.
+  }
+}
+
 function dropLine(panel) {
   const line = document.createElement('div');
   line.className = 'sf-sortable-indicator';
@@ -1047,6 +1059,7 @@ class SfSettings extends SettingsElement {
     // of sf-sortable's sheet (the cl-sortable relation), never a look of the
     // panel's own -- the row's inset shadow bent at the row's corners.
     let before = undefined;
+    askDropLineSheet(this.panel);
     const line = dropLine(this.panel);
     const move = (moved) => {
       const rows = [...list.querySelectorAll(':scope > .sf-settings-row:not([hidden])')].filter((one) => one !== row);
@@ -1093,6 +1106,7 @@ class SfSettings extends SettingsElement {
     const panel = this.panel;
     const owned = this._open;
     if (!panel || !owned) return false;
+    askDropLineSheet(panel);
     anchor.setAttribute('aria-expanded', 'true');
     // The density of the control that opened it (C22), where the panel draws.
     owned.density = panel.getAttribute('data-sf-density');
