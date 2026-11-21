@@ -42,6 +42,16 @@ test('C398: the row stands over the picture a space step above its edge, no plat
   assert.match(sheet, /> \.sf-slider-dots--count \{\s*grid-column: 4;\s*justify-self: end;\s*margin-inline-end: var\(--sf-space-2\);/);
   // The dots and the pause button share one centre line.
   assert.match(sheet, /margin-block-end: calc\(var\(--sf-space-2\) \+ \(var\(--sf-ui-1--control-height\) - var\(--sf-slider-dots-dot--target-size\)\) \/ 2\);/);
+  // No :has() inside a :has() anywhere in the slider sheets (one drops its whole selector list).
+  const nested = (text) => {
+    for (let at = text.indexOf(':has('); at >= 0; at = text.indexOf(':has(', at + 5)) {
+      let depth = 1; let end = at + 5;
+      for (; end < text.length && depth; end += 1) depth += text[end] === '(' ? 1 : text[end] === ')' ? -1 : 0;
+      if (text.slice(at + 5, end).includes(':has(')) return text.slice(at, end);
+    }
+    return null;
+  };
+  for (const text of [sheet, dots]) assert.equal(nested(text), null);
   // The undrawn element keeps no room for a bar under the picture.
   assert.match(placeholder, /\[indicator="inside"\]:not\(\[thumbs\]:not\(\[thumbs="false"\]\)\)\):not\(:has\(> \[data-sf-static\]\)\) \{\s*--sf-slider--box-bar: 0px;/);
 });
