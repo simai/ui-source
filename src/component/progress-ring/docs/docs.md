@@ -26,7 +26,10 @@ name in step; a page that prints the class markup itself keeps them in step.
   owner decision C132). Size 3 is also the circle of a page's empty state. The
   percentage is 14 / 16 px at 2 / 3 and is not shown up to size 1 (1.7.0, DEV
   look answer 2026-11-20): an aria-hidden percentage there is hidden; the value
-  stays the ring's name (sf-progress-ring shows it as a tooltip).
+  stays the ring's name (sf-progress-ring shows it as a tooltip). A value of
+  four characters («100%») marked `sf-progress-ring-content--long` takes the
+  next smaller text step at 2 and 3 (1.7.1); in a compact region on a wide
+  screen it is not drawn at size 2 (a 32 px middle, 12 px the floor).
 - `.sf-progress-ring-indicator` is the ring: the track and the filled part,
   one line 2 px wide inside the box. It carries `role="progressbar"` (a task)
   or `role="meter"` (an amount in a known range, such as a quota) and the

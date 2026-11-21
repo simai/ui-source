@@ -192,6 +192,8 @@
           "  <sf-progress-ring id=\"r9\" label=\"Диск\" value=\"83\" warning-at=\"80\" error-at=\"95\" meter></sf-progress-ring>",
           "  <sf-progress-ring id=\"r10\" label=\"Серое\" value=\"50\" status=\"neutral\"></sf-progress-ring>",
           "  <sf-progress-ring id=\"r11\" label=\"Прежнее\" value=\"50\" status=\"primary\"></sf-progress-ring>",
+          "  <div id=\"r-full\"><sf-progress-ring id=\"r-full-2\" label=\"Готово\" value=\"100\" size=\"2\" show-text></sf-progress-ring><sf-progress-ring id=\"r-full-3\" label=\"Готово\" value=\"100\" size=\"3\" show-text></sf-progress-ring><sf-progress-ring id=\"r-part-2\" label=\"Загрузка\" value=\"62\" size=\"2\" show-text></sf-progress-ring></div>",
+          "  <div id=\"r-compact\" data-sf-density=\"compact\"><sf-progress-ring id=\"rc-full-2\" label=\"Готово\" value=\"100\" size=\"2\" show-text></sf-progress-ring><sf-progress-ring id=\"rc-full-3\" label=\"Готово\" value=\"100\" size=\"3\" show-text></sf-progress-ring><sf-progress-ring id=\"rc-part-2\" label=\"Загрузка\" value=\"62\" size=\"2\" show-text></sf-progress-ring></div>",
           "</main>"
         ]
       },
@@ -323,6 +325,16 @@
           "steps": [
             {
               "check": "(() => { const root = document.querySelector('#r6 .sf-progress-ring'); const c = document.querySelector('#r6 .sf-progress-ring-content'); const probe = document.createElement('div'); probe.style.width = 'var(--sf-ui-3--control-height)'; document.body.append(probe); const want = probe.getBoundingClientRect().width; probe.remove(); return root.classList.contains('sf-progress-ring--size-3') && root.getBoundingClientRect().width === want && root.getBoundingClientRect().height === want && c.textContent.trim() === '100%' && c.scrollWidth <= c.clientWidth; })()"
+            }
+          ]
+        },
+        {
+          "id": "r6-four-characters",
+          "title": "«100%» at sizes 2 and 3 takes the next smaller text step and fits the middle; «62%» keeps its step; in a compact region on a wide screen «100%» at size 2 is not drawn inside (12 px is the floor), at size 3 it fits; tabular figures keep the width",
+          "covers": "settings.showText with a four-character value at sizes 2 and 3 (1.7.1, DEV GB15-2)",
+          "steps": [
+            {
+              "check": "(() => { const fits = (id) => { const c = document.querySelector(`#${id} .sf-progress-ring-content`); if (!c) return false; const r = document.createRange(); r.selectNodeContents(c); return r.getBoundingClientRect().width <= parseFloat(getComputedStyle(c).maxInlineSize) && c.scrollWidth <= c.clientWidth; }; const long = (id) => document.querySelector(`#${id} .sf-progress-ring-content`)?.classList.contains('sf-progress-ring-content--long'); const shown = (id) => getComputedStyle(document.querySelector(`#${id} .sf-progress-ring-content`)).display !== 'none'; const c = document.querySelector('#r-full-2 .sf-progress-ring-content'); const w = (t) => { const s = document.createElement('span'); s.textContent = t; c.append(s); const x = s.getBoundingClientRect().width; s.remove(); return x; }; const tabular = getComputedStyle(c).fontVariantNumeric.includes('tabular-nums') && w('100%') === w('188%') && w('100%') === w('111%'); const wide = window.innerWidth >= 960; const size = (id) => getComputedStyle(document.querySelector(`#${id} .sf-progress-ring-content`)).fontSize; return tabular && long('r-full-2') && long('r-full-3') && !long('r-part-2') && fits('r-full-2') && fits('r-full-3') && fits('r-part-2') && size('r-full-2') !== size('r-part-2') && document.querySelector('#r-full-2 .sf-progress-ring-content').textContent.trim() === '100%' && (wide ? !shown('rc-full-2') : shown('rc-full-2') && fits('rc-full-2')) && fits('rc-full-3') && fits('rc-part-2') && shown('rc-part-2') && document.querySelector('#rc-full-2 [role]').getAttribute('aria-valuetext') === '100\\u00a0%'; })()"
             }
           ]
         },

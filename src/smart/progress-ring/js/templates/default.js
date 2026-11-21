@@ -51,6 +51,11 @@ export function renderProgressRingTemplate(context) {
   // ran «100 %» past the middle of size 3. The ring's spoken value keeps it
   // (aria-valuetext below), as every other place does.
   const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? ringPercent(percentText(value, context.component ?? null)) : '';
+  // At sizes 2 and 3 a value of four characters («100%») takes the next
+  // smaller text step (1.7.1, DEV GB15-2): at size 2 it ran 41 px in the 40 px
+  // middle, at size 3 of a compact region 41 in 40. Counted without the
+  // direction marks of a right-to-left language.
+  const long = (size === '2' || size === '3') && [...text.replace(/[\u200e\u200f\u061c]/gu, '')].length >= 4;
   const content = context.content && context.content !== nothing ? context.content : null;
   // Where the percentage asked for has no room (show-text up to size 1), it is
   // the ring's tooltip: the Framework's tooltip composition (component.tooltip),
@@ -92,7 +97,9 @@ export function renderProgressRingTemplate(context) {
       ${content
         ? html`<span class="sf-progress-ring-content">${content}</span>`
         : text
-          ? html`<span class="sf-progress-ring-content" aria-hidden="true">${text}</span>`
+          ? long
+            ? html`<span class="sf-progress-ring-content sf-progress-ring-content--long" aria-hidden="true">${text}</span>`
+            : html`<span class="sf-progress-ring-content" aria-hidden="true">${text}</span>`
           : nothing}
       ${tip ? html`<span class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-progress-ring-tooltip" id=${context.tipId}
         hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${tip}</span></span></span>` : nothing}

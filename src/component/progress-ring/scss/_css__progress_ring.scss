@@ -221,6 +221,30 @@
     --sf-progress-ring--font-size: var(--sf-text-size-1);
   }
 
+  /* A value of four characters («100%», marked sf-progress-ring-content--long)
+     takes the next smaller text step at sizes 2 and 3 (1.7.1, DEV GB15-2):
+     at size 2 «100%» in 14 px ran 41 px in the 40 px middle, at size 3 of a
+     compact region 41 in 40. In 12 px it is 35 px. The figures stay tabular,
+     so the width does not move with the digits. */
+  .sf-progress-ring.sf-progress-ring--size-2 .sf-progress-ring-content--long[aria-hidden="true"] {
+    font-size: var(--sf-text-size-1\/3);
+  }
+
+  .sf-progress-ring.sf-progress-ring--size-3 .sf-progress-ring-content--long[aria-hidden="true"] {
+    font-size: var(--sf-text-size-1\/2);
+  }
+
+  /* Size 2 of a compact region on a wide screen has a 32 px middle, and 12 px
+     is the floor of the text ladder (1/3 is 12 there as 1/2 is): «100%»
+     (35 px) cannot be drawn inside. It is not drawn, as at size 1 (1.7.0);
+     the value stays the ring's name and aria-valuetext. A three-character
+     value («62%», 27 px) keeps its text. */
+  @media (min-width: 60rem) {
+    [data-sf-density="compact"] .sf-progress-ring.sf-progress-ring--size-2 .sf-progress-ring-content--long[aria-hidden="true"] {
+      display: none;
+    }
+  }
+
   /* The percentage keeps to the middle (DEV look answer 2026-11-20, (b)): the
      guard behind «100%» written without a space, so a longer number in some
      language or a larger text never runs over the line -- what does not fit

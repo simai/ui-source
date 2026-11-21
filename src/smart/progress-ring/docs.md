@@ -45,7 +45,12 @@ page's, which passes `status`.
   middle. There the value is the ring's tooltip, «62 %», on hover (the
   Framework's dark tooltip of size 1/3); it stays the ring's `aria-valuenow`
   and `aria-valuetext`, so a screen reader still says it. A ring with content
-  in its middle or an unknown value has no tooltip.
+  in its middle or an unknown value has no tooltip. A value of four characters
+  («100%») takes the next smaller text step, 12 px at 2 and 14 px at 3
+  (1.7.1); the figures are tabular, so the width does not move with the
+  digits. Size 2 in a compact region on a wide screen has a 32 px middle and
+  12 px is the floor of the text ladder: «100%» is not drawn inside there, and
+  the value stays the ring's name.
 
 The ring carries the role and the value; what stands in the middle is beside
 it, so a picture keeps its own name. It is not interactive and never takes the
