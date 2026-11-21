@@ -3970,7 +3970,7 @@ function renderConditionControl(field, host, conditions, selected) {
     // colour; the menu without dots, the excluding rows in the same ink.
     const excluding = (operator) => filterConditionTone(operator) === 'error';
     const caption = JSON.stringify(`${setText(host, 'filterCondition')}: `);
-    const style = `--sf-dropdown-band-caption: ${caption}${excluding(selected) ? '; --sf-dropdown-band-color: var(--sf-error)' : ''}`;
+    const style = `--sf-dropdown-band-caption: ${caption}${excluding(selected) ? '; --sf-dropdown-band-color: var(--sf-error); --sf-dropdown-band-hover-color: var(--sf-error-hover)' : ''}`;
     return html`<sf-dropdown class="sf-filter-window-condition" size=${windowStep()} appearance="band" mode="select"
             search=${conditions.length >= 10 ? 'true' : 'false'} list-width="trigger" aria-label=${setText(host, 'filterCondition')}
             data-tone=${excluding(selected) ? 'error' : 'neutral'} style=${style}

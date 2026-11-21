@@ -10,14 +10,16 @@
 // rows' text; PH-10 the condition band reads «Условие: любой из», one medium
 // text, the band one grey through «любой из» -> «ни один из» -> «не задано»
 // -> «задано»; an excluding condition's words in the error ink above 4.5:1
-// at rest and under the pointer; the menu without dots, the excluding row
+// at rest and under the pointer (the hover step of the error ink there, 4.6:1
+// asked); the menu without dots, the excluding row
 // in the error ink above 4.5:1. 1440 and 390, light and dark, three loads.
 import {chromium} from 'playwright';
 import {serveBuild, russianPage, launchBrowser, watchConsole, CASES, results} from '../support/build-pages.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const LOADS = Number(process.argv[3]) || 3;
-const MIN_CONTRAST = 4.5;
+// Above AA with a margin (the coordinator's C397 order): 4.5:1 exactly fails.
+const MIN_CONTRAST = 4.6;
 const server = await serveBuild(process.argv[2]);
 const browser = await launchBrowser(chromium);
 const {ok, report} = results();
@@ -94,7 +96,17 @@ const READ = (paintSource) => {
     const back = backdrop(field);
     out.band = {fill: back.join(), caption: before.content, captionWeight: before.fontWeight, captionInk: paint(before.color).join(),
       weight: getComputedStyle(input).fontWeight, ink: ink.join(), contrast: contrast(ink, back),
-      error: paint(getComputedStyle(scope.querySelector('.sf-filter-window') ?? panel).getPropertyValue('--sf-error').trim() || 'red').join()};
+      error: (() => {
+        // The theme's error ink and its hover step, as the band's page resolves them.
+        const probe = document.createElement('span');
+        field.append(probe);
+        probe.style.color = 'var(--sf-error)';
+        const rest = paint(getComputedStyle(probe).color).join();
+        probe.style.color = 'var(--sf-error-hover)';
+        const hover = paint(getComputedStyle(probe).color).join();
+        probe.remove();
+        return {rest, hover};
+      })()};
   }
   return out;
 };
@@ -168,6 +180,7 @@ for (const {width, theme} of CASES) {
           return r ? [r.left + r.width / 2, r.top + r.height / 2] : null;
         }, index);
         if (target) await tab.mouse.click(target[0], target[1]);
+        await tab.mouse.move(2, 890);
         await tab.waitForTimeout(300);
         const state = {name, ...(await tab.evaluate(READ, paintSource))};
         if (name === 'ни один из') {
@@ -196,7 +209,8 @@ for (const {width, theme} of CASES) {
       ok(`${label}: usual conditions and «задано / не задано» in the caption's ink, no colour`,
         states.filter((state) => state.name !== 'ни один из').every((state) => state.band.ink === state.band.captionInk), states.map(({name, band}) => [name, band.ink, band.captionInk]));
       ok(`${label}: «ни один из» in the error ink, ${excluding.band.contrast}:1 at rest and ${excluding.hover?.contrast}:1 under the pointer, both above ${MIN_CONTRAST}:1`,
-        excluding.band.ink === excluding.band.error && excluding.band.ink !== excluding.band.captionInk && excluding.band.contrast >= MIN_CONTRAST && excluding.hover?.contrast >= MIN_CONTRAST, {rest: excluding.band, hover: excluding.hover});
+        excluding.band.ink === excluding.band.error.rest && excluding.hover?.ink === excluding.band.error.hover && excluding.band.ink !== excluding.band.captionInk
+        && excluding.band.contrast >= MIN_CONTRAST && excluding.hover?.contrast >= MIN_CONTRAST, {rest: excluding.band, hover: excluding.hover});
       await tab.keyboard.press('Escape');
       await tab.waitForFunction(() => !document.querySelector('[data-sf-filter-window]'), null, {timeout: 5000}).catch(async () => { await tab.keyboard.press('Escape'); });
       await tab.waitForTimeout(150);

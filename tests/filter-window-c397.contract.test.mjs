@@ -10,7 +10,8 @@ const json = (path) => JSON.parse(read(path));
 // lines, the footer's padding, the condition head as one text.
 test('PH-8: a panel list stands the panel\'s inset from the head\'s and the footer\'s lines', () => {
   const css = read('src/smart/input-choice/scss/_smart__choice.scss');
-  assert.match(css, /\.sf-choice--list\[data-panel\] \.sf-choice-scroll \{\s*display: flex;\s*flex-direction: column;\s*min-block-size: 0;\s*overflow-y: auto;\s*padding-block: #\{panel\.\$inset\};/u);
+  assert.match(css, /padding-block: max\(calc\(var\(--sf-px\) \* 0\), calc\(var\(--sf-choice--panel-inset\) - var\(--sf-choice--list-row-pad\)\)\);/u);
+  assert.match(css, /\.sf-choice--list\[data-panel\] \.sf-choice-scroll \{\s*display: flex;\s*flex-direction: column;\s*min-block-size: 0;\s*overflow-x: hidden;/u, 'no horizontal bar under the rows');
 });
 
 test('PH-9: the filter window\'s footer pads as the rows\' start column, 16 / 12', () => {
@@ -24,7 +25,7 @@ test('PH-10: the condition band is one medium text «Условие: …», grey
   const source = read('src/smart/field-renderers/index.js');
   const control = source.slice(source.indexOf('function renderConditionControl('), source.indexOf('function currencySign('));
   assert.match(control, /--sf-dropdown-band-caption: \$\{caption\}/u);
-  assert.match(control, /--sf-dropdown-band-color: var\(--sf-error\)/u);
+  assert.match(control, /--sf-dropdown-band-color: var\(--sf-error\); --sf-dropdown-band-hover-color: var\(--sf-error-hover\)/u);
   assert.match(control, /\{ink: 'error'\}/u);
   assert.doesNotMatch(control, /--sf-dropdown-background-color/u, 'no tint per condition (C314 tint removed)');
   assert.doesNotMatch(control, /dot:/u, 'no dots in the menu');
@@ -39,6 +40,8 @@ test('PH-10: the condition band is one medium text «Условие: …», grey
   const variables = manifest['css-variables'];
   assert.equal(variables['--sf-dropdown-band-caption'].type, 'string');
   assert.equal(variables['--sf-dropdown-band-color'].type, 'color');
+  assert.equal(variables['--sf-dropdown-band-hover-color'].type, 'color');
+  assert.match(css, /> \.sf-dropdown-field:hover input \{\s*--sf-dropdown-input--color: var\(--sf-dropdown-band-hover-color, var\(--sf-dropdown-band-color, var\(--sf-on-surface\)\)\);/u);
 });
 
 test('C397 versions: the round-3 step of each part, with the journal records', () => {

@@ -867,21 +867,32 @@ $choice-search-edge: calc(var(--sf-px) * 0);
     min-block-size: 0;
   }
 
-  /* The first and the last row stand from the head's and the footer's
-     lines as the text stands from the side (owner decision C397, PH-8):
-     the panel's inset above and below, 8 (6 compact), and the row's own
-     padding, 16 (12) to the text. */
+  /* The rows scroll up and down only: a row a pixel wider than the area
+     (the scrollbar taking more than the rows' end padding, compact) drew a
+     horizontal bar under the list. */
   .sf-choice--list[data-panel] .sf-choice-scroll {
     display: flex;
     flex-direction: column;
     min-block-size: 0;
+    overflow-x: hidden;
     overflow-y: auto;
-    padding-block: #{panel.$inset};
     scroll-padding: var(--sf-focus-room);
   }
 
+  /* The first and the last row's text stand from the head's and the
+     footer's lines as the rows' text stands from the side (owner decision
+     C397, PH-8; the study's «side» inset): the start column, 16 (12
+     compact), less the row's own padding above its text. */
   .sf-choice--list[data-panel] .sf-choice-options {
+    --sf-choice--list-row-pad: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2);
     align-items: stretch;
+    padding-block: max(calc(var(--sf-px) * 0), calc(var(--sf-choice--panel-inset) - var(--sf-choice--list-row-pad)));
+  }
+
+  @media (pointer: coarse) {
+    .sf-choice--list[data-panel] .sf-choice-options {
+      --sf-choice--list-row-pad: calc((max(var(--sf-ui-1--control-height), var(--sf-d1)) - var(--sf-text-height-1)) / 2);
+    }
   }
 
   .sf-choice--list[data-panel] .sf-choice-row {

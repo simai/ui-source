@@ -97,7 +97,7 @@ test('C313 (3), C312 (1): the choice list as a panel -- the search header, the l
   assert.match(source, /if \(!this\.multiple \|\| !this\.panelValue \|\| !this\._pages\.query\.trim\(\)\) return \[\];/u);
   assert.match(source, /const detail = \{value: this\.value, values: \[\.\.\.next\], item: null, checked: true\};/u);
   const css = read('src/smart/input-choice/scss/_smart__choice.scss');
-  assert.match(css, /\.sf-choice--list\[data-panel\] \.sf-choice-scroll \{\n\s+display: flex;\n\s+flex-direction: column;\n\s+min-block-size: 0;\n\s+overflow-y: auto;/u);
+  assert.match(css, /\.sf-choice--list\[data-panel\] \.sf-choice-scroll \{\n\s+display: flex;\n\s+flex-direction: column;\n\s+min-block-size: 0;\n\s+overflow-x: hidden;\n\s+overflow-y: auto;/u);
   assert.match(read('src/smart/input-choice/js/templates/default.js'), /return context\.panel \? html`<div class="sf-choice-scroll">\$\{content\}<\/div>` : content;/u);
   assert.match(read('src/smart/field-renderers/index.js'), /\?panel=\$\{host\.filterWindow === true\}/u);
 });

@@ -19479,7 +19479,7 @@
       "recorded_on": "2026-11-21",
       "stage": "compat",
       "kind": "behaviour",
-      "summary": "sf-input-choice list in a panel (smart.input-choice 1.11.2, group build 16, owner decision C397 PH-8): the scrolling rows stand the panel's inset (8, 6 compact) below the head's line and above the footer's, so the first and the last row's text stand 16 (12) from the lines, as the text stands from the side. Released lists had no inset there.",
+      "summary": "sf-input-choice list in a panel (smart.input-choice 1.11.2, group build 16, owner decision C397 PH-8): the rows stand from the head's line and the footer's so that the first and the last row's text stand 16 (12 compact) from them, as the rows' text stands from the side: the start column less the row's own padding above its text (12 normal, 6 compact on a fine pointer). Released lists had none. The rows' area scrolls up and down only: compact with a scrollbar, a row 2 px wider than the area drew a horizontal bar.",
       "items": [
         {
           "component": "smart.input-choice",
@@ -19519,7 +19519,7 @@
       "recorded_on": "2026-11-21",
       "stage": "compat",
       "kind": "behaviour",
-      "summary": "Filter field window's condition band (module.smart-field-renderers 1.28.0, smart.dropdown 1.25.0, component.dropdown 1.18.3; group build 16, owner decision C397 PH-10, refines C314): one medium text «Условие: любой из» -- the band takes a caption (the public --sf-dropdown-band-caption) and the value's ink (--sf-dropdown-band-color); the band keeps its grey in every state (the C314 tint and the presence violet are gone), an excluding condition's words take --sf-error; the menu of conditions has no dots, its excluding rows in the error ink (a dropdown option's ink: \"error\"). The band's text is medium in every use of appearance=\"band\".",
+      "summary": "Filter field window's condition band (module.smart-field-renderers 1.28.0, smart.dropdown 1.25.0, component.dropdown 1.18.3; group build 16, owner decision C397 PH-10, refines C314): one medium text «Условие: любой из» -- the band takes a caption (the public --sf-dropdown-band-caption) the value's ink (--sf-dropdown-band-color) and its ink under the pointer (--sf-dropdown-band-hover-color; the error ink's hover step keeps the words above 4.5:1 over the state layer in dark); the band keeps its grey in every state (the C314 tint and the presence violet are gone), an excluding condition's words take --sf-error; the menu of conditions has no dots, its excluding rows in the error ink (a dropdown option's ink: \"error\"). The band's text is medium in every use of appearance=\"band\".",
       "items": [
         {
           "component": "module.smart-field-renderers",

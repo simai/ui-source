@@ -829,6 +829,10 @@
     /* --sf-dropdown-band-color (public): the value's ink -- an excluding
        condition's words in the error ink (C397); the text ink by default.
        The caption keeps the text ink. */
+    /* --sf-dropdown-band-hover-color (public): the value's ink under the
+       pointer -- the error ink's hover step for an excluding condition, so
+       the words keep their contrast over the state layer (C397: 4.5:1 in
+       dark with the rest ink). The rest ink by default. */
     gap: 0;
     margin-inline: calc(-1 * var(--sf-dropdown--band-edge));
   }
@@ -862,6 +866,10 @@
 
   .sf-dropdown.sf-dropdown--band.sf-dropdown--band:not(:has(> .sf-dropdown-field > :disabled)) > .sf-dropdown-field.sf-dropdown-field:hover {
     background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
+  }
+
+  .sf-dropdown.sf-dropdown--band:not(:has(> .sf-dropdown-field > :disabled)) > .sf-dropdown-field:hover input {
+    --sf-dropdown-input--color: var(--sf-dropdown-band-hover-color, var(--sf-dropdown-band-color, var(--sf-on-surface)));
   }
 
   /* The band's text is a head's (owner decision C397): the medium weight,
