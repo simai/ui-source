@@ -142,6 +142,7 @@ function parseOptionData(option, dropdownSize = '1') {
     ariaLabel: option.ariaLabel ? String(option.ariaLabel) : '',
     group: option.group ? String(option.group) : '',
     dot: option.dot ? String(option.dot) : '',
+    ink: option.ink ? String(option.ink) : '',
   };
 }
 

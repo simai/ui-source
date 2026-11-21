@@ -58,12 +58,14 @@ test('C314: excluding conditions are error red, presence tertiary purple, the re
   }
 });
 
-test('C313 (1), C314: the window\'s condition is a band with a menu the band\'s width, size 1 rows, search from ten, a tint only for unusual conditions', () => {
+test('C313 (1), C314: the window\'s condition is a band with a menu the band\'s width, size 1 rows, search from ten, one grey band (C397)', () => {
   const source = read('src/smart/field-renderers/index.js');
   assert.match(source, /<sf-dropdown class="sf-filter-window-condition" size=\$\{windowStep\(\)\} appearance="band" mode="select"/u);
   assert.match(source, /search=\$\{conditions\.length >= 10 \? 'true' : 'false'\} list-width="trigger"/u);
-  assert.match(source, /tone \? `--sf-dropdown-background-color: var\(--sf-\$\{tone\}-container\)` : ''/u);
-  assert.match(source, /dot: filterConditionTone\(operator\) \|\| 'neutral'/u);
+  // C397 refines C314: the band keeps its grey in every state, no dots;
+  // an excluding condition's words take the error ink (tests/c397-condition-head).
+  assert.doesNotMatch(source, /--sf-dropdown-background-color: var\(--sf-\$\{tone\}-container\)/u);
+  assert.doesNotMatch(source, /dot: filterConditionTone\(operator\)/u);
   // In a phone's sheet the window's parts reach the sheet's edges past its body's inset.
   assert.match(source, /margin-inline: calc\(-1 \* var\(--sf-drawer--inset-start\)\) calc\(-1 \* var\(--sf-drawer--inset-end\)\)/u);
 });

@@ -867,11 +867,16 @@ $choice-search-edge: calc(var(--sf-px) * 0);
     min-block-size: 0;
   }
 
+  /* The first and the last row stand from the head's and the footer's
+     lines as the text stands from the side (owner decision C397, PH-8):
+     the panel's inset above and below, 8 (6 compact), and the row's own
+     padding, 16 (12) to the text. */
   .sf-choice--list[data-panel] .sf-choice-scroll {
     display: flex;
     flex-direction: column;
     min-block-size: 0;
     overflow-y: auto;
+    padding-block: #{panel.$inset};
     scroll-padding: var(--sf-focus-room);
   }
 

@@ -17,7 +17,17 @@ import { optionBadgeProps } from "../../../helpers/option-badge.js";
 // grey). The name stays the row's text.
 const OPTION_DOTS = new Set(["primary", "tertiary", "info", "success", "warning", "error", "neutral"]);
 
+// An option's ink (owner decision C397): `ink: "error"` draws the name in
+// the error ink -- the filter window's excluding conditions, without a dot.
+const OPTION_INKS = new Set(["error"]);
+
 function optionName(option) {
+  if (option.ink && OPTION_INKS.has(String(option.ink)) && typeof option.text === "string") {
+    return {
+      ...option,
+      text: html`<span class="sf-dropdown-option-ink--${String(option.ink)}">${option.text}</span>`,
+    };
+  }
   if (option.dot && OPTION_DOTS.has(String(option.dot)) && typeof option.text === "string") {
     return {
       ...option,

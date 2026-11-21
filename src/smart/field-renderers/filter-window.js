@@ -188,7 +188,11 @@ export function filterWindowOpen({anchor, field = {}, value = {}, placement = 'b
       surface.append(body);
       if (withFooter) {
         foot = doc.createElement('div');
-        foot.className = 'sf-filter-window-foot p-1/2';
+        foot.className = 'sf-filter-window-foot';
+        // The footer stands as the start column (owner decision C397, PH-9):
+        // the panel's inset and the row's padding, 16 (12 compact), the
+        // rows' text and the buttons on one line.
+        foot.style.padding = 'calc(var(--sf-space-1\\/4) + var(--sf-space-1\\/2))';
         // The footer's hairline across the window, as the band's and the search's.
         foot.style.borderBlockStart = 'var(--sf-px) solid var(--sf-outline-variant)';
         surface.append(foot);

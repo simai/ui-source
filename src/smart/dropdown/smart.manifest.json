@@ -199,7 +199,7 @@
       "options": {
         "type": "array",
         "default": [],
-        "description": "Options given as data instead of as sf-list-item children: [{value, label, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?, color?, dot?}]. dot (owner decision C314 (4)) names a status colour -- primary, tertiary, info, success, warning, error or neutral -- drawn as sf-dot's 8 px disc before the name. A string or a number is taken as both the label and the value. label is the option's name, as in sf-input-choice and sf-input-lookup; text, its first spelling, is still read until 2027-01-01 and noted in SF.deprecations. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
+        "description": "Options given as data instead of as sf-list-item children: [{value, label, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?, color?, dot?, ink?}]. dot (owner decision C314 (4)) names a status colour -- primary, tertiary, info, success, warning, error or neutral -- drawn as sf-dot's 8 px disc before the name. ink (owner decision C397) names an ink for the name, error (the filter window's excluding conditions). A string or a number is taken as both the label and the value. label is the option's name, as in sf-input-choice and sf-input-lookup; text, its first spelling, is still read until 2027-01-01 and noted in SF.deprecations. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
       },
       "inherited-value": {
         "type": "string",
@@ -530,7 +530,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "d858f48fc1ef6a2a090e7fdeb7bef58539a1b1addb77824426de7727c3ec43ed"
+        "sha256": "30b647099fc2e51ee7c0ca70ccfc43b2141a6347dd5688a153c143a9d2d4de23"
       },
       {
         "path": "src/smart/dropdown/rule.js",
@@ -538,7 +538,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "120207a32f36443a4c153e300f6ecbbe901776f141f97d6723eb2266b6ba0dcc"
+        "sha256": "6d36c3b87808315a2121069dd7d3e69e1765a8a806c17bbdded8f36410b30e75"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

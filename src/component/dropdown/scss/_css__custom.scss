@@ -823,6 +823,12 @@
        ring follows the window's corners instead of being cut by them (PH-3;
        the filter window writes its surface's radius). No radius by default. */
     --sf-dropdown--band-radius: var(--sf-dropdown-band-radius, calc(var(--sf-px) * 0));
+    /* --sf-dropdown-band-caption (public): a caption before the value, one
+       text with it -- «Условие: любой из» (owner decision C397, PH-10; the
+       filter window writes its word). A CSS string; none by default. */
+    /* --sf-dropdown-band-color (public): the value's ink -- an excluding
+       condition's words in the error ink (C397); the text ink by default.
+       The caption keeps the text ink. */
     gap: 0;
     margin-inline: calc(-1 * var(--sf-dropdown--band-edge));
   }
@@ -858,13 +864,15 @@
     background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
   }
 
+  /* The band's text is a head's (owner decision C397): the medium weight,
+     as a window's title, the caption and the value one text. */
   .sf-dropdown.sf-dropdown--band .sf-dropdown-field input {
     --sf-dropdown-input--padding-inline-start: 0;
     --sf-dropdown-input--font-family: var(--sf-text--family);
-    --sf-dropdown-input--font-weight: var(--sf-font-weight-regular);
+    --sf-dropdown-input--font-weight: var(--sf-weight--medium);
     --sf-dropdown-input--font-size: var(--sf-text-size-1);
     --sf-dropdown-input--line-height: var(--sf-text-height-1);
-    --sf-dropdown-input--color: var(--sf-on-surface);
+    --sf-dropdown-input--color: var(--sf-dropdown-band-color, var(--sf-on-surface));
   }
 
   .sf-dropdown.sf-dropdown--band.sf-dropdown--size-1\/2 .sf-dropdown-field input {
@@ -876,6 +884,29 @@
     --sf-dropdown-input--font-size: var(--sf-text-size-2);
     --sf-dropdown-input--line-height: var(--sf-text-height-2);
   }
+
+  /* The caption (C397): before the value, in its font and the text ink; its
+     own word space keeps the two one text. */
+  .sf-dropdown.sf-dropdown--band > .sf-dropdown-field::before {
+    content: var(--sf-dropdown-band-caption, none);
+    flex: none;
+    white-space: pre;
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-weight--medium);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--size-1\/2 > .sf-dropdown-field::before {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--size-2 > .sf-dropdown-field::before {
+    font-size: var(--sf-text-size-2);
+    line-height: var(--sf-text-height-2);
+  }
+
 
   .sf-dropdown.sf-dropdown--band .sf-dropdown-field input::placeholder {
     --sf-dropdown-placeholder--font-family: var(--sf-text--family);
@@ -904,6 +935,23 @@
   .sf-dropdown.sf-dropdown--band.sf-dropdown--band > .sf-dropdown-field.sf-dropdown-field {
     /* The chevron on the fill: the container's variant ink, as on a filled field. */
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+}
+
+/* The band's caption in the text ink (C397), whatever ink the value takes;
+   an option's ink: the name in a status ink -- the filter window's excluding
+   conditions in the error ink, the menu without dots. */
+@layer sf.paint {
+  .sf-dropdown.sf-dropdown--band > .sf-dropdown-field::before {
+    color: var(--sf-on-surface);
+  }
+
+  .sf-dropdown.sf-dropdown--band:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field::before {
+    color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-dropdown-option-ink--error {
+    color: var(--sf-error);
   }
 }
 

@@ -3964,13 +3964,18 @@ function windowStep() {
 
 function renderConditionControl(field, host, conditions, selected) {
     if (conditions.length < 2) return nothing;
-    const tone = filterConditionTone(selected);
-    const style = tone ? `--sf-dropdown-background-color: var(--sf-${tone}-container)` : '';
+    // The condition head (owner decision C397, refines C314): one medium text
+    // «Условие: любой из» on the band's grey in every state; an excluding
+    // condition's words in the error ink; «задано» / «не задано» without a
+    // colour; the menu without dots, the excluding rows in the same ink.
+    const excluding = (operator) => filterConditionTone(operator) === 'error';
+    const caption = JSON.stringify(`${setText(host, 'filterCondition')}: `);
+    const style = `--sf-dropdown-band-caption: ${caption}${excluding(selected) ? '; --sf-dropdown-band-color: var(--sf-error)' : ''}`;
     return html`<sf-dropdown class="sf-filter-window-condition" size=${windowStep()} appearance="band" mode="select"
             search=${conditions.length >= 10 ? 'true' : 'false'} list-width="trigger" aria-label=${setText(host, 'filterCondition')}
-            data-tone=${tone || 'neutral'} style=${style || nothing}
+            data-tone=${excluding(selected) ? 'error' : 'neutral'} style=${style}
             .options=${conditions.map((operator) => ({value: operator, text: host.getFilterOperatorLabel(operator), label: host.getFilterOperatorLabel(operator),
-                dot: filterConditionTone(operator) || 'neutral'}))}
+                ...(excluding(operator) ? {ink: 'error'} : {})}))}
             value=${selected}
             @change=${(event) => {
                 const operator = event.detail?.values?.[0] || event.detail?.value || selected;

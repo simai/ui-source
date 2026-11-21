@@ -116,7 +116,9 @@ for (const {width, theme} of CASES) {
     // C313 (1), C314: the condition is a band from edge to edge of the window,
     // the search header's height, its hairline inside (48, 44 on a phone;
     // group build 16 G8), the text at the rows' text edge; its menu is the band's width,
-    // its rows of the step, each with an 8 px dot. One Tab stop (FF-9).
+    // its rows of the step, without dots (C397: the excluding rows in the
+    // error ink). One Tab stop (FF-9). The text starts with the caption
+    // «Условие: » (C397), at the field's start padding.
     const band = await tab.evaluate(() => {
       const popover = document.querySelector('[data-sf-filter-window]');
       const scope = popover.localName === 'sf-drawer' ? popover.getDrawerRoot?.() ?? popover : popover;
@@ -127,7 +129,7 @@ for (const {width, theme} of CASES) {
       const name = scope.querySelector('.sf-choice-row .sf-checkbox-label, .sf-choice-row sf-badge > *');
       if (!field) return {field: false};
       const f = field.getBoundingClientRect();
-      const text = input.getBoundingClientRect().left + parseFloat(getComputedStyle(input).paddingInlineStart || 0);
+      const text = f.left + parseFloat(getComputedStyle(field).paddingInlineStart || 0);
       const focusables = [...field.querySelectorAll('input:not([type=hidden]), button, [tabindex]')].filter((one) => one.tabIndex >= 0);
       return {field: true, left: Math.round(f.left - box.left), right: Math.round(box.right - f.right), height: Math.round(f.height),
         textEdge: Math.round(text - box.left), rowsEdge: name ? Math.round(name.getBoundingClientRect().left - box.left) : null,
@@ -143,7 +145,9 @@ for (const {width, theme} of CASES) {
         if (!list) return null;
         const l = list.getBoundingClientRect();
         return {dx: Math.round(l.left - f.left), dr: Math.round(f.right - l.right),
-          dots: [...list.querySelectorAll('[role=option] .sf-dropdown-option-dot .sf-dot-item')].map((one) => Math.round(one.getBoundingClientRect().width))};
+          dots: list.querySelectorAll('[role=option] .sf-dot-item').length,
+          options: list.querySelectorAll('[role=option]').length,
+          red: [...list.querySelectorAll('[role=option] .sf-dropdown-option-ink--error')].map((one) => one.textContent.trim())};
       });
       await tab.click('.sf-filter-window-condition .sf-dropdown-field');
       await tab.waitForTimeout(250);
@@ -153,8 +157,8 @@ for (const {width, theme} of CASES) {
     const bandHeight = sheet ? 44 : 48;
     ok(`${key}: the condition band from edge to edge, ${bandHeight} px with its hairline, the window's top corners (PH-3), its text at the rows' edge, one Tab stop (C313 (1), FF-9)`,
       band.field && band.left === 0 && band.right === 0 && band.height === bandHeight && band.radius === (sheet ? '0px' : band.windowRadius) && band.textEdge === band.rowsEdge && band.tabStops === 1, band);
-    ok(`${key}: the band's menu is the band's width, each condition with an 8 px dot (FF-10, C314 (4))`,
-      band.menu && Math.abs(band.menu.dx) <= 1 && Math.abs(band.menu.dr) <= 1 && band.menu.dots.length === 4 && band.menu.dots.every((one) => one === 8), band);
+    ok(`${key}: the band's menu is the band's width, four conditions without dots, «ни один из» in the error ink (FF-10, C397)`,
+      band.menu && Math.abs(band.menu.dx) <= 1 && Math.abs(band.menu.dr) <= 1 && band.menu.options === 4 && band.menu.dots === 0 && band.menu.red.length === 1, band);
 
     await tab.click(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-input[value="work"]', {force: true});
     await tab.waitForTimeout(200);
