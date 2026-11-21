@@ -99,7 +99,14 @@ for (const {width, theme} of CASES) {
     for (const n of [3, 30]) {
       // The filter window by a real click; the band pressed with the mouse.
       await tab.click(`#f${n} > button`);
-      await tab.waitForFunction(() => document.querySelector('[data-sf-filter-window] .sf-filter-window-condition .sf-dropdown-field'), null, {timeout: 10_000}).catch(() => {});
+      // The window and its rows drawn (a phone's sheet slides in; its rows
+      // come a frame after the band).
+      await tab.waitForFunction(() => {
+        const host = document.querySelector('[data-sf-filter-window]');
+        const scope = host?.localName === 'sf-drawer' ? host.getDrawerRoot?.() ?? host : host;
+        return scope?.querySelector('.sf-filter-window-condition .sf-dropdown-field')
+          && [...scope.querySelectorAll('.sf-filter-window .sf-checkbox-box')].some((node) => node.getBoundingClientRect().height > 0);
+      }, null, {timeout: 10_000}).catch(() => {});
       await tab.waitForTimeout(300);
       const open = await tab.evaluate(WINDOW);
       // A real press at the value's middle (in a phone's sheet the drawer's
