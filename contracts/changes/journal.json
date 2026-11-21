@@ -19012,6 +19012,26 @@
       "manual": "Nothing to rewrite. A trigger that wants its tooltip over its own open popup does not exist in the Framework; say so in a decision first.",
       "owner": "ui-source",
       "source": "src/component/tooltip/js/_tooltip.js open, syncTooltipAttribute"
+    },
+    {
+      "id": "behaviour-bulk-actions-static-phone-row-no-offer",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-bulk-actions 1.2.3 (group build 16, G6; first paint bulk-actions/all-selected @390, red since group build 13): on a bar narrower than the sm container step the static first paint leaves out the offer «Выбрать все N» / «Только эта страница (N)», as the code does when the row would wrap (C309 (1), H7: the offer goes into «⋯»). The static bar was two lines (74 px) and the code's one (38 px); now both are one line. Where the code finds room the offer comes into the same line.",
+      "items": [
+        {
+          "component": "sf-bulk-actions",
+          "from": "the static phone row shows the offer and wraps",
+          "to": "the static phone row leaves the offer out"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss"
     }
   ]
 }

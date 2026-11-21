@@ -61,6 +61,16 @@
     justify-content: center;
     padding-inline: var(--sf-space-1\/4);
   }
+
+  // The offer «Выбрать все N» / «Только эта страница (N)» is the code's
+  // first «⋯» row on a phone when the row would wrap (owner decision C309
+  // (1), H7), which the sheet cannot measure: the static row leaves it out,
+  // so the bar is one line before the code as after it (it was two, 74 px,
+  // then 38 when the code folded the offer). Where the code finds room it
+  // puts the offer back in the same line, and nothing moves.
+  .sf-bulk-actions[data-sf-static] .sf-bulk-actions__offer > button {
+    display: none;
+  }
 }
 
 .sf-bulk-actions__lead,

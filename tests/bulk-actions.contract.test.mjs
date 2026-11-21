@@ -76,7 +76,7 @@ test('up to three labelled actions, the rest in «⋯», the dangerous one alway
 
 test('the manifest: a new component of family bulk with the contract of C295', () => {
   assert.equal(manifest.tag, 'sf-bulk-actions');
-  assert.equal(manifest.version, '1.2.2'); // GB16 G3: the live line is made when it is spoken
+  assert.equal(manifest.version, '1.2.3'); // GB16 G6: the static phone row leaves the offer out
   assert.equal(manifest.family, 'bulk');
   for (const name of ['count', 'page-count', 'total', 'all-selected', 'count-text', 'place', 'size', 'label', 'actions']) {
     assert.ok(manifest.settings[name], name);
@@ -168,4 +168,10 @@ test('the live region makes its own words when it speaks (GB16 G3, view round 10
   // The drawing reads the line through the getter, which calls a function line.
   assert.match(source, /announcement: this\.announcement,/u);
   assert.match(source, /get announcement\(\) \{\n    const said = this\._announcement;\n    if \(typeof said !== 'function'\) return said \?\? '';/u);
+});
+
+test('the static phone row leaves the offer out, as the code folds it (GB16 G6, H7 first paint)', () => {
+  const sheet = read('src/smart/bulk-actions/scss/_smart__bulk-actions.scss');
+  const phone = sheet.slice(sheet.indexOf('@container sf-bulk-actions (width <'), sheet.indexOf('.sf-bulk-actions__lead,'));
+  assert.match(phone, /\.sf-bulk-actions\[data-sf-static\] \.sf-bulk-actions__offer > button \{\n    display: none;\n  \}/u);
 });
