@@ -576,7 +576,11 @@
       --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, #{ladder.padding-block($size)});
     }
 
-    .sf-textarea.#{$class} textarea[rows="1"] {
+    // A growing field is not the one-row box (group build 16, G7): this rule
+    // came after the auto-grow rule at the same specificity, so at 1/3 and 3
+    // a growing field stood at one row and scrolled from its second line
+    // (textarea-auto-grow, red since the outer steps came in 1.9.0).
+    .sf-textarea.#{$class}:not(.sf-textarea--auto-grow) textarea[rows="1"] {
       block-size: #{ladder.height($size)};
     }
 

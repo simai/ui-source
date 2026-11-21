@@ -733,6 +733,22 @@
     justify-content: center;
   }
 
+  // A tab drawn by a page's own component (sf-tabs setData component) is a
+  // span[role=tab] around an inert copy whose wrapper and host are display:
+  // contents: the span is the row's item and shares it like a button, and the
+  // button inside fills it (group build 16, G7: under fit, which replaced
+  // type="full" (C96 item 7), the span kept its own 81 px beside 1359; TB-04).
+  .sf-tabs-top-container[data-sf-tabs-fit] > .sf-tabs-top > span[role="tab"] {
+    display: flex;
+    flex: 1 1 0;
+    min-inline-size: max-content;
+  }
+
+  .sf-tabs-top-container[data-sf-tabs-fit] > .sf-tabs-top > span[role="tab"] > [inert] :is(.sf-button, .sf-icon-button) {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
   // fit auto on a narrow place (C96 item 7 by C181 (2)): the row of «Ещё» is a
   // container, and below the h1 step of its own width (704 px at the root
   // size) two to four tabs share it -- in the sheet, so the printed first frame shares it as the laid

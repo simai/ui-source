@@ -368,6 +368,15 @@ $sf-avatar-hue-classes: ();
   .sf-avatar > .sf-avatar-image {
     position: absolute;
     inset: 0;
+  }
+
+  /* Transparent until it has come only where it lies over initials or a
+     glyph, as sf-avatar draws it and these docs ask (photo over initials).
+     A lone <img class="sf-avatar-image"> -- the documented picture variant,
+     with nothing under it to show -- is drawn as it loads, as before C152:
+     an image no script marks stayed invisible for good (group build 16, G7,
+     avatar-picture-fill; red on group builds 14 and 15). */
+  .sf-avatar > :is(.sf-avatar-text, sf-icon, .sf-icon) ~ .sf-avatar-image {
     opacity: 0;
     transition: opacity var(--sf-duration-fast) var(--sf-animation, ease);
   }
@@ -390,7 +399,7 @@ $sf-avatar-hue-classes: ();
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sf-avatar > .sf-avatar-image {
+    .sf-avatar > :is(.sf-avatar-text, sf-icon, .sf-icon) ~ .sf-avatar-image {
       transition: none;
     }
   }

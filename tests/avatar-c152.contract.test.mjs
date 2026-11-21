@@ -46,7 +46,10 @@ test('C152 (2): the initials stand under the photo, which fades in and is droppe
   assert.match(picture, /import \{keyed\} from "lit\/directives\/keyed\.js";/u);
   assert.match(picture, /return html`\$\{under\}\$\{keyed\(context\.imageUrl, html`<img class="sf-avatar-image"[^`]*@load=\$\{onImageLoad\} @error=\$\{onImageError\}/u);
   assert.match(picture, /event\.currentTarget\.dataset\.sfLoaded = "error";/u);
-  assert.match(sheet, /\.sf-avatar > \.sf-avatar-image \{\s*position: absolute;\s*inset: 0;\s*opacity: 0;/u);
+  assert.match(sheet, /\.sf-avatar > \.sf-avatar-image \{\s*position: absolute;\s*inset: 0;\s*\}/u);
+  // Transparent until it came only over initials or a glyph; a lone class
+  // image (the documented picture variant) draws as it loads (group build 16).
+  assert.match(sheet, /\.sf-avatar > :is\(\.sf-avatar-text, sf-icon, \.sf-icon\) ~ \.sf-avatar-image \{\s*opacity: 0;/u);
   assert.match(sheet, /\.sf-avatar > \.sf-avatar-image\[data-sf-loaded="true"\] \{\s*opacity: 1;/u);
   assert.match(sheet, /\.sf-avatar > \.sf-avatar-image\[data-sf-loaded="error"\] \{\s*display: none;/u);
   assert.match(sheet, /prefers-reduced-motion: reduce/u);

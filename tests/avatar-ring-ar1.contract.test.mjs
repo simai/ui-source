@@ -55,7 +55,7 @@ test('RG-S1-24: the caption wraps a long word; a no-wrap line carries its full t
   assert.match(avatar.settings['no-wrap'].summary, /the full text is each line's title/u);
   assert.match(docs, /^- `no-wrap` -- the label template keeps the heading and the description on one$/mu);
   assert.equal(avatar.version, '1.8.6'); // C282: 1.8.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.3 moved on by the merged branches or a GB10 patch // group build 13: 1.8.4 moved on by the merged branches or the C278 language patch // group build 14: 1.8.5 moved on by the merged branches or the C278 language patch
-  assert.equal(passport.version, '1.12.1'); // group build 9: 1.10.1 moved on by the merged branches or a GB9 patch // group build 10: 1.12.0 moved on by the merged branches or a GB10 patch
+  assert.equal(passport.version, '1.12.2'); // group build 16 G7: 1.12.2, a lone image is drawn // group build 9: 1.10.1 moved on by the merged branches or a GB9 patch // group build 10: 1.12.0 moved on by the merged branches or a GB10 patch
 });
 
 test('AR-3: the avatar sources say 1/4 = 16 on every screen', async () => {

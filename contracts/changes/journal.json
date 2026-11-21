@@ -19057,6 +19057,86 @@
       "manual": "Remove status=\"primary\" from sf-progress-ring; a ring without a status is drawn in the theme's primary.",
       "owner": "ui-source",
       "source": "src/smart/progress-ring/index.js props.status valueAliases"
+    },
+    {
+      "id": "behaviour-tabs-fit-component-tabs-share",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.tabs 1.5.5 (group build 16, G7, skeleton-tabs-acceptance TB-04; red on group builds 14 and 15): under fit, which replaced type=\"full\" (C96 item 7), a tab drawn by the page's own component (sf-tabs setData component, a span[role=tab] around an inert copy) shares the row like a button tab and its button fills it; it kept its own 81 px beside 1359.",
+      "items": [
+        {
+          "component": "component.tabs",
+          "from": "a component tab under fit keeps its own width",
+          "to": "a component tab under fit shares the row, its button filling it"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/component/tabs/scss/_css__tabs.scss"
+    },
+    {
+      "id": "behaviour-textarea-outer-steps-grow",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.textarea 1.9.2 (group build 16, G7, textarea-auto-grow; red on group builds 14 and 15): at sizes 1/3 and 3 a growing field (auto-grow, field-sizing) grows with its text again. The one-row rule of the outer steps came after the auto-grow rule at the same specificity, so the field stood at one row (28 / 56) and scrolled from its second line; the browsers without field-sizing were not touched.",
+      "items": [
+        {
+          "component": "component.textarea",
+          "from": "at 1/3 and 3 a growing field stays one row and scrolls",
+          "to": "at 1/3 and 3 a growing field grows to max-rows, as at 1/2, 1 and 2"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/component/textarea/scss/_css__textarea.scss outer steps"
+    },
+    {
+      "id": "behaviour-datepicker-sheet-body-fits-panel",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.datepicker 1.12.1 (group build 16, G7, datepicker-ribbon; red on group builds 14 and 15): the phone ribbon's weekdays and «Готово» stay pinned again while the months scroll. Since R242 (2026-11-14) a drawer body keeps its content's height and the panel scrolls; the date sheet's body took the whole 4500 px ribbon, so the panel scrolled the weekdays and the foot away with the months. The sheet's body now takes the panel's height and the ribbon is the scroller.",
+      "items": [
+        {
+          "component": "component.datepicker",
+          "from": "the panel scrolls the whole sheet, weekdays and foot included",
+          "to": "the ribbon scrolls between the pinned weekdays and foot"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/component/datepicker/scss/_css_datepicker.scss sheet"
+    },
+    {
+      "id": "behaviour-avatar-lone-image-drawn",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.avatars 1.12.2 (group build 16, G7, avatar-picture-fill; red on group builds 14 and 15): an <img class=\"sf-avatar-image\"> alone in .sf-avatar -- the documented picture variant -- is drawn again. Since C152 (2) every avatar image stayed transparent until a script marked it data-sf-loaded, which only sf-avatar does, so a class-markup picture never showed. The fade-in and the hidden-until-loaded state now apply to a photo over initials or a glyph, as sf-avatar draws it.",
+      "items": [
+        {
+          "component": "component.avatars",
+          "from": "every .sf-avatar-image transparent until data-sf-loaded=true",
+          "to": "only a photo over initials or a glyph waits for data-sf-loaded; a lone image draws as it loads"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatars.scss photo over initials"
     }
   ]
 }
