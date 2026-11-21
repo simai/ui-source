@@ -19267,6 +19267,26 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/input-choice/index.js"
+    },
+    {
+      "id": "behaviour-link-button-bare-label-ink",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.buttons 1.22.3 (group build 16, G11, DEV msg-0bea9d3c): a link drawn as a button (a.sf-button) with a bare label takes the appearance's on-colour, as a <button> does; a.sf-button { color: ButtonText } outranked it (black on the primary fill, white on the dark one).",
+      "items": [
+        {
+          "component": "component.buttons",
+          "from": "a.sf-button bare label in ButtonText",
+          "to": "a.sf-button bare label in the appearance's on-colour"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons.scss"
     }
   ]
 }

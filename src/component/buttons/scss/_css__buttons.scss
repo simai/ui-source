@@ -649,7 +649,12 @@
 // sf.paint, under the utilities, so bg-*, border-* and color-* on them
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
-  a.sf-button {
+  /* A link drawn as a button starts from the button's ink, not the link's;
+     at no weight of its own (:where), so the appearance's on-colour below
+     reaches a link's bare text as it reaches a button's (DEV msg-0bea9d3c,
+     group build 16 G11: a.sf-button--default.sf-button--primary drew black
+     on blue, a.sf-button (0,1,1) outranking .sf-button:not(:has(> *))). */
+  :where(a).sf-button {
     color: ButtonText;
   }
   .sf-button {

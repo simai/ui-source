@@ -402,6 +402,14 @@
       "reason": "recorded by group build 16 (G4): the class tooltip's controller opens no tooltip while its trigger's aria-expanded is true; sf-tooltip uses the same controller and takes it as it is",
       "decision": "G4 bulk-actions overflow tooltip",
       "date": "2026-11-21"
+    },
+    {
+      "unit": "component.buttons",
+      "version": "1.22.3",
+      "twin": "smart.button",
+      "reason": "recorded by group build 16 (G11): a link drawn as a button with a bare label takes the appearance's on-colour; sf-button renders a <button> or an <a> with the text container and takes the fix as it is",
+      "decision": "G11 DEV msg-0bea9d3c",
+      "date": "2026-11-21"
     }
   ]
 }
