@@ -2777,14 +2777,14 @@
         {
           "name": "--sf-slider-arrow-offset-inline",
           "role": "inset-inline",
-          "summary": "How far the arrows stand in from the edges.",
-          "default": "var(--sf-space-1)",
+          "summary": "How far the arrows over a picture stand in from its edges (--sf-space-2 since component.slider 2.0.0).",
+          "default": "var(--sf-space-2)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-slider-dots-offset-block",
-          "role": "inset-block-end",
-          "summary": "How far the dots stand up from the bottom edge.",
+          "role": "margin-block-start",
+          "summary": "How far the position and the pause button stand under the picture (under it, not over it, since component.slider 2.0.0).",
           "default": "var(--sf-space-1)",
           "since": "2026-10-27"
         },
