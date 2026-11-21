@@ -48,10 +48,13 @@ try {
   await tab.goto(`http://127.0.0.1:${server.address().port}/ru`);
   await tab.waitForFunction(() => document.querySelector('#d button[aria-haspopup]'), null, {timeout: 15000})
     .catch(() => failures.push('the dropdown never drew'));
-  // The input inside, focused after a key press so the browser treats it as
-  // keyboard focus (:focus-visible), as a page that moves focus to it does.
+  // The keyboard's stop, focused after a key press so the browser treats it
+  // as keyboard focus (:focus-visible). Since popup head round 2 (PH-1, group
+  // build 16) the read-only value is out of the tab order and draws no ring
+  // of its own (a mouse press on it is focus-visible to a browser); the
+  // trigger the keyboard reaches rings the field.
   await tab.keyboard.press('Shift');
-  await tab.evaluate(() => document.querySelector('#d .sf-dropdown-field input').focus());
+  await tab.evaluate(() => (document.querySelector('#d .sf-dropdown-field > button') ?? document.querySelector('#d button[aria-haspopup]')).focus());
   await tab.waitForTimeout(150);
   seen.focus = await tab.evaluate(() => {
     const field = document.querySelector('#d .sf-dropdown-field');

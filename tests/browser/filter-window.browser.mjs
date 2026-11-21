@@ -114,8 +114,8 @@ for (const {width, theme} of CASES) {
     ok(`${key}: the control is sf-input-choice list, the statuses as tonal badges; the focus in the window`, window1.choice && window1.badges === 3 && window1.focusInside, window1);
 
     // C313 (1), C314: the condition is a band from edge to edge of the window,
-    // the search header's height with its hairline (48 + 1, 44 + 1 on a
-    // phone), the text at the rows' text edge; its menu is the band's width,
+    // the search header's height, its hairline inside (48, 44 on a phone;
+    // group build 16 G8), the text at the rows' text edge; its menu is the band's width,
     // its rows of the step, each with an 8 px dot. One Tab stop (FF-9).
     const band = await tab.evaluate(() => {
       const popover = document.querySelector('[data-sf-filter-window]');
@@ -131,7 +131,7 @@ for (const {width, theme} of CASES) {
       const focusables = [...field.querySelectorAll('input:not([type=hidden]), button, [tabindex]')].filter((one) => one.tabIndex >= 0);
       return {field: true, left: Math.round(f.left - box.left), right: Math.round(box.right - f.right), height: Math.round(f.height),
         textEdge: Math.round(text - box.left), rowsEdge: name ? Math.round(name.getBoundingClientRect().left - box.left) : null,
-        radius: getComputedStyle(field).borderTopLeftRadius, tabStops: focusables.length};
+        radius: getComputedStyle(field).borderTopLeftRadius, windowRadius: getComputedStyle(panel).borderTopLeftRadius, tabStops: focusables.length};
     });
     if (band.field) {
       await tab.click('.sf-filter-window-condition .sf-dropdown-field');
@@ -148,9 +148,11 @@ for (const {width, theme} of CASES) {
       await tab.click('.sf-filter-window-condition .sf-dropdown-field');
       await tab.waitForTimeout(250);
     }
-    const bandHeight = sheet ? 45 : 49;
-    ok(`${key}: the condition band from edge to edge, ${bandHeight} px with its hairline, no radius, its text at the rows' edge, one Tab stop (C313 (1), FF-9)`,
-      band.field && band.left === 0 && band.right === 0 && band.height === bandHeight && band.radius === '0px' && band.textEdge === band.rowsEdge && band.tabStops === 1, band);
+    // The band stands inside the search header's height, its hairline
+    // inside (VR11-4, group build 16 G8): 48, 44 on a phone.
+    const bandHeight = sheet ? 44 : 48;
+    ok(`${key}: the condition band from edge to edge, ${bandHeight} px with its hairline, the window's top corners (PH-3), its text at the rows' edge, one Tab stop (C313 (1), FF-9)`,
+      band.field && band.left === 0 && band.right === 0 && band.height === bandHeight && band.radius === (sheet ? '0px' : band.windowRadius) && band.textEdge === band.rowsEdge && band.tabStops === 1, band);
     ok(`${key}: the band's menu is the band's width, each condition with an 8 px dot (FF-10, C314 (4))`,
       band.menu && Math.abs(band.menu.dx) <= 1 && Math.abs(band.menu.dr) <= 1 && band.menu.dots.length === 4 && band.menu.dots.every((one) => one === 8), band);
 
