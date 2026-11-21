@@ -18952,6 +18952,26 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/progress-ring/index.js; src/smart/progress-ring/js/templates/default.js"
+    },
+    {
+      "id": "behaviour-portal-waits-for-its-carrier",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "core.runtime (group build 16, G2; view round 10 L-4): a window's or a drawer's box at the end of the body (holdPortalUntilStyled) now also stays out of view while a Smart element around its host is still waiting for its own sheets, since that element draws its content into the box, outside its own host and so outside its style gate. An sf-view-properties panel made after the page loaded drew its record head in sf-drawer's box before view-properties.css came, and the head moved 16 px up and 14 px left when it did. The box shows once those sheets are applied (at most portalStyleTimeout, 15 s, as for its own).",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "the box waits for the host's own sheets only",
+          "to": "the box waits for its own sheets and for those of every pending Smart element around the host"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A component that draws its own content into a drawer or a window it holds gets the wait without a change.",
+      "owner": "ui-source",
+      "source": "src/core/js/smart-base.js holdPortalUntilStyled, pendingCarrierStyles; tests/browser/portal-carrier-styles.browser.mjs"
     }
   ]
 }

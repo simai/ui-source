@@ -2760,26 +2760,38 @@ class SfBaseElement extends HTMLElement {
   // that came after 3 s the window showed as a card for a few frames (DEV's
   // acceptance 2026-11-11, L2: 5 of 72 hostile loads).
   holdPortalUntilStyled(target, shown) {
-    if (this._styleApplied || !target || target === this) return;
+    if (!target || target === this) return;
     // After the host's gate gave up the sheets may still be on their way.
-    const styles = this.stylesReadiness() ?? this._styleAppliedPromise;
-    if (!styles) return;
+    const own = this._styleApplied ? null : (this.stylesReadiness() ?? this._styleAppliedPromise);
+    // The box also carries what the elements around this one drew into it:
+    // a Smart element whose template holds this drawer or window draws its
+    // content into the box, outside its own host, so its own gate (on the
+    // host) does not hide that content. The box waits for their sheets as
+    // well (view round 10, L-4: an sf-view-properties panel made after the
+    // page loaded drew its record head in the drawer's box before its own
+    // sheet came, and the head moved 16 px up and 14 px left when it did).
+    const carried = this.pendingCarrierStyles();
+    if (!own && !carried.length) return;
     target.setAttribute("data-sf-style-pending", "");
     (this._styleHeldTargets ??= new Set()).add(target);
     if (shown) (this._styleHeldShown ??= new Set()).add(shown);
     if (this._styleHeldWait) return;
     const guard = Number(this.constructor.portalStyleTimeout ?? 15000);
     let timer = null;
-    const applied = Promise.race([
-      this._styleAppliedPromise || styles,
-      new Promise((resolve) => {
-        timer = setTimeout(resolve, guard > 0 ? guard : 0);
-      }),
-    ]).finally(() => clearTimeout(timer));
-    this._styleHeldWait = Promise.all([styles, applied]).then(() => {
-      this._styleReady = true;
-      // Applied or given up: later boxes do not wait again.
-      this._styleApplied = true;
+    const limit = new Promise((resolve) => {
+      timer = setTimeout(resolve, guard > 0 ? guard : 0);
+    });
+    const waits = [];
+    if (own) waits.push(Promise.all([own, Promise.race([this._styleAppliedPromise || own, limit])]));
+    carried.forEach(({ styles, applied }) => {
+      waits.push(Promise.all([styles, Promise.race([applied || styles, limit])]));
+    });
+    this._styleHeldWait = Promise.all(waits).finally(() => clearTimeout(timer)).then(() => {
+      if (own) {
+        this._styleReady = true;
+        // Applied or given up: later boxes do not wait again.
+        this._styleApplied = true;
+      }
       this._styleHeldTargets.forEach((one) => one.removeAttribute("data-sf-style-pending"));
       this._styleHeldTargets.clear();
       this._styleHeldWait = null;
@@ -2787,6 +2799,26 @@ class SfBaseElement extends HTMLElement {
       this._styleHeldShown?.clear();
       callbacks.forEach((callback) => callback());
     });
+  }
+
+  // The Smart elements around this one (through shadow roots too) that are
+  // still waiting for their sheets: their style gate, and the promise of
+  // their sheets applied without the time limit.
+  pendingCarrierStyles() {
+    const carried = [];
+    let node = this.parentElement || this.getRootNode?.()?.host || null;
+    while (node) {
+      if (
+        node._styleReady !== true &&
+        node.hasAttribute?.("data-sf-style-pending") &&
+        typeof node.stylesReadiness === "function"
+      ) {
+        const styles = node.stylesReadiness() ?? node._styleAppliedPromise;
+        if (styles) carried.push({ styles, applied: node._styleAppliedPromise });
+      }
+      node = node.parentElement || node.getRootNode?.()?.host || null;
+    }
+    return carried;
   }
 
   drawInto(result, container) {
