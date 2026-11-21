@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.steps",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "title": "Steps",
   "summary": "Where a person is in an ordered process of their own: a list of steps, each a marker (number or dot) and a label joined by a progress line, drawn as a row, a column or a «Step N of M» line by its own width. Passive by default; navigation makes the reachable steps buttons.",
   "kind": "smart",
@@ -70,7 +70,7 @@
       "layout": {
         "type": "string",
         "default": "auto",
-        "description": "auto: a row while the steps fit their own width on one line, else a column (label and a second line); under 20rem of its own width the count line «Шаг N из M · label» over sf-progress-bar. row, column and count draw that layout always; an explicit row wider than its place scrolls inside itself.",
+        "description": "auto: a row while the steps fit their own width on one line, else a column (label and a second line); below 30rem of the list's own width always a column, drawn by the sheet before the code measures (1.5.0); under 20rem of its own width the count line «Шаг N из M · label» over sf-progress-bar. row, column and count draw that layout always; an explicit row wider than its place scrolls inside itself.",
         "enum": [
           "auto",
           "row",

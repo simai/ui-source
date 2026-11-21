@@ -18889,6 +18889,27 @@
       "manual": "Nothing to rewrite for sf-progress-ring. Class markup that draws «100%» by hand at size 2 or 3 adds sf-progress-ring-content--long to the aria-hidden .sf-progress-ring-content.",
       "owner": "ui-source",
       "source": "src/smart/progress-ring/js/templates/default.js; src/component/progress-ring/scss/_css__progress_ring.scss"
+    },
+    {
+      "id": "behaviour-steps-column-below-30rem-written",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-steps 1.5.1 (group build 15, DEV GB15-3): the layout setting and the docs now state the 1.5.0 rule: layout=\"auto\" is a column below 30rem of the list's own width, drawn by the sheet before the code measures; under 20rem the count line. Words only: the behaviour shipped in 1.5.0.",
+      "items": [
+        {
+          "component": "sf-steps",
+          "attribute": "layout",
+          "from": "the 30rem column rule only in the 1.5.0 version note",
+          "to": "in the layout setting's summary, smart.manifest.json and docs/docs.md"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite: a page that wants a row in a narrower place sets layout=\"row\".",
+      "owner": "ui-source",
+      "source": "src/smart/steps/component.json; src/smart/steps/docs/docs.md"
     }
   ]
 }
