@@ -630,8 +630,9 @@ $choice-search-edge: calc(var(--sf-px) * 0);
   block-size: calc(var(--sf-ui-1--control-height) - var(--sf-px));
 }
 
-/* The search's end follows the rows' scrollbar (PH-6): the track's room. */
-.sf-choice--list[data-sf-choice-track] .sf-choice-search {
+/* Outside a panel the search's end follows the rows' scrollbar (PH-6): the
+   track's room. A panel's rows give that room instead (variant B, below). */
+.sf-choice--list:not([data-panel])[data-sf-choice-track] .sf-choice-search {
   padding-inline-end: var(--sf-scroll-bg-width);
 }
 
@@ -852,13 +853,6 @@ $choice-search-edge: calc(var(--sf-px) * 0);
     block-size: calc(var(--sf-ui-1--control-height) + 2 * #{panel.$inset} - var(--sf-px));
   }
 
-  /* While the rows scroll, the scrollbar's track takes room at their end and
-     the checks move in by it; the search's end moves with them, so its icon
-     stays in the checks' column (popup head round 2, PH-6; the list marks
-     itself, data-sf-choice-track). */
-  .sf-choice--list[data-panel][data-sf-choice-track] .sf-choice-search {
-    padding-inline-end: calc(#{panel.$inset} + #{panel.$row-padding} + var(--sf-scroll-bg-width));
-  }
 
   .sf-choice--list[data-panel]:has(.sf-choice-avatar) .sf-choice-search-icon,
   .sf-choice--list[data-panel]:has(.sf-choice-icon) .sf-choice-search-icon,
@@ -889,6 +883,15 @@ $choice-search-edge: calc(var(--sf-px) * 0);
     inline-size: 100%;
     max-inline-size: none;
     padding-inline: var(--sf-choice--panel-inset);
+  }
+
+  /* While the rows scroll, nothing shifts (popup head round 3, the owner's
+     scroll variant B): the scrollbar's track stands in the rows' end
+     padding, so the checks keep the column they have without it, under the
+     search's icon and the window band's chevron (the list marks itself,
+     data-sf-choice-track). A track wider than the padding leaves none. */
+  .sf-choice--list[data-panel][data-sf-choice-track] :is(.sf-choice-row, .sf-choice-status, .sf-choice-message) {
+    padding-inline-end: max(calc(var(--sf-px) * 0), calc(var(--sf-choice--panel-inset) - var(--sf-scroll-bg-width)));
   }
 
   .sf-choice--list[data-panel] :is(.sf-checkbox-top, .sf-radio-button-top) {

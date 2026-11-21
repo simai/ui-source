@@ -14,7 +14,7 @@ import {noteDeprecated} from "../../core/js/deprecations.js";
 import {addDecimal, compareDecimal, currencyCodes, currencyDisplayOf, currencyOf, formatDecimal, formatMoney, formatPercent, fractionDigits, isRtlLocale, moneyParts, moneyTotals, readDecimal, readTypedDecimal, restingDecimal} from "./decimal.js";
 import {formatPhone, phoneE164, phoneSearchText, splitPhone} from "./phone.js";
 import {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fieldEditable} from "./conditions.js";
-import {filterOperatorLabel, filterWindowOpen} from "./filter-window.js";
+import {FILTER_WINDOW_STEP, filterOperatorLabel, filterWindowOpen} from "./filter-window.js";
 import {filterActive, filterCondition, filterConditions, filterConditionTone, filterCount, filterKindOf, filterSummary, filterValueless, filterWidth} from "./filter-conditions.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
@@ -3957,8 +3957,9 @@ export {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fiel
 // 40 rows and a 48 band, compact 32 and 40). The band took the list's size
 // (filterSize), so in a size 1/2 list it was 41 with 14 px text over a 48
 // search and 40 rows of 16 px text.
+// One step, set once on the window (PH-7): FILTER_WINDOW_STEP.
 function windowStep() {
-    return '1';
+    return FILTER_WINDOW_STEP;
 }
 
 function renderConditionControl(field, host, conditions, selected) {

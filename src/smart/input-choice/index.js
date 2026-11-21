@@ -477,10 +477,11 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     return undefined;
   }
 
-  // The list's scrollbar (popup head round 2, PH-6): while the rows scroll
-  // the scrollbar's track takes room at their end and the checks move in by
-  // it; the search over them marks the list (data-sf-choice-track) and its
-  // icon moves in by the track as well, so the two keep one column.
+  // The list's scrollbar: while the rows scroll the list marks itself
+  // (data-sf-choice-track). In a panel the rows give the track's room from
+  // their end padding, so nothing shifts (popup head round 3, the owner's
+  // variant B); outside one the search's icon moves in by the track with the
+  // checks (round 2, PH-6), so the two keep one column.
   watchTrack() {
     const scroll = this.querySelector('.sf-choice-scroll');
     const root = scroll?.closest('.sf-choice') ?? null;

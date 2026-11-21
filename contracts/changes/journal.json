@@ -19408,6 +19408,46 @@
       "manual": "Nothing to rewrite; a page that uses the arrow keys for something else inside the slider writes data-swiper-keyboard=\"false\".",
       "owner": "ui-source",
       "source": "src/component/slider/js/_slider.js"
+    },
+    {
+      "id": "behaviour-input-choice-panel-scrollbar-in-row-padding",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-choice 1.11.2 (group build 16, popup head round 3, owner's scroll variant B): in a panel list (the filter window) the scrollbar's track stands in the rows' end padding while they scroll, so the checks, the search's icon and the band's chevron keep one column and nothing shifts when the bar comes. Replaces round 2's move of the panel search's end by the track (behaviour-input-choice-search-follows-track), which still holds outside a panel.",
+      "items": [
+        {
+          "component": "smart.input-choice",
+          "from": "panel rows and search move in by the scrollbar",
+          "to": "panel rows give the scrollbar their end padding; nothing moves"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/input-choice/scss/_smart__choice.scss"
+    },
+    {
+      "id": "behaviour-filter-window-one-step-every-part",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Filter field window (module.smart-field-renderers 1.28.0, group build 16, popup head round 3 PH-7): one step for the whole window, FILTER_WINDOW_STEP (the rows' step, 1; density brings it down), set once and given to the condition band, the value fields, the search, the rows and the footer's buttons in every condition state, with rows or without. The footer's buttons were a step below (1/2) in a popover and controls inside took the list's size; filterWindow.open's size option no longer changes the window.",
+      "items": [
+        {
+          "component": "module.smart-field-renderers",
+          "from": "band and footer take the list's size, the rows their own",
+          "to": "one window step for every part"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite; a caller passing size to filterWindow.open may drop it.",
+      "owner": "ui-source",
+      "source": "src/smart/field-renderers/filter-window.js"
     }
   ]
 }

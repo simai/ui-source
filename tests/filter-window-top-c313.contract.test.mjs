@@ -106,8 +106,11 @@ test('C313 (5), C312 (2): a boolean has no band and no footer; a press applies; 
   assert.match(source, /filterRemoveCondition/u);
   const shell = read('src/smart/field-renderers/filter-window.js');
   assert.match(shell, /footer: withFooter = true/u);
-  // The footer's buttons a step below the rows, as the accepted study draws them: «Применить (N)» stays on one line in 20rem.
-  assert.match(shell, /const footSize = sheet \? '1' : '1\/2';/u);
+  // The footer's buttons on the window's one step (popup head round 3, PH-7), as the rows; a step below was a second step in one window.
+  assert.match(shell, /export const FILTER_WINDOW_STEP = '1';/u);
+  assert.match(shell, /const footSize = FILTER_WINDOW_STEP;/u);
+  assert.match(shell, /size: FILTER_WINDOW_STEP,/u);
+  assert.doesNotMatch(shell, /followTrack|--sf-dropdown-band-end/u);
   assert.match(shell, /<sf-button size=\$\{footSize\} scheme="primary" text=\$\{applyText\(\)\}/u);
   assert.match(shell, /applyTempFilterValue: \(key, patch\) => \{/u);
   assert.match(shell, /resetFilter: \(\) => finish\('reset'\),/u);

@@ -10,9 +10,8 @@
 //     anchor,                  the control it opens from (required)
 //     field,                   the Framework field descriptor with its filter
 //     value,                   the filter's value now: {value?, values?, operator?}
-//     size,                    the list's step ('1' or '1/2'); the window keeps its rows'
-//                              step whatever it is (VR11-4, group build 16): one step for
-//                              the band, the search, the rows and a phone sheet's footer
+//     size,                    accepted and not used: the window has one step of its own,
+//                              FILTER_WINDOW_STEP, for every part (VR11-4, PH-7)
 //     placement,               sf-popover's (bottom-start)
 //   });
 //   answer: {action: 'apply', value} -- the value the person set
@@ -117,7 +116,17 @@ function holdReopen(anchor) {
   doc.addEventListener('keydown', clear, true);
 }
 
-export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', width = 'panel', count, kind = '', renderControl, footer: withFooter = true} = {}) {
+// The window's one step (popup head round 3, PH-7, group build 16): set once
+// here and given to every part -- the condition band, the value fields, the
+// search, the rows and the footer's buttons -- in every condition state, with
+// rows or without. The rows' own step, the choice list's panel step 1, which
+// the opener's density brings down (C22, C79). The band and the footer took
+// the list's size (size=, filterSize) while the rows kept theirs, so at 1/2
+// the window had two steps, and which parts were drawn decided its look.
+// The size option stays for callers; it no longer changes the window.
+export const FILTER_WINDOW_STEP = '1';
+
+export function filterWindowOpen({anchor, field = {}, value = {}, placement = 'bottom-start', width = 'panel', count, kind = '', renderControl, footer: withFooter = true} = {}) {
   if (!anchor?.isConnected || !field?.key) return Promise.resolve(null);
   const open = OPEN.get(anchor);
   if (open) {
@@ -188,7 +197,7 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     }
 
     const host = {
-      size,
+      size: FILTER_WINDOW_STEP,
       // The single-field window (C308 FO-5): the rows' checks stand at the end.
       filterWindow: true,
       // In a phone's sheet the band reaches the sheet's edges (C313 (1)).
@@ -216,48 +225,20 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     };
     // «Применить (N)» (FO5-1, C157 (3)): the number of values chosen when the
     // condition is a list; plain «Применить» otherwise or with none chosen.
-    const footSize = sheet ? '1' : '1/2';
+    const footSize = FILTER_WINDOW_STEP;
     const applyText = () => {
       const number = typeof count === 'function' ? count(temp) : (Array.isArray(temp?.values) ? temp.values.length : 0);
       return number ? `${word('filterApply', anchor)} (${number})` : word('filterApply', anchor);
     };
-    // The band's chevron stays in the rows' check column (VR11-4, group
-    // build 16 G8): while the options' scrollbar takes room the checks move
-    // in by its track, so the band's end gives the same room
-    // (--sf-dropdown-band-end, the page's track --sf-scroll-bg-width). It
-    // stood 14 px past the checks. The list draws after the window, so the
-    // scroller is looked for whenever the content changes.
-    let track = null;
-    const followTrack = () => {
-      const scroller = body.querySelector('.sf-choice-scroll');
-      if (track?.scroller === scroller) return;
-      track?.observer.disconnect();
-      track = null;
-      body.style.removeProperty('--sf-dropdown-band-end');
-      if (!scroller || typeof ResizeObserver !== 'function') return;
-      const write = () => {
-        if (scroller.offsetWidth - scroller.clientWidth > 0) body.style.setProperty('--sf-dropdown-band-end', 'var(--sf-scroll-bg-width)');
-        else body.style.removeProperty('--sf-dropdown-band-end');
-      };
-      // Written on the next frame: the observer's own call must not resize
-      // what it watches (a ResizeObserver loop).
-      const observer = new ResizeObserver(() => requestAnimationFrame(write));
-      observer.observe(scroller);
-      track = {scroller, observer};
-      write();
-    };
-    const content = typeof MutationObserver === 'function' ? new MutationObserver(followTrack) : null;
-    content?.observe(body, {childList: true, subtree: true});
+    // The rows' scrollbar shifts nothing (popup head round 3, owner's scroll
+    // variant B): the rows give its room from their own end padding
+    // (sf-input-choice, data-sf-choice-track), so the band's chevron, the
+    // search's icon and the checks keep one column with or without it.
 
     function draw() {
       render(html`${renderControl(field, host)}`, body);
-      followTrack();
       if (!foot) return;
-      // The popover's footer buttons are a step below the rows (the accepted
-      // study #top3, C313): at size 1 «Применить (N)» and «Сбросить» did not
-      // fit a 20rem window side by side and the main one wrapped onto two
-      // lines. A phone's sheet is the screen's width and keeps the rows' step,
-      // a finger's target.
+      // The footer's buttons stand on the window's step (PH-7), as the rows.
       render(html`<div class="sf-filter-window-footer flex gap-1/3 items-cross-center">
           <sf-button size=${footSize} scheme="primary" text=${applyText()}
                      data-action="apply" @click=${() => finish('apply')}></sf-button>
@@ -269,8 +250,6 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     OPEN.set(anchor, {close});
     const closed = () => {
       OPEN.delete(anchor);
-      content?.disconnect();
-      track?.observer.disconnect();
       // The sheet gives the focus back to the anchor, as the popover does
       // (the anchor does not name the drawer, so the drawer does not know it).
       if (sheet && anchor.isConnected) {
