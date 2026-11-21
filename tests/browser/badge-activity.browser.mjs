@@ -191,11 +191,15 @@ try {
       // Compact: the mark seen alone, a square box, the word as the name.
       const compact = await tab.evaluate((states) => Object.fromEntries(Object.keys(states).map((state) => {
         const badge = document.querySelector(`#compact-${state} .sf-badge`);
+        // The look of the same badge with its word (the default appearance,
+        // tonal since C140 (4) retired main): the compact one keeps it.
+        const plain = document.querySelector(`#plain-${state} .sf-badge`);
+        const look = (node) => [...node.classList].filter((name) => /^sf-badge--(?:main|tonal|outline|plain|default|filled)$/u.test(name)).sort().join(' ');
         const box = badge.getBoundingClientRect();
         const text = badge.querySelector('.sf-badge-text-container').getBoundingClientRect();
         const mark = badge.querySelector('.sf-icon, .sf-badge-spinner').getBoundingClientRect();
         return [state, {
-          appearance: badge.classList.contains('sf-badge--main'),
+          appearance: look(badge) === look(plain) && look(badge) !== '',
           box: [box.width, box.height],
           text: [text.width, text.height],
           mark: [mark.width, mark.height],
@@ -350,7 +354,10 @@ try {
   const stillness = await still.evaluate(() => {
     const svg = document.querySelector('#plain-running .sf-badge-spinner svg');
     const accent = svg.querySelector('.sf-loader-ring-accent');
+    const ring = svg.querySelector('.sf-loader-ring-filled');
     return {
+      ring: ring ? getComputedStyle(ring).display : 'none',
+      ringOpacity: ring ? getComputedStyle(ring).opacity : '0',
       name: getComputedStyle(svg).animationName,
       animations: svg.getAnimations({subtree: true}).length,
       accent: getComputedStyle(accent).display,
@@ -360,7 +367,9 @@ try {
   });
   seen.reducedMotion = stillness;
   if (stillness.name !== 'none' || stillness.animations !== 0) failures.push(`reduced motion: the spinner still turns: ${JSON.stringify(stillness)}`);
-  if (stillness.accent === 'none' || stillness.accentOpacity === '0' || !(stillness.width > 0)) failures.push(`reduced motion: no still frame: ${JSON.stringify(stillness)}`);
+  // The still frame is the whole ring at 32 % with no arc (C131 (8), C218):
+  // the picture of every spinner under reduced motion.
+  if (stillness.accent !== 'none' || stillness.ring === 'none' || stillness.ringOpacity === '0' || !(stillness.width > 0)) failures.push(`reduced motion: no still frame: ${JSON.stringify(stillness)}`);
   await calm.close();
 } finally {
   await browser.close();

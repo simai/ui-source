@@ -394,9 +394,13 @@ try {
     for (const size of ['1/2', '1', '2']) {
       const smart = got.smart[size];
       const drawn = got.class[size];
-      for (const key of ['height', 'padTop', 'padStart', 'gap', 'radius', 'button', 'buttonWidth', 'font']) {
+      for (const key of ['height', 'padTop', 'padStart', 'radius', 'button', 'buttonWidth', 'font']) {
         if (smart[key] !== drawn[key]) note({case: `${width}: size ${size} ${key} differs from the class markup`, got: smart[key], expected: drawn[key]});
       }
+      // The gap is the one part that differs by decision: the Smart field's
+      // steppers stand against the value (0, C53 F2), the class component keeps
+      // its --sf-space-2 (component.quantity _css__quantity.scss).
+      if (smart.gap !== '0px') note({case: `${width}: size ${size} the Smart field's gap is 0 (C53 F2)`, got: smart.gap});
       if (smart.overflow) note({case: `${width}: size ${size} overflows`});
     }
     for (const size of ['1/2', '1', '2']) {

@@ -216,6 +216,13 @@ for (const theme of THEMES) {
       <span id="group-3" class="sf-avatar sf-avatar--size-1 sf-avatar--text inline-flex">EF</span>
       <span id="group-4" class="sf-avatar sf-avatar--size-1 sf-avatar--text inline-flex">GH</span>
     </div></div>`});
+  // The photo lies over initials on their plate (owner decision C152 (2)):
+  // the plate and its hue are what shows while the photo comes, and step back
+  // once it is in (data-sf-loaded). So the fill is read after the photos came.
+  await tonePage.waitForFunction(() => ['image', 'image-auto', 'image-plain'].every((id) => document.querySelector(`#${id} .sf-avatar-image`)?.dataset.sfLoaded), null, {timeout: 8000}).catch(() => {});
+  // The plate steps back with the avatar's own transition: read after it.
+  await tonePage.evaluate(() => Promise.all(document.getAnimations().map((animation) => animation.finished.catch(() => {}))));
+  await tonePage.waitForTimeout(50);
   const look = await tonePage.evaluate(() => {
     const read = (element) => {
       const style = getComputedStyle(element);
@@ -227,8 +234,9 @@ for (const theme of THEMES) {
     return out;
   });
   for (const id of ['image', 'image-auto']) {
-    check('an image takes no hue class', !look[id].classes.includes(HUE_CLASS), {theme, id, classes: look[id].classes});
-    check('an image has no tone fill', look[id].fill === look['image-plain'].fill, {theme, id, fill: look[id].fill, plain: look['image-plain'].fill});
+    // The initials under the photo keep their hue (C152 (2)); the photo,
+    // once in, shows no tone: the plate under it is transparent.
+    check('a photo that came shows no tone fill', look[id].fill === look['image-plain'].fill && /, 0\)$|transparent/u.test(look[id].fill), {theme, id, fill: look[id].fill, plain: look['image-plain'].fill});
   }
   check('a placeholder takes no hue class', !look.placeholder.classes.includes(HUE_CLASS), {theme, classes: look.placeholder.classes});
   check('a placeholder stays neutral', look.placeholder.fill === look['placeholder-plain'].fill && look.placeholder.ink === look['placeholder-plain'].ink, {theme, ...look.placeholder});

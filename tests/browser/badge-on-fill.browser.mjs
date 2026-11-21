@@ -191,7 +191,11 @@ async function run(theme, round) {
     for (const look of LOOKS) for (const colour of COLOURS) {
       const b = fill[`${c.id}:${look}:${colour}`];
       const name = `${where} ${c.id} ${look} ${colour}`;
-      if (c.kind === 'solid' || c.kind === 'reset' || c.kind === 'undeclared' || c.kind === 'softrow' || look !== 'tonal') {
+      // main is the attention count's look alone, with status error; main in
+      // any other colour draws tonal (owner decision C140 (4)), so it is
+      // measured as the tonal badge it is.
+      const drawn = look === 'main' && colour !== 'error' ? 'tonal' : look;
+      if (c.kind === 'solid' || c.kind === 'reset' || c.kind === 'undeclared' || c.kind === 'softrow' || drawn !== 'tonal') {
         ok(`${name}: no background image (drawn as before)`, b.image === 'none', b.image);
         continue;
       }

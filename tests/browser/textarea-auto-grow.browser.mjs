@@ -30,7 +30,14 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'smart/smart/input/js/input.js', 'component/component/textarea/js/textarea.js', 'smart/smart/input-textarea/js/input-textarea.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
-const KEPT = {'1/3': '1/2', '3': '2'};
+// The field ladder has five steps since sf-input-textarea 1.9.0 (TR-2,
+// 2026-11-14): 1/3 and 3 draw as themselves, as sf-input and sf-button do.
+const KEPT = {};
+// A Smart field's fewest rows are 3 since C141 (2) (a form field grows from 3
+// to 10 rows); the ladder and the behaviour cases here measure growth from
+// one row, so they give min-rows="1" -- the element's own setting, as a chat
+// composer does. #min keeps its 2 and the defaults are checked on their own.
+const ONE = 'min-rows="1"';
 const MAX = 4;
 
 const failures = [];
@@ -113,7 +120,7 @@ try {
       const body = SIZES.map((size) => `<div data-row data-size="${size}" style="display:grid;gap:8px;inline-size:min(100%, 480px);margin-block-end:16px">
         <div><sf-button size="${KEPT[size] ?? size}" icon="search" text="Кнопка"></sf-button></div>
         <sf-input size="${size}" placeholder="Поле"></sf-input>
-        <sf-input-textarea size="${size}" auto-grow max-rows="${MAX}" placeholder="Сообщение"></sf-input-textarea>
+        <sf-input-textarea size="${size}" auto-grow ${ONE} max-rows="${MAX}" placeholder="Сообщение"></sf-input-textarea>
         <label data-plain class="sf-textarea sf-textarea--size-${size} sf-textarea--bordered flex flex-col">
           <textarea data-auto-grow data-max-rows="${MAX}" placeholder="Сообщение"></textarea>
         </label>
@@ -144,13 +151,10 @@ try {
           if (fallback) check(`${at}: the fallback writes the block size`, row.inline.endsWith('px'), row);
           else check(`${at}: field-sizing sizes it and the script writes nothing`, row.fieldSizing === 'content' && row.inline === '', row);
         }
-        // 1/3 and 3 are retired for fields: they draw as 1/2 and 2.
-        for (const [retired, kept] of Object.entries(KEPT)) {
-          check(`${mode} ${kind} at ${width}px: size ${retired} draws as ${kept}`, near(rows[retired].empty, rows[kept].empty, tolerance) && near(rows[retired].line, rows[kept].line, 0.01), {retired: rows[retired], kept: rows[kept]});
-        }
-        // The ladder rises.
-        const ladder = ['1/2', '1', '2'].map((size) => rows[size].empty);
-        check(`${mode} ${kind} at ${width}px: the ladder rises`, ladder[0] < ladder[1] && ladder[1] < ladder[2], {ladder});
+        // The ladder rises, all five steps (1/3 and 3 draw as themselves);
+        // at 390 two neighbours may share a height (the phone step), never fall.
+        const ladder = SIZES.map((size) => rows[size].empty);
+        check(`${mode} ${kind} at ${width}px: the ladder rises`, ladder.every((value, index) => !index || value >= ladder[index - 1]) && ladder[0] < ladder[ladder.length - 1], {ladder});
       }
       check(`${mode} no horizontal scroll at ${width}px`, await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
       await page.close();
@@ -162,13 +166,13 @@ try {
       const body = `
         <sf-button size="1" text="Кнопка"></sf-button>
         <sf-input-textarea id="min" auto-grow min-rows="2" max-rows="5" style="display:block;width:360px"></sf-input-textarea>
-        <sf-input-textarea id="typed" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
-        <sf-input-textarea id="disabled" auto-grow disabled value="${'Строка\n'.repeat(2)}Строка" style="display:block;width:360px"></sf-input-textarea>
-        <div dir="rtl" style="width:360px"><sf-input-textarea id="rtl" auto-grow max-rows="${MAX}"></sf-input-textarea></div>
-        <form id="form" style="width:360px"><sf-input-textarea id="reset" auto-grow max-rows="${MAX}" value="Первая строка"></sf-input-textarea></form>
-        <sf-input-textarea id="state" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
-        <sf-input-textarea id="ime" auto-grow max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
-        <sf-input-textarea id="unbounded" auto-grow style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="typed" auto-grow ${ONE} max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="disabled" auto-grow ${ONE} disabled value="${'Строка\n'.repeat(2)}Строка" style="display:block;width:360px"></sf-input-textarea>
+        <div dir="rtl" style="width:360px"><sf-input-textarea id="rtl" auto-grow ${ONE} max-rows="${MAX}"></sf-input-textarea></div>
+        <form id="form" style="width:360px"><sf-input-textarea id="reset" auto-grow ${ONE} max-rows="${MAX}" value="Первая строка"></sf-input-textarea></form>
+        <sf-input-textarea id="state" auto-grow ${ONE} max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="ime" auto-grow ${ONE} max-rows="${MAX}" style="display:block;width:360px"></sf-input-textarea>
+        <sf-input-textarea id="unbounded" auto-grow ${ONE} style="display:block;width:360px"></sf-input-textarea>
         <sf-input-textarea id="plain-rows" rows="3" style="display:block;width:360px"></sf-input-textarea>
         <div style="height:2400px"></div>`;
       const page = await open({width: 1000, body, fallback});
@@ -263,7 +267,8 @@ try {
         const style = getComputedStyle(field);
         return {rows: field.rows, resize: style.resize, fieldSizing: style.fieldSizing, inline: field.style.blockSize};
       });
-      check(at('a field without auto-grow keeps rows and vertical resize'), plainRows.rows === 3 && plainRows.resize === 'vertical' && plainRows.inline === '' && plainRows.fieldSizing !== 'content', plainRows);
+      // No grip unless the field asks for one (C141 (2), .sf-textarea--resize).
+      check(at('a field without auto-grow keeps rows and no grip'), plainRows.rows === 3 && plainRows.resize === 'none' && plainRows.inline === '' && plainRows.fieldSizing !== 'content', plainRows);
 
       // IME composition: nothing is written while it lasts.
       const ime = await page.evaluate(async () => {

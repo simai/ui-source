@@ -112,7 +112,9 @@ const MEASURE = () => {
     const title = root.querySelector('.sf-alert-text');
     const text = root.querySelector('.sf-alert-supporting-text');
     const icon = root.querySelector(':scope > .sf-icon, :scope > sf-icon > .sf-icon');
-    const close = root.querySelector(':scope > .sf-icon-button, :scope > sf-button-icon > .sf-icon-button');
+    // The Smart alert's close is sf-button-close since its owner moved there
+    // (dc6d0022d); the class notice keeps the plain icon button.
+    const close = root.querySelector(':scope > .sf-icon-button, :scope > sf-button-icon > .sf-icon-button, :scope > sf-button-close > .sf-icon-button');
     const cross = close?.querySelector('.sf-close-icon');
     const actions = [...root.querySelectorAll('.sf-alert-buttons .sf-button')];
     const titleBox = box(title);

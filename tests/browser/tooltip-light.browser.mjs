@@ -15,7 +15,8 @@
 //      again shows it; keyboard focus (Tab) shows it; Enter hides it;
 //   3. density (C22): two menus opened from the same compact toolbar draw
 //      the same size whether the menu element stands in the toolbar or on
-//      the body; a menu with a size the page gave stays normal; a menu
+//      the body; a menu with a size the page gave takes that step on the
+//      region's ladder (C79), as compact as the others there; a menu
 //      opened from outside the region is normal; a submenu follows its menu.
 //
 // --report prints the measurements and exits 0 whatever they say.
@@ -163,7 +164,10 @@ try {
 
       // 2. behaviour
       await page.goto(`${base}/${theme}/behaviour.html`);
-      await page.waitForFunction(() => document.getElementById('trig').getAttribute('aria-describedby') === 'trig-tip'
+      // Linked: the controller gives the surface its role. The tooltip only
+      // repeats the trigger's name here, so it is not its description too
+      // (docs trial 4, 2026-10-15): no aria-describedby, by design.
+      await page.waitForFunction(() => document.getElementById('trig-tip').getAttribute('role') === 'tooltip'
         && document.querySelector('#trig-tip .sf-tooltip-text'), null, {timeout: 15000});
       const shown = () => page.evaluate(() => !document.getElementById('trig-tip').hidden);
       const centre = await page.evaluate(() => { const r = document.getElementById('trig').getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; });
@@ -237,7 +241,12 @@ try {
       const m = menusResult;
       menusResult.ok = near(m.inRegion.row, m.onBody.row) && m.inRegion.font === m.onBody.font
         && m.onBody.sub && near(m.onBody.sub.row, m.onBody.row)
-        && m.sized.row > m.inRegion.row && near(m.fromOutside.row, m.sized.row)
+        // A size the page gave the menu is a step on the opener's region's
+        // ladder (C22, C79): size 1/2 opened from the compact region draws
+        // compact, as the menu there; the same menu opened from outside the
+        // region draws the normal step, taller (2026-11-15 the menu follows
+        // its opener; this probe expected size 1/2 to leave the region).
+        && near(m.sized.row, m.inRegion.row) && m.fromOutside.row > m.sized.row
         && m.onBody.density === null;
       result.menus = menusResult;
 

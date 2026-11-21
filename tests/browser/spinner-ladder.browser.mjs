@@ -120,7 +120,9 @@ try {
     await page.close();
   }
 
-  // 2. The colour is the current ink; --sf-loader--color on an ancestor replaces it.
+  // 2. A spinner on its own is the place's quiet ink, on-surface-variant, not
+  // the text colour around it (owner decision C130 (6), 2026-11-13; it took the
+  // current ink before); --sf-loader--color on an ancestor replaces it.
   {
     const page = await open({body: `<div id="ink" style="color: rgb(10, 120, 30)"><sf-spinner infinite label=""></sf-spinner>
       <div class="sf-loader-container" data-infinite="true"></div></div>
@@ -128,9 +130,17 @@ try {
     const colours = await page.evaluate(() => ({
       ink: [...document.querySelectorAll('#ink .sf-loader-ring-accent')].map((node) => getComputedStyle(node).stroke),
       set: getComputedStyle(document.querySelector('#set .sf-loader-ring-accent')).stroke,
+      quiet: (() => {
+        const probe = document.createElement('span');
+        probe.style.color = 'var(--sf-on-surface-variant)';
+        document.body.append(probe);
+        const value = getComputedStyle(probe).color;
+        probe.remove();
+        return value;
+      })(),
     }));
     evidence.colour = colours;
-    check('the spinner takes the current ink', colours.ink.length === 2 && colours.ink.every((value) => value === 'rgb(10, 120, 30)'), colours);
+    check('the spinner on its own takes the quiet ink (C130 (6))', colours.ink.length === 2 && colours.ink.every((value) => value === colours.quiet && value !== 'rgb(10, 120, 30)'), colours);
     check('--sf-loader--color on an ancestor colours it', colours.set === 'rgb(200, 0, 0)', colours);
     await page.close();
   }

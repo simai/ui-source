@@ -23,6 +23,16 @@
 //     in every frame while the drawing turns, linear, one turn a second, by as
 //     much as the time between two frames says; breathing's length changes;
 //     under reduced motion the arc is the same 30%, still.
+//
+// Owner decision C130 (5), (6) (2026-11-13) made this one look: the arc.
+// breathing, comet and dots are former names until 2027-01-01 and draw the
+// arc, wherever they are written (html, a block, the spinner's own kind or
+// data-variant); a spinner on its own is the place's quiet ink,
+// on-surface-variant (C130 (6)); and under reduced motion the arc is not drawn
+// -- the whole ring stands at 32 % of the ink, still (C131 (8), C218). The
+// probe keeps every former name and checks each draws that one picture
+// (group build 16, G7: it was red on both group builds 14 and 15 for the
+// looks it still expected).
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -58,6 +68,13 @@ async function open({width = 1000, body = '', reducedMotion = 'no-preference', h
   await page.waitForFunction(() => ['sf-button', 'sf-button-icon', 'sf-button-group', 'sf-spinner'].every((tag) => customElements.get(tag)));
   await page.waitForFunction(() => [...document.querySelectorAll('.sf-loader-container')].every((node) => node.querySelector('.sf-loader-svg')));
   await page.waitForTimeout(500);
+  // The icons are in (sf-icon-loaded): a glyph arriving between two frames is
+  // not the spinner moving.
+  await page.waitForFunction(() => [...document.querySelectorAll('.sf-icon')].every((node) => node.classList.contains('sf-icon-loaded')), null, {timeout: 8000}).catch(() => {});
+  await page.waitForTimeout(100);
+  // An sf-spinner shows after its 1 s delay (owner decision C130 (8)): the
+  // reduced-motion frames compare the shown spinner, not its arrival.
+  if (reducedMotion === 'reduce') await page.waitForTimeout(1100);
   return page;
 }
 
@@ -76,7 +93,7 @@ const LOOK = `(root) => {
   const motion = getComputedStyle(root).getPropertyValue('--sf-loader--look-motion').trim() || 'none';
   const layers = {track: shown('.sf-loader-ring-filled'), arc: shown('.sf-loader-ring-accent'), comet: shown('.sf-loader-comet'), dots: shown('.sf-loader-dots')};
   const visible = Object.entries(layers).filter(([key, on]) => on && key !== 'track').map(([key]) => key);
-  let look = visible.length === 1 ? visible[0] : 'mixed:' + visible.join('+');
+  let look = visible.length === 1 ? visible[0] : !visible.length && layers.track ? 'ring' : 'mixed:' + visible.join('+');
   if (look === 'arc' && motion === 'sf-loader-breathing') look = 'breathing';
   const paint = look === 'dots' ? style('.sf-loader-dot').fill : look === 'comet' ? style('.sf-loader-comet-head').stroke : style('.sf-loader-ring-accent').stroke;
   const box = (root.querySelector(':scope > .sf-loader--loading-indicator') || root).getBoundingClientRect();
@@ -150,14 +167,16 @@ try {
         const at = `${look}, size ${row.size} at ${width}px`;
         for (const [kind, {rest, load, spinner}] of Object.entries(row.kinds)) {
           const iconBox = kind === 'iconbutton' ? row.iconButtonIcon : row.icon;
-          check(`${at} ${kind}: shows the page's look`, spinner.look === look, {spinner});
+          check(`${at} ${kind}: the former name draws the arc (C130 (5))`, spinner.look === 'arc', {spinner});
           check(`${at} ${kind}: the box is the button's icon box`, near(spinner.width, iconBox.width) && near(spinner.height, iconBox.height) && iconBox.width > 0, {icon: iconBox, spinner: {width: spinner.width, height: spinner.height}});
           check(`${at} ${kind}: the drawing is in the spinner's ink`, spinner.paint === spinner.ink, {paint: spinner.paint, ink: spinner.ink});
-          check(`${at} ${kind}: the track only under the ring looks`, spinner.layers.track === (look !== 'dots'), spinner.layers);
+          check(`${at} ${kind}: the track under the arc`, spinner.layers.track === true, spinner.layers);
           if (rest) check(`${at} ${kind}: loading keeps every width`, rest.length === load.length && rest.every((value, index) => near(value, load[index])), {rest, load});
         }
       }
-      check(`${look} at ${width}px: the modal's loading spinner follows the page`, modal?.look === look, {modal});
+      // The modal waits with a skeleton of text lines, not a spinner, since
+      // C159 (9): it has no spinner to follow the look.
+      check(`${look} at ${width}px: the modal waits with no spinner (C159 (9))`, modal === null && Boolean(await page.$('#modal .sf-modal-skeleton')), {modal});
       if (width === 1000) evidence[`modal@${look}`] = modal && {look: modal.look, width: modal.width};
     }
     evidence[`box@${width}`] = table;
@@ -194,11 +213,12 @@ try {
     evidence.precedence = {before, after};
     const expect = (looks, pageLook) => Object.entries(looks).every(([id, look]) => {
       const prefix = id.split('-')[0];
-      const want = {page: pageLook, block: 'dots', empty: 'dots', own: 'breathing', unknown: 'arc', arc: 'arc'}[prefix];
+      // Every name, wherever written, is the one look (C130 (5)).
+      const want = {page: pageLook, block: 'dots', empty: 'dots', own: 'breathing', unknown: 'arc', arc: 'arc'}[prefix] && 'arc';
       return look === want;
     });
-    check('html names the look; a block wins over it; the spinner over both; unknown is arc; empty inherits', Object.keys(before).length === 24 && expect(before, 'comet'), {before});
-    check('a change on html reaches every spinner that answers to it, and no other', expect(after, 'breathing'), {after});
+    check('every name on html, a block or the spinner draws the arc', Object.keys(before).length === 24 && expect(before, 'comet'), {before});
+    check('a change on html leaves every spinner the arc', expect(after, 'breathing'), {after});
     await page.close();
   }
 
@@ -237,11 +257,19 @@ try {
       return {
         ink: [...document.querySelectorAll('#ink .sf-loader-container')].map((node) => look(node)).map(({look: name, paint}) => ({look: name, paint})),
         set: [...document.querySelectorAll('#set .sf-loader-container')].map((node) => look(node)).map(({look: name, paint}) => ({look: name, paint})),
+        quiet: (() => {
+          const probe = document.createElement('span');
+          probe.style.color = 'var(--sf-on-surface-variant)';
+          document.body.append(probe);
+          const value = getComputedStyle(probe).color;
+          probe.remove();
+          return value;
+        })(),
       };
     }, LOOK);
     evidence.colour = colours;
-    check('every look draws in the current ink', colours.ink.map((row) => row.look).join() === LOOKS.join() && colours.ink.every((row) => row.paint === 'rgb(10, 120, 30)'), colours);
-    check('--sf-loader--color colours every look', colours.set.map((row) => row.look).join() === LOOKS.join() && colours.set.every((row) => row.paint === 'rgb(200, 0, 0)'), colours);
+    check('every former name draws the arc in the quiet ink, not the text colour (C130 (6))', colours.ink.every((row) => row.look === 'arc') && colours.ink.every((row) => row.paint === colours.quiet && row.paint !== 'rgb(10, 120, 30)'), colours);
+    check('--sf-loader--color colours every former name', colours.set.every((row) => row.look === 'arc') && colours.set.every((row) => row.paint === 'rgb(200, 0, 0)'), colours);
     await page.close();
   }
 
@@ -274,18 +302,16 @@ try {
     evidence[`motion:${reducedMotion}`] = motion;
     for (const look of LOOKS) {
       const row = motion[look];
-      check(`${look} (${reducedMotion}): every kind of spinner shows it`, row.looks.length === 1 && row.looks[0] === look, row);
+      const drawn = reducedMotion === 'reduce' ? 'ring' : 'arc';
+      check(`${look} (${reducedMotion}): every kind of spinner draws the ${drawn}`, row.looks.length === 1 && row.looks[0] === drawn, row);
       if (reducedMotion === 'reduce') {
-        check(`${look}: a still frame under reduced motion`, row.still && row.spin.join() === 'none' && row.arc.join() === 'none' && row.dot.join() === 'none', row);
+        check(`${look}: a still frame under reduced motion`, row.still && row.spin.join() === 'none' && row.arc.join() === 'none', row);
       } else {
         check(`${look}: it moves`, row.moved, row);
       }
     }
-    check('arc, breathing and comet turn; dots do not; only breathing moves its arc', reducedMotion === 'reduce'
-      || (motion.breathing.spin.join() === 'sf-loader-svg-rotate' && motion.comet.spin.join() === 'sf-loader-svg-rotate'
-        && motion.arc.spin.join() === 'sf-loader-svg-rotate' && motion.dots.spin.join() === 'none'
-        && motion.breathing.arc.join() === 'sf-loader-breathing' && motion.arc.arc.join() === 'none'
-        && motion.dots.dot.join() === 'sf-loader-dot-wave'), motion);
+    check('every former name turns the arc, and none moves the arc itself', reducedMotion === 'reduce'
+      || LOOKS.every((look) => motion[look].spin.join() === 'sf-loader-svg-rotate' && motion[look].arc.join() === 'none'), motion);
     await page.close();
   }
 
@@ -343,21 +369,15 @@ try {
           for (let kind = 0; kind < kindsCount; kind += 1) {
             const at = `${look} size ${size} kind ${['sf-spinner', 'ordinary', 'button'][kind]} (${reducedMotion})`;
             const rows = series.map((frame) => frame[kind]);
-            if (look === 'breathing') {
-              if (reducedMotion === 'no-preference') {
-                const lengths = rows.map((row) => row.dash[0]);
-                check(`${at}: breathing's arc changes length`, Math.max(...lengths) - Math.min(...lengths) > 5, {lengths});
-                if (kind === 0) measured[`breathing@${size}`] = lengths.map((value) => Number(value.toFixed(1)));
-              }
+            // breathing is a former name of the arc (C130 (5)): the same arc.
+            if (reducedMotion === 'reduce') {
+              // C131 (8), C218: no arc, the whole ring at 32 %, still.
+              check(`${at}: no arc under reduced motion, the drawing still`, rows.every((row) => row.display === 'none' && row.name === 'none' && row.angle === rows[0].angle && row.time === null), {rows});
               continue;
             }
             check(`${at}: the arc is shown, round-capped`, rows.every((row) => row.display !== 'none' && row.cap === 'round'), rows[0]);
             check(`${at}: the arc is 30% of the ring in every frame`, rows.every((row) => row.path === 100 && Math.abs(row.fraction - 0.3) <= 0.02 && Math.abs(row.dash[0] + row.dash[1] - 100) <= 0.01), {dash: rows.map((row) => row.dash)});
             check(`${at}: the arc's length and offset never change`, rows.every((row) => row.dash.join() === rows[0].dash.join() && row.offset === rows[0].offset && Math.abs(row.length - rows[0].length) < 0.001), {rows});
-            if (reducedMotion === 'reduce') {
-              check(`${at}: still under reduced motion`, rows.every((row) => row.name === 'none' && row.angle === rows[0].angle && row.time === null), {rows});
-              continue;
-            }
             check(`${at}: one linear turn a second`, rows.every((row) => row.name === 'sf-loader-svg-rotate' && row.duration === '1s' && row.easing === 'linear'), rows[0]);
             const turns = rows.slice(1).map((row, index) => {
               const previous = rows[index];
@@ -374,7 +394,7 @@ try {
       if (reducedMotion === 'reduce') {
         for (const size of SIZES) {
           check(`arc size ${size}: two frames 350 ms apart are the same pixels under reduced motion`, shots[size][0].equals(shots[size][1]));
-          measured[`arc@${size}`] = {...measured[`arc@${size}`], fraction: frames.map((frame) => Number(frame.find((row) => row.look === 'arc' && row.size === size).kinds[0].fraction.toFixed(3))), samePixels: shots[size][0].equals(shots[size][1])};
+          measured[`arc@${size}`] = {display: frames[0].find((row) => row.look === 'arc' && row.size === size).kinds[0].display, samePixels: shots[size][0].equals(shots[size][1])};
         }
       }
       evidence[`arc:${reducedMotion}`] = measured;

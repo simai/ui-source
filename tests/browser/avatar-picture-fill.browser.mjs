@@ -51,6 +51,9 @@ const RENDERERS = {
   'list row': (size) => `<div class="sf-avatar-label-group flex items-cross-center"><span class="sf-avatar sf-avatar--size-${size} bg-cover" data-picture="background"></span></div>`,
   'lookup row': (size) => `<span class="sf-avatar sf-avatar--size-${size} inline-flex flex-none items-cross-center content-main-center overflow-hidden"><img class="sf-avatar-image" data-picture="img" alt=""></span>`,
   'sf-avatar': (size) => `<sf-avatar size="${size}" image-url="about:blank" data-picture="smart"></sf-avatar>`,
+  // A picture by default since owner decision C152 (1) (role img, no hover
+  // ring); a native button only as a menu's trigger, which has the ring.
+  'sf-avatar trigger': (size) => `<sf-avatar size="${size}" image-url="about:blank" aria-haspopup="menu" aria-label="Профиль" data-picture="smart"></sf-avatar>`,
 };
 
 async function open(theme, body) {
@@ -80,7 +83,9 @@ async function dressPictures(page, picture) {
 }
 
 const cells = Object.entries(RENDERERS).flatMap(([renderer, markup]) => SIZES.map((size) =>
-  `<div data-cell data-renderer="${renderer}" data-size="${size}" style="display:inline-block;padding:4px">${markup(size)}</div>`));
+  `<div data-cell data-renderer="${renderer}" data-size="${size}" style="display:inline-flex;vertical-align:top;padding:4px">${markup(size)}</div>`));
+// inline-flex, top-aligned: a button avatar on a text baseline stood at y
+// 47.55 and the screenshot's first device row was half a pixel of page.
 
 const same = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 2);
 
@@ -112,7 +117,10 @@ for (const theme of THEMES) {
       }, shot.toString('base64'));
       const {top, bottom} = COLOURS[picture];
       const first = column.pixels.findIndex((p) => same(p, top) || same(p, bottom));
-      const last = column.pixels.length - 1 - [...column.pixels].reverse().findIndex((p) => same(p, top) || same(p, bottom));
+      // No picture pixel at all is -1 here too: the end index of a failed
+      // search ran past the column and the probe threw instead of saying so.
+      const back = [...column.pixels].reverse().findIndex((p) => same(p, top) || same(p, bottom));
+      const last = back < 0 ? -1 : column.pixels.length - 1 - back;
       check('no ear above: the top edge is the picture\'s top', first >= 0 && same(column.pixels[first], top), {...where, first, pixel: column.pixels[first]});
       check('no ear below: the bottom edge is the picture\'s bottom', last >= 0 && same(column.pixels[last], bottom), {...where, last, pixel: column.pixels[last]});
       // One device pixel of antialiasing at the edge; the ring is SCALE pixels.
@@ -122,12 +130,12 @@ for (const theme of THEMES) {
   }
 
   // Under the pointer an <img> avatar draws the ring over its picture.
-  const button = await page.evaluate(() => Boolean(document.querySelector('[data-renderer="sf-avatar"][data-size="2"] button.sf-avatar')));
-  check('sf-avatar renders a button', button, {theme});
-  const target = page.locator('[data-renderer="sf-avatar"][data-size="2"] button.sf-avatar');
+  const button = await page.evaluate(() => Boolean(document.querySelector('[data-renderer="sf-avatar trigger"][data-size="2"] button.sf-avatar')));
+  check('sf-avatar as a menu trigger renders a button', button, {theme});
+  const target = page.locator('[data-renderer="sf-avatar trigger"][data-size="2"] button.sf-avatar');
   await target.hover();
   const ring = await page.evaluate(() => {
-    const button = document.querySelector('[data-renderer="sf-avatar"][data-size="2"] button.sf-avatar');
+    const button = document.querySelector('[data-renderer="sf-avatar trigger"][data-size="2"] button.sf-avatar');
     const img = button.querySelector('.sf-avatar-image');
     const probe = document.createElement('div');
     probe.style.color = 'var(--sf-primary-hover)';
@@ -143,7 +151,7 @@ for (const theme of THEMES) {
 
 await browser.close();
 if (failures.length) {
-  console.error(JSON.stringify(failures.slice(0, 40), null, 2));
+  console.error(JSON.stringify(failures.slice(0, 400), null, 2));
   console.error(`avatar picture fill: ${failures.length} failure(s)`);
   process.exit(1);
 }

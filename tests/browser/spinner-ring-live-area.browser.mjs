@@ -182,6 +182,7 @@ const READ = (sizes) => {
     const spinner = (id) => document.querySelector(`#${id}-${k} .sf-loader-container`) ?? document.querySelector(`#${id}-${k}`);
     return [size, {
       icon: of(document.querySelector(`#rest-${k} .sf-icon`)),
+      iconButton: of(document.querySelector(`#icon-${k} .sf-icon`)),
       rest: of(document.querySelector(`#rest-${k} > button`)),
       load: of(document.querySelector(`#load-${k} > button`)),
       glyph: of(document.querySelector(`#glyph-${k} .sf-icon`) ?? document.querySelector(`#glyph-${k}`)),
@@ -221,17 +222,23 @@ try {
         // icon a loading spinner stands in for; sf-icon of the same size beside
         // sf-spinner is read for the evidence.
         check(`${at}: the glyph draws`, Boolean(iconInk), {glyphInk, iconInk});
+        // sf-button-icon has a glyph of its own at size 3 on a phone, 28 where
+        // sf-button's is 24 (C151 (1), RG-FAB-3): its spinner stands in for
+        // that glyph, so it is measured against the resting icon button's.
+        const iconButtonInk = step.iconButton.width > 0 ? await inkBox(await tab.screenshot({clip: clipOf(step.iconButton)})) : null;
         const rings = {};
         for (const [id, spinner] of Object.entries(step.spinners)) {
           const ink = spinner.box.width > 0 ? await inkBox(await tab.screenshot({clip: clipOf(spinner.box)})) : null;
           rings[id] = {box: Math.round(spinner.box.width * 100) / 100, drawn: Math.round(spinner.diameter * 100) / 100, ink: ink && ink.width, inkHeight: ink && ink.height};
-          check(`${at} ${id}: the box is the icon box of the step`, near(spinner.box.width, step.icon.width, 0.01) && near(spinner.box.height, step.icon.height, 0.01), {box: spinner.box, icon: step.icon});
+          const glyphBox = id === 'iload' ? step.iconButton : step.icon;
+          const glyphInkOf = id === 'iload' ? iconButtonInk : iconInk;
+          check(`${at} ${id}: the box is the icon box of the step`, near(spinner.box.width, glyphBox.width, 0.01) && near(spinner.box.height, glyphBox.height, 0.01), {box: spinner.box, icon: glyphBox});
           check(`${at} ${id}: the ring is drawn in the live area, 5/6 of the box (radius 9 + stroke 1 of 24 units)`, near(spinner.track, 10, 0.001) && near(spinner.diameter, spinner.box.width * 20 / 24, 0.02), spinner);
           check(`${at} ${id}: every look is on the ring (track, arc, comet, dots end at 10 of 24)`, near(spinner.accent, 10, 0.001)
             && spinner.comet.length === 1 && near(spinner.comet[0], 10, 0.001) && spinner.dots.length === 1 && near(spinner.dots[0], 10, 0.001), spinner);
           check(`${at} ${id}: the arc is the fixed 30% of the ring`, /^30(px)?, 70(px)?$/u.test(spinner.dash), spinner);
           check(`${at} ${id}: under reduced motion the spinner stands still`, spinner.animation.every((name) => name === 'none'), spinner);
-          check(`${at} ${id}: the drawn ring is as big as the button's glyph of the step (within 1px)`, Boolean(ink && iconInk) && near(ink.width, iconInk.width, 1) && near(ink.height, iconInk.height, 1), {ink, iconInk});
+          check(`${at} ${id}: the drawn ring is as big as the button's glyph of the step (within 1px)`, Boolean(ink && glyphInkOf) && near(ink.width, glyphInkOf.width, 1) && near(ink.height, glyphInkOf.height, 1), {ink, iconInk: glyphInkOf});
           check(`${at} ${id}: the ring read from the pixels is the ring of the drawing (within 1px)`, Boolean(ink) && near(ink.width, spinner.diameter, 1), {ink, drawn: spinner.diameter});
         }
         check(`${at}: a loading button is as wide and as high as at rest`, near(step.load.width, step.rest.width, 0.01) && near(step.load.height, step.rest.height, 0.01), {rest: step.rest, load: step.load});
@@ -265,7 +272,10 @@ try {
     const dark = evidence[`${viewport} theme-dark`];
     const geometry = (steps) => JSON.stringify(Object.fromEntries(Object.entries(steps).map(([size, step]) => [size, [step.iconBox, Object.values(step.rings).map((ring) => [ring.box, ring.drawn])]])));
     check(`${viewport}: dark draws the rings of light`, geometry(light) === geometry(dark), {light, dark});
-    check(`${viewport}: dark inks the rings as light does (within half a pixel)`, Object.keys(light).every((size) => near(light[size].buttonGlyphInk, dark[size].buttonGlyphInk, 0.5)
+    // The glyph is a font's: its ink edge on the dark ground reads one whole
+    // pixel narrower at some steps (19 against 20), the same drawing; the
+    // rings, drawn by the spinner, must agree to the half pixel.
+    check(`${viewport}: dark inks the rings as light does (within half a pixel)`, Object.keys(light).every((size) => near(light[size].buttonGlyphInk, dark[size].buttonGlyphInk, 1)
       && Object.keys(light[size].rings).every((id) => near(light[size].rings[id].ink, dark[size].rings[id].ink, 0.5))), {light, dark});
   }
 } finally {

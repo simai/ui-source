@@ -138,6 +138,11 @@ try {
           $('lazy').items = lazySource;
           await document.fonts.ready;
           await wait(600);
+          // The icon subset asks for names in steps as the trees draw them; a
+          // glyph shows once its font is in (sf-icon-loaded, font-size 0 till
+          // then), so the glyph check reads after every drawn icon is in.
+          for (let tries = 0; tries < 80 && document.querySelector('sf-tree .sf-icon:not(.sf-icon-loaded)'); tries += 1) await wait(100);
+          r.iconsWaiting = document.querySelectorAll('sf-tree .sf-icon:not(.sf-icon-loaded)').length;
           const rows = (tree) => [...tree.querySelectorAll('[role=treeitem]')];
           const iconOf = (row) => row.querySelector(':scope > .sf-tree-item-container > .sf-tree-node-icon')?.textContent.trim() ?? null;
           const byId = (tree) => Object.fromEntries(rows(tree).map((row) => [row.dataset.sfEntry, row]));
@@ -150,14 +155,22 @@ try {
           r.noneChevrons = $('none').querySelectorAll('.sf-tree-toggle').length;
           r.iconsChevrons = $('icons').querySelectorAll('.sf-tree-toggle').length;
           r.bytypeXlsx = iconOf(byId($('bytype')).xlsx);
-          // glyphs: each name one glyph of the icon font
-          const probe = document.createElement('i');
-          probe.className = 'sf-icon';
-          probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline;inline-size:auto;overflow:visible';
-          document.body.append(probe);
+          // glyphs: each name one glyph of the icon font. Each name is drawn as
+          // a page icon of its own, so the icon subset asks for it, and is read
+          // once its font is in (sf-icon-loaded): a name no tree has drawn yet
+          // (error) is in no subset until something asks for it.
           const names = ['folder', 'folder_open', 'draft', 'article', 'description', 'image', 'code', 'data_object', 'table_chart', 'folder_zip', 'movie', 'audio_file', 'link', 'home', 'more_horiz', 'error', 'check', 'remove', 'keyboard_arrow_down', 'chevron_right'];
-          r.missingGlyphs = names.filter((name) => { probe.textContent = name; const box = probe.getBoundingClientRect(); return box.width > parseFloat(getComputedStyle(probe).fontSize) * 1.5; });
-          probe.remove();
+          const glyphs = names.map((name) => {
+            const glyph = document.createElement('i');
+            glyph.className = 'sf-icon';
+            glyph.textContent = name;
+            glyph.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;display:inline;inline-size:auto;overflow:visible';
+            document.body.append(glyph);
+            return glyph;
+          });
+          for (let tries = 0; tries < 80 && glyphs.some((glyph) => !glyph.classList.contains('sf-icon-loaded')); tries += 1) await wait(100);
+          r.missingGlyphs = glyphs.filter((glyph) => glyph.getBoundingClientRect().width > parseFloat(getComputedStyle(glyph).fontSize) * 1.5).map((glyph) => glyph.textContent);
+          glyphs.forEach((glyph) => glyph.remove());
           // NI-3: the gap between chevron, icon and name
           const first = icons.docs.querySelector(':scope > .sf-tree-item-container');
           r.rowGap = parseFloat(getComputedStyle(first).columnGap);

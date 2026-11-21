@@ -45,7 +45,7 @@ try {
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction(() => customElements.get('sf-tree') && document.querySelector('#t .sf-tree-item[data-value="images"]'), null, {timeout: 8000});
   await page.waitForTimeout(300);
-  const got = await page.evaluate(() => {
+  const got = await page.evaluate(async () => {
     const heard = [];
     for (const name of ['sf-tree-records-drop', 'sf-tree-files-drop']) document.addEventListener(name, (event) => heard.push([name, event.detail.value, event.detail.ids ?? event.detail.files.map((file) => file.name)]));
     const node = (tree, value) => document.querySelector(`#${tree} .sf-tree-item[data-value="${value}"] .sf-tree-item-container`);
@@ -61,6 +61,9 @@ try {
     fire(node('t', 'root'), 'dragover', files);
     fire(node('t', 'root'), 'drop', files);
     const refused = fire(node('plain', 'x'), 'dragover', records);
+    // Files are core's files drop (FO-1): it reads the dropped entries first
+    // (folders open into their files), so the attach is said a task later.
+    for (let wait = 0; wait < 40 && heard.length < 2; wait++) await new Promise((done) => setTimeout(done, 25));
     return {accepted, marked, cleared, refused, heard};
   });
   const said = got.heard.map(([name, value, what]) => `${name}:${value}:${what.join('+')}`).join(',');
