@@ -170,6 +170,9 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       surface.setAttribute('data-sf-filter-width', width === 'wide' ? 'wide' : 'panel');
       surface.style.inlineSize = width === 'wide' ? 'var(--sf-popup-form-wide-width)' : 'var(--sf-popup-panel-width)';
       surface.style.maxInlineSize = '100%';
+      // The band at the window's top takes the window's corners, so its
+      // inward focus ring is not cut by them (popup head round 2, PH-3).
+      surface.style.setProperty('--sf-dropdown-band-radius', 'var(--sf-popover-radius, var(--sf-radius--surface))');
       body = doc.createElement('div');
       body.className = 'sf-filter-window-control flex flex-col';
       body.style.minBlockSize = '0';

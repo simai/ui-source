@@ -473,7 +473,42 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     if (typeof callback === 'function') return super.afterRender(callback);
     this.sfSyncFormState();
     this.watchMore();
+    this.watchTrack();
     return undefined;
+  }
+
+  // The list's scrollbar (popup head round 2, PH-6): while the rows scroll
+  // the scrollbar's track takes room at their end and the checks move in by
+  // it; the search over them marks the list (data-sf-choice-track) and its
+  // icon moves in by the track as well, so the two keep one column.
+  watchTrack() {
+    const scroll = this.querySelector('.sf-choice-scroll');
+    const root = scroll?.closest('.sf-choice') ?? null;
+    if (scroll !== this._trackWatched) {
+      this._trackWatch?.disconnect();
+      this._trackWatched = scroll;
+      const Observer = this.ownerDocument?.defaultView?.ResizeObserver ?? globalThis.ResizeObserver;
+      if (scroll && typeof Observer === 'function') {
+        this._trackWatch ??= new Observer(() => this.markTrack());
+        this._trackWatch.observe(scroll);
+        if (scroll.firstElementChild) this._trackWatch.observe(scroll.firstElementChild);
+      }
+    }
+    if (root) this.markTrack();
+  }
+
+  markTrack() {
+    const scroll = this._trackWatched;
+    const root = scroll?.closest('.sf-choice');
+    if (!root) return;
+    root.toggleAttribute('data-sf-choice-track', scroll.offsetWidth - scroll.clientWidth > 0);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback?.();
+    this._trackWatch?.disconnect();
+    this._trackWatch = null;
+    this._trackWatched = null;
   }
 
   // FO4-4: the host's next page loads when the list is scrolled to its end

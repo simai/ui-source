@@ -298,10 +298,19 @@
   --sf-dropdown-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
 }
 
-/* The field fills the control, so its ring turns inwards. */
-.sf-dropdown:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
+/* The field fills the control, so its ring turns inwards. A read-only value
+   (a choice field: the text the trigger shows, out of the tab order) is
+   focused only by a press, and a browser calls any text input focus-visible
+   then: the ring stood on every mouse click (popup head round 2, PH-1). The
+   keyboard reaches the trigger, whose ring is the field's (sf.states). */
+.sf-dropdown:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):not([readonly]):focus-visible) .sf-dropdown-field {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--inset);
+}
+
+/* A choice field's value is read-only: no caret blinks in it (PH-2). */
+.sf-dropdown .sf-dropdown-field input[readonly] {
+  caret-color: transparent;
 }
 
 .sf-dropdown.open .sf-dropdown-field {

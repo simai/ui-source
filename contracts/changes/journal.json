@@ -19222,6 +19222,51 @@
       "manual": "A page that styled .sf-settings-row--drop-before or --drop-after styles .sf-sortable-indicator[data-sf-drop-line-owner=\"sf-settings\"] instead.",
       "owner": "ui-source",
       "source": "src/smart/settings/index.js"
+    },
+    {
+      "id": "behaviour-dropdown-readonly-value-no-press-ring",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.dropdown 1.18.3 / sf-dropdown 1.25.0 (group build 16, G8, DEV popup head round 2 PH-1, PH-2, PH-3): a mouse press on a choice field's read-only value no longer draws the focus ring and no caret blinks in it; the keyboard ring stays on the trigger. The band's top corners take --sf-dropdown-band-radius (public, 0 by default), which the filter window sets to its surface's radius, so the band's inward ring follows the window's corners.",
+      "items": [
+        {
+          "component": "component.dropdown",
+          "from": "ring and caret on a mouse press on the read-only value",
+          "to": "no ring, no caret on a press; the keyboard ring on the trigger"
+        },
+        {
+          "component": "smart.dropdown",
+          "from": "band corners square under a rounded window",
+          "to": "band top corners at --sf-dropdown-band-radius"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/component/dropdown/scss/_css__dropdown.scss"
+    },
+    {
+      "id": "behaviour-input-choice-search-follows-track",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-input-choice 1.11.1 (group build 16, G8, DEV popup head round 2 PH-6): while the rows scroll the list carries data-sf-choice-track and the search's end moves in by the scrollbar's track, so the search icon stays in the checks' column.",
+      "items": [
+        {
+          "component": "smart.input-choice",
+          "from": "the search icon 14 px past the checks while the rows scroll",
+          "to": "the search icon in the checks' column"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/input-choice/index.js"
     }
   ]
 }
