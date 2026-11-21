@@ -64,7 +64,7 @@ test('C398: the inks are roles, the same in both themes; the weakest dot at --sf
 });
 
 test('C398: the ink is measured from the strip behind the row and falls back to outline', () => {
-  assert.match(adapter, /context\.drawImage\(media, source\.x, source\.y, source\.width, source\.height, 0, 0, INK_SAMPLE_WIDTH, INK_SAMPLE_HEIGHT\);/);
+  assert.match(adapter, /context\.drawImage\(media, \(drawn\.left - box\.left\) \* kx, \(drawn\.top - box\.top\) \* ky, drawn\.width \* kx, drawn\.height \* ky\);/);
   assert.match(adapter, /return \{reason: 'cross-origin'\};/);
   assert.match(adapter, /if \(!\(media instanceof HTMLImageElement\)\) return \{reason: 'media'\};/);
   assert.match(adapter, /if \(!media\.complete \|\| !media\.naturalWidth\) return \{reason: 'loading'\};/);

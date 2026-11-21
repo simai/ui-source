@@ -739,35 +739,32 @@ function inkOver(ink, alpha, rgb) {
   return luminance(ink.rgb.map((value, i) => alpha * value + (1 - alpha) * rgb[i]));
 }
 
-// The source box of the picture behind a screen box, for object-fit fill,
-// contain, cover, none and scale-down and a percentage object-position.
-function sourceBox(img, box) {
+// Where the picture is drawn on screen, for object-fit fill, contain,
+// cover, none and scale-down and a percentage object-position.
+function drawnBox(img) {
   const frame = img.getBoundingClientRect();
   const width = img.naturalWidth;
   const height = img.naturalHeight;
   if (!width || !height || !frame.width || !frame.height) return null;
   const style = getComputedStyle(img);
   const fit = style.objectFit || 'fill';
-  let scaleX = frame.width / width;
-  let scaleY = frame.height / height;
+  let drawnWidth = frame.width;
+  let drawnHeight = frame.height;
   if (fit !== 'fill') {
-    const cover = Math.max(scaleX, scaleY);
-    const contain = Math.min(scaleX, scaleY);
-    let scale = fit === 'cover' ? cover : fit === 'none' ? 1 : contain;
+    const contain = Math.min(frame.width / width, frame.height / height);
+    let scale = fit === 'cover' ? Math.max(frame.width / width, frame.height / height) : fit === 'none' ? 1 : contain;
     if (fit === 'scale-down') scale = Math.min(1, contain);
-    scaleX = scale;
-    scaleY = scale;
+    drawnWidth = width * scale;
+    drawnHeight = height * scale;
   }
   const [posX, posY] = String(style.objectPosition || '50% 50%').split(/\s+/);
   const place = (token, room) => (String(token).endsWith('%') ? (Number.parseFloat(token) / 100) * room : Number.parseFloat(token) || 0);
-  const left = frame.left + place(posX, frame.width - width * scaleX);
-  const top = frame.top + place(posY, frame.height - height * scaleY);
-  const x0 = Math.max(0, (box.left - left) / scaleX);
-  const y0 = Math.max(0, (box.top - top) / scaleY);
-  const x1 = Math.min(width, (box.right - left) / scaleX);
-  const y1 = Math.min(height, (box.bottom - top) / scaleY);
-  if (x1 - x0 < 1 || y1 - y0 < 1) return null;
-  return {x: x0, y: y0, width: x1 - x0, height: y1 - y0};
+  return {
+    left: frame.left + place(posX, frame.width - drawnWidth),
+    top: frame.top + place(posY, frame.height - drawnHeight),
+    width: drawnWidth,
+    height: drawnHeight,
+  };
 }
 
 function covers(element, x, y) {
@@ -786,14 +783,18 @@ function stripPixels(slide, box) {
   if (media) {
     if (!(media instanceof HTMLImageElement)) return {reason: 'media'};
     if (!media.complete || !media.naturalWidth) return {reason: 'loading'};
-    const source = sourceBox(media, box);
-    if (!source) return {reason: 'outside'};
+    const drawn = drawnBox(media);
+    if (!drawn) return {reason: 'outside'};
     try {
+      // The whole picture as it is drawn, scaled so the row's box fills the
+      // small canvas; what lies outside the picture stays transparent.
       const canvas = document.createElement('canvas');
       canvas.width = INK_SAMPLE_WIDTH;
       canvas.height = INK_SAMPLE_HEIGHT;
       const context = canvas.getContext('2d', {willReadFrequently: true});
-      context.drawImage(media, source.x, source.y, source.width, source.height, 0, 0, INK_SAMPLE_WIDTH, INK_SAMPLE_HEIGHT);
+      const kx = INK_SAMPLE_WIDTH / box.width;
+      const ky = INK_SAMPLE_HEIGHT / box.height;
+      context.drawImage(media, (drawn.left - box.left) * kx, (drawn.top - box.top) * ky, drawn.width * kx, drawn.height * ky);
       const data = context.getImageData(0, 0, INK_SAMPLE_WIDTH, INK_SAMPLE_HEIGHT).data;
       const pixels = [];
       for (let i = 0; i < data.length; i += 4) {
