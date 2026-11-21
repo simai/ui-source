@@ -18910,6 +18910,27 @@
       "manual": "Nothing to rewrite: a page that wants a row in a narrower place sets layout=\"row\".",
       "owner": "ui-source",
       "source": "src/smart/steps/component.json; src/smart/steps/docs/docs.md"
+    },
+    {
+      "id": "behaviour-drawer-step-is-the-panel",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-drawer 1.20.1 (group build 15, DEV note on A9): words only. The size step (44 / 52 / 64 characters, 352 / 416 / 512 px at text 16) is the panel's outer width; its content stands inside the window inset, role H6 of C105 (--sf-space-2: 20 px a side on a desktop, 16 in compact density and on a phone), 312 / 376 / 472 px on a desktop. The inset is the standard's, so the text follows it; aside-width is added on top of the step as before.",
+      "items": [
+        {
+          "component": "sf-drawer",
+          "attribute": "size",
+          "from": "«the step measures the content»; the content read as 52 characters",
+          "to": "the step is the panel's width; the content is the step less the H6 window inset"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to rewrite. A page that sized its content to the step subtracts the window inset (2 × --sf-space-2).",
+      "owner": "ui-source",
+      "source": "src/smart/drawer/component.json; src/smart/drawer/docs.md"
     }
   ]
 }

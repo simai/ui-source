@@ -84,9 +84,9 @@
     inset-block: var(--sf-drawer-block-start, 0) 0;
     display: flex;
     flex-direction: column;
-    /* A9 (DEV msg-6aead3f3): the step (or width) measures the content; an
-       announced aside (aside-width, e.g. a sections column) is added on top of
-       it, never taken from it. */
+    /* A9 (DEV msg-6aead3f3): the step (or width) is the content's panel, its
+       content inside the window inset (H6); an announced aside (aside-width,
+       e.g. a sections column) is added on top of it, never taken from it. */
     width: min(calc(var(--sf-drawer-width, var(--sf-measure-52)) + var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))), 100vi);
     max-width: 100vi;
     /* The block size is the containing block's, from inset-block: 0: the
