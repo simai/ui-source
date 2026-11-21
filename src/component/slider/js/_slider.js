@@ -313,6 +313,22 @@ function linkThumbnails(root, slider, thumbs) {
     slide.setAttribute('role', 'button');
     slide.setAttribute('aria-label', names[index]);
   });
+  // The shown thumbnail is scrolled into view inside its strip (DEV
+  // msg-0bea9d3c): a strip longer than its place showed the first ones only.
+  // Only the strip moves, never the page.
+  const reveal = () => {
+    const strip = thumbs.wrapperEl;
+    const slide = slides[slider.activeIndex];
+    if (!(strip instanceof HTMLElement) || !slide || strip.scrollWidth <= strip.clientWidth + 1) return;
+    const box = strip.getBoundingClientRect();
+    const own = slide.getBoundingClientRect();
+    const inset = Number.parseFloat(getComputedStyle(strip).paddingInlineStart) || 0;
+    let delta = 0;
+    if (own.left < box.left + inset) delta = own.left - box.left - inset;
+    else if (own.right > box.right - inset) delta = own.right - box.right + inset;
+    if (Math.abs(delta) < 1) return;
+    strip.scrollTo({left: strip.scrollLeft + delta, behavior: prefersReducedMotion() ? 'instant' : 'smooth'});
+  };
   const mark = () => {
     slides.forEach((slide, index) => {
       const active = index === slider.activeIndex;
@@ -321,6 +337,7 @@ function linkThumbnails(root, slider, thumbs) {
       if (active) slide.setAttribute('aria-current', 'true');
       else slide.removeAttribute('aria-current');
     });
+    reveal();
   };
   const listeners = slides.map((slide, index) => {
     const listener = () => slider.slideTo(index);
@@ -348,12 +365,14 @@ function linkThumbnails(root, slider, thumbs) {
     next = Math.min(Math.max(next, 0), last);
     slider.slideTo(next);
     mark();
-    slides[next]?.focus?.();
+    slides[next]?.focus?.({ preventScroll: true });
   };
   // The thumbnails' engine names its slides again on every update.
   const onUpdate = () => { name(); mark(); };
   thumbs.el.addEventListener('keydown', onKey);
   thumbs.on?.('update', onUpdate);
+  // The thumbnails' engine lays its own first stop again on a resize.
+  thumbs.on?.('resize', reveal);
   slider.on?.('slideChange', mark);
   name();
   mark();
@@ -361,6 +380,7 @@ function linkThumbnails(root, slider, thumbs) {
     listeners.forEach(([slide, listener]) => slide.removeEventListener('click', listener));
     thumbs.el.removeEventListener('keydown', onKey);
     thumbs.off?.('update', onUpdate);
+    thumbs.off?.('resize', reveal);
     slider.off?.('slideChange', mark);
     slides.forEach((slide, index) => {
       if (!slide.isConnected) return;

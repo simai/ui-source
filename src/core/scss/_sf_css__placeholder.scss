@@ -1081,7 +1081,7 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
    (owner decision 2026-11-21, carousel study), the thumbnails under it too,
    each a gap below the row before: the box keeps room for them. The bar is
    as high as a dot's target, or a button with the pause button
-   (data-autoplay); the thumbnails strip keeps room for the shown one's ring. */
+   (data-autoplay). */
 :where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])):not(:has(> [data-sf-static])) {
   --sf-slider--box-bar: 0px;
   --sf-slider--box-thumbs: 0px;
@@ -1097,11 +1097,11 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
 }
 
 :where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])[thumbs]:not([thumbs="false"])):not(:has(> [data-sf-static])) {
-  --sf-slider--box-thumbs: calc(var(--sf-space-1) + var(--sf-d2) + 2 * (var(--sf-focus--width) + var(--sf-a1)));
+  --sf-slider--box-thumbs: calc(var(--sf-space-1) + var(--sf-d2));
 }
 
 :where(sf-slider:not(:defined)[root-class~="sf-slider--content"][thumbs]:not([thumbs="false"])):not(:has(> [data-sf-static])) {
-  padding-block-end: calc(var(--sf-space-1) + var(--sf-d2) + 2 * (var(--sf-focus--width) + var(--sf-a1)));
+  padding-block-end: calc(var(--sf-space-1) + var(--sf-d2));
 }
 
 /* sf-gallery before it draws (owner decision C150 (6)). Its pictures are the

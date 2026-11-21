@@ -201,9 +201,11 @@ because the defaults change.
   (default `--sf-space-2`, 20 / 16; it was `--sf-space-1`, so a slide inset by
   the same step put the arrow on its edge). Under `(hover: hover) and
   (pointer: fine)` they are hidden until the pointer is over the block or the
-  keyboard focus is in it, with a fade of `--sf-duration-normal`
-  `--sf-ease-move` (no fade under reduced motion); an arrow with nowhere to go
-  stays hidden there. On touch they are always shown. The position
+  keyboard focus is in it (`:focus-visible`: a mouse press on an arrow does
+  not keep them shown). They come in over `--sf-duration-normal` (0.3 s) with
+  `--sf-ease-move`: a fade, a `--sf-a4` (4 px) slide in from their edge and a
+  scale from 0.9; under reduced motion only the fade. An arrow with nowhere to
+  go stays hidden there. On touch they are always shown. The position
   (`.sf-slider-dots`) and the pause button (`.sf-slider-rotation-place`) take
   a row under the strip (and the thumbnails), the block's gap below it, centred
   as one group, the pause button `--sf-space-1` after the dots. Markup is
@@ -222,7 +224,8 @@ because the defaults change.
 - **Keys**: ArrowLeft and ArrowRight page wherever the focus is in the block,
   by default; `data-swiper-keyboard="false"` turns them off.
 - **Thumbnails**: the shown one has a `--sf-focus--width` ring in
-  `--sf-slider-thumbnails-ring--color` (default `--sf-primary`),
-  `--sf-a1` outside it; the strip keeps that much room inside its edge, so the
-  ring is whole.
+  `--sf-slider-thumbnails-ring--color` (default `--sf-primary`), drawn inside
+  its edge, so the strip cannot cut it; a strip longer than its place starts at
+  its start (`justify-content: safe center`) and the shown thumbnail is
+  scrolled into view inside it (the page does not move).
 

@@ -173,23 +173,51 @@
 }
 
 /* Over a picture the arrows show where a pointer that can hover is (a
-   mouse, a trackpad) and while the keyboard is in the slider, with a fade;
-   on a touch screen they are always there. An arrow with nowhere to go is
-   not shown there. */
+   mouse, a trackpad) and while the keyboard is in the slider
+   (:focus-visible: a mouse press on an arrow does not keep them shown);
+   on a touch screen they are always there. They come in over
+   --sf-duration-normal (0.3 s) with --sf-ease-move: a fade, a --sf-a4 (4 px)
+   slide in from their edge and a scale from 0.9 (DEV msg-0bea9d3c); under
+   reduced motion only the fade. An arrow with nowhere to go is not shown
+   there. */
 @media (hover: hover) and (pointer: fine) {
   .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button {
     opacity: 0;
-    transition: opacity var(--sf-duration-normal) var(--sf-ease-move);
+    scale: 0.9;
+    transition-duration: var(--sf-duration-normal);
+    transition-property: opacity, scale, translate;
+    transition-timing-function: var(--sf-ease-move);
+  }
+
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-prev {
+    translate: calc(-1 * var(--sf-a4)) 0;
+  }
+
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-next {
+    translate: var(--sf-a4) 0;
+  }
+
+  .sf-slider:not(.sf-slider--content):dir(rtl) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-prev {
+    translate: var(--sf-a4) 0;
+  }
+
+  .sf-slider:not(.sf-slider--content):dir(rtl) > .sf-slider-controls > .sf-slider-arrows .sf-slider-button-next {
+    translate: calc(-1 * var(--sf-a4)) 0;
   }
 
   .sf-slider:not(.sf-slider--content):is(:hover, :has(:focus-visible)) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button:not(:disabled, .swiper-button-disabled) {
     opacity: 1;
+    scale: 1;
+    translate: 0 0;
   }
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
-  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button {
-    transition: none;
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows .sf-icon-button,
+  .sf-slider:not(.sf-slider--content) > .sf-slider-controls > .sf-slider-arrows :is(.sf-slider-button-prev, .sf-slider-button-next) {
+    scale: none;
+    transition-property: opacity;
+    translate: none;
   }
 }
 
@@ -289,14 +317,16 @@
 
 .sf-slider .sf-slider-thumbnails .swiper-slide-thumb-active {
   opacity: var(--sf-slider-thumbnails-slide-active--opacity, 1);
-  /* The shown thumbnail is ringed, as sf-gallery's (C150): the strip keeps
-     room for the ring inside its edge, so the ring is not cut. */
+  /* The shown thumbnail is ringed, as sf-gallery's (C150), the ring drawn
+     inside its edge (DEV msg-0bea9d3c), so the strip cannot cut it. */
   outline: var(--sf-focus--width) solid var(--sf-slider-thumbnails-ring--color, var(--sf-primary));
-  outline-offset: var(--sf-a1);
+  outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
+/* A strip longer than its place starts at its start, not centred past it
+   (the shown thumbnail is scrolled into view by the slider). */
 .sf-slider .sf-slider-thumbnails > .swiper-wrapper {
-  padding: calc(var(--sf-focus--width) + var(--sf-a1));
+  justify-content: safe center;
 }
 
 /* A thumbnail is a button (GL-2): it has the thumbnail's radius, so its focus

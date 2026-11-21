@@ -205,8 +205,9 @@ component.slider 2.0.0.
 - **Arrows**: the button ladder (40, 36 on a phone, 32 in compact density),
   round, `--sf-space-2` (20 / 16) inside each edge, never on it. Over a
   picture they show where a pointer can hover and while the keyboard is in the
-  slider, with a fade (`--sf-duration-normal`, none under reduced motion), and
-  are always there on a touch screen. Cards keep the arrows under the row, at
+  slider by the keyboard, fading in 0.3 s with a 4 px slide and a scale from
+  0.9 (only the fade under reduced motion), and are always there on a touch
+  screen. Cards keep the arrows under the row, at
   its end.
 - **Position**: under the content, the block's gap below it (`--sf-space-1`,
   16 / 12), never over the picture: dots up to seven slides, «2 / 12» from
@@ -217,5 +218,5 @@ component.slider 2.0.0.
 - **Keys**: ArrowLeft and ArrowRight page while the focus is in the slider;
   `data-swiper-keyboard="false"` turns them off.
 - **Loop**: `loop` and autoplay go from the last slide back to the first.
-- **Thumbnails**: the shown thumbnail is ringed (`--sf-primary`), and the strip
-  keeps room for the ring.
+- **Thumbnails**: the shown thumbnail is ringed (`--sf-primary`) inside its
+  edge, and scrolled into view in a long strip.

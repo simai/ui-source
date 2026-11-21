@@ -47,9 +47,7 @@ test('1: loop and autoplay go from the last slide to the first; pause keeps the 
 test('2: arrows a space step inside the edge, hover or focus reveal on fine pointers, never on touch', () => {
   assert.match(sheet, /padding-inline: var\(--sf-slider-arrow-offset-inline, var\(--sf-space-2\)\);/);
   assert.doesNotMatch(sheet, /--sf-slider-arrow-offset-inline, var\(--sf-space-1\)/);
-  assert.match(sheet, /@media \(hover: hover\) and \(pointer: fine\) \{[^@]*opacity: 0;\s*transition: opacity var\(--sf-duration-normal\) var\(--sf-ease-move\);/s);
   assert.match(sheet, /:is\(:hover, :has\(:focus-visible\)\)/);
-  assert.match(sheet, /\(prefers-reduced-motion: reduce\) \{[^}]*\{\s*transition: none;/s);
   assert.match(carouselSheet, /\.sf-carousel-switch--next \{\s*inset-inline-end: var\(--sf-space-2\);/);
   assert.match(carouselSheet, /\.sf-carousel-switch--prev \{\s*inset-inline-start: var\(--sf-space-2\);/);
 });
@@ -74,9 +72,17 @@ test('keys page while the focus is in the slider unless turned off', () => {
   assert.match(adapter, /if \(!keyboardOff\) \{/);
 });
 
-test('5: the shown thumbnail is ringed and the strip keeps room for the ring', () => {
-  assert.match(sheet, /\.swiper-slide-thumb-active \{[^}]*outline: var\(--sf-focus--width\) solid var\(--sf-slider-thumbnails-ring--color, var\(--sf-primary\)\);[^}]*outline-offset: var\(--sf-a1\);/s);
-  assert.match(sheet, /\.sf-slider-thumbnails > \.swiper-wrapper \{\s*padding: calc\(var\(--sf-focus--width\) \+ var\(--sf-a1\)\);/);
+test('5: the shown thumbnail is ringed inside its edge and scrolled into view in its strip', () => {
+  assert.match(sheet, /\.swiper-slide-thumb-active \{[^}]*outline: var\(--sf-focus--width\) solid var\(--sf-slider-thumbnails-ring--color, var\(--sf-primary\)\);[^}]*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/s);
+  assert.match(sheet, /\.sf-slider-thumbnails > \.swiper-wrapper \{\s*justify-content: safe center;/);
+  assert.match(adapter, /const reveal = \(\) => \{/);
+  assert.match(adapter, /thumbs\.on\?\.\('resize', reveal\);/);
+});
+
+test('2 (round 2): the reveal fades, slides 4 px and scales from 0.9 in 0.3 s; reduced motion fades only', () => {
+  assert.match(sheet, /scale: 0\.9;\s*transition-duration: var\(--sf-duration-normal\);\s*transition-property: opacity, scale, translate;\s*transition-timing-function: var\(--sf-ease-move\);/);
+  assert.match(sheet, /\.sf-slider-button-next \{\s*translate: var\(--sf-a4\) 0;/);
+  assert.match(sheet, /scale: none;\s*transition-property: opacity;\s*translate: none;/);
 });
 
 test('versions: engine and class slider are majors, the carousel a minor on the same engine', async () => {

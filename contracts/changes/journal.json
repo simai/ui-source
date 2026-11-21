@@ -18985,7 +18985,7 @@
       "recorded_on": "2026-11-21",
       "stage": "compat",
       "kind": "behaviour",
-      "summary": "component.slider 2.0.0 and smart.slider 1.4.0 (owner decision 2026-11-21, carousel study): over a picture the arrows stand --sf-space-2 inside each edge (was --sf-space-1) and show on hover or keyboard focus with a fade, always on touch; the position (dots, «2 / 12» from eight) and the pause button stand under the picture, the block's gap below it, not over it; the Smart template draws bare dots there (was the popup plate). With autoplay the dots are the timed position sf-slider-dots--timed (a 32 px pill that fills for the slide's time, frozen while the pointer is over the slider). The shown thumbnail is ringed. Cards are unchanged.",
+      "summary": "component.slider 2.0.0 and smart.slider 1.4.0 (owner decision 2026-11-21, carousel study): over a picture the arrows stand --sf-space-2 inside each edge (was --sf-space-1) and show on hover or keyboard focus with a fade, always on touch; the position (dots, «2 / 12» from eight) and the pause button stand under the picture, the block's gap below it, not over it; the Smart template draws bare dots there (was the popup plate). With autoplay the dots are the timed position sf-slider-dots--timed (a 32 px pill that fills for the slide's time, frozen while the pointer is over the slider). The arrows come in over 0.3 s with a 4 px slide and a scale from 0.9 (only the fade under reduced motion). The shown thumbnail is ringed inside its edge and scrolled into view in a long strip. Cards are unchanged.",
       "items": [
         {
           "component": "sf-slider",
