@@ -17,9 +17,9 @@ test('query rules accept finite named/unnamed conditions and reject extensions',
   for (const name of ['query-container', 'query-container/sidebar']) assert.equal(container.test(name), true);
   for (const name of ['query-container/other', 'query-container-invalid', 'x-query-container']) assert.equal(container.test(name), false);
   for (const condition of ['sm', 'md', 'lg', 'xl']) for (const name of ['', '/sidebar'])
-    for (const utility of ['flex-row', 'gap-1/2', 'grid-col-subgrid', 'content-main-center', 'items-cross-start', 'col-span-2', 'col-span-12', 'col-span-full', 'col-auto'])
+    for (const utility of ['flex-row', 'gap-1/2', 'grid-col-subgrid', 'content-main-center', 'items-cross-start', 'col-span-2', 'col-span-12', 'col-span-full', 'col-auto', 'col-start-1', 'col-start-4', 'col-start-13', 'col-start-auto', 'order-1', 'order-12', 'order-first', 'order-last', 'order-none'])
       assert.equal(query.test(`cq-${condition}${name}:${utility}`), true);
-  for (const name of ['cq-sm/other:flex-row', 'cq-xs:flex-row', 'cq-sm:hover:flex-row', 'hover:cq-sm:flex-row', 'cq-sm:gap-999', 'cq-sm:flex-row-invalid', 'cq-sm:col-span-13', 'cq-sm:col-span-0', 'cq-sm:col-start-2', 'xcq-sm:flex-row', 'cq-sm:flex-row\n'])
+  for (const name of ['cq-sm/other:flex-row', 'cq-xs:flex-row', 'cq-sm:hover:flex-row', 'hover:cq-sm:flex-row', 'cq-sm:gap-999', 'cq-sm:flex-row-invalid', 'cq-sm:col-span-13', 'cq-sm:col-span-0', 'cq-sm:col-start-0', 'cq-sm:col-start-14', 'cq-sm:order-0', 'cq-sm:order-13', 'cq-sm:order-middle', 'cq-sm:col-end-2', 'xcq-sm:flex-row', 'cq-sm:flex-row\n'])
     assert.equal(query.test(name), false, name);
 });
 

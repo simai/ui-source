@@ -79,7 +79,11 @@ The existing `.text*` selectors remain aliases for Body Text.
 Owner decision C212 (3), 2026-11-16. Size and line: `text-N` (step N and its
 text line) and `title-N` (step N on its title line); `line-N` for the line of
 step N alone. Width of running text: `measure`, `measure-wide`,
-`measure-narrow` (`--sf-text--measure*`). Weight: three roles on the weight
+`measure-narrow` (`--sf-text--measure*`), and one class per step of the C396
+width ladder, `measure-20`, `-28`, `-36`, `-44`, `-52`, `-64`, `-80`, `-96`
+(`max-width: var(--sf-measure-N)`, N characters at half the body text size;
+with the breakpoint prefixes, `md:measure-44`; utility.text-max-width 1.2.0).
+Weight: three roles on the weight
 family, `weight-regular` (`--sf-weight--regular`, 400), `weight-medium`
 (`--sf-weight--medium`, 500, the weight of headings and labels) and
 `weight-bold` (`--sf-weight--bold`, 700), at every breakpoint and `hover:`.

@@ -9,8 +9,20 @@
 // steps are 80, 96 and 52. The classes write the step; the variables
 // --sf-text--measure, -wide and -narrow stay as dated aliases of the same steps
 // until 2027-01-01 (src/core/contracts/token-aliases.v1.json, measures).
+//
+// Each step of the ladder is a class of its own too, measure-20 ... measure-96
+// (the Docara layout kit, owner 2026-11-21): a text or a block no wider than
+// N characters, with the same breakpoint prefixes (md:measure-44).
 $text-measure-array:(
     '': var(--sf-measure-80),
     -wide: var(--sf-measure-96),
-    -narrow: var(--sf-measure-52)
+    -narrow: var(--sf-measure-52),
+    -20: var(--sf-measure-20),
+    -28: var(--sf-measure-28),
+    -36: var(--sf-measure-36),
+    -44: var(--sf-measure-44),
+    -52: var(--sf-measure-52),
+    -64: var(--sf-measure-64),
+    -80: var(--sf-measure-80),
+    -96: var(--sf-measure-96)
 );

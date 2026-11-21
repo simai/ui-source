@@ -158,3 +158,15 @@ test('the public variables of the text containers default to their steps (C396)'
   assert.equal(of('site-header', '--sf-site-header-sheet-inline-size'), 'min(90vw, var(--sf-measure-44))');
   assert.equal(of('search', '--sf-search-inline-size'), 'var(--sf-measure-80)');
 });
+
+test('every step of the ladder is a measure-N class at every breakpoint (Docara layout kit, 2026-11-21)', () => {
+  const text = read('src/utility/text-max-width/default/scss/_sf_var__text_measure.scss');
+  for (const n of STEPS) assert.ok(text.includes(`-${n}: var(--sf-measure-${n})`), `measure-${n}`);
+  for (const point of ['default', 'sm', 'md', 'lg', 'xl', 'xxl']) {
+    const source = read(`src/utility/text-max-width/${point}/rule.js`);
+    const rule = new RegExp(JSON.parse(source.slice(source.indexOf('new RegExp(') + 11, source.lastIndexOf(')'))));
+    const prefix = point === 'default' ? '' : `${point}:`;
+    for (const name of ['measure', 'measure-wide', 'measure-narrow', ...STEPS.map((n) => `measure-${n}`)]) assert.ok(rule.test(prefix + name), prefix + name);
+    for (const name of ['measure-24', 'measure-0', 'measure-100', 'measure-44px']) assert.equal(rule.test(prefix + name), false, prefix + name);
+  }
+});

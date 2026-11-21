@@ -8,6 +8,8 @@
 @use '../../../flex-wrap/default/scss/sf_var__flex_wrap' as wrap;
 @use '../../../grid-template-columns/default/scss/sf_var__grid_template_columns' as columns;
 @use '../../../grid-column/default/scss/sf_var__grid_column' as column;
+@use '../../../grid-column-start/default/scss/sf_var__grid_column_start' as column-start;
+@use '../../../order/default/scss/sf_var__order' as order;
 @use '../../../justify-content/default/scss/sf_var__justify_content' as justify;
 @use '../../../align-items/default/scss/sf_var__align_items' as items;
 
@@ -25,8 +27,8 @@
   @each $role in map.get(profile.$query-families, $family) {
     $key: $role;
     // Numeric grid map keys are numbers; profile roles are portable strings.
-    @if $family == 'grid-template-columns' {
-      @for $number from 1 through 12 { @if '#{$number}' == $role { $key: $number; } }
+    @if $family == 'grid-template-columns' or $family == 'grid-column-start' or $family == 'order' {
+      @for $number from 1 through 13 { @if '#{$number}' == $role { $key: $number; } }
     }
     @if not map.has-key($values, $key) { @error 'Unknown #{$family} role: #{$role}'; }
     #{strong('#{$condition}#{$prefix}#{$role}')} { #{$property}: #{map.get($values, $key)}; }
@@ -49,6 +51,13 @@
         // window's (utility.grid-column's values): a card two columns wide in
         // a wide box and one in a narrow one (ui-doc «Рецепты», 2026-11-10).
         @include family($condition, 'grid-column', 'col-', grid-column, column.$grid-column-array);
+        // Where a cell starts and in which order it stands, by the
+        // container's width (the Docara layout kit, owner 2026-11-21): a
+        // half centred in twelve columns (cq-md:col-start-4 col-span-6), a
+        // hero's scene before its text where the block is wide
+        // (cq-lg:order-first). The plain utilities' values, no new ones.
+        @include family($condition, 'grid-column-start', 'col-start-', grid-column-start, column-start.$grid-column-start-array);
+        @include family($condition, 'order', 'order-', order, order.$flex-order-array);
         // The Framework's name, as the plain utility has it: the Loader rewrites
         // a Tailwind justify-* to content-main-* with its prefix kept, so a
         // cq-* family named justify-* was never reached (docs trial 4).

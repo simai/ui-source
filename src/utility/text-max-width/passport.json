@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.text-max-width",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/text-max-width/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/text-max-width/xxl/scss/_sf_css__text_measure.scss",
     "src/utility/text-max-width/xxl/scss/index.scss"
   ],
-  "content_sha256": "21b4d9a74dc215d0c82211782f0f939c46c46232449f43cd8b0ec3e892f9e5c1",
+  "content_sha256": "b5f240e80a3dcddca4d1307b62dc3812a97f359bc3abef462d070221e50ad37e",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
