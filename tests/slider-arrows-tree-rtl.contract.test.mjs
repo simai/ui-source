@@ -21,7 +21,7 @@ test('slider: the arrow pair is a row 8 apart', () => {
   const arrows = rule(read('src/component/slider/scss/_css__slider_arrows.scss'), '.sf-slider-arrows');
   assert.match(arrows, /display: inline-flex;/u);
   assert.match(arrows, /gap: var\(--sf-space-1\\\/3\);/u);
-  assert.equal(JSON.parse(read('src/component/slider/passport.json')).version, '2.0.0'); // carousel study 2026-11-21: the scroll track, the bar under pictures (a major) // GB10 fix/misc-m10: the ratio slider has no slide floor (1.3.3 in group build 9) // group build 10: 1.4.1 moved on by the merged branches or a GB10 patch // C278: 1.4.2 moved on by the language packs // group build 13: 1.4.3 moved on by the merged branches or a GB11 merge
+  assert.equal(JSON.parse(read('src/component/slider/passport.json')).version, '2.1.0'); // C398: the position inside the picture (a minor) // carousel study 2026-11-21: the scroll track, the bar under pictures (a major) // GB10 fix/misc-m10: the ratio slider has no slide floor (1.3.3 in group build 9) // group build 10: 1.4.1 moved on by the merged branches or a GB10 patch // C278: 1.4.2 moved on by the language packs // group build 13: 1.4.3 moved on by the merged branches or a GB11 merge
 });
 
 test('tree: the chevron is mirrored right to left', () => {

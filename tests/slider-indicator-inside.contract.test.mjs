@@ -1,0 +1,83 @@
+// The position inside the picture (owner decision C398, 2026-11-21; carousel
+// study #inside-r3, way B): data-indicator="inside", the ink measured from the
+// picture behind the row, way A (light dots with a dark ring) where it cannot
+// be measured. The browser side (luminance, ink and contrast per picture) is
+// measured on the stand (ui-control control/evidence/2026-11-21-carousel-ink).
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import test from 'node:test';
+
+const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const adapter = await read('src/component/slider/js/_slider.js');
+const sheet = await read('src/component/slider/scss/_css__slider.scss');
+const dots = await read('src/component/slider/scss/_css__slider_dots.scss');
+const template = await read('src/smart/slider/js/templates/default.js');
+const element = await read('src/smart/slider/index.js');
+const placeholder = await read('src/core/scss/_sf_css__placeholder.scss');
+const manifest = JSON.parse(await read('src/smart/slider/component.json'));
+const variables = JSON.parse(await read('src/core/contracts/public-variables.v1.json'));
+const passport = JSON.parse(await read('src/component/slider/passport.json'));
+const INSIDE = '.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails))';
+
+test('C398: inside is a choice of picture sliders and heroes; under stays the default', () => {
+  assert.deepEqual(manifest.settings.indicator.values, ['under', 'inside']);
+  assert.equal(manifest.settings.indicator.default, 'under');
+  assert.deepEqual(manifest.settings['indicator-ink'].values, ['auto', 'light', 'dark', 'outline']);
+  assert.equal(manifest.settings['indicator-ink'].default, 'auto');
+  assert.match(template, /data-indicator=\$\{normalizeOption\(context\.indicator\) === 'inside' \? 'inside' : nothing\}/);
+  assert.match(template, /data-indicator-ink=\$\{INKS\.has\(/);
+  assert.match(element, /indicator: this\.indicator,\s*indicatorInk: this\.indicatorInk,/);
+  // Cards and thumbnails keep the position under.
+  assert.match(adapter, /if \(root\.dataset\.indicator !== 'inside' \|\| isContentSlider\(root\)\) return null;/);
+  assert.match(adapter, /if \(root\.querySelector\(':scope > \.sf-slider-thumbnails'\)\) return null;/);
+});
+
+test('C398: the row stands over the picture a space step above its edge, no plate, the counter in the end corner', () => {
+  const at = sheet.indexOf(`${INSIDE} > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination, .sf-slider-rotation-place) {`);
+  assert.ok(at > 0);
+  const rule = sheet.slice(at, sheet.indexOf('}', at));
+  assert.match(rule, /align-self: end;/);
+  assert.match(rule, /grid-row: 1;/);
+  assert.match(rule, /margin-block: 0 var\(--sf-space-2\);/);
+  assert.match(sheet, /> \.sf-slider-dots--count \{\s*grid-column: 4;\s*justify-self: end;\s*margin-inline-end: var\(--sf-space-2\);/);
+  // The dots and the pause button share one centre line.
+  assert.match(sheet, /margin-block-end: calc\(var\(--sf-space-2\) \+ \(var\(--sf-ui-1--control-height\) - var\(--sf-slider-dots-dot--target-size\)\) \/ 2\);/);
+  // The undrawn element keeps no room for a bar under the picture.
+  assert.match(placeholder, /\[indicator="inside"\]:not\(\[thumbs\]:not\(\[thumbs="false"\]\)\)\):not\(:has\(> \[data-sf-static\]\)\) \{\s*--sf-slider--box-bar: 0px;/);
+});
+
+test('C398: the inks are roles, the same in both themes; the weakest dot at --sf-opacity-80; outline is a 1 px scrim ring', () => {
+  assert.match(sheet, /--sf-slider-indicator--ink-light: var\(--sf-on-surface-media\);/);
+  assert.match(sheet, /--sf-slider-indicator--ink-dark: var\(--sf-surface-media-active\);/);
+  assert.match(sheet, /--sf-slider-indicator--ring: var\(--sf-scrim-color\);/);
+  assert.match(sheet, /\[data-ink="dark"\][^{]*\{\s*--sf-slider-indicator--ink: var\(--sf-slider-indicator--ink-dark\);/);
+  assert.match(dots, /--sf-slider-dots-dot--color: var\(--sf-slider-indicator-ink, var\(--sf-slider-indicator--ink\)\);/);
+  assert.match(dots, /\.sf-slider-dots-dot:not\(\.active\) \{\s*opacity: var\(--sf-opacity-80\);/);
+  assert.match(dots, /\[data-ink="outline"\][^{]*\.sf-slider-dots-dot \{\s*box-shadow: 0 0 0 var\(--sf-px\) var\(--sf-slider-indicator--ring\);/);
+  // No literal colour in the inside rules.
+  const inside = [sheet, dots].join('\n').split('\n').filter((line) => line.includes('indicator'));
+  assert.ok(inside.every((line) => !/#[0-9a-f]{3,8}\b|rgb\(/i.test(line)), 'no literal colour');
+  // The ink changes over --sf-duration-normal, only without reduced motion.
+  assert.match(dots, /@media \(prefers-reduced-motion: no-preference\) \{\s*\.sf-slider\[data-indicator="inside"\][^{]*\{\s*transition-duration: var\(--sf-duration-normal\);/);
+});
+
+test('C398: the ink is measured from the strip behind the row and falls back to outline', () => {
+  assert.match(adapter, /context\.drawImage\(media, source\.x, source\.y, source\.width, source\.height, 0, 0, INK_SAMPLE_WIDTH, INK_SAMPLE_HEIGHT\);/);
+  assert.match(adapter, /return \{reason: 'cross-origin'\};/);
+  assert.match(adapter, /if \(!\(media instanceof HTMLImageElement\)\) return \{reason: 'media'\};/);
+  assert.match(adapter, /if \(!media\.complete \|\| !media\.naturalWidth\) return \{reason: 'loading', img: media\};/);
+  assert.match(adapter, /ink: scores\[best\] >= INK_MIN_CONTRAST \? best : 'outline',/);
+  assert.match(adapter, /const INK_MIN_CONTRAST = 3;/);
+  assert.match(adapter, /const events = \['slideChange', 'resize', 'update'\];/);
+  assert.match(adapter, /waiting\?\.addEventListener\('load', schedule, \{once: true\}\);/);
+  assert.match(adapter, /if \(INK_WORDS\.has\(authored\)\) return \{ink: authored, reason: 'author'\};/);
+  assert.match(adapter, /createIndicatorInk\(root, slider\),/);
+});
+
+test('C398: the ink by hand is a public variable; versions', () => {
+  const slider = variables.components.find((entry) => entry.component === 'slider');
+  assert.ok(slider.variables.some((variable) => variable.name === '--sf-slider-indicator-ink'));
+  assert.ok(manifest['css-variables']['--sf-slider-indicator-ink']);
+  assert.equal(passport.version, '2.1.0');
+  assert.equal(manifest.version, '1.5.0');
+});

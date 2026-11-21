@@ -220,3 +220,24 @@ component.slider 2.0.0.
 - **Loop**: `loop` and autoplay go from the last slide back to the first.
 - **Thumbnails**: the shown thumbnail is ringed (`--sf-primary`) inside its
   edge, and scrolled into view in a long strip.
+
+## The position inside the picture (1.5.0, owner decision C398)
+
+`indicator="inside"` stands the dots (or «2 / 12») and the pause button over the
+bottom of a picture or a hero, `--sf-space-2` above its edge, with no plate and
+no veil; `under` stays the default. Card sliders and sliders with thumbnails
+keep the position under. The dots take a light or a dark ink by the measured
+strip of the shown picture behind them, measured again on every slide change,
+picture load and resize, changing over `--sf-duration-normal`. A picture that
+cannot be measured (another site without CORS, a video, a background image,
+still loading) or a strip no ink holds at 3:1 gets light dots with a 1 px dark
+ring. `indicator-ink="light" | "dark" | "outline"` fixes the ink;
+`--sf-slider-indicator-ink` sets the colour by hand and wins. Details in the
+component.slider docs (2.1.0).
+
+```html
+<sf-slider indicator="inside" ratio="16/9" aria-label="Снимки">
+  <img slot="slide" src="/a.jpg" alt="…">
+  <img slot="slide" src="/b.jpg" alt="…">
+</sf-slider>
+```

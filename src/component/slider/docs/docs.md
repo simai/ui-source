@@ -229,3 +229,56 @@ because the defaults change.
   its start (`justify-content: safe center`) and the shown thumbnail is
   scrolled into view inside it (the page does not move).
 
+
+## The position inside the picture (2.1.0, owner decision C398)
+
+Carousel study `#inside-r3`, way B (ui-control `prototypes/carousel-study.html`).
+A minor: nothing changes unless the page asks.
+
+- **Where**: `data-indicator="inside"` on a picture slider or a hero (not
+  `sf-slider--content`, not a block with `.sf-slider-thumbnails`) stands the
+  bare dots (`.sf-slider-dots--bare`) and the pause button over the bottom of
+  the picture, `--sf-space-2` above its edge (20 / 16, the arrows' step from
+  the sides), with no plate and no veil; the dots and the pause button share
+  one centre line. The counter («2 / 12») stands in the end corner. Without the
+  attribute the position stays under the picture (2.0.0).
+- **Ink, measured** (`data-indicator-ink` absent or `auto`): the slider reads
+  the strip of the shown picture behind the row on a 48 x 12 canvas (the
+  picture's `object-fit` and `object-position` are followed) — or the opaque
+  fill of the slide under the row — and writes `data-ink="light"` or
+  `data-ink="dark"` on the block, whichever ink stands out more from the
+  strip (the 10th-percentile contrast of the weakest dot over the strip's
+  pixels). For an even picture the switch falls at a relative luminance of
+  about 0.2, where the two inks give the same contrast; the weakest dot keeps
+  3.3:1 there. It measures again on every slide change, when the picture under
+  the row loads, and when the block changes size. The result is on
+  `root._sfSliderInk` (`ink`, `reason`, `luminance`, `contrast`).
+- **Ink, fallback** (`data-ink="outline"`, the study's way A): light dots with
+  a 1 px ring of `--sf-scrim-color` (the counter a 1 / 2 px halo). Taken where
+  the picture cannot be measured — another site without CORS (a tainted
+  canvas), a video, a canvas, a background image, a picture still loading
+  (measured again on its `load`) — and where no ink holds 3:1 over the strip
+  (one half light, one half dark). It is also the ink before the first measure.
+- **Inks** are roles, the same in both themes: light `--sf-on-surface-media`,
+  dark `--sf-surface-media-active`, ring `--sf-scrim-color`; the current dot is
+  the full ink, the others `--sf-opacity-80`. The timed pill's track is the ink
+  at `--sf-opacity-40`, its fill the ink. The ink changes over
+  `--sf-duration-normal`; under reduced motion at once.
+- **By hand**: `data-indicator-ink="light" | "dark" | "outline"` fixes the ink
+  (no measuring); the public variable `--sf-slider-indicator-ink` sets the dots'
+  colour and wins over both.
+- The pause button keeps its own soft grey look inside (it is a button with its
+  own fill, not the position); a `dots-type` plate the page wrote keeps its
+  plate and its colours.
+- core.styles keeps no room for a bar under an undrawn `sf-slider
+  indicator="inside"`.
+
+```html
+<div class="sf-slider" data-ratio="16/9" data-indicator="inside">
+  <div class="sf-slider-main swiper">…</div>
+  <div class="sf-slider-controls">
+    <div class="sf-slider-arrows">…</div>
+    <div class="sf-slider-dots sf-slider-dots--bare flex sf-slider-pagination"></div>
+  </div>
+</div>
+```

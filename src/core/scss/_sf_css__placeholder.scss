@@ -1096,6 +1096,13 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
   --sf-slider--box-bar: calc(var(--sf-space-1) + var(--sf-ui-1--control-height));
 }
 
+/* indicator="inside" (owner decision C398): the position and the pause
+   button stand over the picture, so the box keeps no room for a bar; with
+   thumbnails the position stays under the picture. */
+:where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])[indicator="inside"]:not([thumbs]:not([thumbs="false"]))):not(:has(> [data-sf-static])) {
+  --sf-slider--box-bar: 0px;
+}
+
 :where(sf-slider:not(:defined):not([root-class~="sf-slider--content"])[thumbs]:not([thumbs="false"])):not(:has(> [data-sf-static])) {
   --sf-slider--box-thumbs: calc(var(--sf-space-1) + var(--sf-d2));
 }

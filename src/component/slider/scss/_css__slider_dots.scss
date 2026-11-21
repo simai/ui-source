@@ -219,6 +219,50 @@
   padding-inline-end: 0;
 }
 
+/* Inside the picture (owner decision C398): the bare dots take the slider's
+   ink (--sf-slider-indicator--ink, light or dark by the picture; the page's
+   --sf-slider-indicator-ink wins), the current one full, the others at
+   --sf-opacity-80 -- the weakest dot keeps 3:1 against an even picture
+   whichever ink is chosen. With data-ink="outline" every dot is the light
+   ink with a 1 px ring of --sf-scrim-color. The ink changes over
+   --sf-duration-normal; under reduced motion at once. */
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare {
+  --sf-slider-dots-dot--color: var(--sf-slider-indicator-ink, var(--sf-slider-indicator--ink));
+  --sf-slider-dots-dot--active-color: var(--sf-slider-indicator-ink, var(--sf-slider-indicator--ink));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare :is(.sf-slider-dots-dot, .sf-slider-dots-current, .sf-slider-dots-total) {
+    transition-duration: var(--sf-duration-normal);
+    transition-property: width, background-color, border-color, box-shadow, color, opacity, text-shadow;
+  }
+  .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare.sf-slider-dots--count {
+    transition: color var(--sf-duration-normal), text-shadow var(--sf-duration-normal);
+  }
+}
+
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare .sf-slider-dots-dot:not(.active) {
+  opacity: var(--sf-opacity-80);
+}
+
+.sf-slider[data-indicator="inside"][data-ink="outline"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare .sf-slider-dots-dot {
+  box-shadow: 0 0 0 var(--sf-px) var(--sf-slider-indicator--ring);
+}
+
+.sf-slider[data-indicator="inside"][data-ink="outline"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots.sf-slider-dots--bare.sf-slider-dots--count {
+  text-shadow: 0 0 var(--sf-px) var(--sf-slider-indicator--ring), 0 0 calc(2 * var(--sf-px)) var(--sf-slider-indicator--ring);
+}
+
+/* The timed pill inside: its track is the ink at --sf-opacity-40, the fill
+   the full ink, as the study's media look (#inside). */
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails))[data-rotation="playing"] .sf-slider-dots--timed.sf-slider-dots--bare .sf-slider-dots-dot.active {
+  --sf-slider-dots-dot--active-color: color-mix(in srgb, var(--sf-slider-indicator-ink, var(--sf-slider-indicator--ink)) var(--sf-opacity-40), transparent);
+}
+
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) .sf-slider-dots--timed.sf-slider-dots--bare {
+  --sf-slider-dots--fill-color: var(--sf-slider-indicator-ink, var(--sf-slider-indicator--ink));
+}
+
 /* The timed position (sf-slider-dots--timed, owner decision 2026-11-21, as
    Apple's dotnav-timed): only while the slides turn by themselves, beside
    the pause button. The current dot is a longer pill (--sf-c6, 32) that

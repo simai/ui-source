@@ -83,6 +83,8 @@ class SfSlider extends SliderElement {
       pauseLabel: this.sfWord('pause'),
       playLabel: this.sfWord('play'),
       ratio: this.ratio,
+      indicator: this.indicator,
+      indicatorInk: this.indicatorInk,
     });
   }
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Slider",
   "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
   "kind": "smart",
@@ -134,6 +134,26 @@
           "1/1",
           "21/9",
           "auto"
+        ]
+      },
+      "indicator": {
+        "type": "string",
+        "default": "under",
+        "description": "Where the position (the dots, or «2 / 12» from eight slides) and the pause button stand on a picture slider or a hero (owner decision C398): under (the default) a gap under the picture; inside over the bottom of the picture, --sf-space-2 above its edge, with no plate and no veil, the counter in the end corner. A card slider (root-class sf-slider--content) and a slider with thumbnails keep them under.",
+        "enum": [
+          "under",
+          "inside"
+        ]
+      },
+      "indicator-ink": {
+        "type": "string",
+        "default": "auto",
+        "description": "The ink of the position inside the picture (indicator=\"inside\", owner decision C398). auto (the default): the strip of the shown picture behind the row is measured on every slide change, picture load and resize, and the dots take the light ink (--sf-on-surface-media) or the dark one (--sf-surface-media-active), whichever stands out more, over --sf-duration-normal; a picture that cannot be measured (another site without CORS, a video, a background image, still loading) or a strip no ink holds at 3:1 takes outline. light, dark: that ink always. outline: light dots with a 1 px --sf-scrim-color ring. The public variable --sf-slider-indicator-ink wins over all of them.",
+        "enum": [
+          "auto",
+          "light",
+          "dark",
+          "outline"
         ]
       },
       "aria-label": {
@@ -346,7 +366,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider/index.js",
-        "sha256": "889a8ce51b29b12b974eba9af45daeb06b3cf3cd1bf2d8401c6365372223d12a"
+        "sha256": "7cd1d33f3ad9e2bbfcb0f5f6f798bf3e3e88d2dd262c34e4427ff52934bc0498"
       }
     ],
     "generated_runtime": [
