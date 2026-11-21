@@ -362,6 +362,46 @@
       "reason": "recorded by group build 15 (A3) from feat/field-width: the width setting (C396, WM-4) sizes sf-input-date's field, drawn by the class input (component.inputs 1.14.2 documents sf-field--width-* for it); the class datepicker is the calendar panel and has no field width",
       "decision": "C396",
       "date": "2026-11-20"
+    },
+    {
+      "unit": "component.avatars",
+      "version": "1.12.2",
+      "twin": "smart.avatar-group",
+      "reason": "recorded by group build 16 (G7): a lone image in the class avatar is drawn over the whole circle (avatar-picture-fill); sf-avatar-group draws its avatars with the class sheet and takes the fix as it is, nothing of its own changes",
+      "decision": "G7 avatar-picture-fill",
+      "date": "2026-11-21"
+    },
+    {
+      "unit": "component.datepicker",
+      "version": "1.12.1",
+      "twin": "smart.input-date",
+      "reason": "recorded by group build 16 (G7): the class datepicker's sheet lets a drawer body that holds the phone sheet calendar shrink to the panel (datepicker-ribbon); sf-input-date opens that sheet and takes the fix as it is",
+      "decision": "G7 datepicker-ribbon",
+      "date": "2026-11-21"
+    },
+    {
+      "unit": "component.dropdown",
+      "version": "1.18.2",
+      "twin": "smart.dropdown",
+      "reason": "recorded by group build 16 (G8, VR11-4): the band appearance's height keeps its hairline inside the search's height and its chevron column follows --sf-dropdown-band-end; sf-dropdown draws the band with the class sheet and takes it as it is",
+      "decision": "VR11-4",
+      "date": "2026-11-21"
+    },
+    {
+      "unit": "component.textarea",
+      "version": "1.9.2",
+      "twin": "smart.input-textarea",
+      "reason": "recorded by group build 16 (G7): the outer steps' one-row height applies only without auto-grow (textarea-auto-grow); sf-input-textarea draws with the class sheet and takes it as it is",
+      "decision": "TR-2",
+      "date": "2026-11-21"
+    },
+    {
+      "unit": "component.tooltip",
+      "version": "1.8.1",
+      "twin": "smart.tooltip",
+      "reason": "recorded by group build 16 (G4): the class tooltip's controller opens no tooltip while its trigger's aria-expanded is true; sf-tooltip uses the same controller and takes it as it is",
+      "decision": "G4 bulk-actions overflow tooltip",
+      "date": "2026-11-21"
     }
   ]
 }
