@@ -40,6 +40,11 @@ over the anchor or surface. It opens on hover and on keyboard focus
 a press on the trigger -- a pointer, or Enter or Space -- hides it until the
 pointer leaves and the focus goes.
 
+A trigger whose menu, list or panel is open (its own `aria-expanded="true"`,
+as a «⋯» button that opened its menu) shows no tooltip, and one that is
+showing goes when the trigger opens what it controls: the tooltip stood over
+the open menu and covered its first item (component.tooltip 1.8.1).
+
 Timing (the tooltip kind of C59, owner decision 2026-11-11):
 
 - a pointer resting on the trigger opens the tooltip after 0.5 s, so a pointer

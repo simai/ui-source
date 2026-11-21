@@ -10,7 +10,12 @@ test('Tooltip controller uses one concise opt-in relationship', async () => {
   assert.match(source, /TRIGGER_SELECTOR = '\[data-tooltip\]'/);
   assert.match(source, /setAttribute\('aria-describedby'/);
   assert.match(source, /setAttribute\('role', 'tooltip'\)/);
-  assert.doesNotMatch(source, /aria-expanded|aria-haspopup/);
+  // The tooltip never writes a popup's state on its trigger; it reads
+  // aria-expanded only, to stay shut while the trigger's menu is open (GB16 G4).
+  assert.doesNotMatch(source, /(?:setAttribute|removeAttribute|toggleAttribute)\(\s*['"]aria-(?:expanded|haspopup)/);
+  assert.doesNotMatch(source, /aria-haspopup/);
+  assert.match(source, /getAttribute\?\.\('aria-expanded'\) === 'true'/);
+  assert.match(source, /attributeFilter: \['data-tooltip', 'aria-expanded'\]/);
 });
 
 test('Tooltip controller owns pointer, focus and Escape without moving focus', async () => {

@@ -18992,6 +18992,26 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/bulk-actions/index.js say, announcement"
+    },
+    {
+      "id": "behaviour-tooltip-none-while-expanded",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.tooltip 1.8.1 (group build 16, G4; seen on group builds 14 and 15): a trigger with aria-expanded=\"true\" -- a «⋯» button whose menu is open -- shows no tooltip, and a tooltip that shows goes when the trigger opens what it controls. After a press on sf-bulk-actions' «⋯» the link the press itself made opened «Ещё действия» 0.5 s later over the open menu, covering its first item while the pointer stayed on the button.",
+      "items": [
+        {
+          "component": "component.tooltip",
+          "from": "the tooltip opens on hover whatever the trigger has opened",
+          "to": "no tooltip while the trigger's aria-expanded is true"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A trigger that wants its tooltip over its own open popup does not exist in the Framework; say so in a decision first.",
+      "owner": "ui-source",
+      "source": "src/component/tooltip/js/_tooltip.js open, syncTooltipAttribute"
     }
   ]
 }
