@@ -18972,6 +18972,26 @@
       "manual": "Nothing to rewrite. A component that draws its own content into a drawer or a window it holds gets the wait without a change.",
       "owner": "ui-source",
       "source": "src/core/js/smart-base.js holdPortalUntilStyled, pendingCarrierStyles; tests/browser/portal-carrier-styles.browser.mjs"
+    },
+    {
+      "id": "behaviour-bulk-actions-live-line-when-spoken",
+      "recorded_on": "2026-11-21",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-bulk-actions 1.2.2 (group build 16, G3; view round 10 V10-1): the live region's line made of the bar's own words («Выбрано N», «Выбраны все N», «Выбор снят», the run's progress) is made when it is spoken and again at each drawing, holding the numbers of its moment. A page whose language part arrived after the first mark heard the English fallback («1 selected»); the line now follows the part when it comes. Lines the host or a result gives are spoken as given.",
+      "items": [
+        {
+          "component": "sf-bulk-actions",
+          "from": "the line is made when the selection changes",
+          "to": "the line is made when it is spoken and redrawn in the page's language"
+        }
+      ],
+      "deprecated_on": "2026-11-21",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/bulk-actions/index.js say, announcement"
     }
   ]
 }

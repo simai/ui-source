@@ -76,7 +76,7 @@ test('up to three labelled actions, the rest in «⋯», the dangerous one alway
 
 test('the manifest: a new component of family bulk with the contract of C295', () => {
   assert.equal(manifest.tag, 'sf-bulk-actions');
-  assert.equal(manifest.version, '1.2.1'); // GB15 A7: an action without an icon goes in «⋯» on a phone
+  assert.equal(manifest.version, '1.2.2'); // GB16 G3: the live line is made when it is spoken
   assert.equal(manifest.family, 'bulk');
   for (const name of ['count', 'page-count', 'total', 'all-selected', 'count-text', 'place', 'size', 'label', 'actions']) {
     assert.ok(manifest.settings[name], name);
@@ -157,4 +157,15 @@ test('C387: the element routes through SF.notify with its source, silently for a
   }
   assert.equal(ru.runtime['done-text'], 'Готово: {n}');
   assert.equal(ru.runtime['background-text'], '{action}: идёт в фоне');
+});
+
+test('the live region makes its own words when it speaks (GB16 G3, view round 10 V10-1)', () => {
+  const source = read('src/smart/bulk-actions/index.js');
+  // The count, select-all, cleared and run lines are passed as functions that hold their numbers.
+  assert.match(source, /this\.say\(\(\) => \(all \? this\.word\('all-text', all\) : this\.word\('count-text', count\)\)\)/u);
+  assert.match(source, /this\.say\(\(\) => this\.sfWord\('cleared-text'\)\)/u);
+  assert.match(source, /this\.say\(\(\) => this\.progressText\(made, all, text\)\)/u);
+  // The drawing reads the line through the getter, which calls a function line.
+  assert.match(source, /announcement: this\.announcement,/u);
+  assert.match(source, /get announcement\(\) \{\n    const said = this\._announcement;\n    if \(typeof said !== 'function'\) return said \?\? '';/u);
 });

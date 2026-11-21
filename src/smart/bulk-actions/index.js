@@ -135,8 +135,9 @@ class SfBulkActions extends BulkActionsElement {
     if (this._run) return;
     const before = name === 'count' ? number(oldValue) : count;
     if (this._done && count === 0) return;
-    if (count > 0) this.say(this.allSelected && this.total ? this.word('all-text', this.total) : this.word('count-text', count));
-    else if (before > 0) this.say(this.sfWord('cleared-text'));
+    const all = this.allSelected && this.total ? this.total : 0;
+    if (count > 0) this.say(() => (all ? this.word('all-text', all) : this.word('count-text', count)));
+    else if (before > 0) this.say(() => this.sfWord('cleared-text'));
   }
 
   // The size the host gives, or the nearest sized element's around it (the
@@ -195,13 +196,28 @@ class SfBulkActions extends BulkActionsElement {
     }
   }
 
-  // The live region, after the selection settles.
+  // The live region, after the selection settles. A line made of the
+  // element's own words is passed as a function and made when it is spoken
+  // and at every drawing after, so it is in the page's language even when the
+  // language part arrives after the mark that asked for it (view round 10,
+  // V10-1: the first mark spoke «1 selected» on a Russian page while the
+  // part was 400 ms late). The function holds the numbers of its moment.
   say(text) {
     clearTimeout(this._sayTimer);
     this._sayTimer = setTimeout(() => {
       this._announcement = text;
       this.requestComponentUpdate('announcement');
     }, SAY_AFTER);
+  }
+
+  get announcement() {
+    const said = this._announcement;
+    if (typeof said !== 'function') return said ?? '';
+    try {
+      return String(said() ?? '');
+    } catch {
+      return '';
+    }
   }
 
   // Compact below the Framework's sm step, measured on the box the bar
@@ -324,13 +340,15 @@ class SfBulkActions extends BulkActionsElement {
     if (!this.total) return;
     this.setAttribute('all-selected', '');
     this.sfEmit('select-all', {total: this.total, count: this.selectedCount});
-    this.say(this.word('all-text', this.total));
+    const total = this.total;
+    this.say(() => this.word('all-text', total));
   }
 
   selectPage() {
     this.removeAttribute('all-selected');
     this.sfEmit('select-page', {count: this.selectedCount});
-    this.say(this.word('count-text', this.selectedCount));
+    const count = this.selectedCount;
+    this.say(() => this.word('count-text', count));
   }
 
   pressAction(id, event) {
@@ -528,7 +546,7 @@ class SfBulkActions extends BulkActionsElement {
     const made = Math.min(all, number(done));
     this._result = null;
     this._run = made >= all ? null : {done: made, total: all, text: String(text || '')};
-    this.say(this.progressText(made, all, text));
+    this.say(() => this.progressText(made, all, text));
     this.requestComponentUpdate('progress');
     return undefined;
   }
@@ -675,7 +693,7 @@ class SfBulkActions extends BulkActionsElement {
       done,
       start: this.hasSlotContent('start') ? this.getSlotContent('start') : nothing,
       end: this.hasSlotContent('end') ? this.getSlotContent('end') : nothing,
-      announcement: this._announcement,
+      announcement: this.announcement,
       words: {
         more: this.sfWord('more-text'),
         clear: this.sfWord('clear-text'),
