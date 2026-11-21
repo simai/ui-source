@@ -81,6 +81,13 @@ and lifecycle methods without an external runtime dependency.
   smoothly unless the speed is 0 or the person asked for reduced motion; the
   travel is the browser's own smooth scroll. A loop goes from the last slide
   back to the first, and from the first to the last.
+- A trackpad's two-finger swipe (and Shift with a wheel) is a stream of
+  horizontal wheel steps: the strip follows the stream, its momentum
+  included, with the snap held, and when the stream stops it pages past 15 %
+  of a slide (else goes back), as a drag does; left to the browser, a stream
+  that paused between steps snapped back before it crossed half a slide. A
+  finger let go past 15 % of a slide pages too (the browser would snap it
+  back short of half); a flick carries on by itself.
 - The mouse has no scroll gesture, so a press and horizontal drag pulls the
   strip (`swiper-mouse-drag`, a grab cursor; snap off while it pulls) and
   pages past 15 % of a slide or with a flick; `simulateTouch: false` leaves the

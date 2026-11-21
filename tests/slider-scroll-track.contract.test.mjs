@@ -31,6 +31,10 @@ test('1: the track is the browser scroll with snap points by default; cssMode fa
   // a vertical wheel stays the page's; the scroll moves the active slide.
   assert.match(engine, /event\?\.type === 'wheel' && Math\.abs\(event\.deltaX\) <= Math\.abs\(event\.deltaY\)/);
   assert.match(engine, /const next = this\.nearestStop\(\);/);
+  // a trackpad stream and a finger let go past 15 % of a slide page, as the mouse drag does.
+  assert.match(engine, /track\.addEventListener\('wheel', this\._wheel, \{passive: false\}\);/);
+  assert.match(engine, /const pages = Math\.abs\(gesture\.travel\) > this\.stepSize\(\) \* DRAG_RATIO;/);
+  assert.match(engine, /if \(Math\.abs\(travel\) <= this\.stepSize\(\) \* DRAG_RATIO\) return;/);
   assert.match(engine, /behavior: 'smooth'|smooth \? 'smooth' : 'instant'/);
 });
 

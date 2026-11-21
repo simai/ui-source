@@ -24,7 +24,7 @@
     "src/component/swiper/rule.js",
     "src/component/swiper/scss/index.scss"
   ],
-  "content_sha256": "4ef889965aa6daadddc07cc69deed437db066e09e7de379a7355bdbaf7f9ffbf",
+  "content_sha256": "c7b9278da1ff9c8908ac5c51566bc86dcb1451657da036a0b9277b7921a07570",
   "dependencies": [
     {
       "id": "core.runtime",

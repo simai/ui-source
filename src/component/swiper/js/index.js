@@ -21,6 +21,9 @@ const SCROLL_REST = 120;
 // A programmatic scroll that never arrives (the strip was hidden, the person
 // took it over) gives up after its own speed and this much more.
 const SCROLL_GIVE_UP = 700;
+// A wheel step counted in lines (deltaMode 1) is this many pixels, as
+// browsers scroll a line. A gesture tolerance, not something drawn.
+const WHEEL_LINE = 40;
 const EDITABLE = 'input, textarea, select, [contenteditable=""], [contenteditable="true"], .swiper-no-swiping';
 const prefersReducedMotion = () => typeof window.matchMedia === 'function'
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -309,10 +312,61 @@ class SimaiSlider {
       this.emit('touchEnd');
     };
     this._dragStart = (event) => { if (userMoves) event.preventDefault(); };
+    // A trackpad's two-finger swipe (and Shift with a wheel) is a stream of
+    // horizontal wheel steps, its momentum included. The strip follows the
+    // stream with the snap held, and when it stops it pages as a drag does:
+    // past 15 % of a slide forward or back, else back to its slide. Left to
+    // the browser, a stream that paused between steps was snapped back to the
+    // nearest slide before it crossed half of one. A vertical wheel and a
+    // pinch (ctrl) stay the page's.
+    this._wheelGesture = null;
+    this._wheel = (event) => {
+      if (!userMoves || !this.enabled || this.destroyed || event.ctrlKey) return;
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      if (!this.params.loop && this.lastIndex() === 0) return;
+      event.preventDefault();
+      this.releaseTarget();
+      this._userScroll = true;
+      const unit = event.deltaMode === 1 ? WHEEL_LINE : (event.deltaMode === 2 ? track.clientWidth : 1);
+      let gesture = this._wheelGesture;
+      if (!gesture) {
+        gesture = {from: this.activeIndex, start: this.stopPosition(this.activeIndex), travel: 0};
+        this._wheelGesture = gesture;
+        this.el.classList.add('swiper-dragging');
+        this.emit('touchStart');
+      }
+      const step = this.stepSize();
+      gesture.travel = clamp(gesture.travel + event.deltaX * unit * (this.isRtl() ? -1 : 1), -step, step);
+      this.setScrollPosition(gesture.start + gesture.travel, 'instant');
+      this.emit('sliderMove');
+      window.clearTimeout(gesture.timer);
+      gesture.timer = window.setTimeout(() => this.endWheel(), SCROLL_REST);
+    };
+    // A finger let go short of half a slide is snapped back by the browser;
+    // past 15 % of one it pages, as the mouse drag does (a flick carries on
+    // by itself).
+    this._touchStart = (event) => {
+      this._takeOver(event);
+      this._touch = {from: this.activeIndex, start: this.stopPosition(this.activeIndex)};
+    };
+    this._touchEnd = () => {
+      const touch = this._touch;
+      this._touch = null;
+      if (!touch || !userMoves || !this.enabled) return;
+      window.requestAnimationFrame(() => {
+        if (this.destroyed || this._target !== null || this.activeIndex !== touch.from) return;
+        const travel = this.scrollPosition() - touch.start;
+        if (Math.abs(travel) <= this.stepSize() * DRAG_RATIO) return;
+        this.slideTo(touch.from + (travel > 0 ? 1 : -1));
+        if (this.params.autoplay?.disableOnInteraction !== false) this.autoplay.stop();
+      });
+    };
     track.addEventListener('scroll', this._scroll, {passive: true});
     track.addEventListener('scrollend', this._scrollEnd);
-    track.addEventListener('wheel', this._takeOver, {passive: true});
-    track.addEventListener('touchstart', this._takeOver, {passive: true});
+    track.addEventListener('wheel', this._wheel, {passive: false});
+    track.addEventListener('touchstart', this._touchStart, {passive: true});
+    track.addEventListener('touchend', this._touchEnd, {passive: true});
+    track.addEventListener('touchcancel', this._touchEnd, {passive: true});
     this.el.addEventListener('pointerdown', this._pointerDown);
     this.el.addEventListener('pointermove', this._pointerMove);
     this.el.addEventListener('pointerup', this._pointerUp);
@@ -373,6 +427,22 @@ class SimaiSlider {
     return best;
   }
 
+  // The wheel stream stopped: page past DRAG_RATIO of a slide, else go back.
+  endWheel() {
+    const gesture = this._wheelGesture;
+    this._wheelGesture = null;
+    if (!gesture || this.destroyed) return;
+    const pages = Math.abs(gesture.travel) > this.stepSize() * DRAG_RATIO;
+    this._releaseDragging = true;
+    const before = this.activeIndex;
+    this.activeIndex = gesture.from;
+    this.slideTo(pages ? gesture.from + (gesture.travel > 0 ? 1 : -1) : gesture.from);
+    if (this.activeIndex !== before || pages) {
+      if (this.params.autoplay?.disableOnInteraction !== false) this.autoplay.stop();
+    }
+    this.emit('touchEnd');
+  }
+
   // Scroll to the active slide's stop; smooth unless the speed is 0, the
   // person asked for less motion, or the strip is placed without travelling.
   scrollToActive(speed = this.params.speed) {
@@ -421,7 +491,7 @@ class SimaiSlider {
       }
       return;
     }
-    if (this._drag?.state === 'drag') return;
+    if (this._drag?.state === 'drag' || this._wheelGesture) return;
     const next = this.nearestStop();
     if (next === this.activeIndex) return;
     this.previousIndex = this.activeIndex;
@@ -879,9 +949,12 @@ class SimaiSlider {
     if (this.css && this.wrapperEl) {
       this.wrapperEl.removeEventListener('scroll', this._scroll);
       this.wrapperEl.removeEventListener('scrollend', this._scrollEnd);
-      this.wrapperEl.removeEventListener('wheel', this._takeOver);
-      this.wrapperEl.removeEventListener('touchstart', this._takeOver);
+      this.wrapperEl.removeEventListener('wheel', this._wheel);
+      this.wrapperEl.removeEventListener('touchstart', this._touchStart);
+      this.wrapperEl.removeEventListener('touchend', this._touchEnd);
+      this.wrapperEl.removeEventListener('touchcancel', this._touchEnd);
     }
+    if (this._wheelGesture) window.clearTimeout(this._wheelGesture.timer);
     if (this._scrollFrame) window.cancelAnimationFrame(this._scrollFrame);
     window.clearTimeout(this._restTimer);
     window.clearTimeout(this._giveUp);
