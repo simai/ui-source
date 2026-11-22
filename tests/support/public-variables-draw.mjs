@@ -189,7 +189,11 @@ export const DRAW = {
     html: '<sf-file-preview file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-preview>'},
   // A slider with its position inside the picture (C398) beside the one with
   // thumbnails: --sf-slider-dots-offset-block is that position's distance.
+  // The inside position's dots are drawn by the swiper, which this page does
+  // not load: one dot stands in the inside bar, as the slider draws it, so
+  // --sf-slider-indicator-ink has a part to paint.
   slider: {css: ['slider', 'icon-buttons'], js: 'slider',
+    open: 'document.querySelector("sf-slider[indicator=inside] .sf-slider-dots").insertAdjacentHTML("beforeend", "<button class=\\"sf-slider-dots-dot active\\" type=\\"button\\" aria-label=\\"1\\"></button>")',
     html: '<div style="inline-size:600px"><sf-slider thumbs><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Два"></sf-slider></div><div style="inline-size:600px"><sf-slider indicator="inside"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Два"></sf-slider></div>'},
   // The caption's colour is the viewer's (.sf-gallery-viewer-caption): the
   // viewer opens on the body (`parts`), on a page of its own.

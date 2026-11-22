@@ -60,6 +60,14 @@
       "reason": "A drag by the handle in sf-settings draws SF.Sortable's drop line (owner remark VR11-5, group build 16): its place is the measured list box and row edge in CSS pixels, its thickness SORTABLE_DROP_LINE (2), the rect of the drag module's line preview (core/js/composition/sortable.mjs listIndicatorRect), kept exact."
     },
     {
+      "id": "tabs-squeezed-two-letters-floor",
+      "category": "runtime-review",
+      "filePattern": "^smart/tabs/index\\.js$",
+      "contextPattern": "--sf-tabs--squeezed-min', `\\$\\{twoLetters\\}px`",
+      "status": "accepted-runtime-geometry",
+      "reason": "The squeezed current tab of the tightest row keeps two letters and an ellipsis (group build 16 returns GB16-2): the floor is the width of its own first two letters and «…», measured with the label's font in CSS pixels and kept exact as --sf-tabs--squeezed-min on the label box."
+    },
+    {
       "id": "list-rows-window-spacers",
       "category": "runtime-review",
       "filePattern": "^smart/list/js/templates/default\\.js$",

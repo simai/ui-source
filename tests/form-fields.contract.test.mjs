@@ -48,12 +48,12 @@ test('a link\'s address box is text with the address keyboard: a path and an anc
   const edit = source.slice(source.indexOf('function renderLinkEdit'), source.indexOf('function renderInnEdit'));
   assert.doesNotMatch(edit, /input-type="url"/u);
   assert.match(edit, /inputmode="url"/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.0'); // group build 16 G8: the filter window's one step, PH-3 band radius; // feat/field-width merged: the width parameter (C396) // GB13 notes: 1.26.1 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.1'); // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // feat/field-width merged: the width parameter (C396) // GB13 notes: 1.26.1 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
   assert.equal(json('src/smart/dropdown/component.json').version, '1.25.0'); // group build 16 G8: PH-1..PH-3, band variables; // feat/field-width merged: the width setting (C396) // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 14: 1.22.0 moved on by the merged branches or the C278 language patch
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.0'); // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.1'); // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
