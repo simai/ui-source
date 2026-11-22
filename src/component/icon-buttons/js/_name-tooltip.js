@@ -91,8 +91,19 @@ function nameOf(button) {
 // its name. Whole again, it shows none.
 const SHRUNK = 'sf-button[shrink="icon"][data-shrunk="true"] > .sf-button[data-sf-shrink-tip]';
 
+// A control a component draws with no words of its own and marks with
+// data-sf-name-tip (a role=button part, not an .sf-icon-button: the phone
+// field's country flag, sf-input-country, FS-11) shows its name the same way.
+const MARKED = '[data-sf-name-tip]';
+
 // The button a name tooltip is for, or null.
 function nameTarget(node) {
+  const marked = node instanceof Element ? node.closest(MARKED) : null;
+  if (marked) {
+    if (!nameOf(marked) || marked.hasAttribute('data-tooltip') || hasTitle(marked)) return null;
+    if (marked.matches(':disabled, [aria-disabled="true"]') || marked.closest('[aria-hidden="true"], [inert]')) return null;
+    return marked;
+  }
   const shrunk = node instanceof Element ? node.closest(SHRUNK) : null;
   if (shrunk) {
     if (shrunk.hasAttribute('data-tooltip') || hasTitle(shrunk) || shrunk.matches(':disabled, [aria-disabled="true"]')) return null;
@@ -122,7 +133,7 @@ function syncMadeTip(button) {
 
 function wake(event) {
   const origin = event.target;
-  if (origin instanceof Element) syncMadeTip(origin.closest('.sf-icon-button[data-tooltip], .sf-button[data-sf-shrink-tip][data-tooltip]'));
+  if (origin instanceof Element) syncMadeTip(origin.closest(`.sf-icon-button[data-tooltip], .sf-button[data-sf-shrink-tip][data-tooltip], ${MARKED}[data-tooltip]`));
   if (event.type === 'pointerdown' && event.pointerType !== 'touch') return;
   if (event.type === 'pointerover' && event.pointerType === 'touch') return;
   const button = nameTarget(origin);

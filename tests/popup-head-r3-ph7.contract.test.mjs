@@ -15,7 +15,7 @@ test('PH-7: the filter window has one step, set once, for every part', () => {
   assert.match(shell, /const footSize = FILTER_WINDOW_STEP;/u);
   const source = read('src/smart/field-renderers/index.js');
   assert.match(source, /function windowStep\(\) \{\s*return FILTER_WINDOW_STEP;\s*\}/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.1'); // group build 16 returns GB16-3: the phone sheet fills
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.1'); // FS-9: one type for a whole number (feat/form-defects-fs) // group build 16 returns GB16-3: the phone sheet fills
 });
 
 test('Variant B: a panel list gives the scrollbar its rows\' end padding; its search does not move', () => {

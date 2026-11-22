@@ -19663,6 +19663,31 @@
         }
       ],
       "source": "src/component/slider/scss/_css__slider.scss"
+    },
+    {
+      "id": "value-form-whole-number-type",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "module.smart-field-renderers 1.29.1, smart.form 1.14.2 (admin settings study FS-9): a whole-number field (number with decimals 0, an integer field) writes a number, or null when emptied, and sf-form sends and compares its value in that type; typed text was written as a decimal string («30») while a value set from code stayed a number (50). A number with digits after the point keeps its decimal string.",
+      "items": [
+        {
+          "component": "smart.form",
+          "from": "value / submit / answer / cancel of a number field with decimals 0: \"30\" once typed, the code's own type otherwise",
+          "to": "30 (a number) or null, typed or set from code as \"30\"; past Number.MAX_SAFE_INTEGER the decimal string"
+        },
+        {
+          "component": "module.smart-field-renderers",
+          "from": "renderEditField number with decimals 0 writes the decimal string",
+          "to": "writes a number (numberValue); decimals above 0 still write the decimal string"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "A host that read a whole-number field's typed value as a string reads a number: compare with Number(value) or the number itself.",
+      "owner": "ui-source",
+      "source": "src/smart/field-renderers/index.js"
     }
   ]
 }
