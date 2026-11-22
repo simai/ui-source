@@ -19,7 +19,7 @@ for (const [file, block] of [['src/component/icon-buttons/scss/_css_icon_buttons
 }
 
 test('G14: versions', () => {
-  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.1');
+  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.2'); // FS-11: the name tooltip serves a marked control
   assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.4');
 });
 
