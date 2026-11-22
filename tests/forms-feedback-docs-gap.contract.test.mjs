@@ -125,3 +125,12 @@ test('PS-1: the class renderer writes the text into the node the template drew',
   assert.doesNotMatch(patched, /'show-text'/u);
   assert.match(patched, /'value'/u);
 });
+
+test('FO-4: the field family holds its leave check while a pointer is pressed', () => {
+  const field = read('src/smart/helpers/form-field.js');
+  assert.match(field, /const PRESS_KEY = Symbol\.for\('simai\.framework\.field-press'\);/u);
+  assert.match(field, /export function afterPress\(check\) \{\s*const shared = fieldPress\(\);\s*if \(shared\.down\) shared\.queue\.push\(check\);\s*else check\(\);/u);
+  const leave = field.slice(field.indexOf("this.addEventListener('focusout', (event) => {", field.indexOf('export const ShownValidity')));
+  assert.match(leave, /afterPress\(\(\) => \{\s*if \(!this\.isConnected \|\| \(!this\.__sfTouched && !formTried\(this\)\)\) return;/u);
+  assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.20.0');
+});
