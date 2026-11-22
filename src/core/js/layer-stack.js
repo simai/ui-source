@@ -220,6 +220,21 @@ export function hasLayerAbove(owner, kinds = ['modal', 'panel']) {
   return layers.slice(at + 1).some((entry) => isLive(entry) && kinds.includes(entry.kind));
 }
 
+/**
+ * Whether a press lands in a layer that stands above this owner, of any kind:
+ * a menu, a list or a calendar opened from a popover is drawn beside the page
+ * (SF.menu.open's one menu on the body, a portalled list), so the press on
+ * its row is outside the popover's own box, and the popover must not take it
+ * as an outside press (GB17 Y1: a saved-set menu in a filter window closed the
+ * window on its row's press). A press outside every layer is still outside.
+ */
+export function pressInLayerAbove(owner, event) {
+  const {layers} = stack();
+  const at = layers.findIndex((entry) => entry.owner === owner);
+  if (at < 0) return false;
+  return layers.slice(at + 1).some((entry) => isLive(entry) && takesInput(entry) && !pressedOutside(entry, event));
+}
+
 /** The place of this owner in the stack, -1 when it is not open. */
 export function layerIndex(owner) {
   return stack().layers.findIndex((entry) => entry.owner === owner);

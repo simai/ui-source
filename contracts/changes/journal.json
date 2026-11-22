@@ -20404,6 +20404,111 @@
       "manual": "An adapter accepted against 1.0.1 stays valid; to announce 1.0.2 it runs the 1.0.2 kit, whose one changed case gives the draft its outside publication names.",
       "owner": "ui-source",
       "source": "src/core/contracts/ports/simai.document-port/1.0.2"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-popover-press-in-layer-above",
+      "summary": "sf-popover 1.11.0 (group build 17 Y1): a press on a layer opened from the popover -- SF.menu.open's menu, an sf-menu-context beside the page, a list -- is that layer's; the popover under it stays open (core layer-stack pressInLayerAbove). A press outside every layer still closes it.",
+      "items": [
+        {
+          "component": "smart.popover",
+          "from": "a press on a menu row opened from the popover closes the popover",
+          "to": "the menu takes the press, the popover stays open"
+        }
+      ],
+      "source": "src/smart/popover/index.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-drawer-widths-keep-under-compact",
+      "summary": "sf-drawer 1.22.0 (group build 17 Y3, DEV return RP-1): the width ladder 1/2, 1, 2 is 44, 52, 64 characters of the normal ladder (--sf-drawer--char); compact density no longer narrows the panel (size 1 at 1440: 364 -> 416 px). Heights and inner spacing still follow density; widths still follow the page text size.",
+      "items": [
+        {
+          "component": "smart.drawer",
+          "from": "compact density: 308 / 364 / 448 px",
+          "to": "352 / 416 / 512 px, as in normal density"
+        }
+      ],
+      "source": "src/smart/drawer/scss/_smart__drawer.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-tabs-vertical-state-steps",
+      "summary": "component.tabs 1.5.8 (group build 17 Y4, VR5-12): resting vertical tabs take the state family 4 / 8 / 12 for hover, keyboard focus and press, as the pills do; a press drew the hover's 4.",
+      "items": [
+        {
+          "component": "component.tabs",
+          "from": "vertical: hover 4, press 4, focus no fill",
+          "to": "hover 4, focus 8, press 12"
+        }
+      ],
+      "source": "src/component/tabs/scss/_css__tabs.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-media-controls-state-layer",
+      "summary": "component.carousel 1.6.1, sf-gallery 1.5.6 (group build 17 Y7): in the site theme the carousel's glass switches and the gallery viewer's round controls keep their plate and lay the state family's white over it, 8 under the pointer and 12 pressed (--sf-scrim-control-state-hover / -active, as the controls on the scrim, VP-16). Hover and press were one colour (carousel 80 and 80; the viewer black on black). Colour schemes keep their media plates.",
+      "items": [
+        {
+          "component": "component.carousel",
+          "from": "glass rest 64, hover 80, press 80",
+          "to": "glass 64 with white 8 / 12 over it"
+        },
+        {
+          "component": "smart.gallery",
+          "from": "viewer controls black 48 / 64 / 80 on black",
+          "to": "black 48 with white 8 / 12 over it"
+        }
+      ],
+      "source": "src/component/carousel/scss/_css__carousel.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-scrollbar-tracks-follow-area",
+      "summary": "core.runtime (group build 17 Y5): a drawn track that has been shown once stays in step with its area's size (one ResizeObserver, as scrollbar-always areas): a text size raised while the bar rested left the horizontal track at its old width, 2 px past a 390 px window.",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "a resting track keeps the geometry of its last showing",
+          "to": "the track follows its area's size"
+        }
+      ],
+      "source": "src/core/js/scrollbars.js"
     }
   ]
 }

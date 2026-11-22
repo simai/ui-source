@@ -1192,6 +1192,20 @@
     --sf-icon-button--background-color: var(--sf-surface-state-hover);
   }
 
+  // The keyboard on a tab and a press take the next steps of the state family
+  // (4 / 8 / 12), as the pills do (VR5-12: a press drew the hover's 4).
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):focus-visible,
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):focus-visible {
+    --sf-button--background-color: var(--sf-surface-state-select);
+    --sf-icon-button--background-color: var(--sf-surface-state-select);
+  }
+
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled):is(:active, .active),
+  .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button:not(.selected):not(:disabled):not(.disabled):is(:active, .active) {
+    --sf-button--background-color: var(--sf-surface-state-active);
+    --sf-icon-button--background-color: var(--sf-surface-state-active);
+  }
+
   .sf-tabs.sf-tabs--vertical > .sf-tabs-top-container > .sf-tabs-top .sf-button:not(.selected):not(:disabled):not(.disabled) .sf-button-text-container {
     --sf-button-text-container--color: var(--sf-tabs-color, var(--sf-on-surface));
   }

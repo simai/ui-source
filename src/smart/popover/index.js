@@ -3,7 +3,7 @@ import {applied, refused, elementFromManifest} from '../../core/js/element-manif
 import {noteDeprecated} from '../../core/js/deprecations';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
-import {hasLayerAbove} from '../../core/js/layer-stack';
+import {hasLayerAbove, pressInLayerAbove} from '../../core/js/layer-stack';
 import BundledPosition from '../../core/js/position.js';
 import {anchorFloating} from '../../core/js/float-anchor.js';
 import {renderPopoverTemplate} from './js/templates/default';
@@ -276,8 +276,10 @@ class SfPopover extends PopoverElement {
             // An outside press is the top layer's (standard 1.3.8 §19.3): a
             // press inside a drawer or a window opened from this popover is
             // theirs, and the popover under them stays. A list opened from it
-            // closes with it, as before.
-            if (hasLayerAbove(this)) return;
+            // closes with it, as before. A press on a layer opened from it --
+            // a menu or a list drawn beside the page -- is that layer's, and
+            // the popover under it stays (GB17 Y1).
+            if (hasLayerAbove(this) || pressInLayerAbove(this, event)) return;
             this.close({reason: 'outside'});
         };
         // Capture, and the press is stopped going further: a surface closing

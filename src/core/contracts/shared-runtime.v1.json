@@ -136,6 +136,7 @@
         "lockPageScroll",
         "openLayer",
         "openLayers",
+        "pressInLayerAbove",
         "raiseLayer",
         "returnLayerFocus",
         "startClosedLayerContent",

@@ -115,6 +115,10 @@ and when pressed.
 - arrows at the sides; none when the viewer is narrower than 44rem (a phone),
   where a horizontal swipe pages;
 - the caption under the picture;
+- the controls are round black 48 circles with a white glyph; under the
+  pointer and pressed the state family's white 8 and 12 is laid over the
+  circle (1.5.6; darker steps of black did not show on the black viewer). A
+  colour scheme of the display settings draws its own media plate;
 - keys: ← → page (mirrored right to left), Home and End go to the first and
   the last, + and − zoom, the arrow keys pan a zoomed picture, Escape first
   un-zooms, then closes;

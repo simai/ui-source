@@ -133,6 +133,23 @@
   --sf-carousel-control--background-color: var(--sf-surface-media-active);
 }
 
+/* In the site theme (no colour scheme of core display settings) the glass
+   has no step left for a press: rest 64, hover 80, and 80 is the top of the
+   ink family, so hover and press were one colour (GB17 Y7, DSA evidence
+   2026-11-22). As the controls on the scrim do (study VP-16, C14 (3)), the
+   plate stays the glass and the state family's white is laid over it: 8
+   under the pointer, 12 pressed (--sf-scrim-control-state-hover / -active).
+   A colour scheme keeps its own media steps (core display settings). */
+:root:not([data-sf-scheme]) :is(.sf-carousel-switch:not(.sf-carousel-switch--primary), .sf-carousel-rotation):hover {
+  --sf-carousel-control--background-color: var(--sf-surface-media);
+  --sf-carousel-control--state: var(--sf-scrim-control-state-hover);
+}
+
+:root:not([data-sf-scheme]) :is(.sf-carousel-switch:not(.sf-carousel-switch--primary), .sf-carousel-rotation):active {
+  --sf-carousel-control--background-color: var(--sf-surface-media);
+  --sf-carousel-control--state: var(--sf-scrim-control-state-active);
+}
+
 .sf-carousel-switch--big {
   min-block-size: var(--sf-ui-2--control-height);
   min-inline-size: var(--sf-ui-2--control-height);
@@ -284,6 +301,7 @@ button.sf-carousel-pagination-item {
   .sf-carousel-switch,
 .sf-carousel-rotation {
     background-color: var(--sf-carousel-control--background-color);
+    background-image: linear-gradient(var(--sf-carousel-control--state, transparent), var(--sf-carousel-control--state, transparent));
     border: 0;
     color: var(--sf-carousel-control--color);
   }
