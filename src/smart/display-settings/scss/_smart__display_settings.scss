@@ -111,10 +111,16 @@ sf-display-settings {
   .sf-display-settings__value {
     color: var(--sf-on-surface);
   }
-  /* A layer over the page carries the overlay shadow (C20), and with it a
-     colour scheme's edge (core/scss/_sf_css__display.scss, DS-4). */
+  /* A layer over the page stands on the popup surface with the overlay
+     shadow (C20), and with it a colour scheme's edge
+     (core/scss/_sf_css__display.scss, DS-4). */
   .sf-display-settings--disclosure > .sf-display-settings__panel {
+    background-color: var(--sf-display-settings-background, var(--sf-surface-popup));
     box-shadow: var(--sf-shadow-overlay);
+  }
+  /* The popup's dim ink (C43: 4.5:1 on the dark popup step). */
+  .sf-display-settings--disclosure > .sf-display-settings__panel :is(.sf-display-settings__label, .sf-display-settings__note) {
+    color: var(--sf-display-settings-label-color, var(--sf-on-surface-popup-variant));
   }
   @media (forced-colors: active) {
     .sf-display-settings__panel {

@@ -36,6 +36,14 @@
       "reason": "CSSOM and DOM measurements are expressed in CSS pixels by the browser and must retain their exact measured value."
     },
     {
+      "id": "display-settings-panel-placed-in-room",
+      "category": "runtime-review",
+      "filePattern": "^smart/display-settings/index\\.js$",
+      "contextPattern": "--sf-display-settings--(?:room|shift)",
+      "status": "accepted-runtime-geometry",
+      "reason": "DS-1: the open disclosure panel is moved in from the screen's or a scrolling parent's edge and capped to that room; both are measured CSS pixels of the current layout, not sizes of the ladder."
+    },
+    {
       "id": "legacy-sf-system-measured-geometry",
       "category": "runtime-review",
       "filePattern": "^component/sf-system/js/03-system/_provider\\.js$",

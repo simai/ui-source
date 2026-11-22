@@ -38,7 +38,7 @@ test('DS-1: the disclosure panel is a layer under its button, capped by the scre
   assert.match(layer, /scroll-margin-inline: var\(--sf-space-1\);/u);
   assert.match(layer, /translate: var\(--sf-display-settings--shift, 0\) 0;/u);
   assert.match(block(panel, '.sf-display-settings--disclosure {'), /position: relative;/u);
-  assert.match(panel, /\.sf-display-settings--disclosure > \.sf-display-settings__panel \{\s*box-shadow: var\(--sf-shadow-overlay\);/u);
+  assert.match(panel, /\.sf-display-settings--disclosure > \.sf-display-settings__panel \{\s*background-color: var\(--sf-display-settings-background, var\(--sf-surface-popup\)\);\s*box-shadow: var\(--sf-shadow-overlay\);/u);
   // The in-flow panel of layout=panel keeps its 100 %.
   assert.match(block(panel, '.sf-display-settings__panel {'), /inline-size: 100%;/u);
   assert.match(script, /placePanel\(\) \{/u);

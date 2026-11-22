@@ -88,7 +88,7 @@ cookie, ничего не отправляется на сервер. Ядро �
 
 | Переменная | По умолчанию | Что задаёт |
 | --- | --- | --- |
-| `--sf-display-settings-background` | `--sf-surface-card` | поверхность панели |
+| `--sf-display-settings-background` | `--sf-surface-popup` (у `layout="panel"` — `--sf-surface-card`) | поверхность панели |
 | `--sf-display-settings-border-color` | `--sf-outline-variant` | край панели |
 | `--sf-display-settings-label-color` | `--sf-on-surface-variant` | подписи групп |
 | `--sf-display-settings-gap` | `--sf-space-1` | между группами |
