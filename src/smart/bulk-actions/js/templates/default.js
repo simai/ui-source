@@ -26,6 +26,11 @@ function actionButton(context, action) {
   const unavailable = action.unavailable ? 'true' : nothing;
   const description = action.reason || nothing;
   if (compact) {
+    // A phone's action is an icon button: one without an icon never stands in
+    // the row (splitActions iconOnly puts it in «⋯» with its label). Drawn
+    // without one it would take a fallback glyph -- «⋯» before 1.2.1 -- and the
+    // bar would show two identical «⋯» (View round 14, msg-afb6bff8).
+    if (!action.icon) return nothing;
     return keyed(`${action.id}|icon|${action.status}`, html`<sf-button-icon class="sf-bulk-actions__action" data-sf-bulk-action=${action.id}
       size=${size} appearance="ghost" scheme="on-surface" status=${action.status || nothing} icon=${action.icon}
       aria-label=${action.text} title=${action.reason ? `${action.text} — ${action.reason}` : action.text}
@@ -88,14 +93,19 @@ function done(context) {
 
 export function renderBulkActionsTemplate(context) {
   const {words, component, size} = context;
+  const busy = Boolean(context.run || context.result);
+  // The count row is held on one line (BB-1): what does not fit yet is
+  // clipped at the end until the code folds it, never a second line for a
+  // frame. A run, a result or a done line may still wrap.
+  const held = !busy && !context.done;
   const classes = [
     'sf-bulk-actions',
     `sf-bulk-actions--${context.place}`,
     `sf-bulk-actions--size-${size}`,
     context.compact ? 'sf-bulk-actions--compact' : '',
+    held ? 'sf-bulk-actions--held' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
-  const busy = Boolean(context.run || context.result);
   const quiet = busy || Boolean(context.done && !context.done.actions);
   let lead;
   if (busy) lead = context.run ? run(context) : result(context);

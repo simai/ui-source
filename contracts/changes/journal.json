@@ -19858,6 +19858,46 @@
         }
       ],
       "source": "src/smart/drawer/component.json"
+    },
+    {
+      "id": "behaviour-bulk-actions-fold-by-width",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-bulk-actions 1.3.0 (the owner's list review LV3-26, LV3-27, LV4-23 via DEV): the padding is the view settings panel's (space-1/3 above, below and at the end, space-1 at the start: 8 / 16 / 8 on a desktop, was 4 / 12 / 4), set through the new public --sf-bulk-actions-padding-block and --sf-bulk-actions-padding-inline, so the bar is 58 at size 1 (was 50). The actions fold by width: an action's words never wrap, the last visible ones go into «⋯» while the row would wrap and come back when it has room; «Выбрано N» stays on the bar's line.",
+      "items": [
+        {
+          "component": "sf-bulk-actions",
+          "from": "padding 4 / 12 / 4, no variable; three labelled actions at any width above the phone step, their words wrapping",
+          "to": "padding 8 / 16 / 8 through two public variables; as many of the three as fit, the rest in «⋯», words on one line"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "A page that wants the old tighter bar sets --sf-bulk-actions-padding-block: var(--sf-space-1\\/4) and --sf-bulk-actions-padding-inline: var(--sf-space-1\\/2) var(--sf-space-1\\/4). A host that folded the actions itself (rowWraps over split) can drop that code.",
+      "owner": "ui-source",
+      "source": "src/smart/bulk-actions/index.js fitActions, scss/_smart__bulk-actions.scss"
+    },
+    {
+      "id": "behaviour-bulk-actions-phone-one-more",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-bulk-actions 1.3.1 (View round 14 acceptance, DEV msg-afb6bff8): a phone bar shows exactly one «⋯». An action without an icon is never drawn as the phone's icon button (before 1.2.1 it took the more_horiz glyph: «Выбрано 1 ⋯ ⋯ ×» on a View pinned to 1.1.0), and the static phone row shows the first action that has an icon, as the code does. With it (BB-1, BB-2 of DEV's acceptance, msg-74d60eae): the count row is held on one line, clipped at the end until the code folds (overflow measured by width), so no frame shows the bar on two lines; the phone switch is made in the next frame (no ResizeObserver loop error).",
+      "items": [
+        {
+          "component": "sf-bulk-actions",
+          "from": "a phone's first action without an icon could be drawn as a second «⋯» (1.1.0) or an empty static button",
+          "to": "only an action with an icon stands in the phone row, drawn and static; the others are in «⋯» with their labels"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A list on an older pair (View on 1.1.0) gets this with its repin; giving every bulk action an icon avoids it there.",
+      "owner": "ui-source",
+      "source": "src/smart/bulk-actions/js/templates/default.js actionButton, scss/_smart__bulk-actions.scss"
     }
   ]
 }

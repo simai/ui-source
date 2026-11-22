@@ -6,7 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {isDestructiveAction, orderActions} from '../src/smart/bulk-actions/js/danger.js';
-import {LONG_OVER, VISIBLE, VISIBLE_COMPACT, isLongAction, normalizeAction, resultRoute, splitActions} from '../src/smart/bulk-actions/js/actions.js';
+import {LONG_OVER, VISIBLE, VISIBLE_COMPACT, actionsThatFit, foldActions, isLongAction, normalizeAction, resultRoute, splitActions} from '../src/smart/bulk-actions/js/actions.js';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const manifest = JSON.parse(read('src/smart/bulk-actions/component.json'));
@@ -76,7 +76,7 @@ test('up to three labelled actions, the rest in «⋯», the dangerous one alway
 
 test('the manifest: a new component of family bulk with the contract of C295', () => {
   assert.equal(manifest.tag, 'sf-bulk-actions');
-  assert.equal(manifest.version, '1.2.3'); // GB16 G6: the static phone row leaves the offer out
+  assert.equal(manifest.version, '1.3.1'); // msg-afb6bff8: one «⋯» on a phone (1.3.0: LV3-26/27, LV4-23)
   assert.equal(manifest.family, 'bulk');
   for (const name of ['count', 'page-count', 'total', 'all-selected', 'count-text', 'place', 'size', 'label', 'actions']) {
     assert.ok(manifest.settings[name], name);
@@ -119,10 +119,26 @@ test('the markup: a region, a plain row of buttons, the live region outside the 
   assert.match(actionsSource, /LONG_OVER = 100/u);
 });
 
-test('the sheet takes every value from the systems: gaps 16 and 8 from the roles, padding space-1/4, no literal colour or length', () => {
+test('the sheet takes every value from the systems: gaps 16 and 8 from the roles, the settings panel\'s padding through public variables, no literal colour or length', () => {
   assert.match(sheet, /--sf-bulk-actions--gap: var\(--sf-bulk-actions-gap, var\(--sf-gap--groups\)\)/u);
   assert.match(sheet, /--sf-bulk-actions--group-gap: var\(--sf-gap--actions\)/u);
-  assert.match(sheet, /padding-block: var\(--sf-space-1\\\/4\)/u);
+  // LV3-26: 8 block, 16 start, 8 end on a desktop (the view settings panel).
+  assert.match(sheet, /--sf-bulk-actions--padding-block: var\(--sf-bulk-actions-padding-block, var\(--sf-space-1\\\/3\)\)/u);
+  assert.match(sheet, /--sf-bulk-actions--padding-inline: var\(--sf-bulk-actions-padding-inline, var\(--sf-space-1\) var\(--sf-space-1\\\/3\)\)/u);
+  assert.match(sheet, /padding-block: var\(--sf-bulk-actions--padding-block\)/u);
+  assert.match(sheet, /padding-inline: var\(--sf-bulk-actions--padding-inline\)/u);
+  assert.doesNotMatch(sheet, /padding-block: var\(--sf-space-1\\\/4\)/u, 'the fixed 4 / 12 / 4 is gone');
+  for (const name of ['--sf-bulk-actions-padding-block', '--sf-bulk-actions-padding-inline']) assert.ok(manifest['css-variables'][name], name);
+  const publicCount = Object.keys(manifest['css-variables']).length;
+  assert.ok(publicCount >= 5 && publicCount <= 10, `5-10 public variables, ${publicCount}`);
+  // LV3-27, LV4-23: an action's words never wrap; the static row is one line.
+  assert.match(sheet, /\.sf-bulk-actions__actions > \* > button,[\s\S]*?white-space: nowrap;/u);
+  assert.match(sheet, /\.sf-bulk-actions\[data-sf-static\],\s*\.sf-bulk-actions--held \{\s*flex-wrap: nowrap;\s*overflow: clip;/u, 'BB-1: the drawn count row is held on one line too');
+  assert.match(sheet, /\.sf-bulk-actions--held \.sf-bulk-actions__lead \{\s*flex-wrap: nowrap;\s*flex-shrink: 0;/u, '«Выбрано N» is never the part clipped');
+  assert.match(template, /const held = !busy && !context\.done;/u);
+  assert.match(element, /return this\.rowNeed\(root\) > inner \+ 0\.5;/u, 'BB-1: the overflow is measured by width');
+  assert.match(element, /this\._compactFrame = requestAnimationFrame\(measure\);/u, 'BB-2: the phone switch is made in the next frame');
+  assert.match(element, /this\.fitRow\(\);\n[\s\S]{0,400}?this\._fitFrame = requestAnimationFrame\(\(\) => this\.fitRow\(\)\);\n  \}/u, 'the fit is read again a frame after each drawing (a late button moves no clipped edge)');
   const values = sheet.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\/\/.*$/gmu, '');
   assert.doesNotMatch(values, /#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b/iu);
 });
@@ -174,4 +190,43 @@ test('the static phone row leaves the offer out, as the code folds it (GB16 G6, 
   const sheet = read('src/smart/bulk-actions/scss/_smart__bulk-actions.scss');
   const phone = sheet.slice(sheet.indexOf('@container sf-bulk-actions (width <'), sheet.indexOf('.sf-bulk-actions__lead,'));
   assert.match(phone, /\.sf-bulk-actions\[data-sf-static\] \.sf-bulk-actions__offer > button \{\n    display: none;\n  \}/u);
+});
+
+test('LV3-27, LV4-23: the actions fold by width into «⋯», the dangerous ones stay last', () => {
+  const split = splitActions(SITE);
+  assert.deepEqual(foldActions(split, null), split, 'null: as split');
+  assert.deepEqual(foldActions(split, 3), split, 'all three fit');
+  const one = foldActions(split, 1);
+  assert.deepEqual(one.visible.map((a) => a.id), ['publish']);
+  assert.deepEqual(one.rest.map((a) => a.id), ['move', 'export', 'unpublish', 'archive', 'delete'], 'folded first, in order, delete last');
+  assert.deepEqual(foldActions(split, 0).visible, []);
+  assert.deepEqual(foldActions(split, -2).visible, [], 'never below none');
+  // How many come back: by measured width, one gap before each.
+  assert.equal(actionsThatFit({room: 300, widths: [120, 140], gap: 8}), 2);
+  assert.equal(actionsThatFit({room: 200, widths: [120, 140], gap: 8}), 1);
+  assert.equal(actionsThatFit({room: 100, widths: [120, 140], gap: 8}), 0);
+  assert.equal(actionsThatFit({room: 230, widths: [120, 140], gap: 8, freed: 48}), 2, 'the last one takes the room «⋯» leaves');
+  assert.equal(actionsThatFit({room: 220, widths: [120, 140], gap: 8, freed: 48}), 1);
+  assert.equal(actionsThatFit({room: 230, widths: [120], gap: 8, freed: 48}), 1);
+  assert.equal(actionsThatFit({room: 100, widths: [120], gap: 8, freed: 48}), 1, 'the last one fits in the room «⋯» leaves');
+  assert.equal(actionsThatFit({room: 10, widths: [undefined]}), 1, 'not measured yet: tried once');
+  assert.equal(actionsThatFit({room: 300, widths: [120, undefined]}), 2);
+  assert.match(element, /fitActions\(root, width\)/u);
+  assert.match(element, /this\._fit = shown - 1;/u, 'one by one while the row wraps');
+  assert.match(element, /getComputedStyle\(root\)\.display !== 'flex'\) return;/u, 'nothing is measured before the bar\'s sheet draws it as a row');
+});
+
+test('msg-afb6bff8: a phone bar shows exactly one «⋯» -- an action without an icon never stands in its row', () => {
+  const bare = [{id: 'paid', text: 'Отметить оплаченными'}, {id: 'manager', text: 'Передать', icon: 'person'}, {id: 'export', text: 'Выгрузить', icon: 'download'}];
+  const first = splitActions(bare, VISIBLE_COMPACT, {iconOnly: true});
+  assert.deepEqual(first.visible.map((a) => a.id), ['manager'], 'the first action with an icon');
+  assert.ok(first.rest.some((a) => a.id === 'paid'), 'the bare one in «⋯» with its label');
+  const none = splitActions(bare.map(({id, text}) => ({id, text})), VISIBLE_COMPACT, {iconOnly: true});
+  assert.deepEqual(none.visible, [], 'no icon anywhere: only «⋯»');
+  assert.equal(foldActions(none, null).visible.length, 0);
+  assert.doesNotMatch(template, /more_horiz'\}/u, 'no more_horiz fallback for an action');
+  assert.match(template, /if \(!action\.icon\) return nothing;/u, 'the template draws no phone action without an icon');
+  assert.equal((template.match(/icon="more_horiz"/gu) ?? []).length, 1, 'one «⋯» button in the template');
+  assert.match(sheet, /\.sf-bulk-actions__action > button:not\(:has\(\.sf-icon\)\)/u, 'the static phone row hides a bare action');
+  assert.match(sheet, /\.sf-bulk-actions__action:has\(> button \.sf-icon\) ~ \.sf-bulk-actions__action > button/u, 'and shows the first with an icon');
 });

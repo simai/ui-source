@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.bulk-actions",
-  "version": "1.2.3",
+  "version": "1.3.1",
   "title": "Group actions",
   "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run, a fast action's result in place of the count and a long one's in a notice, failures written to «Уведомления». One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
   "kind": "smart",
@@ -116,7 +116,7 @@
       "actions": {
         "type": "array",
         "default": [],
-        "description": "The actions on the selection: up to three labelled outline buttons (one icon button on a phone), the rest in «⋯» (the page's one menu, SF.menu.open), a dangerous one always last in «⋯»"
+        "description": "The actions on the selection: up to three labelled outline buttons as the width allows (one icon button on a phone), the rest in «⋯» (the page's one menu, SF.menu.open), a dangerous one always last in «⋯»"
       }
     },
     "additionalProperties": false
@@ -431,15 +431,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/bulk-actions/index.js",
-        "sha256": "2cdfee050f945dda58281d01b37b8ed678e2f5ea49be5d64583b5730da88a8c1"
+        "sha256": "f4f3d900e6974662d85dd461d686134f341ac8351bea41309e6b82ad1688c1d0"
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
-        "sha256": "cd4bac549867b349ac16e5eb79059622784fe2ec3ff69f60fbaf2b79898a9433"
+        "sha256": "36cf18f93223579fc58966f046abe02a11e087c11f31eb28959b9a291a838736"
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
-        "sha256": "0ca21dda4814f0f6862e338167e2f89c0ea00b70dc0d07583a4098d493b35f13"
+        "sha256": "02870f92a8c0e9467f3aa00e8002922ec49a06b2aeaed48c46d1ccb8a84620b3"
       },
       {
         "path": "src/smart/bulk-actions/rule.js",
@@ -447,7 +447,7 @@
       },
       {
         "path": "src/smart/bulk-actions/docs.md",
-        "sha256": "a077b745df1d3feeda46aad4f9dc120429d0b594c039e387b4db1d5a6b166cbc"
+        "sha256": "160c7e8447110abb7db9fe7f6f7b7170e007b65a57a14f73a11422ed249ec5de"
       }
     ],
     "generated_runtime": []
