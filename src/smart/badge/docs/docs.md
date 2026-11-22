@@ -27,6 +27,7 @@ Main attributes:
 - `appearance`
 - `scheme`
 - `status`
+- `hue`
 - `activity`
 - `icon-only`
 - `line`
@@ -102,6 +103,26 @@ an icon-only badge or a shortened count such as `99+`, provide a full
 `aria-label`; the template projects it as `sr-only` text. With neither text nor
 label the badge is decorative. The host owns any `aria-live` or `role="status"`
 policy because only the application knows whether an update must be announced.
+
+## A colour from the palette
+
+A badge whose colour comes from data -- a section, a tag, a choice in a table
+cell -- takes `hue`, one of the sixteen static palette names: `red`, `orange`,
+`amber`, `yellow`, `lime`, `green`, `teal`, `cyan`, `sky`, `blue`, `indigo`,
+`violet`, `purple`, `pink`, `brown`, `gray` (owner decision C411, 1.8.0). It
+draws the class `sf-badge--<hue>`: the hue's tone 50 at the fill step 24 under
+the text `--sf-on-surface`, the same in light and dark. Every hue holds 4.5:1
+for its text in both themes (the contrast matrix measures each).
+
+```html
+<sf-badge text="Дизайн" hue="teal"></sf-badge>
+```
+
+Status colours stay with `status`: a status on the same badge wins over a hue.
+The `outline` look and the error count keep their own colours, and
+`--sf-badge-background-color` and `--sf-badge-color` still win. An unknown
+name draws no hue. A raw colour from data is never drawn: a filter option's
+hex reaches the nearest palette hue (BG-7).
 
 ## Side room and height
 

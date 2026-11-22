@@ -76,6 +76,30 @@ const sfBadgeMeta = {
       "default": "",
       "description": "What the badge reports, in the shared status vocabulary. The word this component used before, danger, is still accepted and means error."
     },
+    "hue": {
+      "kind": "enum",
+      "values": [
+        "",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "pink",
+        "brown",
+        "gray"
+      ],
+      "default": "",
+      "description": "A colour from the static palette for a badge whose colour comes from data -- a section, a tag, a choice in a table cell (owner decision C411): one of the sixteen hues draws the class sf-badge--<hue>, the hue's tone 50 at the fill step 24 under the text --sf-on-surface, the same in light and dark. Empty: the colour role or the status decides. A status wins over a hue, and the outline look keeps its own colours. --sf-badge-background-color and --sf-badge-color still win."
+    },
     "activity": {
       "kind": "enum",
       "values": [

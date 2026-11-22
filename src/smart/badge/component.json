@@ -2,7 +2,7 @@
   "$comment": "The source of sf-badge's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/badge (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.badge",
   "tag": "sf-badge",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "badge",
   "settings": {
@@ -60,6 +60,30 @@
       ],
       "default": "",
       "summary": "What the badge reports, in the shared status vocabulary. The word this component used before, danger, is still accepted and means error."
+    },
+    "hue": {
+      "type": "enum",
+      "values": [
+        "",
+        "red",
+        "orange",
+        "amber",
+        "yellow",
+        "lime",
+        "green",
+        "teal",
+        "cyan",
+        "sky",
+        "blue",
+        "indigo",
+        "violet",
+        "purple",
+        "pink",
+        "brown",
+        "gray"
+      ],
+      "default": "",
+      "summary": "A colour from the static palette for a badge whose colour comes from data -- a section, a tag, a choice in a table cell (owner decision C411): one of the sixteen hues draws the class sf-badge--<hue>, the hue's tone 50 at the fill step 24 under the text --sf-on-surface, the same in light and dark. Empty: the colour role or the status decides. A status wins over a hue, and the outline look keeps its own colours. --sf-badge-background-color and --sf-badge-color still win."
     },
     "activity": {
       "type": "enum",
@@ -328,7 +352,8 @@
     "version 1.6.2 (2026-11-17, group build 9; numbered above 1.6.1 on origin/feat/dependency-graph-c249): a patch, nothing drawn or done differently by this unit: its words of the withdrawn pilot interface pack leave it (C278).",
     "version 1.6.3 (2026-11-17, feat/lang-file-c282; numbered above 1.6.2 on origin/integration/pair-next-11): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.6.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
-    "version 1.7.0 (2026-11-18, owner decisions C317-C319; study ui-control prototypes/composite-badge-study.html, variant A; component.badges 1.13.0): a minor. The settings value and value-label and the slot value are added: «name | value» in one badge, one outline pill with a one-pixel divider as high as the text line between the name and the value, --sf-space-1/3 on each side of it (C317). The pair never breaks: the badge does not wrap inside, a long name truncates with an ellipsis, the value never. It is part of sf-badge, class and Smart (C318): the class parts .sf-badge-divider and .sf-badge-value, the public variable --sf-badge-divider-color (the badge's border colour on outline, --sf-outline on a fill); the value takes the text colour (--sf-badge-color colours both): --sf-badge-value-color of the order would be the badge's eleventh public variable, over the ten a component may offer, so it is internal (--sf-badge--value-color) until the owner says otherwise. The badge stays a static mark, no copy on a click (C319). Accessible text «text, value-label value»: the divider is aria-hidden, a visually hidden «, <value-label> » stands before the value; value-label defaults to the language word runtime value-label («значение», «value»); with aria-label the value is hidden as the text is. Without value (attribute or slot) the template is the one of 1.6.3, character for character, so the drawn markup is byte-identical. The property value stays the state object (as on sf-button); it now carries value and valueLabel, so el.value = el.value keeps them; a string given to it writes the attribute value. Numbered above 1.6.4 on origin/integration/pair-next-15."
+    "version 1.7.0 (2026-11-18, owner decisions C317-C319; study ui-control prototypes/composite-badge-study.html, variant A; component.badges 1.13.0): a minor. The settings value and value-label and the slot value are added: «name | value» in one badge, one outline pill with a one-pixel divider as high as the text line between the name and the value, --sf-space-1/3 on each side of it (C317). The pair never breaks: the badge does not wrap inside, a long name truncates with an ellipsis, the value never. It is part of sf-badge, class and Smart (C318): the class parts .sf-badge-divider and .sf-badge-value, the public variable --sf-badge-divider-color (the badge's border colour on outline, --sf-outline on a fill); the value takes the text colour (--sf-badge-color colours both): --sf-badge-value-color of the order would be the badge's eleventh public variable, over the ten a component may offer, so it is internal (--sf-badge--value-color) until the owner says otherwise. The badge stays a static mark, no copy on a click (C319). Accessible text «text, value-label value»: the divider is aria-hidden, a visually hidden «, <value-label> » stands before the value; value-label defaults to the language word runtime value-label («значение», «value»); with aria-label the value is hidden as the text is. Without value (attribute or slot) the template is the one of 1.6.3, character for character, so the drawn markup is byte-identical. The property value stays the state object (as on sf-button); it now carries value and valueLabel, so el.value = el.value keeps them; a string given to it writes the attribute value. Numbered above 1.6.4 on origin/integration/pair-next-15.",
+    "version 1.8.0 (2026-11-22, owner decision C411; component.badges 1.14.0): a minor. The setting hue (\"\" and the sixteen static palette names, the avatar's hue list without auto) draws the class sf-badge--<hue>: the hue's tone 50 at the fill step 24 and the text --sf-on-surface, the same in light and dark -- the pair a page wrote through --sf-badge-background-color and --sf-badge-color before (the docs example «Цвет из палитры»). A status wins over a hue (status colours stay with the status classes); the outline look and the error count keep their own colours; the public variables still win. Without hue the drawn markup is the one of 1.7.0, character for character. The property value carries hue. Numbered above 1.7.0, the highest on any origin branch."
   ],
   "x-rule": {
     "$comment-after": [

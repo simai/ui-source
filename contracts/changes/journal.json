@@ -19663,6 +19663,121 @@
         }
       ],
       "source": "src/component/slider/scss/_css__slider.scss"
+    },
+    {
+      "id": "class-c411-badge-palette-variables-to-hue-class",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.badges 1.14.0, sf-badge 1.8.0 (owner decision C411): a badge coloured from the static palette takes a hue class, sf-badge--<hue> (sf-badge hue=\"<hue>\"), for the sixteen palette names. The class draws what a page wrote through the public variables before: --sf-badge-background-color: var(--sf-<hue>-50--alfa-24) and --sf-badge-color: var(--sf-on-surface). The variables stay public and still win, so the old markup draws the same; write the class instead (the docs example «Цвет из палитры»).",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-red-50--alfa-24)",
+          "to": "sf-badge--red",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-red-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-orange-50--alfa-24)",
+          "to": "sf-badge--orange",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-orange-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-amber-50--alfa-24)",
+          "to": "sf-badge--amber",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-amber-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-yellow-50--alfa-24)",
+          "to": "sf-badge--yellow",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-yellow-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-lime-50--alfa-24)",
+          "to": "sf-badge--lime",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-lime-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-green-50--alfa-24)",
+          "to": "sf-badge--green",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-green-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-teal-50--alfa-24)",
+          "to": "sf-badge--teal",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-teal-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-cyan-50--alfa-24)",
+          "to": "sf-badge--cyan",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-cyan-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-sky-50--alfa-24)",
+          "to": "sf-badge--sky",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-sky-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-blue-50--alfa-24)",
+          "to": "sf-badge--blue",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-blue-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-indigo-50--alfa-24)",
+          "to": "sf-badge--indigo",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-indigo-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-violet-50--alfa-24)",
+          "to": "sf-badge--violet",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-violet-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-purple-50--alfa-24)",
+          "to": "sf-badge--purple",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-purple-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-pink-50--alfa-24)",
+          "to": "sf-badge--pink",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-pink-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-brown-50--alfa-24)",
+          "to": "sf-badge--brown",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-brown-50--alfa-24\\)"
+        },
+        {
+          "component": "sf-badge",
+          "from": "--sf-badge-background-color: var(--sf-gray-50--alfa-24)",
+          "to": "sf-badge--gray",
+          "match": "--sf-badge-background-color:\\s*var\\(--sf-gray-50--alfa-24\\)"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the two variables from the badge's style and add the class sf-badge--<hue> (on sf-badge the setting hue=\"<hue>\"). Nothing else changes: the class draws the same fill and text in both themes.",
+      "examples": {
+        "before": "<span class=\"sf-badge\" style=\"--sf-badge-background-color: var(--sf-teal-50--alfa-24); --sf-badge-color: var(--sf-on-surface)\">…</span>",
+        "after": "<span class=\"sf-badge sf-badge--teal\">…</span>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/badges/scss/_css__badges.scss; ui-control control/docs-review/decisions.md C411"
     }
   ]
 }
