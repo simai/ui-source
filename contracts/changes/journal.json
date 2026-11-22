@@ -19563,6 +19563,31 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/button/component.json"
+    },
+    {
+      "id": "behaviour-display-settings-ds-roles",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "smart.display-settings 1.2.0 and core.styles (fingerprint only), DS-1..DS-5 of ui-control control/evidence/2026-11-22-display-settings-roles (DEV letter msg-8977f46e): layout=disclosure opens its panel as a layer under the button (it grew to one 2651 px row in sf-header-site's tools and folded the header's menu); the wide text spacing and the hidden and grey pictures are the visitor's overrides, written !important so unlayered site CSS and later Framework layers no longer beat them; the spacing goes on every element and form field; in a colour scheme the overlay and modal shadows carry a 1 px text-tone edge (popups, menus, tooltips, toasts, windows); --sf-surface-media*, --sf-on-surface-media, --sf-surface-veil (and its former name --sf-surface-overlay), --sf-chart-N-fill*, --sf-chart-brand-fill*, --sf-chart-diverging-* and --sf-chart-midpoint take the scheme's tones.",
+      "items": [
+        {
+          "component": "smart.display-settings",
+          "from": "layout=disclosure panel in the flow at 100 % of its slot",
+          "to": "a layer under the button (absolute, --sf-layer--popover, overlay shadow), max --sf-measure-96 and the screen less --sf-space-1 a side, moved in at the edge"
+        },
+        {
+          "component": "core.styles",
+          "from": "data-sf-text-spacing / data-sf-images rules in sf.base, normal importance; spacing on body only; schemes: popups with a shadow only, media / veil / chart roles in site colours",
+          "to": "the same rules !important; spacing on every element, input, textarea, select, button; schemes: overlay / modal shadows with a 1 px --sf-scheme-text ring, media on the text tone with the ground's ink, veil the ground at 64, chart fills the text tone at 12/16/20 (odd) and 24/28/32 (even), diverging ends the text tone and its 64 step, midpoint the 12 step"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A site that styled the disclosure panel in the flow (a width on .sf-display-settings__panel) sees it as a layer now; a site that relied on its own CSS beating the visitor's spacing or hidden pictures no longer does.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__display.scss; src/smart/display-settings/scss/_smart__display_settings.scss; src/smart/display-settings/index.js"
     }
   ]
 }

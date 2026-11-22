@@ -47,6 +47,32 @@ sf-display-settings {
   display: none;
 }
 
+/* layout=disclosure: the panel opens under its button as a layer (DS-1,
+   ui-control control/evidence/2026-11-22-display-settings-roles). In the
+   flow, inside a slot sized by its content (sf-header-site's tools), its
+   100 % was the slot's, and the slot took the panel's own max-content: one
+   2651 px row at 1440 that pushed the page sideways and folded the header's
+   menu, which stayed folded after the panel closed. As a layer it takes no
+   room: it is as wide as its groups up to the popup panel's step and the
+   screen less a gutter on each side, wraps its groups there, and the script
+   moves it in when its start would put it past the screen's (or a
+   scrolling parent's) edge (--sf-display-settings--shift, index.js). The
+   gutter is its scroll-margin, which the script reads. */
+.sf-display-settings--disclosure {
+  position: relative;
+}
+
+.sf-display-settings--disclosure > .sf-display-settings__panel {
+  position: absolute;
+  inset-block-start: calc(100% + var(--sf-display-settings--group-gap));
+  inset-inline-start: 0;
+  z-index: var(--sf-layer--popover);
+  inline-size: max-content;
+  max-inline-size: min(var(--sf-measure-96), var(--sf-display-settings--room, calc(100vw - 2 * var(--sf-space-1))));
+  scroll-margin-inline: var(--sf-space-1);
+  translate: var(--sf-display-settings--shift, 0) 0;
+}
+
 .sf-display-settings__group {
   display: flex;
   flex-wrap: wrap;
@@ -84,6 +110,11 @@ sf-display-settings {
   }
   .sf-display-settings__value {
     color: var(--sf-on-surface);
+  }
+  /* A layer over the page carries the overlay shadow (C20), and with it a
+     colour scheme's edge (core/scss/_sf_css__display.scss, DS-4). */
+  .sf-display-settings--disclosure > .sf-display-settings__panel {
+    box-shadow: var(--sf-shadow-overlay);
   }
   @media (forced-colors: active) {
     .sf-display-settings__panel {

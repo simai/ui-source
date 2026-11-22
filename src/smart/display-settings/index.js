@@ -87,6 +87,49 @@ class SfDisplaySettings extends DisplaySettingsElement {
       this.open = false;
       this.querySelector('.sf-display-settings__trigger')?.focus?.();
     };
+    this._onResize = () => this.placePanel();
+  }
+
+  afterRender(changed) {
+    const result = super.afterRender?.(changed);
+    this.placePanel();
+    return result;
+  }
+
+  // layout=disclosure (DS-1): the open panel is a layer under its button
+  // (scss/); it is moved in along the inline axis when it would cross the
+  // screen's edge, or a scrolling parent's (the site header's phone sheet),
+  // less the gutter the sheet gives it as its scroll-margin, and capped to
+  // that room.
+  placePanel() {
+    const panel = this.querySelector(':scope > .sf-display-settings--disclosure > .sf-display-settings__panel');
+    if (!panel) return;
+    panel.style.removeProperty('--sf-display-settings--shift');
+    panel.style.removeProperty('--sf-display-settings--room');
+    if (panel.hidden) return;
+    const view = this.ownerDocument.defaultView;
+    const style = view.getComputedStyle(panel);
+    const gutterStart = parseFloat(style.scrollMarginInlineStart) || 0;
+    const gutterEnd = parseFloat(style.scrollMarginInlineEnd) || 0;
+    let left = 0;
+    let right = this.ownerDocument.documentElement.clientWidth;
+    for (let node = this.parentElement; node && node !== this.ownerDocument.documentElement; node = node.parentElement) {
+      const overflow = view.getComputedStyle(node).overflowX;
+      if (overflow === 'visible') continue;
+      const box = node.getBoundingClientRect();
+      left = Math.max(left, box.left + node.clientLeft);
+      right = Math.min(right, box.left + node.clientLeft + node.clientWidth);
+    }
+    const ltr = style.direction !== 'rtl';
+    const start = left + (ltr ? gutterStart : gutterEnd);
+    const end = right - (ltr ? gutterEnd : gutterStart);
+    const room = Math.max(0, end - start);
+    if (room < panel.getBoundingClientRect().width) panel.style.setProperty('--sf-display-settings--room', `${room}px`);
+    const rect = panel.getBoundingClientRect();
+    let shift = 0;
+    if (rect.right > end) shift = end - rect.right;
+    if (rect.left + shift < start) shift = start - rect.left;
+    if (Math.abs(shift) >= 0.5) panel.style.setProperty('--sf-display-settings--shift', `${Math.round(shift)}px`);
   }
 
   connectedCallback() {
@@ -97,6 +140,7 @@ class SfDisplaySettings extends DisplaySettingsElement {
     this._motion?.addEventListener?.('change', this._redraw);
     this.ownerDocument.addEventListener('sf-display-change', this._redraw);
     this.addEventListener('keydown', this._onKey);
+    this.ownerDocument.defaultView?.addEventListener?.('resize', this._onResize);
   }
 
   disconnectedCallback() {
@@ -104,6 +148,7 @@ class SfDisplaySettings extends DisplaySettingsElement {
     this._motion?.removeEventListener?.('change', this._redraw);
     this.ownerDocument.removeEventListener('sf-display-change', this._redraw);
     this.removeEventListener('keydown', this._onKey);
+    this.ownerDocument.defaultView?.removeEventListener?.('resize', this._onResize);
     super.disconnectedCallback?.();
   }
 
