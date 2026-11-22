@@ -39,7 +39,9 @@ export function renderPageHeaderTemplate(context) {
     ? 'sf-page-header-heading sf-page-header-heading--slot sf-h-4 m-0 min-w-0 flex items-cross-center'
     : `sf-page-header-heading sf-h-4 m-0 min-w-0 ${fit}`;
   const headingElement = headingLevel === 1 && !slotted
-    ? html`<h1 class=${`sf-page-header-heading sf-h-4 m-0 min-w-0 ${fit}`}>${heading}</h1>`
+    ? (wrap
+      ? html`<h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 sf-page-header-heading--wrap">${heading}</h1>`
+      : html`<h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 truncate">${heading}</h1>`)
     : staticHtml`<${tag} class=${headingClass}>${headingBody}</${tag}>`;
   const description = context.description;
   const name = description

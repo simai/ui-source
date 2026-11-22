@@ -25,7 +25,7 @@ test('the three names are registered to the Framework, family tile with them, an
 
 test('sf-progress-bar 1.2.0: warning-at and error-at, the more serious of status and the threshold', () => {
   const manifest = json('src/smart/progress-bar/component.json');
-  assert.equal(manifest.version, '1.6.0'); // AS-4: Retry in the notice look // fix/returns-gb67: the thresholds from component/progress-threshold.js // group build 9: 1.5.2 moved on by the merged branches or a GB9 patch // C282: 1.5.3 moved on by the language-file patch (Russian is a language file) // group build 13: 1.5.4 moved on by the merged branches or the C278 language patch // group build 14: 1.5.5 moved on by the merged branches or the C278 language patch
+  assert.equal(manifest.version, '1.5.6'); // fix/returns-gb67: the thresholds from component/progress-threshold.js // group build 9: 1.5.2 moved on by the merged branches or a GB9 patch // C282: 1.5.3 moved on by the language-file patch (Russian is a language file) // group build 13: 1.5.4 moved on by the merged branches or the C278 language patch // group build 14: 1.5.5 moved on by the merged branches or the C278 language patch
   for (const name of ['warning-at', 'error-at']) {
     assert.equal(manifest.settings[name].type, 'number');
     assert.equal(manifest.settings[name].optional, true);
@@ -144,4 +144,12 @@ test('sf-progress-run: host-driven, its run-state, chunk, step and clear, and th
   assert.match(template, /role="log" aria-live="off"/u);
   // The output is text, never markup.
   assert.doesNotMatch(template, /unsafeHTML/u);
+});
+
+// sf-progress-run 1.6.0 (AS-4): Retry in the notice look too.
+test('sf-progress-run 1.6.0: the notice look offers Retry before Expand on a retryable run that stopped', () => {
+  const manifest = json('src/smart/progress-run/component.json');
+  assert.equal(manifest.version, '1.6.0');
+  const template = code('src/smart/progress-run/js/templates/default.js');
+  assert.match(template, /\$\{showRetry \? one\('retry', 'replay', context\.retryWord, \(\) => component\.onRetry\(\)\) : nothing\}\s*\$\{view === 'notice' \? one\('expand'/u);
 });
