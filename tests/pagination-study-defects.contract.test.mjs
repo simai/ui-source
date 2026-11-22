@@ -49,7 +49,7 @@ test('PG-11: the last-page button is drawn only where the jump can be answered',
 });
 
 test('PG-10: three settings, all off by default, and the word of the title', () => {
-  assert.equal(component.version, '1.10.1'); // reds-before-gb15: 1.10.1 probe only; // LF-11: one page draws no navigation, the footer's Show more only when top is written // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch // C295: 1.9.0, the band is sf-bulk-actions
+  assert.equal(component.version, '1.10.2'); // GB17: bulk snapshot // reds-before-gb15: 1.10.1 probe only; // LF-11: one page draws no navigation, the footer's Show more only when top is written // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch // C295: 1.9.0, the band is sf-bulk-actions
   assert.deepEqual(
     [component.settings.href.type, component.settings.href.default],
     ['string', ''],
