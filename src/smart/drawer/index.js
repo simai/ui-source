@@ -662,6 +662,12 @@ class SfDrawer extends DrawerElement {
     const opener = this.knownOpener();
     if (!opener) return '';
     const seen = seenBox(opener);
+    // Only a compact switch -- an icon button such as ☰, no wider than the
+    // head's close cell -- takes the close onto its axis: a wider text opener
+    // («Структура», «Фильтры») keeps the close at the end of the head, in a
+    // phone-wide panel too (DEV F1, 2026-11-22: a 220 px text button pulled
+    // the close 107 px into the head).
+    if (seen.width > this.closeCellSize() + 0.5) return '';
     const frame = this.closest(OVERLAY_CONTAINER)?.getBoundingClientRect()
       || {left: 0, width: globalThis.innerWidth || document.documentElement.clientWidth};
     const onLeft = seen.left + seen.width / 2 < frame.left + frame.width / 2;
@@ -678,6 +684,24 @@ class SfDrawer extends DrawerElement {
     // the head.
     if (!this.outermostInRow(opener, seen, onLeft)) return '';
     return onLeft !== rtl ? 'start' : 'end';
+  }
+
+  // The head's close cell: the square the close stands in, as high as the
+  // head's row (its minimum block size, the 2 step's control height: 48, a
+  // phone 44, compact density smaller). Read from the drawn head, else from a
+  // measuring box of that token; 0 without sheets (no switch is compact).
+  closeCellSize() {
+    const root = this.getDrawerRoot();
+    const head = root?.querySelector('.sf-drawer-head');
+    const drawn = head ? parseFloat(getComputedStyle(head).minHeight) : 0;
+    if (drawn > 0) return drawn;
+    const probe = document.createElement('span');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;block-size:0;inline-size:var(--sf-ui-2--control-height)';
+    (root || this.parentElement || document.body).append(probe);
+    const size = probe.getBoundingClientRect().width;
+    probe.remove();
+    return size || 0;
   }
 
   // No control of the page stands in the switch's row between it and the

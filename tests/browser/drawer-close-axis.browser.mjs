@@ -8,7 +8,8 @@
 // end; a panel that covers its switch offers a close (controlled, and
 // show-close="false" unless the content has a close of its own); Escape and
 // the close give the focus back to the switch, also when the press gave it
-// none. Half a pixel of tolerance (sub-pixel rounding of the measured axis).
+// none; a wide text opener (220 px) keeps the close at the end (DEV F1).
+// Half a pixel of tolerance (sub-pixel rounding of the measured axis).
 import {resolve, join} from 'node:path';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -41,11 +42,16 @@ const CASES = [
   {id: 'controlled under the bar', bar: 'start', placement: 'inline-start', attrs: 'controlled block-start="56px"', expect: 'none'},
   {id: 'show-close false over the bar', bar: 'start', placement: 'inline-start', attrs: 'show-close="false"', expect: 'axis'},
   {id: 'show-close false with an own close', bar: 'start', placement: 'inline-start', attrs: 'show-close="false"', own: true, expect: 'none'},
+  // DEV F1 (2026-11-22): a text opener wider than the head's close cell keeps
+  // the close at the end of the head, in a phone-wide panel too.
+  {id: 'wide text opener, start panel', bar: 'start', placement: 'inline-start', text: true, expect: 'end'},
+  {id: 'wide text opener, end panel', bar: 'end', placement: 'inline-end', text: true, expect: 'end'},
+  {id: 'wide text opener, phone-wide panel', bar: 'start', placement: 'inline-end', text: true, expect: 'end', phone: 'end'},
 ];
 
 const html = (c, dir) => `<!doctype html><html lang="ru" dir="${dir}" class="theme-light"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0">
-<header style="display:flex;align-items:center;gap:8px;block-size:56px;padding-inline:16px;box-sizing:border-box">${c.bar === 'end' ? '<span style="flex:1">Сайт</span>' : ''}${c.before ? '<button type="button">Структура</button>' : ''}<sf-button-icon id="burger" icon="menu" aria-label="Разделы" aria-controls="dr" data-drawer="toggle"></sf-button-icon>${c.bar === 'start' ? '<span style="flex:1">Сайт</span>' : ''}</header>
+<header style="display:flex;align-items:center;gap:8px;block-size:56px;padding-inline:16px;box-sizing:border-box">${c.bar === 'end' ? '<span style="flex:1">Сайт</span>' : ''}${c.before ? '<button type="button">Структура</button>' : ''}${c.text ? '<span id="burger"><button type="button" aria-controls="dr" data-drawer="toggle" style="inline-size:220px">placement="inline-start"</button></span>' : '<sf-button-icon id="burger" icon="menu" aria-label="Разделы" aria-controls="dr" data-drawer="toggle"></sf-button-icon>'}${c.bar === 'start' ? '<span style="flex:1">Сайт</span>' : ''}</header>
 <sf-drawer id="dr" placement="${c.placement}" heading="Разделы" ${c.attrs || ''}><p>Разделы</p>${c.own ? '<button type="button" data-drawer="close">Закрыть</button>' : ''}</sf-drawer>
 </body></html>`;
 

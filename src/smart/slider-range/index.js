@@ -521,9 +521,11 @@ class SfRangeSlider extends RangeSliderElement {
     }
 
     if (changedAttributes.includes('style') || changedAttributes.includes('root-style')) {
+      // The drawn root is the group (F3): the style goes where root-class does.
+      const group = root.closest('.sf-range-slider-group') || root;
       const style = this.getRootStyle();
-      if (style) root.setAttribute('style', style);
-      else root.removeAttribute('style');
+      if (style) group.setAttribute('style', style);
+      else group.removeAttribute('style');
     }
 
     if (

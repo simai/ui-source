@@ -52,6 +52,12 @@ shadow. Hover and press add a halo of the primary state layer around the disc;
 keyboard focus draws the focus ring outside it. A disabled thumb is a solid disc
 of the disabled content colour.
 
+The track stands half a thumb in from each side of `.sf-range-slider`, so a
+thumb at either end keeps its outer edge on the component's edge (and on the
+edge of a field under it); the scale under a Smart slider follows the same
+inset, its end labels reaching the component's edges. A read-only frame keeps
+its own inline space for the track.
+
 For a ring of the surface around the thumb, set `--sf-thumb-handle--ring-width`
 and `--sf-thumb-handle--ring-color` on an enclosing element. For a hollow thumb, set
 `--sf-range-slider-handle-inner-color` to the colour of its centre:
