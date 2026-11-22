@@ -41,7 +41,7 @@ const PageHeaderElement = elementFromManifest(manifest, {
 });
 
 // The header's slots. A child naming one of them is the page's content for it.
-const HOST_SLOTS = new Set(['path', 'start', 'media', 'heading', 'actions', 'tabs']);
+const HOST_SLOTS = new Set(['path', 'path-end', 'start', 'media', 'heading', 'actions', 'tabs']);
 
 // The nearest box that scrolls the header (overflow auto or scroll on the
 // block axis), or null for the window: the work area a sticky header stays

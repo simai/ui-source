@@ -1,0 +1,42 @@
+{
+  "id": "load-carries-the-page-it-is-asked-for",
+  "intent": "navigation.load",
+  "summary": "The menu is asked for with the address of the page on screen, and asked again for a page opened without a reload.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "navigation.load",
+    "payload": {
+      "reason": "requested",
+      "site": null,
+      "sequence": 2,
+      "page": "/admin/data/catalog?record=r-001"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision",
+      "echo",
+      "site",
+      "items",
+      "favourites",
+      "profiles",
+      "rights",
+      "person"
+    ],
+    "data_must_include": [
+      "navigation"
+    ],
+    "note": "`page` is a path and query, never a whole address. The host answers `current` for that page. A host that has no object menus answers as it did in 1.0.0."
+  }
+}

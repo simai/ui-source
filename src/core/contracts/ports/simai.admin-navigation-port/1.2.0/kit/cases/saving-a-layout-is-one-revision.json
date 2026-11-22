@@ -1,0 +1,35 @@
+{
+  "id": "saving-a-layout-is-one-revision",
+  "intent": "view.save",
+  "capability": "menu-profiles",
+  "summary": "A saved layout answers with its new revision.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "profile": "personal",
+      "revision": "p1",
+      "layout": {
+        "schema_version": 1,
+        "items": {},
+        "own": []
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision"
+    ]
+  }
+}

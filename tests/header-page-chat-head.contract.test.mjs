@@ -20,7 +20,7 @@ test('the chat head settings and slots are declared, defaults unchanged', () => 
   assert.equal(page.settings.description.type, 'string');
   assert.equal(page.settings.description.default, '');
   assert.ok(page.slots.media && page.slots.heading);
-  assert.deepEqual(Object.keys(page.slots), ['path', 'start', 'media', 'heading', 'actions', 'tabs']);
+  assert.deepEqual(Object.keys(page.slots), ['path', 'path-end', 'start', 'media', 'heading', 'actions', 'tabs']);
   assert.ok(page.version.localeCompare('1.10.0', undefined, {numeric: true}) >= 0);
 });
 
@@ -47,4 +47,22 @@ test('an avatar without a size takes the line rung; a size the page wrote stays'
 test('core counts the description line and a written media size in the bare tag box', () => {
   assert.match(core, /\[description\]:not\(\[description=""\]\) \{\s*--sf-page-header--box-line: max\(calc\(var\(--sf-heading-4--height\) \+ var\(--sf-text-height-1\\\/3\)\)/u);
   assert.match(core, /max\(var\(--sf-page-header--box-line\), var\(--sf-page-header--box-actions\), var\(--sf-page-header--box-media\)\)/u);
+});
+
+// sf-header-page 1.12.0 (AS-2, AS-3; owner decisions C420, C324).
+test('path-end stands at the end of the path row, drawn only when given; the row holds the 1/2 control height, items centred', () => {
+  assert.ok(page.slots['path-end']);
+  assert.match(template, /hasHostSlot\('path'\) \|\| hasHostSlot\('path-end'\)/u);
+  assert.match(template, /html`<div class="sf-page-header-path-end flex items-cross-center">\$\{hostSlot\('path-end'\)\}<\/div>`/u);
+  assert.match(sheet, /\.sf-page-header-path:has\(> \.sf-page-header-path-end\) \{\s*align-items: center;[^}]*min-block-size: var\(--sf-ui-1\\\/2--control-height\);/u);
+  assert.match(sheet, /\.sf-page-header-path-end \{[^}]*margin-inline-start: auto;/u);
+  assert.match(core, /\[slot="path-end"\][^{]*\{\s*--sf-page-header--box-path: calc\(var\(--sf-ui-1\\\/2--control-height\) \+ var\(--sf-page-header-gap, var\(--sf-space-1\\\/2\)\)\);/u);
+});
+
+test('a head without actions wraps its heading whole; with actions the ellipsis stays (HD-12)', () => {
+  assert.match(template, /const wrap = !hasHostSlot\('actions'\);/u);
+  assert.match(template, /html`<h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 sf-page-header-heading--wrap">\$\{heading\}<\/h1>`/u);
+  assert.match(template, /wrap && !slotted \? 'sf-page-header--wrap' : ''/u);
+  assert.match(sheet, /\.sf-page-header--wrap \.sf-page-header-title \{\s*align-items: last baseline;/u);
+  assert.match(sheet, /\.sf-page-header-heading--wrap \{\s*overflow-wrap: anywhere;/u);
 });

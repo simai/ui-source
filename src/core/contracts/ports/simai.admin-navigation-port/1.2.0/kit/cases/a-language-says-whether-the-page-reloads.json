@@ -1,0 +1,31 @@
+{
+  "id": "a-language-says-whether-the-page-reloads",
+  "intent": "preference.language",
+  "capability": "preferences",
+  "summary": "The chosen language is kept, and the host says whether its own page must reload.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "preference.language",
+    "payload": {
+      "language": "en"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "language",
+      "reload"
+    ],
+    "note": "Framework components change language without a reload. The host's own server-drawn text may not: `reload` is the host's answer, not the component's assumption."
+  }
+}

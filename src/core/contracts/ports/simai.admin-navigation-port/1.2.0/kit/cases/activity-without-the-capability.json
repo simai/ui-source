@@ -1,0 +1,24 @@
+{
+  "id": "activity-without-the-capability",
+  "intent": "activity.load",
+  "capability": "activity",
+  "summary": "Since 1.2.0: a host that offers no activity answers unavailable, and the indicator asks no more (a 1.1.0 host).",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "activity.load",
+    "payload": {}
+  },
+  "then": {
+    "answer": "unavailable"
+  }
+}

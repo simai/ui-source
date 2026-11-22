@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-page",
-  "version": "1.11.2",
+  "version": "1.12.0",
   "title": "Page header",
   "summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
   "kind": "smart",
@@ -259,11 +259,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "66f5a9a01c28c87fbe7b1c034b09fff2549df06701e1d4a5ddcf2405cb86a33a"
+        "sha256": "ae320466dd8c6ef531649c47fef92d32cad9eb87d8b06ca9975ffab6b43acad9"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "fae28e29dbd17d6163712e2fff62a2c23a134e6aebef231de663ed29418f0ea7"
+        "sha256": "473acf8eca112be26916cea7f6372244dc8f5f3849890111aca09ccb629e627a"
       }
     ],
     "generated_runtime": [

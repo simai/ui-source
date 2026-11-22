@@ -1,0 +1,29 @@
+{
+  "id": "opening-a-row-refused-is-explained",
+  "intent": "item.open",
+  "summary": "A row the person may no longer open is refused with a reason.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "item.open",
+    "payload": {
+      "key": "no-such-row",
+      "href": null
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

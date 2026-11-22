@@ -188,6 +188,36 @@ $sf-place-container-ink-roles: (
   'on-neutral-container-graphic': 'light-dark(var(--sf-neutral-50), var(--sf-neutral-70))',
 );
 
+// A strong place drawn as its container in the dark theme (owner decision
+// C420, 2026-11-22: the info level of sf-alert-bar; an exception to C16 for
+// that level and theme only). It writes, on the element, the private tones a
+// strong place's rules read for a place named $place (sf-place-strong($place)
+// reads --sf-<place>-<tone> and --sf-on-<place>): light halves are colour $c's
+// own tones, so the light theme is the strong place tone for tone; dark halves
+// are the tones those rules ask for seen from a dark place with a light ink --
+// the ink 20 is 90, hover and press away from the place 15/10 are 95/98, a
+// link's hover and press towards it 25/30 are 85/80, a raised plate 90 is 30.
+// The ink is the container's (--sf-on-<c>-container). --sf-<place>-container
+// is the fill: the strong colour in the light theme, in the dark the
+// container (colour 50 at 24, as --sf-<c>-container) laid on the page surface,
+// so a sticky element stays opaque.
+@mixin sf-place-container-dark-tones($c, $place) {
+  @if paint.writes-paint() {
+    --sf-#{$place}-container: light-dark(var(--sf-#{$c}), color-mix(in srgb, var(--sf-#{$c}-50) 24%, var(--sf-surface-page)));
+    --sf-on-#{$place}: light-dark(var(--sf-on-#{$c}), var(--sf-on-#{$c}-container));
+    @each $tone, $dark in (20: 90, 15: 95, 10: 98, 25: 85, 30: 80, 40: 40, 80: 20, 90: 30, 95: 95) {
+      @if $tone == $dark {
+        --sf-#{$place}-#{$tone}: var(--sf-#{$c}-#{$tone});
+      } @else {
+        --sf-#{$place}-#{$tone}: light-dark(var(--sf-#{$c}-#{$tone}), var(--sf-#{$c}-#{$dark}));
+      }
+    }
+    @each $step in (4, 8, 12, 16, 20, 24, 64, 80) {
+      --sf-#{$place}-20--alfa-#{$step}: color-mix(in srgb, var(--sf-transparent), var(--sf-#{$place}-20) #{$step}%);
+    }
+  }
+}
+
 // The status containers' ink as the place's ink, on the children of a strong
 // place, on glass's children and on the duo gradient plate.
 @mixin sf-place-container-ink($ink) {

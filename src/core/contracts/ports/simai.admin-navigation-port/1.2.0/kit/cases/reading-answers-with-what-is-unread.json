@@ -1,0 +1,29 @@
+{
+  "id": "reading-answers-with-what-is-unread",
+  "intent": "notifications.read",
+  "capability": "notifications",
+  "summary": "Marking read answers with how many are still unread.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "notifications.read",
+    "payload": {
+      "all": true
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "unread"
+    ]
+  }
+}

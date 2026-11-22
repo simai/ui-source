@@ -20,27 +20,42 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 // heading element in place of the heading's words, and a description line
 // under the heading (whether the person is online). heading-level changes the
 // heading element's tag only; its look stays the fourth heading step.
+//
+// A head with no actions has nothing to keep the line beside its heading, so
+// a long heading wraps whole (1.12.0, C324: the page's whole name) instead of
+// closing down to its ellipsis; the count, the marks and the star stand
+// beside its last line, on its centre line. HD-12's ellipsis stays for a head with actions. The
+// path-end slot (1.12.0) stands at the end of the path's row -- the admin's
+// activity indicator beside the crumbs -- and is drawn only when given.
 export function renderPageHeaderTemplate(context) {
   const {component, heading, count, level, star, text, hostSlot, hasHostSlot, rootClass} = context;
   const headingLevel = context.headingLevel || 1;
   const tag = unsafeStatic(`h${headingLevel}`);
   const slotted = hasHostSlot('heading');
+  const wrap = !hasHostSlot('actions');
+  const fit = wrap ? 'sf-page-header-heading--wrap' : 'truncate';
   const headingBody = slotted ? hostSlot('heading') : heading;
   const headingClass = slotted
     ? 'sf-page-header-heading sf-page-header-heading--slot sf-h-4 m-0 min-w-0 flex items-cross-center'
-    : 'sf-page-header-heading sf-h-4 m-0 min-w-0 truncate';
+    : `sf-page-header-heading sf-h-4 m-0 min-w-0 ${fit}`;
   const headingElement = headingLevel === 1 && !slotted
-    ? html`<h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 truncate">${heading}</h1>`
+    ? (wrap
+      ? html`<h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 sf-page-header-heading--wrap">${heading}</h1>`
+      : html`<h1 class="sf-page-header-heading sf-h-4 m-0 min-w-0 truncate">${heading}</h1>`)
     : staticHtml`<${tag} class=${headingClass}>${headingBody}</${tag}>`;
   const description = context.description;
   const name = description
-    ? html`<div class="sf-page-header-name flex flex-col min-w-0">${headingElement}<p class="sf-page-header-description m-0 min-w-0 truncate">${description}</p></div>`
+    ? html`<div class="sf-page-header-name flex flex-col min-w-0">${headingElement}<p class=${`sf-page-header-description m-0 min-w-0 ${fit}`}>${description}</p></div>`
     : headingElement;
-  const classes = ['sf-page-header', 'flex', 'flex-col', 'min-w-0', context.expressive ? 'sf-page-header--expressive' : '', context.sticky ? 'sf-page-header--sticky' : '', rootClass].filter(Boolean).join(' ');
+  const classes = ['sf-page-header', 'flex', 'flex-col', 'min-w-0', wrap && !slotted ? 'sf-page-header--wrap' : '', context.expressive ? 'sf-page-header--expressive' : '', context.sticky ? 'sf-page-header--sticky' : '', rootClass].filter(Boolean).join(' ');
   const on = star === true;
   const actions = context.actions ? context.actions() : {rest: hostSlot('actions'), main: nothing};
   return html`<header class=${classes} style=${context.rootStyle || nothing}>
-    ${hasHostSlot('path') ? html`<div class="sf-page-header-path flex items-cross-center min-w-0">${hostSlot('path')}</div>` : nothing}
+    ${hasHostSlot('path') || hasHostSlot('path-end')
+      ? html`<div class="sf-page-header-path flex items-cross-center min-w-0">${hasHostSlot('path') ? hostSlot('path') : nothing}${hasHostSlot('path-end')
+        ? html`<div class="sf-page-header-path-end flex items-cross-center">${hostSlot('path-end')}</div>`
+        : nothing}</div>`
+      : nothing}
     <div class="sf-page-header-line flex items-cross-center flex-wrap min-w-0">
       ${hasHostSlot('start') ? hostSlot('start') : nothing}
       <div class="sf-page-header-title flex items-cross-center min-w-0">

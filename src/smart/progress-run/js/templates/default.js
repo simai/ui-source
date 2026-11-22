@@ -31,7 +31,9 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 // look row (a table row; compact is its dated former name, C134): one line --
 // the bar and «62 % · 3 мин» while it runs, the badge once it stopped -- and
 // icon actions. look notice: the mark in the icon field (the ring, or the
-// state's icon), the name and a line of figures, and Expand.
+// state's icon), the name and a line of figures, and Expand; a run that
+// failed and can be run again shows Retry before Expand (1.6.0, AS-4: the
+// admin's activity list had no way to run a failed job again in place).
 
 // The rung below the run's: texts, times, the output, the badges and the
 // buttons. A size the template gives is relative to the run's (density, C22).
@@ -197,7 +199,7 @@ function iconActions(context) {
     ${showPause ? one('pause', 'pause', words.pause, () => component.onPause()) : nothing}
     ${showResume ? one('resume', 'play_arrow', words.resume, () => component.onResume()) : nothing}
     ${showCancel && view === 'row' ? one('cancel', 'close', words.cancel, () => component.onCancel()) : nothing}
-    ${showRetry && view === 'row' ? one('retry', 'replay', context.retryWord, () => component.onRetry()) : nothing}
+    ${showRetry ? one('retry', 'replay', context.retryWord, () => component.onRetry()) : nothing}
     ${view === 'notice' ? one('expand', 'open_in_full', `${words.expand}: ${regionLabel}`, () => component.onExpand()) : nothing}
   </span>`;
 }

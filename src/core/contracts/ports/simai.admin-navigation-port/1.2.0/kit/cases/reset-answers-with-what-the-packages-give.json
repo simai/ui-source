@@ -1,0 +1,31 @@
+{
+  "id": "reset-answers-with-what-the-packages-give",
+  "intent": "view.reset",
+  "capability": "menu-profiles",
+  "summary": "A reset answers with the menu as the packages give it, and the new revision.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.reset",
+    "payload": {
+      "profile": "personal",
+      "revision": "p1"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "navigation",
+      "revision"
+    ]
+  }
+}

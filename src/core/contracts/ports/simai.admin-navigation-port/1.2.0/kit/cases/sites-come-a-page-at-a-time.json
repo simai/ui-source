@@ -1,0 +1,36 @@
+{
+  "id": "sites-come-a-page-at-a-time",
+  "intent": "sites.search",
+  "capability": "site-switch",
+  "summary": "Sites arrive a page at a time with a cursor, echoing what was typed.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "sites.search",
+    "payload": {
+      "query": "",
+      "cursor": null
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "echo",
+      "items",
+      "next_cursor"
+    ],
+    "data_must_include": [
+      "sites_page"
+    ],
+    "note": "An agency may have hundreds of sites. The component never holds them all and never filters them itself."
+  }
+}

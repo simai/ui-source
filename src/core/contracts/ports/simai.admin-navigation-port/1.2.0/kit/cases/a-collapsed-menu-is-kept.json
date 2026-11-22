@@ -1,0 +1,30 @@
+{
+  "id": "a-collapsed-menu-is-kept",
+  "intent": "preference.compact",
+  "capability": "preferences",
+  "summary": "Collapsing the menu is kept for the next page.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "preference.compact",
+    "payload": {
+      "compact": true
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "compact"
+    ],
+    "note": "Larena keeps this today (`compact` in /admin/navigation/state). A menu that forgot it would open again on every page a person collapsed it on."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "switching-site-answers-with-the-new-sites-menu",
+  "intent": "site.switch",
+  "capability": "site-switch",
+  "summary": "Switching site answers with that site's menu: its rows, its favourites, the same install rows.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "site.switch",
+    "payload": {
+      "site": "shop.simai.ru",
+      "sequence": 4
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "echo",
+      "site",
+      "items",
+      "favourites"
+    ],
+    "note": "Install rows are the same on both sides of a switch; every site row may differ. A host that answered with only the new site's name would leave the old site's storages under it -- the mistake the switcher exists to prevent."
+  }
+}

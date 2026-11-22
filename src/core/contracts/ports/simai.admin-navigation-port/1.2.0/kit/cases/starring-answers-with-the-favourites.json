@@ -1,0 +1,30 @@
+{
+  "id": "starring-answers-with-the-favourites",
+  "intent": "favourite.toggle",
+  "capability": "favourites",
+  "summary": "Starring a row answers with the favourites as they now are.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "favourite.toggle",
+    "payload": {
+      "key": "data.requests",
+      "on": true
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "favourites"
+    ]
+  }
+}

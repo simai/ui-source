@@ -33,7 +33,13 @@
      token-component-background-color-names); the new one wins. */
   --sf-alert-bar--error-background: var(--sf-alert-bar-error-background-color, var(--sf-alert-bar-danger-background, var(--sf-error)));
   --sf-alert-bar--warning-background: var(--sf-alert-bar-warning-background-color, var(--sf-alert-bar-warning-background, var(--sf-warning)));
-  --sf-alert-bar--info-background: var(--sf-alert-bar-info-background-color, var(--sf-alert-bar-info-background, var(--sf-info)));
+  /* Info in the dark theme is a container (owner decision C420, an
+     exception to C16 for this level and theme only): the info container
+     (info 50 at 24, --sf-info-container) laid on the page surface, so the
+     sticky bar stays opaque. The light theme keeps the strong fill. The
+     value, --sf-alert-bar--info-container, is written on the info bar by
+     places.sf-place-container-dark-tones (mix/_mix__places.scss). */
+  --sf-alert-bar--info-background: var(--sf-alert-bar-info-background-color, var(--sf-alert-bar-info-background, var(--sf-alert-bar--info-container)));
   --sf-alert-bar--list-background: var(--sf-alert-bar-list-background-color, var(--sf-alert-bar-list-background, var(--sf-surface-area)));
   /* The rung: 1/2. */
   --sf-alert-bar--line: var(--sf-text-height-1\/2);
@@ -107,7 +113,26 @@
 
 .sf-alert-bar.sf-alert-bar--info {
   --sf-alert-bar--fill: var(--sf-alert-bar--info-background);
-  --sf-alert-bar--ink: var(--sf-on-info);
+  --sf-alert-bar--ink: var(--sf-on-alert-bar--info);
+  /* The info level's place (owner decision C420): in the light theme the
+     strong info place, tone for tone; in the dark a container -- the fill
+     above, the container's ink (--sf-on-info-container, info 90) -- read by
+     the same strong-place rules through these private tones, so what stands
+     on the bar takes the container's ink on the alpha scale (states 4/8/12,
+     fill 12/16/20, line 24, boundary 64, dim ink 80). Each dark tone is the
+     one the strong place's rule asks for, seen from a dark place with a
+     light ink: the ink 20 is 90, hover and press away from the place 15/10
+     are 95/98, a link's hover and press towards it 25/30 are 85/80, a raised
+     plate 90 is 30. The light halves are the info tones, so the light bar is
+     unchanged. Warning and error stay strong in both themes. The tones are
+     written by places.sf-place-container-dark-tones, so the palette is read
+     in the places layer, not here. */
+  // Custom properties, written in this layer as the raw tones were before:
+  // the mixin is a paint mixin, so the part is set to all around it.
+  @include paint.part(all);
+  @include places.sf-place-container-dark-tones('info', 'alert-bar--info');
+  @include paint.part(shape);
+  --sf-alert-bar--info: var(--sf-alert-bar--fill);
 }
 
 /* The bar is a strong coloured place of its level (C16; core
@@ -118,7 +143,7 @@
    bar as it draws on a surface. It had its own mix of the ink (line 48, fill
    16/20/24, dim ink and boundary at full ink). A fill the page sets through
    the public variables is the place's colour for a cut-out. */
-@each $c, $level in ('error': ':is(.sf-alert-bar--error, .sf-alert-bar--danger)', 'warning': '.sf-alert-bar--warning', 'info': '.sf-alert-bar--info') {
+@each $c, $level in ('error': ':is(.sf-alert-bar--error, .sf-alert-bar--danger)', 'warning': '.sf-alert-bar--warning', 'alert-bar--info': '.sf-alert-bar--info') {
   .sf-alert-bar#{$level} :is(.sf-alert-bar-row, .sf-alert-bar-strip) {
     @include places.sf-place-strong($c);
   }
@@ -542,7 +567,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   @include paint.part(paint);
-  @each $c, $level in ('error': ':is(.sf-alert-bar--error, .sf-alert-bar--danger)', 'warning': '.sf-alert-bar--warning', 'info': '.sf-alert-bar--info') {
+  @each $c, $level in ('error': ':is(.sf-alert-bar--error, .sf-alert-bar--danger)', 'warning': '.sf-alert-bar--warning', 'alert-bar--info': '.sf-alert-bar--info') {
     .sf-alert-bar#{$level} :is(.sf-alert-bar-row, .sf-alert-bar-strip) {
       @include places.sf-place-strong($c);
       --sf-surface-place: var(--sf-alert-bar--fill);

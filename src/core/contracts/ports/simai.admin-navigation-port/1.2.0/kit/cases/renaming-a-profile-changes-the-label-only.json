@@ -1,0 +1,30 @@
+{
+  "id": "renaming-a-profile-changes-the-label-only",
+  "intent": "view.rename",
+  "capability": "menu-profiles",
+  "summary": "A rename changes the label; the key and the layout stay.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.rename",
+    "payload": {
+      "profile": "expert",
+      "label": "Экспертный режим"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "profiles"
+    ]
+  }
+}

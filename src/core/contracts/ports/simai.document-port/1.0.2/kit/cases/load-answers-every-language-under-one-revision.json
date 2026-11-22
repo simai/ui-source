@@ -1,0 +1,176 @@
+{
+  "id": "load-answers-every-language-under-one-revision",
+  "intent": "document.load",
+  "capability": null,
+  "summary": "One load answers the element: its target, every language value under the one revision, the rights and the limits.",
+  "given": {
+    "capabilities": [],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    }
+  },
+  "when": {
+    "intent": "document.load",
+    "payload": {}
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "target",
+      "revision",
+      "languages",
+      "values",
+      "rights",
+      "limits"
+    ],
+    "expect": [
+      {
+        "path": "data.revision",
+        "equals": "7"
+      },
+      {
+        "path": "data.languages",
+        "equals": [
+          "ru",
+          "en"
+        ]
+      },
+      {
+        "path": "data.target.level",
+        "equals": "page"
+      },
+      {
+        "path": "data.values.ru.locale",
+        "equals": "ru"
+      },
+      {
+        "path": "data.values.en.locale",
+        "equals": "en"
+      },
+      {
+        "path": "data.limits.max_nodes",
+        "at_most": 200
+      },
+      {
+        "path": "data.limits.max_bytes",
+        "at_most": 262144
+      }
+    ],
+    "note": "There is no revision per language: data.revision is the element's."
+  }
+}

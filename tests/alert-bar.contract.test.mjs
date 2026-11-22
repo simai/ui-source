@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.7.5'); // the error bar's minimize at the C112 ink 64 // group build 9: 1.6.7 moved on by the merged branches or a GB9 patch // C282: 1.6.8 moved on by the language-file patch (Russian is a language file) // group build 10: 1.7.1 moved on by the merged branches or a GB10 patch // group build 13: 1.7.3 moved on by the merged branches or the C278 language patch // group build 14: 1.7.4 moved on by the merged branches or the C278 language patch
+  assert.equal(manifest.version, '1.8.0'); // AS-1: info in the dark theme is a container (C420) // the error bar's minimize at the C112 ink 64 // group build 9: 1.6.7 moved on by the merged branches or a GB9 patch // C282: 1.6.8 moved on by the language-file patch (Russian is a language file) // group build 10: 1.7.1 moved on by the merged branches or a GB10 patch // group build 13: 1.7.3 moved on by the merged branches or the C278 language patch // group build 14: 1.7.4 moved on by the merged branches or the C278 language patch
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);
@@ -92,9 +92,14 @@ test('the controls are the Framework\'s own: sf-button and sf-button-icon', () =
 });
 
 test('the sheet: one rung, the theme status roles, the narrow container and reduced motion', () => {
-  for (const role of ['--sf-error', '--sf-on-error', '--sf-warning', '--sf-on-warning', '--sf-info', '--sf-on-info']) {
+  for (const role of ['--sf-error', '--sf-on-error', '--sf-warning', '--sf-on-warning', '--sf-info']) {
     assert.ok(sheet.includes(`var(${role}`), role);
   }
+  // Info (C420, 1.8.0): the strong info place in the light theme, the info
+  // container in the dark; the core places mixin writes its tones and its
+  // ink (--sf-on-info light, --sf-on-info-container dark).
+  assert.match(sheet, /@include places\.sf-place-container-dark-tones\('info', 'alert-bar--info'\);/u);
+  assert.match(sheet, /--sf-alert-bar--ink: var\(--sf-on-alert-bar--info\);/u);
   assert.match(sheet, /--sf-alert-bar--padding-block: calc\(\(var\(--sf-alert-bar--control\) - var\(--sf-alert-bar--line\)\) \/ 2\);/u);
   assert.match(sheet, /@container sf-alert-bar \(max-width: #\{mq\.container-step\(h0\)\}\)/u);
   // C105 steps (AA-14): edge 16, icon to text 12, text to actions 16,

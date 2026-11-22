@@ -1,0 +1,29 @@
+{
+  "id": "the-last-shared-profile-stays",
+  "intent": "view.delete",
+  "capability": "menu-profiles",
+  "summary": "The last shared profile cannot be removed.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.delete",
+    "payload": {
+      "profile": "only"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

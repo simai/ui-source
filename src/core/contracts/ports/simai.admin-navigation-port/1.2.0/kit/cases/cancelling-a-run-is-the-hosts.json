@@ -1,0 +1,41 @@
+{
+  "id": "cancelling-a-run-is-the-hosts",
+  "intent": "activity.cancel",
+  "capability": "activity",
+  "summary": "Since 1.2.0: Cancel on a running run is the person's request; the host stops it, or refuses with a reason.",
+  "given": {
+    "capabilities": [
+      "activity",
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ],
+    "runs": [
+      {
+        "id": "r1",
+        "label": "Копия demo.test",
+        "state": "running",
+        "cancelable": true
+      }
+    ]
+  },
+  "when": {
+    "intent": "activity.cancel",
+    "payload": {
+      "id": "r1"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "runs"
+    ],
+    "data_must_include": [
+      "activity_page"
+    ]
+  }
+}

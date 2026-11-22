@@ -3,23 +3,23 @@ import {createHash} from 'node:crypto';
 import {existsSync, readdirSync, readFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import test from 'node:test';
-import {findRegion, loadCases, runKit} from '../src/core/contracts/ports/simai.document-port/1.0.1/kit/run.mjs';
+import {findRegion, loadCases, runKit} from '../src/core/contracts/ports/simai.document-port/1.0.2/kit/run.mjs';
 
-// simai.document-port 1.0.1 (draft 3; 1.0.0 is draft 2 as released, never changed): the host storage seam of a composition
+// simai.document-port 1.0.2 (draft 3 with its kit and diagnostic corrected; 1.0.1 and 1.0.0, draft 2, as released, never changed): the host storage seam of a composition
 // document. One storage element per site, section or page level, a value per
 // language, one revision for every language (owner decision 2026-11-10, item 7),
 // no record lock (item 4), areas inherited by the Recipe rule. The port is
 // modelled on simai.mail-port (ui-mail) and the Framework's chat port; the seven
 // intents are bx-simai.layout's seven document actions.
 const root = resolve(import.meta.dirname, '..');
-const at = join(root, 'src/core/contracts/ports/simai.document-port/1.0.1');
+const at = join(root, 'src/core/contracts/ports/simai.document-port/1.0.2');
 const read = (file) => JSON.parse(readFileSync(file, 'utf8'));
 const port = read(join(at, 'port.json'));
 const schema = read(join(at, 'document-port.schema.json'));
 const manifest = read(join(at, 'kit/manifest.json'));
 const cases = loadCases(join(at, 'kit'));
 const ANSWERS = ['applied', 'conflict', 'refused', 'unavailable'];
-const BASE = 'https://simai.io/contracts/ports/simai.document-port/1.0.1/';
+const BASE = 'https://simai.io/contracts/ports/simai.document-port/1.0.2/';
 
 // ui-source has no dependencies: a strict validator of the keywords these
 // schemas use, refusing any other (as scripts/manifest-schema.mjs does).
@@ -93,11 +93,11 @@ register(schema);
 const compile = (fragment, name) => validator(fragment, `${BASE}${name}`);
 const ajv = {compile: (document) => { register(document); return validator(document, document.$id); }, getSchema: (id) => validator(SCHEMAS.get(id), id)};
 
-test('the port is a composite host port of sf-editor, a draft 1.0.1 with no previous major', () => {
+test('the port is a composite host port of sf-editor, a draft 1.0.2 with no previous major', () => {
   const validate = ajv.compile(read(join(root, 'src/core/contracts/composite-host-port.v1.schema.json')));
   assert.ok(validate(port), JSON.stringify(validate.errors));
   assert.equal(port.port, 'simai.document-port');
-  assert.equal(port.version, '1.0.1');
+  assert.equal(port.version, '1.0.2');
   assert.equal(port.component, 'smart.editor');
   assert.equal(port.element, 'sf-editor');
   assert.equal(port.compatibility.previous_major, null);
@@ -508,7 +508,7 @@ test('draft 3 is named in the port, the schema and the kit', () => {
   assert.match(port.intents['document.save'].summary, /max-total-bytes/u);
   assert.match(port.answer.summary, /at least 7 days/u);
   assert.match(port.intents['history.list'].summary, /newest of its group/u);
-  assert.match(readFileSync(join(at, 'kit/README.md'), 'utf8'), /^# Conformance kit — document host port 1\.0\.1 \(draft 3\)/u);
+  assert.match(readFileSync(join(at, 'kit/README.md'), 'utf8'), /^# Conformance kit — document host port 1\.0\.2 \(draft 3, corrected\)/u);
 });
 
 // GB15-1 (DEV msg-d8ee9b8f): a released edition folder never changes, a draft
@@ -519,6 +519,32 @@ test('1.0.0 stays draft 2 as released; draft 3 is its own edition 1.0.1', () => 
   assert.equal(old.version, '1.0.0');
   assert.doesNotMatch(JSON.stringify(old), /draft 3/u);
   assert.equal(old.conformance.cases, readdirSync(join(released, 'kit/cases')).length);
-  assert.equal(port.version, '1.0.1');
+  assert.equal(port.version, '1.0.2');
   assert.ok(port.conformance.cases > old.conformance.cases);
+});
+
+// The admin set's parts (2026-11-22, item DP): 1.0.1 is released, so its
+// corrected kit case and diagnostic schema are 1.0.2; 1.0.1 keeps its files and
+// a host accepted against it stays valid. The two differ only in the edition's
+// own name, that one case and the diagnostic's limit and total.
+test('1.0.1 stays as released; the corrected kit and diagnostic are 1.0.2', () => {
+  const released = join(root, 'src/core/contracts/ports/simai.document-port/1.0.1');
+  const old = read(join(released, 'port.json'));
+  assert.equal(old.version, '1.0.1');
+  assert.equal(old.conformance.cases, port.conformance.cases);
+  assert.deepEqual(Object.keys(old.intents), Object.keys(port.intents));
+  assert.deepEqual(old.answer.schema, port.answer.schema);
+  const before = read(join(released, 'document-port.schema.json')).$defs.diagnostic.properties;
+  assert.ok(!('limit' in before) && !('total' in before));
+  assert.equal(schema.$defs.diagnostic.properties.limit.type, 'integer');
+  assert.equal(schema.$defs.diagnostic.properties.total.type, 'integer');
+  const id = 'load-describes-a-publication-made-outside-the-port';
+  const was = read(join(released, `kit/cases/${id}.json`));
+  const now = read(join(at, `kit/cases/${id}.json`));
+  assert.equal(was.given.drafts, undefined);
+  assert.equal(now.given.drafts[0].revision, '5');
+  for (const name of readdirSync(join(at, 'kit/cases'))) {
+    if (name === `${id}.json` || name === 'unknown-intent-is-refused.json') continue;
+    assert.equal(readFileSync(join(at, 'kit/cases', name), 'utf8'), readFileSync(join(released, 'kit/cases', name), 'utf8'), name);
+  }
 });

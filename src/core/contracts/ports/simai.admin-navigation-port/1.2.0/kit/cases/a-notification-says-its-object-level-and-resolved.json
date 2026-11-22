@@ -1,0 +1,64 @@
+{
+  "id": "a-notification-says-its-object-level-and-resolved",
+  "intent": "notifications.load",
+  "capability": "notifications",
+  "summary": "Since 1.2.0: a notification may say what it is about, its level and whether the problem has ended (true or words); the page validates against the 1.2.0 schema.",
+  "given": {
+    "capabilities": [
+      "activity",
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ],
+    "notifications": {
+      "groups": [
+        {
+          "key": "today",
+          "label": "Сегодня",
+          "items": [
+            {
+              "key": "n1",
+              "title": "demo.test не отвечает",
+              "when": "10:42",
+              "unread": true,
+              "object": "demo.test",
+              "level": "error",
+              "resolved": "снова отвечает с 11:05"
+            },
+            {
+              "key": "n2",
+              "title": "Копия demo.test сделана",
+              "when": "09:30",
+              "unread": false,
+              "object": "demo.test",
+              "level": "success",
+              "resolved": null
+            }
+          ]
+        }
+      ],
+      "unread": 1
+    }
+  },
+  "when": {
+    "intent": "notifications.load",
+    "payload": {
+      "cursor": null
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "groups",
+      "unread"
+    ],
+    "data_must_include": [
+      "notifications_page"
+    ],
+    "note": "given.notifications is the page the harness stores; a host that says none of object, level or resolved passes as well (1.1.0 hosts)."
+  }
+}
