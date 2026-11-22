@@ -1,3 +1,5 @@
+@use '../../../core/scss/vars/sf_var__hue' as *;
+
 /* The status words are the shared vocabulary: info, success, warning, error. The
    component renders the canonical class, and `danger`, the word this component
    used before, is matched beside it so existing markup and project CSS keep
@@ -335,6 +337,26 @@
 .sf-badge.sf-badge--outline:is(.sf-badge--error, .sf-badge--danger) {
   --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-error-outline));
   --sf-badge--color: var(--sf-badge-color, var(--sf-error));
+}
+
+/* A colour from the static palette (owner decision C411, 2026-11-22; C17
+   palette, C140 (2) BG-7): sf-badge--<hue> for the sixteen hues of
+   vars/_sf_var__hue.scss. The class sets the fill, tone 50 at the fill step
+   24 (the alpha scale's fill family, C43: no new tones or steps), and the
+   text --sf-on-surface, the same pair in light and dark, as a page wrote
+   through the public variables before (the docs example «Цвет из палитры»).
+   The public --sf-badge-background-color and --sf-badge-color still win.
+   Drawn only on the tonal looks (the selector of every tonal colour above);
+   an outline or the error count keep their own. A status class on the same
+   badge wins: status colours stay with the status classes (:not() below), so
+   a hue never paints a status. The edge on an inverse place (C208) is the
+   hue's graphic ink, tone 50 light and 70 dark (core/_sf_css__hue.scss). */
+@each $hue in $sf-static-hues {
+  .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--#{$hue}:not(.sf-badge--info, .sf-badge--success, .sf-badge--warning, .sf-badge--error, .sf-badge--danger) {
+    --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-#{$hue}-50--alfa-24));
+    --sf-badge--tonal-edge: light-dark(var(--sf-#{$hue}-50), var(--sf-#{$hue}-70));
+    --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
+  }
 }
 
 .sf-badge--size-1 {

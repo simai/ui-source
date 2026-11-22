@@ -109,6 +109,7 @@
                       "appearance",
                       "scheme",
                       "status",
+                      "hue",
                       "spacing"
                     ]
                   }

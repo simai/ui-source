@@ -18,7 +18,7 @@ const record = (id) => json('contracts/changes/journal.json').records.find((entr
 
 test('C134 sf-badge: icon-only replaces the boolean compact, a dated setting alias of the shim', () => {
   const component = json('src/smart/badge/component.json');
-  assert.equal(component.version, '1.7.0'); // 1.6.1: group build 6 patch (LC-2 words) // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file) // group build 13: 1.6.3 moved on by the merged branches or the C278 language patch // group build 14: 1.6.4 moved on by the merged branches or the C278 language patch
+  assert.equal(component.version, '1.8.0'); // C411: 1.7.0 moved on by the hue setting // 1.6.1: group build 6 patch (LC-2 words) // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file) // group build 13: 1.6.3 moved on by the merged branches or the C278 language patch // group build 14: 1.6.4 moved on by the merged branches or the C278 language patch
   assert.ok(!('compact' in component.settings));
   assert.deepEqual({type: component.settings['icon-only'].type, default: component.settings['icon-only'].default}, {type: 'boolean', default: false});
   assert.doesNotMatch(component.settings['icon-only'].summary, /legacy name|compatibility alias|dated alias/iu, 'icon-only stays printable by the composition');
@@ -31,7 +31,7 @@ test('C134 sf-badge: icon-only replaces the boolean compact, a dated setting ali
   const sheet = read('src/component/badges/scss/_css__badges.scss');
   assert.match(sheet, /\n\.sf-badge:is\(\.sf-badge--icon-only, \.sf-badge--compact\) \{/u, 'one class of specificity more than .sf-badge, as before');
   assert.doesNotMatch(sheet, /\.sf-badge\.sf-badge--compact/u);
-  assert.equal(json('src/component/badges/passport.json').version, '1.13.0'); // 1.10.2: the count word is a plural object (C177 follow-up #86); 1.10.1: an unsized badge's icon is the 1/3 icon (RG-BD-1); 1.10.0: the script's layout in the sheet (RG-B-53); 1.9.0: the dot is the shared .sf-dot (C185 (8)); 1.8.1: the words in lang files (LC-4) // C282: 1.10.2 moved on by the language-file patch (Russian is a language file) // C278: 1.11.1 moved on by the language packs // group build 13: 1.11.2 moved on by the merged branches or a GB11 merge // group build 14: 1.12.0 moved on by the merged branches or the C278 language patch
+  assert.equal(json('src/component/badges/passport.json').version, '1.14.0'); // C411: 1.13.0 moved on by the hue classes // 1.10.2: the count word is a plural object (C177 follow-up #86); 1.10.1: an unsized badge's icon is the 1/3 icon (RG-BD-1); 1.10.0: the script's layout in the sheet (RG-B-53); 1.9.0: the dot is the shared .sf-dot (C185 (8)); 1.8.1: the words in lang files (LC-4) // C282: 1.10.2 moved on by the language-file patch (Russian is a language file) // C278: 1.11.1 moved on by the language packs // group build 13: 1.11.2 moved on by the merged branches or a GB11 merge // group build 14: 1.12.0 moved on by the merged branches or the C278 language patch
   assert.deepEqual(record('attribute-badge-compact-to-icon-only').items, [{component: 'sf-badge', from: 'compact', to: 'icon-only'}]);
   assert.equal(record('attribute-badge-compact-to-icon-only').remove_after, '2027-01-01');
   assert.deepEqual(record('class-badges-compact-to-icon-only').items, [{component: 'sf-badge', from: 'sf-badge--compact', to: 'sf-badge--icon-only'}]);

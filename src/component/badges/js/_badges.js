@@ -1,7 +1,7 @@
 import {ComponentObserver} from "../../../core/js/ComponentObserver";
 import badgeUtility from '../json/badge.utility.json';
 import registerComponent from "../../register-helper";
-import {BADGE_MAIN_TONAL, BADGE_SCHEME_ALIASES, isRetiredMain, normalizeBadgeContract} from './contract';
+import {BADGE_MAIN_TONAL, BADGE_SCHEME_ALIASES, canonicalBadgeHue, isRetiredMain, normalizeBadgeContract} from './contract';
 import {noteDeprecated} from '../../../core/js/deprecations.js';
 
 class Badges extends ComponentObserver {
@@ -54,6 +54,12 @@ class Badges extends ComponentObserver {
             `sf-badge--${type}`,
             `sf-badge--${scheme}`,
         );
+        // A colour from the static palette (owner decision C411): the class
+        // sf-badge--<hue>; an unknown name draws nothing more.
+        const hue = canonicalBadgeHue(params.hue);
+        if (hue) {
+            this.badge.classList.add(`sf-badge--${hue}`);
+        }
         if (className) {
             this.badge.classList.add(...`${className}`.split(' ').filter(Boolean));
         }
