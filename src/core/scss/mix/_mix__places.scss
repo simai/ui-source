@@ -200,7 +200,7 @@ $sf-place-container-ink-roles: (
 // is the fill: the strong colour in the light theme, in the dark the
 // container (colour 50 at 24, as --sf-<c>-container) laid on the page surface,
 // so a sticky element stays opaque.
-@mixin sf-place-strong-dark-container($c, $place) {
+@mixin sf-place-container-dark-tones($c, $place) {
   @if paint.writes-paint() {
     --sf-#{$place}-container: light-dark(var(--sf-#{$c}), color-mix(in srgb, var(--sf-#{$c}-50) 24%, var(--sf-surface-page)));
     --sf-on-#{$place}: light-dark(var(--sf-on-#{$c}), var(--sf-on-#{$c}-container));

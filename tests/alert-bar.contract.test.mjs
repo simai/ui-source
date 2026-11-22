@@ -98,7 +98,7 @@ test('the sheet: one rung, the theme status roles, the narrow container and redu
   // Info (C420, 1.8.0): the strong info place in the light theme, the info
   // container in the dark; the core places mixin writes its tones and its
   // ink (--sf-on-info light, --sf-on-info-container dark).
-  assert.match(sheet, /@include places\.sf-place-strong-dark-container\('info', 'alert-bar--info'\);/u);
+  assert.match(sheet, /@include places\.sf-place-container-dark-tones\('info', 'alert-bar--info'\);/u);
   assert.match(sheet, /--sf-alert-bar--ink: var\(--sf-on-alert-bar--info\);/u);
   assert.match(sheet, /--sf-alert-bar--padding-block: calc\(\(var\(--sf-alert-bar--control\) - var\(--sf-alert-bar--line\)\) \/ 2\);/u);
   assert.match(sheet, /@container sf-alert-bar \(max-width: #\{mq\.container-step\(h0\)\}\)/u);

@@ -38,7 +38,7 @@
      (info 50 at 24, --sf-info-container) laid on the page surface, so the
      sticky bar stays opaque. The light theme keeps the strong fill. The
      value, --sf-alert-bar--info-container, is written on the info bar by
-     places.sf-place-strong-dark-container (mix/_mix__places.scss). */
+     places.sf-place-container-dark-tones (mix/_mix__places.scss). */
   --sf-alert-bar--info-background: var(--sf-alert-bar-info-background-color, var(--sf-alert-bar-info-background, var(--sf-alert-bar--info-container)));
   --sf-alert-bar--list-background: var(--sf-alert-bar-list-background-color, var(--sf-alert-bar-list-background, var(--sf-surface-area)));
   /* The rung: 1/2. */
@@ -125,12 +125,12 @@
      are 95/98, a link's hover and press towards it 25/30 are 85/80, a raised
      plate 90 is 30. The light halves are the info tones, so the light bar is
      unchanged. Warning and error stay strong in both themes. The tones are
-     written by places.sf-place-strong-dark-container, so the palette is read
+     written by places.sf-place-container-dark-tones, so the palette is read
      in the places layer, not here. */
   // Custom properties, written in this layer as the raw tones were before:
   // the mixin is a paint mixin, so the part is set to all around it.
   @include paint.part(all);
-  @include places.sf-place-strong-dark-container('info', 'alert-bar--info');
+  @include places.sf-place-container-dark-tones('info', 'alert-bar--info');
   @include paint.part(shape);
   --sf-alert-bar--info: var(--sf-alert-bar--fill);
 }
