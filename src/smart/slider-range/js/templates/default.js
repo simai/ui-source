@@ -117,24 +117,27 @@ export function renderRangeSliderTemplate(context) {
         context.field ? 'sf-range-slider-group--field' : '',
         context.disabled ? 'disabled' : '',
         context.readonly && !context.disabled ? 'readonly' : '',
+        // root-class and root-style land on the drawn root, the group that
+        // holds the name, the track and the from/to field, and whose width
+        // picks the field's layout (DEV F3, 2026-11-22: they went to the
+        // track, so a measure-narrow there left the group wide).
+        context.rootClass,
     );
     const rootClasses = joinClasses(
         'sf-range-slider',
         'flex-1',
         `sf-range-slider--size-${context.size}`,
-        context.rootClass,
         context.disabled ? 'disabled' : '',
         context.readonly && !context.disabled ? 'readonly' : '',
     );
 
     return html`
-        <div class=${groupClasses}>
+        <div class=${groupClasses} style=${valueOrNothing(context.rootStyle)}>
             ${renderHead(context)}
             <div class="sf-range-slider-line">
               <div class="sf-range-slider-track-column">
                 <div
                         class=${rootClasses}
-                        style=${valueOrNothing(context.rootStyle)}
                         data-min=${valueOrNothing(context.min)}
                         data-max=${valueOrNothing(context.max)}
                         data-start=${valueOrNothing(context.start)}

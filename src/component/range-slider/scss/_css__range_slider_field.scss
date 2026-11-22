@@ -212,9 +212,20 @@
   padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
 }
 
+// The frame's inline space is the track's inset: inside a read-only frame the
+// half-thumb inset of the open track (F2) does not add to it.
+.sf-range-slider-group.readonly .sf-range-slider .sf-range-slider-base {
+  margin-inline: 0;
+}
+
 // The scale under a framed track keeps to the track's ends.
 .sf-range-slider-group.readonly .sf-range-slider-scale {
+  margin-inline: 0;
   padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
+}
+
+.sf-range-slider-group.readonly :is(.sf-range-slider-scale-mark--start, .sf-range-slider-scale-mark--end) {
+  margin-inline-start: 0;
 }
 
 .sf-range-slider.readonly .sf-thumb-handle,
@@ -252,8 +263,13 @@
 // the variant ink one text step below the control. Each label stands in a
 // zero-wide anchor at its value: centred on it, the first and last held
 // inside the track, logical, so right-to-left needs nothing more.
+// The scale's anchors follow the track, half a thumb in from each side (F2):
+// the box itself stands in by that margin (the anchors are absolute, a
+// percentage of the box), and the end labels reach back out to the
+// component's edges, over the thumbs' outer edges.
 .sf-range-slider-scale {
   block-size: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  margin-inline: calc(var(--sf-thumb-handle--width, var(--sf-icon-size-3)) / 2);
   font-family: var(--sf-text--family);
   font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
   font-variant-numeric: tabular-nums;
@@ -272,10 +288,12 @@
 
 .sf-range-slider-scale-mark--start {
   justify-content: flex-start;
+  margin-inline-start: calc(var(--sf-thumb-handle--width, var(--sf-icon-size-3)) / -2);
 }
 
 .sf-range-slider-scale-mark--end {
   justify-content: flex-end;
+  margin-inline-start: calc(var(--sf-thumb-handle--width, var(--sf-icon-size-3)) / 2);
 }
 
 // The from/to field (owner decision C80, #r2-fields): a bordered field of the

@@ -19778,6 +19778,86 @@
       },
       "owner": "ui-source",
       "source": "src/component/badges/scss/_css__badges.scss; ui-control control/docs-review/decisions.md C411"
+    },
+    {
+      "id": "behaviour-drawer-close-axis-compact-switch-only",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-drawer 1.20.2 (DEV F1, msg-b4a29e05; C104 (4)): the close goes onto the axis of the switch that opened the panel only when that switch is compact, an icon button no wider than the head's close cell (the head's row, 48 / phone 44); a wider text opener keeps the close at the end of the head, in a phone-wide panel too.",
+      "items": [
+        {
+          "component": "smart.drawer",
+          "from": "close on the axis of any outermost opener",
+          "to": "close on the axis of a compact (icon) opener only"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A page that wants the close on a text opener's axis gives the panel an icon switch.",
+      "owner": "ui-source",
+      "source": "src/smart/drawer/index.js"
+    },
+    {
+      "id": "behaviour-slider-range-root-class-on-group",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-slider-range 1.8.0 (DEV F3, msg-b4a29e05): root-class and root-style land on the drawn root .sf-range-slider-group (name, track and from/to field; the container that picks the field's layout), not on the track part .sf-range-slider.",
+      "items": [
+        {
+          "component": "smart.slider-range",
+          "from": "root-class / root-style on .sf-range-slider",
+          "to": "root-class / root-style on .sf-range-slider-group"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A page whose root-class or root-style meant the track alone (a selector .measure-x.sf-range-slider, a width meant for the track without the field) writes it on .sf-range-slider-group's track through a page rule; inherited variables need nothing.",
+      "owner": "ui-source",
+      "source": "src/smart/slider-range/js/templates/default.js"
+    },
+    {
+      "id": "behaviour-range-slider-track-half-thumb-inset",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "component.range-slider 1.10.0 (DEV F2, msg-b4a29e05): the track stands half a thumb in from each side of .sf-range-slider, so the thumbs' outer edges stand on the component's edges (they overhung by half a thumb, 12 px at size 1); the Smart scale follows the inset; a read-only frame keeps its own inline space.",
+      "items": [
+        {
+          "component": "component.range-slider",
+          "from": "track across the whole width, thumbs half outside",
+          "to": "track inset by half a thumb, thumbs inside the component"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite; a page that padded a wrapper to keep the thumbs inside may drop that padding.",
+      "owner": "ui-source",
+      "source": "src/component/range-slider/scss/_css__range_slider_custom.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-drawer-gb17-merge-close-axis-fill",
+      "kind": "behaviour",
+      "summary": "sf-drawer 1.21.1 (group build 17): the close-axis rule of 1.20.2 (DEV F1: the close on the opener's axis only for a compact switch) merged onto the released 1.21.0 (data-sf-drawer-fill); one patch above both.",
+      "items": [
+        {
+          "component": "smart.drawer",
+          "from": "1.21.0 without F1, or 1.20.2 without the fill marker",
+          "to": "both in 1.21.1"
+        }
+      ],
+      "source": "src/smart/drawer/component.json"
     }
   ]
 }

@@ -66,7 +66,11 @@ Smart wrapper for the project-owned `range-slider` component.
   range (`price=5000&price=20000`).
 - `tooltip-position="top|bottom"`, `label-position` — where the bubble stands.
 - `text-position` — no effect since 1.4.0 (kept for old markup).
-- `root-class`
+- `root-class`, `root-style` — classes and inline style of the drawn root,
+  `.sf-range-slider-group`: the element that holds the name, the track and the
+  from/to field, and whose width picks the field's layout (a `measure-narrow`
+  there puts «от» / «до» under the track). Inherited variables such as
+  `--sf-thumb-handle--width` reach the track from it.
 
 ## Methods
 
@@ -101,7 +105,7 @@ Thumb dimensions use the compact control-height token, not a font-size token.
 The existing `--sf-thumb-handle--width` and `--sf-thumb-handle--height` properties
 configure both visible thumb and pointer/focus owner. Set inherited CSS variables
 on an enclosing element, or pass a complete `style` / `root-style` declaration
-to the Smart host. `root-style` updates apply without resetting the value or
+to the Smart host (it lands on `.sf-range-slider-group`). `root-style` updates apply without resetting the value or
 recreating the slider; removing it restores the captured `style` defaults.
 `--sf-range-slider-track--height` also supplies the default progress thickness.
 Thumbs remain circular, plain solid discs with a soft shadow, and the inactive

@@ -6,10 +6,17 @@
   user-select: none;
 }
 
+// The track stands half a thumb in from each side, so a thumb at either end
+// keeps its outer edge on the component's edge, over the edge of a field under
+// it (DEV F2, 2026-11-22: the thumbs, centred on the ends of a full-width
+// track, stood half a thumb outside the component -- 12 px at size 1 -- and
+// beyond the «от» / «до» boxes). Values, the fill, the ticks and the pointer
+// all read this inset box.
 .sf-range-slider .sf-range-slider-base {
   height: var(--sf-thumb-handle--height, var(--sf-icon-size-3));
+  margin-inline: calc(var(--sf-thumb-handle--width, var(--sf-icon-size-3)) / 2);
   position: relative;
-  width: 100%;
+  width: auto;
 }
 
 .sf-range-slider .sf-range-slider-track {

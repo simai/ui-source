@@ -118,7 +118,7 @@ test('C205 (1): the content headings one rung below the title, all one size, con
 });
 
 test('C205: the version, its decision and its migration step', () => {
-  assert.equal(manifest.version, '1.21.0'); // GB16 returns: data-sf-drawer-fill // LF-9: the panel follows the theme // group build 9: 1.16.1 moved on by the merged branches or a GB9 patch // C282: 1.16.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.17.1 moved on by the merged branches or a GB10 patch // group build 13: 1.17.4 moved on by the merged branches or a GB11 merge // group build 14: 1.18.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(manifest.version, '1.21.1'); // GB17: F1 merged onto 1.21.0 // GB16 returns: data-sf-drawer-fill // LF-9: the panel follows the theme // group build 9: 1.16.1 moved on by the merged branches or a GB9 patch // C282: 1.16.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.17.1 moved on by the merged branches or a GB10 patch // group build 13: 1.17.4 moved on by the merged branches or a GB11 merge // group build 14: 1.18.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
   assert.match(manifest['x-decisions'][0], /^version 1\.16\.1 \(2026-11-15, owner decision C205/u);
   const step = manifest.compatibility?.migrations?.find?.((entry) => entry.to === '1.17.0')
     ?? JSON.stringify(manifest).match(/"from":"1\.16\.0","to":"1\.16\.1"/u);
