@@ -187,8 +187,10 @@ export const DRAW = {
     html: '<sf-empty-state kind="error"></sf-empty-state>'},
   'file-preview': {css: ['file-preview', 'icon-buttons'], js: 'file-preview',
     html: '<sf-file-preview file-name="Отчёт.pdf" file-size="2 МБ" href="#"></sf-file-preview>'},
+  // A slider with its position inside the picture (C398) beside the one with
+  // thumbnails: --sf-slider-dots-offset-block is that position's distance.
   slider: {css: ['slider', 'icon-buttons'], js: 'slider',
-    html: '<div style="inline-size:600px"><sf-slider thumbs><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Два"></sf-slider></div>'},
+    html: '<div style="inline-size:600px"><sf-slider thumbs><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Два"></sf-slider></div><div style="inline-size:600px"><sf-slider indicator="inside"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Один"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Два"></sf-slider></div>'},
   // The caption's colour is the viewer's (.sf-gallery-viewer-caption): the
   // viewer opens on the body (`parts`), on a page of its own.
   gallery: {css: ['slider', 'modal', 'icon-buttons', 'smart/smart/gallery/css/gallery.css'], js: ['slider', 'gallery'], parts: '.sf-gallery-viewer',
@@ -248,7 +250,8 @@ export const DRAW = {
     html: '<sf-tile-metric label="Диск" value="83" max="100" warning-at="80" hint="Мало места"></sf-tile-metric>'},
   // sf-list-attention (2026-11-07): two items, so the divider is drawn.
   'list-attention': {css: ['buttons', 'badges', 'icons', 'smart/smart/list-attention/css/list-attention.css'], js: ['list-attention', 'badge'],
-    html: `<sf-list-attention><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', status: 'error', title: 'A', action: {label: 'Go', href: '#a'}}, {id: 'b', status: 'warning', title: 'B'}]})}</script></sf-list-attention>`},
+    // frame="none" beside the card: its heading's gap is --sf-list-attention-gap.
+    html: `<sf-list-attention><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'a', status: 'error', title: 'A', action: {label: 'Go', href: '#a'}}, {id: 'b', status: 'warning', title: 'B'}]})}</script></sf-list-attention><sf-list-attention frame="none"><script type="application/json" data-sf-settings>${JSON.stringify({items: [{id: 'c', status: 'info', title: 'C'}]})}</script></sf-list-attention>`},
   // sf-progress-run (2026-11-07): two steps and the output open, so the
   // divider and the pane are drawn; 1.3.0 (C34): a total, so the overall bar
   // and its figures (the tight gap) are drawn too.
@@ -441,4 +444,5 @@ export const ROLES = {
   'ring-color': {properties: ['box-shadow', 'outline-color'], value: 'rgb(13, 14, 15)'},
   // The space above an entry of a feed (sf-list-feed): a run and a turn.
   'margin-block-start': {properties: ['margin-block-start', 'margin-top'], value: '37px'},
+  'margin-block-end': {properties: ['margin-block-end', 'margin-bottom'], value: '37px'},
 };

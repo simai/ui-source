@@ -207,7 +207,8 @@ because the defaults change.
   scale from 0.9; under reduced motion only the fade. An arrow with nowhere to
   go stays hidden there. On touch they are always shown. The position
   (`.sf-slider-dots`) and the pause button (`.sf-slider-rotation-place`) take
-  a row under the strip (and the thumbnails), the block's gap below it, centred
+  a row under the strip (and the thumbnails), the block's gap
+  (`--sf-slider-gap`) below it, centred
   as one group, the pause button `--sf-space-1` after the dots. Markup is
   unchanged: `.sf-slider-controls` lends its parts to the grid
   (`display: contents`).
@@ -238,8 +239,9 @@ A minor: nothing changes unless the page asks.
 - **Where**: `data-indicator="inside"` on a picture slider or a hero (not
   `sf-slider--content`, not a block with `.sf-slider-thumbnails`) stands the
   bare dots (`.sf-slider-dots--bare`) and the pause button over the bottom of
-  the picture, `--sf-space-2` above its edge (20 / 16, the arrows' step from
-  the sides), with no plate and no veil; the dots and the pause button share
+  the picture, `--sf-slider-dots-offset-block` above its edge (default
+  `--sf-space-2`, 20 / 16, the arrows' step from the sides; 2.2.0), with no
+  plate and no veil; the dots and the pause button share
   one centre line. The counter («2 / 12») stands in the end corner. Without the
   attribute the position stays under the picture (2.0.0).
 - **Ink, measured** (`data-indicator-ink` absent or `auto`): the slider reads

@@ -154,11 +154,13 @@
   pointer-events: auto;
 }
 
-/* The bar's distance under the strip (--sf-slider-dots-offset-block, by
-   default --sf-space-1, the block's gap): the bar stands that far below. */
+/* The bar stands the block's gap under the strip (--sf-slider-gap, by
+   default --sf-space-1). --sf-slider-dots-offset-block is the position's
+   distance from the picture's bottom edge inside it (C398, below; 2.2.0,
+   group build 16 returns): under the picture the block's gap is that
+   distance, and a second variable for it moved nothing a page could see. */
 .sf-slider:not(.sf-slider--content) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination, .sf-slider-rotation-place) {
   align-self: center;
-  margin-block-start: calc(var(--sf-slider-dots-offset-block, var(--sf-space-1)) - var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1))));
 }
 
 .sf-slider:not(.sf-slider--content) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination) {
@@ -208,7 +210,7 @@
 .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination, .sf-slider-rotation-place) {
   align-self: end;
   grid-row: 1;
-  margin-block: 0 var(--sf-space-2);
+  margin-block: 0 var(--sf-slider-dots-offset-block, var(--sf-space-2));
   position: relative;
   z-index: 2;
 }
@@ -218,11 +220,11 @@
 /* Two rules, not one list: a :has() inside :has() is no selector, and one
    such part drops the whole list. */
 .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-rotation-place:not([hidden], :has(> [hidden])) ~ :is(.sf-slider-dots, .sf-slider-pagination) {
-  margin-block-end: calc(var(--sf-space-2) + (var(--sf-ui-1--control-height) - var(--sf-slider-dots-dot--target-size)) / 2);
+  margin-block-end: calc(var(--sf-slider-dots-offset-block, var(--sf-space-2)) + (var(--sf-ui-1--control-height) - var(--sf-slider-dots-dot--target-size)) / 2);
 }
 
 .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination):has(~ .sf-slider-rotation-place:not([hidden])) {
-  margin-block-end: calc(var(--sf-space-2) + (var(--sf-ui-1--control-height) - var(--sf-slider-dots-dot--target-size)) / 2);
+  margin-block-end: calc(var(--sf-slider-dots-offset-block, var(--sf-space-2)) + (var(--sf-ui-1--control-height) - var(--sf-slider-dots-dot--target-size)) / 2);
 }
 
 .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-dots--count {

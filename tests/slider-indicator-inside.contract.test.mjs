@@ -38,10 +38,10 @@ test('C398: the row stands over the picture a space step above its edge, no plat
   const rule = sheet.slice(at, sheet.indexOf('}', at));
   assert.match(rule, /align-self: end;/);
   assert.match(rule, /grid-row: 1;/);
-  assert.match(rule, /margin-block: 0 var\(--sf-space-2\);/);
+  assert.match(rule, /margin-block: 0 var\(--sf-slider-dots-offset-block, var\(--sf-space-2\)\);/);
   assert.match(sheet, /> \.sf-slider-dots--count \{\s*grid-column: 4;\s*justify-self: end;\s*margin-inline-end: var\(--sf-space-2\);/);
   // The dots and the pause button share one centre line.
-  assert.match(sheet, /margin-block-end: calc\(var\(--sf-space-2\) \+ \(var\(--sf-ui-1--control-height\) - var\(--sf-slider-dots-dot--target-size\)\) \/ 2\);/);
+  assert.match(sheet, /margin-block-end: calc\(var\(--sf-slider-dots-offset-block, var\(--sf-space-2\)\) \+ \(var\(--sf-ui-1--control-height\) - var\(--sf-slider-dots-dot--target-size\)\) \/ 2\);/);
   // No :has() inside a :has() anywhere in the slider sheets (one drops its whole selector list).
   const nested = (text) => {
     for (let at = text.indexOf(':has('); at >= 0; at = text.indexOf(':has(', at + 5)) {
@@ -99,6 +99,6 @@ test('C398: the ink by hand is a public variable; versions', () => {
   const slider = variables.components.find((entry) => entry.component === 'slider');
   assert.ok(slider.variables.some((variable) => variable.name === '--sf-slider-indicator-ink'));
   assert.ok(manifest['css-variables']['--sf-slider-indicator-ink']);
-  assert.equal(passport.version, '2.1.0');
+  assert.equal(passport.version, '2.2.0'); // GB16 returns: the dots offset is the inside position's
   assert.equal(manifest.version, '1.5.0');
 });
