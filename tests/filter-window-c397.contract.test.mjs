@@ -46,7 +46,7 @@ test('PH-10: the condition band is one medium text «Условие: …», grey
 
 test('C397 versions: the round-3 step of each part, with the journal records', () => {
   assert.equal(json('src/smart/input-choice/component.json').version, '1.11.2');
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.0');
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.1'); // DSA-2: 1.25.1, the placeholder role
   assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.0');
   const ids = new Set(json('contracts/changes/journal.json').records.map((one) => one.id));
   for (const id of ['behaviour-input-choice-panel-list-inset', 'behaviour-filter-window-footer-start-column', 'behaviour-filter-window-condition-head-one-text']) assert.ok(ids.has(id), id);

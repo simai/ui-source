@@ -77,9 +77,8 @@ test('DS-4: in a scheme every floating surface has a 1 px edge in the text tone'
 
 test('DS-5: media, veil and chart roles take the scheme\'s tones, on the alpha scale', () => {
   const roles = block(core, '@mixin scheme-roles {');
-  for (const role of ['surface-media', 'surface-media-hover', 'surface-media-active']) {
-    assert.match(roles, new RegExp(`--sf-${role}: var\\(--sf-scheme-text\\);`, 'u'), role);
-  }
+  // DSA-4: hover and press moved off the rest value (tests/display-settings-dsa.contract.test.mjs).
+  assert.match(roles, /--sf-surface-media: var\(--sf-scheme-text\);/u);
   assert.match(roles, /--sf-on-surface-media: var\(--sf-scheme-ground\);/u);
   assert.match(roles, /--sf-surface-veil: #\{scheme-ground-alpha\(64\)\};/u);
   assert.match(roles, /@include aliases\.sf-role-aliases\(\('surface-veil',\)\);/u);

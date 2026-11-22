@@ -88,7 +88,7 @@
    role, as sf-input's -- --sf-on-surface-variant, which a filled field
    re-declares as the fill's dim ink -- and the disabled ink on a disabled
    field, for every appearance. The appearances set the variable, but nothing
-   drew it on the input's ::placeholder, so the browser's grey #757575 stood:
+   drew it on the input's ::placeholder, so the browser's own grey stood:
    3.56:1 on blue-on-sky, 4.06:1 on brown-on-cream, 4.1:1 in the dark theme. */
 .sf-dropdown .sf-dropdown-field input::placeholder {
   --sf-dropdown-placeholder--color: var(--sf-on-surface-variant);
