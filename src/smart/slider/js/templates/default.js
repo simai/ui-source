@@ -226,6 +226,10 @@ function renderPosition(context) {
 }
 
 const RATIOS = new Set(['16/9', '4/3', '3/2', '1/1', '21/9', 'auto']);
+// The position inside the picture and its ink (owner decision C398):
+// indicator="inside" on a picture slider or a hero; the ink is measured from
+// the picture unless the page writes light, dark or outline.
+const INKS = new Set(['light', 'dark', 'outline']);
 
 export function renderSliderTemplate(context) {
   context = {
@@ -246,6 +250,8 @@ export function renderSliderTemplate(context) {
       data-slide-label=${context.slideLabel || nothing}
       data-slide-roledescription=${context.slideRoleDescription || nothing}
       data-ratio=${RATIOS.has(ratio) ? ratio : '16/9'}
+      data-indicator=${normalizeOption(context.indicator) === 'inside' ? 'inside' : nothing}
+      data-indicator-ink=${INKS.has(normalizeOption(context.indicatorInk)) ? normalizeOption(context.indicatorInk) : nothing}
       data-pause-label=${context.pauseLabel || nothing}
       data-play-label=${context.playLabel || nothing}
       data-loop=${String(!!context.loop)}

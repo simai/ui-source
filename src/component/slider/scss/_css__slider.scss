@@ -177,6 +177,66 @@
   margin-inline-start: var(--sf-space-1);
 }
 
+/* The position inside the picture (owner decision C398, 2026-11-21; carousel
+   study #inside-r3): data-indicator="inside" on a picture slider or a hero
+   (not a card row, not with thumbnails) stands the bare dots, or «2 / 12»,
+   over the bottom of the picture, a space step above its edge
+   (--sf-space-2, 20 / 16, the arrows' step from the sides), with no plate
+   and no veil; the pause button keeps its place after the dots, its centre
+   on theirs. The counter stands in the end corner, as in a photo gallery.
+   The default stays under the picture. The ink: light or dark by the
+   picture's strip behind the row (the slider measures it and writes
+   data-ink), or a light dot with a 1 px dark ring where it cannot or where
+   the strip is of high variance (data-ink="outline", also before the first
+   measure). */
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) {
+  --sf-slider-indicator--ink-light: var(--sf-on-surface-media);
+  --sf-slider-indicator--ink-dark: var(--sf-surface-media-active);
+  /* The ring of the outline dots: the dark ink itself (black at 80, the top
+     of the ink family), so that the light fill or the ring reads at 3:1 or
+     more against any part of the picture (CAR-2). */
+  --sf-slider-indicator--ring: var(--sf-slider-indicator--ink-dark);
+  --sf-slider-indicator--ink: var(--sf-slider-indicator--ink-light);
+  /* The dots that are not the current one (read by the slider's measure too). */
+  --sf-slider-indicator--dot-opacity: var(--sf-opacity-80);
+}
+
+.sf-slider[data-indicator="inside"][data-ink="dark"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) {
+  --sf-slider-indicator--ink: var(--sf-slider-indicator--ink-dark);
+}
+
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination, .sf-slider-rotation-place) {
+  align-self: end;
+  grid-row: 1;
+  margin-block: 0 var(--sf-space-2);
+  position: relative;
+  z-index: 2;
+}
+
+/* The dots' row is a dot's target high, the pause button a button high: the
+   dots stand up by half the difference, so both share one centre line. */
+/* Two rules, not one list: a :has() inside :has() is no selector, and one
+   such part drops the whole list. */
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-rotation-place:not([hidden], :has(> [hidden])) ~ :is(.sf-slider-dots, .sf-slider-pagination) {
+  margin-block-end: calc(var(--sf-space-2) + (var(--sf-ui-1--control-height) - var(--sf-slider-dots-dot--target-size)) / 2);
+}
+
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > :is(.sf-slider-dots, .sf-slider-pagination):has(~ .sf-slider-rotation-place:not([hidden])) {
+  margin-block-end: calc(var(--sf-space-2) + (var(--sf-ui-1--control-height) - var(--sf-slider-dots-dot--target-size)) / 2);
+}
+
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-dots--count {
+  grid-column: 4;
+  justify-self: end;
+  margin-inline-end: var(--sf-space-2);
+}
+
+/* The pause button over the picture stands on the arrows' plate (C143 (2)):
+   the popup surface and the overlay shadow, its own fill over it. */
+.sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-rotation-place .sf-icon-button {
+  box-shadow: var(--sf-shadow-overlay);
+}
+
 /* Over a picture the arrows show where a pointer that can hover is (a
    mouse, a trackpad) and while the keyboard is in the slider
    (:focus-visible: a mouse press on an arrow does not keep them shown);
@@ -361,6 +421,10 @@
 }
 
 @layer sf.states {
+  .sf-slider[data-indicator="inside"]:not(.sf-slider--content):not(:has(> .sf-slider-thumbnails)) > .sf-slider-controls > .sf-slider-rotation-place .sf-icon-button {
+    background-color: var(--sf-surface-popup);
+    background-image: linear-gradient(var(--sf-icon-button--background-color), var(--sf-icon-button--background-color));
+  }
   .sf-slider .sf-slider-arrows--plate .sf-icon-button {
     background-color: var(--sf-surface-popup);
     background-image: linear-gradient(var(--sf-icon-button--background-color), var(--sf-icon-button--background-color));

@@ -672,6 +672,243 @@ function createLiveRegionGuard(slider, mainEl) {
   };
 }
 
+// The position inside the picture (owner decision C398, 2026-11-21; carousel
+// study #inside-r3, way B): a picture slider or a hero with
+// data-indicator="inside" draws its bare dots (or «2 / 12») over the bottom of
+// the picture, with no plate and no veil. The ink is the picture's: the strip
+// of the shown picture behind the row is measured on a small canvas, and the
+// row takes the light ink (--sf-on-surface-media) or the dark one
+// (--sf-surface-media-active), whichever stands out more from that strip --
+// for an even picture the switch falls at a relative luminance of about 0.2,
+// where both give the same contrast, the weakest dot at 3.3:1 or more. A
+// picture that cannot be measured (another site without CORS, a video, one
+// still loading, a background image), a strip of high variance (light and
+// dark parts at 3:1 or more to each other: one half light, one half dark, or
+// fine detail such as stripes; read at the row's own pixel size so that fine
+// detail is not averaged away) and a strip where the better ink still holds
+// less than 3:1 take way A: light dots with a 1 px dark ring, every dot at
+// full strength, so that the fill or the ring reads at 3:1 or more against
+// any part of the picture (WCAG 1.4.11; owner return CAR-2, 2026-11-21).
+// It is measured again on every slide change, when a picture loads and when
+// the block changes size; the ink changes over --sf-duration-normal (the
+// sheet; at once under reduced motion). The page may set the ink:
+// data-indicator-ink="light | dark | outline" (auto, the default, measures),
+// or the public variable --sf-slider-indicator-ink, which wins over both.
+// The strip is read at the row's own size in CSS pixels, at most this many.
+const INK_SAMPLE_MAX_WIDTH = 320;
+const INK_SAMPLE_MAX_HEIGHT = 48;
+const INK_MIN_CONTRAST = 3;
+const INK_WORDS = new Set(['light', 'dark', 'outline']);
+
+function indicatorBar(root) {
+  if (root.dataset.indicator !== 'inside' || isContentSlider(root)) return null;
+  if (root.querySelector(':scope > .sf-slider-thumbnails')) return null;
+  const bar = root.querySelector(':scope > .sf-slider-controls > .sf-slider-dots--bare');
+  return bar instanceof HTMLElement ? bar : null;
+}
+
+function channel(value) {
+  return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+}
+
+function luminance([r, g, b]) {
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+}
+
+function contrast(a, b) {
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+// A computed colour as sRGB 0..1 and its alpha: rgb(), rgba() or color(srgb).
+function parseColour(value = '') {
+  const numbers = (String(value).match(/-?[\d.]+(e-?\d+)?/gi) || []).map(Number);
+  if (numbers.length < 3) return null;
+  const unit = /^color\(/i.test(String(value).trim()) ? 1 : 255;
+  return {
+    rgb: numbers.slice(0, 3).map((n) => Math.min(1, Math.max(0, n / unit))),
+    alpha: numbers.length > 3 ? Math.min(1, Math.max(0, numbers[3])) : 1,
+  };
+}
+
+function readInk(root, property) {
+  const probe = document.createElement('span');
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;color:var(${property})`;
+  root.append(probe);
+  const colour = parseColour(getComputedStyle(probe).color);
+  probe.remove();
+  return colour;
+}
+
+// The ink laid over a pixel: the colour the eye sees on that pixel.
+function inkOver(ink, alpha, rgb) {
+  return luminance(ink.rgb.map((value, i) => alpha * value + (1 - alpha) * rgb[i]));
+}
+
+// Where the picture is drawn on screen, for object-fit fill, contain,
+// cover, none and scale-down and a percentage object-position.
+function drawnBox(img) {
+  const frame = img.getBoundingClientRect();
+  const width = img.naturalWidth;
+  const height = img.naturalHeight;
+  if (!width || !height || !frame.width || !frame.height) return null;
+  const style = getComputedStyle(img);
+  const fit = style.objectFit || 'fill';
+  let drawnWidth = frame.width;
+  let drawnHeight = frame.height;
+  if (fit !== 'fill') {
+    const contain = Math.min(frame.width / width, frame.height / height);
+    let scale = fit === 'cover' ? Math.max(frame.width / width, frame.height / height) : fit === 'none' ? 1 : contain;
+    if (fit === 'scale-down') scale = Math.min(1, contain);
+    drawnWidth = width * scale;
+    drawnHeight = height * scale;
+  }
+  const [posX, posY] = String(style.objectPosition || '50% 50%').split(/\s+/);
+  const place = (token, room) => (String(token).endsWith('%') ? (Number.parseFloat(token) / 100) * room : Number.parseFloat(token) || 0);
+  return {
+    left: frame.left + place(posX, frame.width - drawnWidth),
+    top: frame.top + place(posY, frame.height - drawnHeight),
+    width: drawnWidth,
+    height: drawnHeight,
+  };
+}
+
+function covers(element, x, y) {
+  const box = element.getBoundingClientRect();
+  return box.width > 0 && box.height > 0 && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
+}
+
+// The pixels behind the row: a picture's strip, or the opaque fill of the
+// deepest box of the slide under it. null with a reason when they cannot be
+// read.
+function stripPixels(slide, box) {
+  const x = (box.left + box.right) / 2;
+  const y = (box.top + box.bottom) / 2;
+  const under = [slide, ...slide.querySelectorAll('*')].filter((element) => covers(element, x, y));
+  const media = under.filter((element) => element.matches('img, video, canvas, svg, iframe, object, embed')).pop();
+  if (media) {
+    if (!(media instanceof HTMLImageElement)) return {reason: 'media'};
+    if (!media.complete || !media.naturalWidth) return {reason: 'loading'};
+    const drawn = drawnBox(media);
+    if (!drawn) return {reason: 'outside'};
+    try {
+      // The whole picture as it is drawn, scaled so the row's box fills the
+      // canvas at the row's own pixel size (fine detail stays); what lies
+      // outside the picture stays transparent.
+      const width = Math.max(1, Math.min(INK_SAMPLE_MAX_WIDTH, Math.round(box.width)));
+      const height = Math.max(1, Math.min(INK_SAMPLE_MAX_HEIGHT, Math.round(box.height)));
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d', {willReadFrequently: true});
+      const kx = width / box.width;
+      const ky = height / box.height;
+      context.drawImage(media, (drawn.left - box.left) * kx, (drawn.top - box.top) * ky, drawn.width * kx, drawn.height * ky);
+      const data = context.getImageData(0, 0, width, height).data;
+      const pixels = [];
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 128) continue;
+        pixels.push([data[i] / 255, data[i + 1] / 255, data[i + 2] / 255]);
+      }
+      return pixels.length ? {pixels, from: 'picture'} : {reason: 'transparent'};
+    } catch (error) {
+      // A picture from another site without CORS taints the canvas.
+      return {reason: 'cross-origin'};
+    }
+  }
+  for (const element of under.reverse()) {
+    const style = getComputedStyle(element);
+    if (style.backgroundImage && style.backgroundImage !== 'none') return {reason: 'background-image'};
+    const fill = parseColour(style.backgroundColor);
+    if (fill && fill.alpha >= 1) return {pixels: [fill.rgb], from: 'fill'};
+  }
+  return {reason: 'no-picture'};
+}
+
+function percentile(values, share) {
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * share))];
+}
+
+function measureInk(root, slider, bar) {
+  const authored = String(root.dataset.indicatorInk || '').trim().toLowerCase();
+  if (INK_WORDS.has(authored)) return {ink: authored, reason: 'author'};
+  const slide = slider.slides?.[slider.activeIndex];
+  if (!(slide instanceof HTMLElement)) return {ink: 'outline', reason: 'no-slide'};
+  const row = bar.getBoundingClientRect();
+  if (!row.width || !row.height) return {ink: 'outline', reason: 'hidden'};
+  // The row over the slide where the slide will rest: a slide still on its
+  // way (a smooth scroll after an arrow or a dot) is read at its stop.
+  const frame = slider.el?.getBoundingClientRect?.();
+  const own = slide.getBoundingClientRect();
+  const dx = frame ? own.left - frame.left : 0;
+  const dy = frame ? own.top - frame.top : 0;
+  const box = {left: row.left + dx, right: row.right + dx, top: row.top + dy, bottom: row.bottom + dy, width: row.width, height: row.height};
+  const strip = stripPixels(slide, box);
+  if (!strip.pixels) return {ink: 'outline', reason: strip.reason};
+  const light = readInk(root, '--sf-slider-indicator--ink-light');
+  const dark = readInk(root, '--sf-slider-indicator--ink-dark');
+  if (!light || !dark) return {ink: 'outline', reason: 'no-ink'};
+  // The weakest dot is one that is not the current one: the sheet's opacity
+  // for it (read from the block, not from a dot that may be fading).
+  const share = getComputedStyle(root).getPropertyValue('--sf-slider-indicator--dot-opacity').trim();
+  const weak = bar.querySelector('.sf-slider-dots-dot') && share
+    ? Math.min(1, Math.max(0, Number.parseFloat(share) / (share.endsWith('%') ? 100 : 1))) || 1
+    : 1;
+  const lums = strip.pixels.map(luminance);
+  const score = (ink) => percentile(strip.pixels.map((rgb, i) => contrast(inkOver(ink, ink.alpha * weak, rgb), lums[i])), 0.1);
+  const scores = {light: score(light), dark: score(dark)};
+  const best = scores.dark > scores.light ? 'dark' : 'light';
+  const mean = lums.reduce((sum, value) => sum + value, 0) / lums.length;
+  // High variance: the strip's light parts and its dark parts stand 3:1 or
+  // more apart (the 90th and the 10th percentile), so no single ink reads
+  // over all of it.
+  const spread = contrast(percentile(lums, 0.9), percentile(lums, 0.1));
+  const busy = spread >= INK_MIN_CONTRAST;
+  const holds = !busy && scores[best] >= INK_MIN_CONTRAST;
+  return {
+    ink: holds ? best : 'outline',
+    reason: holds ? strip.from : busy ? 'high-variance' : 'low-contrast',
+    luminance: Math.round(mean * 1000) / 1000,
+    spread: Math.round(spread * 100) / 100,
+    contrast: {light: Math.round(scores.light * 100) / 100, dark: Math.round(scores.dark * 100) / 100},
+  };
+}
+
+function createIndicatorInk(root, slider) {
+  const bar = indicatorBar(root);
+  if (!bar || typeof slider?.on !== 'function') return () => {};
+  let frame = 0;
+  const apply = () => {
+    frame = 0;
+    if (!root.isConnected) return;
+    const result = measureInk(root, slider, bar);
+    if (root.dataset.ink !== result.ink) root.dataset.ink = result.ink;
+    root._sfSliderInk = result;
+  };
+  const schedule = () => {
+    if (!frame) frame = window.requestAnimationFrame(apply);
+  };
+  const events = ['slideChange', 'transitionEnd', 'resize', 'update'];
+  events.forEach((name) => slider.on(name, schedule));
+  // A picture's load does not bubble; the block hears it on the way down, a
+  // picture that was still loading and one whose source changed alike.
+  root.addEventListener('load', schedule, true);
+  const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(schedule) : null;
+  observer?.observe(root);
+  // At once (the first frame shows the ink), and again once the layout settles.
+  apply();
+  schedule();
+  return () => {
+    events.forEach((name) => slider.off?.(name, schedule));
+    root.removeEventListener('load', schedule, true);
+    observer?.disconnect();
+    if (frame) window.cancelAnimationFrame(frame);
+    delete root.dataset.ink;
+    delete root._sfSliderInk;
+  };
+}
+
 function getSlidesCount(element) {
   return element?.querySelectorAll?.('.swiper-wrapper > .swiper-slide')?.length || 0;
 }
@@ -819,6 +1056,7 @@ function bindSlider(root, parts) {
     createAutoplayGuard(root, slider, rotationButton, parts),
     linkThumbnails(root, slider, thumbs),
     createLiveRegionGuard(slider, mainEl),
+    createIndicatorInk(root, slider),
   ];
 
   root._sfSliderNavigationLabels = navigationLabels.map(label => ({

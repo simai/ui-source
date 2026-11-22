@@ -102,6 +102,21 @@
       "expect": {
         "slides": 2
       }
+    },
+    {
+      "name": "inside",
+      "title": "Точки внутри картинки",
+      "settings": {
+        "indicator": "inside",
+        "ratio": "16/9"
+      },
+      "children": [
+        "<div slot=\"slide\" style=\"block-size:100%;background:#f4f1ea\">Светлый слайд</div>",
+        "<div slot=\"slide\" style=\"block-size:100%;background:#1f2a36;color:#fff\">Тёмный слайд</div>"
+      ],
+      "expect": {
+        "slides": 2
+      }
     }
   ],
   "pages": [
@@ -113,6 +128,8 @@
         "body": [
           "<main style=\"inline-size: 40rem\">",
           "  <sf-slider id=\"s1\" arrows dots=\"false\"><div>Один</div><div>Два</div><div>Три</div></sf-slider>",
+          "  <sf-slider id=\"s2\" indicator=\"inside\"><div slot=\"slide\" style=\"block-size:100%;background:#f4f1ea\">Светлый</div><div slot=\"slide\" style=\"block-size:100%;background:#1f2a36;color:#fff\">Тёмный</div></sf-slider>",
+          "  <sf-slider id=\"s3\" indicator=\"inside\" indicator-ink=\"outline\"><div slot=\"slide\" style=\"block-size:100%;background:#f4f1ea\">Один</div><div slot=\"slide\">Два</div></sf-slider>",
           "</main>"
         ]
       },
@@ -210,6 +227,27 @@
                   }
                 ]
               }
+            }
+          ]
+        },
+        {
+          "id": "p5-indicator-ink",
+          "title": "indicator=\"inside\" stands the dots over the picture and takes the ink by the slide under them: dark on a light slide, light on a dark one; indicator-ink=\"outline\" is the page's (C398)",
+          "covers": "settings.indicator, settings.indicator-ink",
+          "steps": [
+            {
+              "check": "(() => { const root = document.querySelector('#s2 .sf-slider'); const bar = root.querySelector('.sf-slider-dots'); const pic = root.querySelector('.sf-slider-main').getBoundingClientRect(); const box = bar.getBoundingClientRect(); return root.dataset.indicator === 'inside' && root.dataset.ink === 'dark' && box.bottom < pic.bottom && box.top > pic.top; })()",
+              "wait": 800
+            },
+            {
+              "script": "new Promise((done) => { const el = document.getElementById('s2'); el.slideNext(); setTimeout(() => done(el.querySelector('.sf-slider').dataset.ink), 700); })",
+              "wait": 900,
+              "expect": {
+                "returns": "light"
+              }
+            },
+            {
+              "check": "document.querySelector('#s3 .sf-slider').dataset.ink === 'outline' && document.querySelector('#s3 .sf-slider').dataset.indicatorInk === 'outline'"
             }
           ]
         }
