@@ -31,7 +31,11 @@ test('Tabs labels can shrink and wrap without clipping text or shrinking glyphs'
   const squeezed = /\.sf-tabs-top > \.sf-tabs-squeezed \.sf-button-text-container,?[^{]*\{[^}]*\}/;
   assert.match(css, squeezed);
   assert.match(css.match(squeezed)[0], /text-overflow: ellipsis/);
-  assert.doesNotMatch(css.replace(squeezed, ''), /text-overflow: ellipsis|overflow: hidden/);
+  // GB16 returns: the words of an icon-only current tab and of a compact
+  // «Ещё» stay in their buttons out of sight (clipped to nothing, not cut).
+  const outOfSight = /\.sf-tabs-top > \.sf-tabs-icon-only > button > \.sf-button-text-container,[^{]*\{[^}]*clip-path: inset\(50%\);[^}]*\}/;
+  assert.match(css, outOfSight);
+  assert.doesNotMatch(css.replace(squeezed, '').replace(outOfSight, ''), /text-overflow: ellipsis|overflow: hidden/);
 });
 
 test('full Tabs draw the line, so they have no seams to join (C96 (1))', () => {

@@ -6,7 +6,7 @@ import { isTag } from '../../core/js/tag-aliases.js';
 import { followDensity, RELATIVE } from '../../core/js/density.js';
 import { BREAKPOINTS, breakpointMedia } from '../../core/js/breakpoints.js';
 import { noteDeprecated } from '../../core/js/deprecations';
-import { fitInOrder, fitBesideMore, layoutRowRoom, layoutWidth, standardMenu, triggerExtra } from '../../core/js/overflow-row.js';
+import { fitInOrder, fitBesideMore, layoutRowRoom, layoutWidth, squeezeStep, standardMenu, textWidth, triggerExtra } from '../../core/js/overflow-row.js';
 import { menuOpen } from '../../core/js/menu-open.js';
 import { renderTabsTemplate, errorBadgeClasses } from './js/templates/default';
 import manifest from './component.json';
@@ -385,7 +385,7 @@ class SfTabs extends TabsElement {
     const expected = new WeakMap();
     hosts.forEach((host, at) => {
       const box = tabBox(host);
-      if (!box || host.classList.contains('sf-tabs-squeezed')) return;
+      if (!box || host.classList.contains('sf-tabs-squeezed') || host.classList.contains('sf-tabs-icon-only')) return;
       expected.set(box, kept && !kept.includes(at) ? 0 : widths[at]);
     });
     this._expectedTabSizes = expected;
@@ -1195,9 +1195,15 @@ class SfTabs extends TabsElement {
     const more = this.querySelector(':scope > .sf-tabs > .sf-tabs-top-container > .sf-tabs-more');
     if (!list) return;
     const hosts = Array.from(list.children).filter((element) => Number.isInteger(tabIndexOf(element)));
-    for (const host of hosts) host.classList.remove('sf-tabs-overflowed', 'sf-tabs-squeezed');
+    for (const host of hosts) {
+      host.classList.remove('sf-tabs-overflowed', 'sf-tabs-squeezed', 'sf-tabs-icon-only');
+      // The floor stands on the label box itself: sf-button hands its host's
+      // style to its button, so a floor left on the host outlived the layout.
+      tabBox(host)?.querySelector(':scope > .sf-button-text-container')?.style.removeProperty('--sf-tabs--squeezed-min');
+    }
     this._overflowed = [];
     const container = list.parentElement;
+    container?.removeAttribute('data-sf-tabs-more-compact');
     // The tabs are measured at their own widths; fit shares the row after.
     container?.removeAttribute('data-sf-tabs-fit');
     container?.setAttribute('data-sf-tabs-own', '');
@@ -1290,7 +1296,11 @@ class SfTabs extends TabsElement {
       kept = laid.kept;
       // The current tab alone is wider than the row: it alone may be
       // shortened, with an ellipsis; every other tab is whole or in «Ещё».
-      if (laid.squeezed >= 0) hosts[laid.squeezed].classList.add('sf-tabs-squeezed');
+      if (laid.squeezed >= 0) {
+        hosts[laid.squeezed].classList.add('sf-tabs-squeezed');
+        const grow = triggerExtra(textBox, label);
+        this.squeezeCurrent(hosts[laid.squeezed], list, more, grow ? grow(this._overflowed.length) : 0);
+      }
       hosts.forEach((host, at) => {
         // A class, not a data attribute: sf-button moves its data attributes
         // to the button inside it, and only class and style stay on the host.
@@ -1306,6 +1316,47 @@ class SfTabs extends TabsElement {
         more.setAttribute('aria-label', errors ? `${text}, ${this.errorWords(errors)}` : text);
       }
     }
+  }
+
+  // The current tab alone beside «Ещё» and wider than the row gives way by
+  // the tightest-row rule (squeezeStep, group build 16 returns GB16-1 and
+  // GB16-2): at least two letters before the ellipsis, else its icon alone,
+  // else «Ещё» draws its glyph alone too; a tab of words keeps two letters.
+  // Measured in this task, before the trigger draws its new count: extra is
+  // how much wider the trigger will be.
+  squeezeCurrent(host, list, more, extra = 0) {
+    const box = tabBox(host);
+    const text = box?.querySelector(':scope > .sf-button-text-container');
+    if (!box || !text) return;
+    const name = Array.from(((text.querySelector('.sf-tabs-name') ?? text).textContent || '').trim());
+    const widthOfText = textWidth(text);
+    if (!widthOfText || !name.length) return;
+    const twoLetters = widthOfText(name.length > 2 ? `${name.slice(0, 2).join('')}\u2026` : name.join(''));
+    const style = getComputedStyle(text);
+    const inner = parseFloat(style.width) || 0;
+    const sides = ['paddingInlineStart', 'paddingInlineEnd', 'borderInlineStartWidth', 'borderInlineEndWidth']
+      .reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
+    const textRoom = (style.boxSizing === 'border-box' ? inner - sides : inner) - extra;
+    const tabRoom = layoutRowRoom(list) - extra;
+    let iconOnly = null;
+    if (box.querySelector(':scope > sf-icon, :scope > .sf-icon')) {
+      host.classList.replace('sf-tabs-squeezed', 'sf-tabs-icon-only');
+      iconOnly = layoutWidth(box);
+      host.classList.replace('sf-tabs-icon-only', 'sf-tabs-squeezed');
+    }
+    const container = list.parentElement;
+    const trigger = more?.querySelector(':scope > button');
+    let moreGain = 0;
+    if (container && trigger) {
+      const full = layoutWidth(trigger) + extra;
+      container.setAttribute('data-sf-tabs-more-compact', '');
+      moreGain = full - layoutWidth(trigger);
+      container.removeAttribute('data-sf-tabs-more-compact');
+    }
+    const step = squeezeStep({tabRoom, textRoom, twoLetters, iconOnly, moreGain});
+    if (step.icon) host.classList.replace('sf-tabs-squeezed', 'sf-tabs-icon-only');
+    else text.style.setProperty('--sf-tabs--squeezed-min', `${twoLetters}px`);
+    if (step.compact) container?.setAttribute('data-sf-tabs-more-compact', '');
   }
 
   // The errors of some tabs, by index: what «Ещё» sums.

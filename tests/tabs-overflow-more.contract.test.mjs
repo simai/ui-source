@@ -43,7 +43,7 @@ test('the default change is in the change journal', () => {
 test('the row keeps the tabs in their order up to the first that does not fit, in its content box', () => {
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
   assert.ok(layout.length > 0);
-  assert.match(source, /import \{ fitInOrder, fitBesideMore, layoutRowRoom, layoutWidth, standardMenu, triggerExtra \} from '\.\.\/\.\.\/core\/js\/overflow-row\.js';/u);
+  assert.match(source, /import \{ fitInOrder, fitBesideMore, layoutRowRoom, layoutWidth, squeezeStep, standardMenu, textWidth, triggerExtra \} from '\.\.\/\.\.\/core\/js\/overflow-row\.js';/u);
   // C54 return: fractional, not the rounded clientWidth; sf-tabs 1.4.7: layout
   // pixels, before any transform (docs hero study 2026-11-19, section 9).
   assert.match(layout, /const room = \(\) => layoutRowRoom\(list\);/u);
@@ -97,8 +97,9 @@ test('a pinned tab gives way to the current one, and only a lone current tab is 
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
   assert.match(engine, /\?\? next\.slice\(\)\.reverse\(\)\.find\(\(at\) => at !== current\);/u);
   assert.match(engine, /const squeezed = kept\.length === 1 && kept\[0\] === current && spanOf\(widths, gap, kept\) > room \+ TOLERANCE \? current : -1;/u);
-  assert.match(layout, /if \(laid\.squeezed >= 0\) hosts\[laid\.squeezed\]\.classList\.add\('sf-tabs-squeezed'\);/u);
-  assert.match(layout, /host\.classList\.remove\('sf-tabs-overflowed', 'sf-tabs-squeezed'\);/u);
+  assert.match(layout, /if \(laid\.squeezed >= 0\) \{\n\s+hosts\[laid\.squeezed\]\.classList\.add\('sf-tabs-squeezed'\);/u);
+  // GB16 returns: the tightest row gives way by squeezeStep (icon alone, a compact trigger).
+  assert.match(layout, /host\.classList\.remove\('sf-tabs-overflowed', 'sf-tabs-squeezed', 'sf-tabs-icon-only'\);/u);
   const docs = read('src/smart/tabs/docs/docs.md');
   assert.match(docs, /закреплённая уступает место выбранной/u);
   assert.match(JSON.stringify(manifest['x-decisions']), /C54 return D1/u);

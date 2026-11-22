@@ -850,6 +850,62 @@
     white-space: nowrap;
   }
 
+  // The tightest row (group build 16 returns GB16-1, GB16-2; DEV's answer
+  // to question 1, 2026-11-22): the current tab alone beside «Ещё» keeps at
+  // least two letters before its ellipsis (the floor below, measured by the
+  // row); below that a tab with an icon draws its icon alone -- the whole
+  // glyph on the ladder with the tab's own padding (an underline tab its
+  // inner side, a plate both), never a cut glyph or an empty label box -- and
+  // when even that does not stand beside «Ещё (n)», the trigger draws its
+  // glyph alone as a square of its height (as shrink="icon" does, C370). The
+  // words stay in both buttons, out of sight, so their names are unchanged.
+  .sf-tabs-top > .sf-tabs-squeezed .sf-button-text-container,
+  .sf-tabs-top > .sf-button[data-sf-tabs-squeezed] > .sf-button-text-container {
+    min-inline-size: var(--sf-tabs--squeezed-min, calc(var(--sf-px) * 0));
+  }
+
+  .sf-tabs-top > .sf-tabs-icon-only > button,
+  .sf-tabs-top > .sf-button[data-sf-tabs-icon-only] {
+    flex: none;
+    max-inline-size: none;
+  }
+
+  .sf-tabs-top > .sf-tabs-icon-only > button > .sf-button-text-container,
+  .sf-tabs-top > .sf-button[data-sf-tabs-icon-only] > .sf-button-text-container,
+  .sf-tabs-top-container[data-sf-tabs-more-compact] > .sf-tabs-more > button > .sf-button-text-container {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    padding: 0;
+    margin: calc(-1 * var(--sf-px));
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sf-tabs-top-container[data-sf-tabs-more-compact] > .sf-tabs-more > button {
+    --sf-button--padding-inline-start: var(--sf-button--padding-top);
+    --sf-button--padding-inline-end: var(--sf-button--padding-top);
+    justify-content: center;
+  }
+
+  // An underline tab drawing its icon alone draws its line itself, as wide as
+  // the glyph (C242), on its bottom edge: the label that drew it is hidden.
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-icon-only > .sf-button,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-button[data-sf-tabs-icon-only] {
+    position: relative;
+  }
+
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-icon-only > .sf-button.selected:not(:disabled):not(.disabled)::after,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-button[data-sf-tabs-icon-only].selected:not(:disabled):not(.disabled)::after {
+    content: "";
+    position: absolute;
+    inset-inline: var(--sf-button--padding-inline-start) var(--sf-button--padding-inline-end);
+    inset-block-end: 0;
+    border-block-end: var(--sf-tabs-indicator-width, calc(var(--sf-tabs--border-width, var(--sf-px)) * 2)) solid var(--sf-tabs-indicator-color, var(--sf-primary));
+    pointer-events: none;
+  }
+
   // «Ещё (n)» is one line, a control of the tabs' size like a tab.
   .sf-tabs-more > button {
     white-space: nowrap;

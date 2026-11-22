@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tabs",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "title": "Tabs",
   "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "kind": "smart",
@@ -571,7 +571,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tabs/index.js",
-        "sha256": "6eb2e358985b79dd7f7fe678ee5f37fcc790e5f1c0545ce9651fc0242c0e2b85"
+        "sha256": "5399eaf1f452f08a407da86ccc765a8377023246820aa1eda47f11f763937ac7"
       }
     ],
     "generated_runtime": [

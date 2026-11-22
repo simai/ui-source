@@ -76,6 +76,27 @@ export function fitBesideMore({widths, gap = 0, room, must = [], current = -1, e
   return {kept, squeezed};
 }
 
+// The current tab alone beside «Ещё» and still wider than the row (squeezed
+// above): how it gives way (group build 16 returns GB16-1 and GB16-2, DEV's
+// answer to question 1, 2026-11-22). It is shortened with an ellipsis while at
+// least two letters stay before it; below that a tab with an icon draws its
+// icon alone -- the whole glyph and the tab's padding, never a cut glyph or a
+// one-letter stub -- and a tab of words keeps two letters and the ellipsis.
+// When even that does not stand beside «Ещё (n)», the trigger gives way: it
+// draws its glyph alone as a square (its words stay its name, as shrink="icon"
+// does, C370). The current tab never goes into «Ещё».
+//   tabRoom: the width the tab can have beside the trigger as it will be;
+//   textRoom: the label's own width there; twoLetters: the label's width with
+//   two letters and the ellipsis; iconOnly: the tab's width with its icon
+//   alone, or null for a tab without one; moreGain: how much narrower the
+//   trigger is with its glyph alone.
+// Answers {icon, compact}: the tab draws its icon alone; the trigger its glyph.
+export function squeezeStep({tabRoom, textRoom, twoLetters, iconOnly = null, moreGain = 0}) {
+  if (textRoom + TOLERANCE >= twoLetters) return {icon: false, compact: false};
+  if (iconOnly !== null) return {icon: true, compact: tabRoom + TOLERANCE < iconOnly && moreGain > 0};
+  return {icon: false, compact: moreGain > 0};
+}
+
 // The content box of a row that clips and has no scrollbar, in fractional
 // pixels: clientWidth is a whole pixel, and a row 383.6 px wide read as 383 or
 // 384 laid out differently (C54 return).
