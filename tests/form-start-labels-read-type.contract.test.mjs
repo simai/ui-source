@@ -20,5 +20,5 @@ test('a labels="start" form takes that type after the field label rule below 60r
   assert.ok(below > 0, 'the field label rule below 60rem (C153 (1)) stays for the other placements');
   assert.ok(start > 0, 'labels="start" sets the read list\'s label type');
   assert.match(form.slice(start, start + 200), /--sf-form--label-line: var\(--sf-text-height-1\\\/2\);/u);
-  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.14.1');
+  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.14.2'); // FS-6, FS-9 merged above F1b
 });

@@ -5065,17 +5065,37 @@ function onceByUrl(kind, src, insert) {
   return load;
 }
 
+// A script asked for before it may run (it waits for its relations or for
+// the page's words) is fetched at once and run later from the browser's
+// cache. It was a <link rel=preload>, and Chrome checks a page's preloads
+// three seconds after its network goes quiet: a preload made just before that
+// check, or one whose script waited on its relations past it, was reported as
+// «preloaded using link preload but not used within a few seconds» -- a
+// console warning on a page that did nothing wrong (FS-10, the admin settings
+// study, modal.min.js; 21 warnings in 6 loads at random 0..600 ms per file).
+// A warm-up request has no such check. It is the request the script element
+// will make (no-cors, the page's credentials), so the script is served from
+// the HTTP cache; a server that forbids caching (no-store) is asked twice,
+// as with no warm-up at all it would be asked once, later. Once per URL on the
+// page, shared by every Loader and bundle (the asset registry), and never for
+// a script already asked for. Only http(s): fetch cannot read file:.
 SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
-  if (typeof document === 'undefined' || !pluginURL) return;
+  if (typeof document === 'undefined' || !pluginURL || typeof globalThis.fetch !== 'function') return;
   const href = this.versionAssetUrl(pluginURL);
-  this.preloadedScripts = this.preloadedScripts || new Set();
-  if (this.preloadedScripts.has(href)) return;
-  this.preloadedScripts.add(href);
-  const link = document.createElement('link');
-  link.rel = 'preload';
-  link.as = 'script';
-  link.href = href;
-  document.head.append(link);
+  const key = assetKey(href);
+  if (!/^https?:/u.test(key)) return;
+  const registry = assetRegistry();
+  if (registry.scripts.has(key)) return;
+  if (!registry.warmed) registry.warmed = new Set();
+  if (registry.warmed.has(key)) return;
+  registry.warmed.add(key);
+  try {
+    globalThis.fetch(href, {mode: 'no-cors', credentials: 'include', priority: 'high'}).catch(() => {
+      registry.warmed.delete(key);
+    });
+  } catch {
+    registry.warmed.delete(key);
+  }
 };
 
 // The page's language file while it is on its way (owner decision C282,

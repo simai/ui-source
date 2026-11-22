@@ -9,6 +9,8 @@ import { ladderSize } from '../../field-size';
 import { localeText, pageLanguage, pageLocale, pageText } from '../../../core/js/page-language';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 import { tagSelector } from '../../../core/js/tag-aliases.js';
+// The flag button shows its name as the Framework's tooltip (FS-11, C144).
+import { unlinkNameTip } from '../../icon-buttons/js/_name-tooltip.js';
 // The words live in the component's language files (localization study LC-4):
 // one place for every language, as the Smart components keep them.
 import LANG_WORDS from '../lang/index.mjs';
@@ -115,7 +117,13 @@ function syncCountryAccessibility(root) {
       toggle.setAttribute('aria-haspopup', 'listbox');
       toggle.setAttribute('aria-controls', ensureCountryId(itemsWrap || list));
       toggle.setAttribute('aria-expanded', String(open));
+      // A flag is no words (C144): the button's name -- «Код страны: Россия
+      // (+7)», the chosen country in the page's language -- is its tooltip
+      // too, as an icon button's is, and follows the choice (FS-11).
+      toggle.setAttribute('data-sf-name-tip', '');
     } else {
+      toggle.removeAttribute('data-sf-name-tip');
+      unlinkNameTip(toggle);
       // With one fixed country the flag and code are a picture, not a control.
       // A span without a role does not get a name: an aria-label or
       // aria-disabled left on it is not allowed there and is never read. The

@@ -23,7 +23,7 @@ import {noteDeprecated} from '../../core/js/deprecations';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {nothing, html} from 'lit';
-import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
 import {renderFormTemplate} from './js/templates/default';
@@ -348,9 +348,21 @@ class SfForm extends FormElement {
   }
 
   sendable(values) {
-    const out = clone(values);
+    const out = this.typed(values);
     for (const field of this.list) {
       if (field.when && fieldConditions(field, values).visible === false) delete out[field.key];
+    }
+    return out;
+  }
+
+  // The values in the types their fields write (FS-9): a whole number set
+  // from code as «30» is sent, and compared for dirty, as the number 30 the
+  // field writes once typed (field renderers numberValue).
+  typed(values) {
+    const out = clone(values);
+    if (!out || typeof out !== 'object') return out;
+    for (const field of this.list) {
+      if (field?.key in out) out[field.key] = numberValue(field, out[field.key]);
     }
     return out;
   }
@@ -536,7 +548,7 @@ class SfForm extends FormElement {
     else this._values[key] = value;
     this._touched.add(key);
     this._hostErrors.delete(key);
-    this.setDirty(!same(this._values, this._saved));
+    this.setDirty(!same(this.typed(this._values), this.typed(this._saved)));
     this.sfEmit('input', {key, value});
     // apply instant: one sf-form-change per commit of the field (FO-1). A
     // value typed (written while an input event is on its way) is applied
@@ -913,6 +925,43 @@ class SfForm extends FormElement {
     return result;
   }
 
+  // A yes/no drawn as a checkbox has no label row (C165 (4)), and its «?»
+  // went with the row (FS-6): the form hands the checkbox the same mark it
+  // draws after a text field's label -- sf-help-mark size 1/2, the field's
+  // help and «Подробнее: <label>» -- through the checkbox's help slot, so it
+  // stands after the name beside the box (C59) at the size of every other
+  // «?» in the form. Set again only when the words change.
+  syncCheckboxHelp(control, field) {
+    if (typeof control.setSlot !== 'function') {
+      // Not upgraded yet: once it is.
+      if (control.__sfFormHelpWait || !globalThis.customElements) return;
+      control.__sfFormHelpWait = true;
+      globalThis.customElements.whenDefined(control.localName).then(() => {
+        control.__sfFormHelpWait = false;
+        if (control.isConnected) this.syncCheckboxHelp(control, field);
+      });
+      return;
+    }
+    const help = text(field.help);
+    const held = control.__sfFormHelp;
+    if (!help) {
+      if (held) {
+        control.__sfFormHelp = null;
+        control.setSlot('help');
+      }
+      return;
+    }
+    const label = this.sfWord('help-label', {vars: {label: field.label}});
+    if (held && held.help === help && held.label === label) return;
+    const mark = this.ownerDocument.createElement('sf-help-mark');
+    mark.className = 'sf-form-help';
+    mark.setAttribute('size', '1/2');
+    mark.setAttribute('text', help);
+    mark.setAttribute('label', label);
+    control.__sfFormHelp = {help, label};
+    control.setSlot('help', mark);
+  }
+
   syncControls() {
     for (const field of this.list) {
       const control = this.controlOf(field.key);
@@ -921,6 +970,7 @@ class SfForm extends FormElement {
       const speaks = speaksError(control);
       // A yes/no checkbox carries its label (a box beside its name, not under it).
       if (speaks && control.localName === 'sf-checkbox' && control.getAttribute('label') !== field.label) control.setAttribute('label', field.label);
+      if (speaks && control.localName === 'sf-checkbox') this.syncCheckboxHelp(control, field);
       if (speaks) {
         if (message) {
           if (control.getAttribute('error-message') !== message) control.setAttribute('error-message', message);

@@ -13,7 +13,10 @@ cannot reclaim a newly bound root or one with its mask removed. Stale instances
 are destroyed. This is consumer ownership, not a guarantee about downloading
 mask creation before its promise resolves.
 
-The shared picker exposes a named button and single-select listbox. Enter/Space
+The shared picker exposes a named button and single-select listbox. The button
+(the flag and its caret) is named by the chosen country in the page's language,
+«Код страны: Российская Федерация (+7)», and shows that name as the Framework's
+tooltip, as an icon button does (C144; 1.11.1). Enter/Space
 and ArrowDown/ArrowUp open the list with the cursor in its search field and the
 selected option scrolled into view; ArrowDown from the search moves to the first
 visible option, ArrowUp on the first option returns to the search, Home/End move

@@ -15,7 +15,7 @@ const sheet = read('src/smart/form/scss/_smart__form.scss');
 test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, footer, the descriptor list', () => {
   assert.equal(manifest.tag, 'sf-form');
   assert.equal(manifest.family, 'form');
-  assert.equal(manifest.version, '1.14.1'); // GB17 F1b // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 (a required yes/no as buttons asks for an answer) // group build 13: 1.12.0 (written as 1.9.0 on fix/larena-lf-data, LF-12) // 1.11.0 (written as 1.8.0 and 1.6.0, above 1.9.0 on origin) // 1.10.0 (written as 1.4.0, above HEAD's released 1.4.0): field conditions (FO-3) // 1.7.0 form fields: a hidden field is not sent (FO3-1) // 1.4.0: field conditions (FO-3) // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.14.2'); // FS-6, FS-9 (feat/form-defects-fs, merged in GB17); // GB17 F1b // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 (a required yes/no as buttons asks for an answer) // group build 13: 1.12.0 (written as 1.9.0 on fix/larena-lf-data, LF-12) // 1.11.0 (written as 1.8.0 and 1.6.0, above 1.9.0 on origin) // 1.10.0 (written as 1.4.0, above HEAD's released 1.4.0): field conditions (FO-3) // 1.7.0 form fields: a hidden field is not sent (FO3-1) // 1.4.0: field conditions (FO-3) // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
   assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'field-host', 'apply', 'size', 'state', 'labels', 'footer', 'label']);
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.ok(manifest.settings.labels.values.includes('start'));
@@ -34,7 +34,7 @@ test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, foote
 });
 
 test('C182 (1), (3): the controls are the field renderers\' own, the frame is the form\'s', () => {
-  assert.match(source, /import \{OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, propertyModes, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u);
+  assert.match(source, /import \{OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u);
   // apply instant still reaches the renderers; the yes/no control is the field's template (C303 (4)):
   // a checkbox takes its label beside the box, a switch and the buttons a label row.
   assert.match(source, /\{apply: 'instant'\}/u);

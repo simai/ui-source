@@ -2060,10 +2060,11 @@ function renderStepperEdit(field, value, host, {percent = false} = {}) {
 // is created, is how many digits it keeps after the point, 0 for a whole
 // number (an integer field reads as decimals 0); more is a field error,
 // never rounded, and a whole number has the digit keyboard. A number field
-// whose value arrives as a string, or that declares its decimals, is a
-// decimal-string field: it writes the canonical decimal string («1500.50»),
-// never a float. Any other number field -- an integer field among them --
-// writes a number, as before. Text that is not a number is reported as a
+// whose value arrives as a string, or that declares its decimals above 0, is
+// a decimal-string field: it writes the canonical decimal string («1500.50»),
+// never a float. A whole number (decimals 0, an integer field) writes a
+// number, or null when emptied, whatever its value came as (FS-9,
+// numberValue below); any other number field writes a number, as before. Text that is not a number is reported as a
 // masked string's incomplete entry is: through setFieldError, which holds the
 // save, and under the field once the person leaves it.
 function declaresDecimals(field) {
@@ -2071,7 +2072,28 @@ function declaresDecimals(field) {
 }
 
 function isDecimalStringField(field, value) {
+    if (resolveField(field, {quiet: true}).decimals === 0) return false;
     return typeof value === 'string' || declaresDecimals(field);
+}
+
+// A whole number (decimals 0, an integer field) is one type wherever its value
+// comes from (FS-9, C303 (2): number and integer are one type): a number, or
+// null when it is empty. It was a decimal string when typed («30») and a
+// number when set from code (50), so a form's value changed type with the
+// first keystroke. A whole number past Number.MAX_SAFE_INTEGER stays its
+// decimal string: a float would change its digits. A number with digits
+// after the point keeps the decimal string of the property-view port
+// («12.30», never a float); any other field, its value as it came.
+export function numberValue(field, value) {
+    const resolved = resolveField(field, {quiet: true});
+    if (resolved.type !== 'number' || resolved.decimals !== 0 || typeof value !== 'string') return value;
+    const read = readDecimal(value);
+    // Text that is not a whole number is the field's error, kept as typed.
+    if (!read.ok) return value;
+    if (read.value === null) return null;
+    if (fractionDigits(read.value) > 0) return value;
+    const number = Number(read.value);
+    return Number.isSafeInteger(number) ? number : read.value;
 }
 
 // A number's unit (`unit`, «шт», «кг») in every place the field is drawn
@@ -2119,7 +2141,7 @@ function renderNumberEdit(field, value, host) {
         }
         host.setFieldError?.(field, null);
         if (read.value === null) host.setFieldValue(field, null);
-        else host.setFieldValue(field, asString ? read.value : Number(read.value));
+        else host.setFieldValue(field, asString ? read.value : decimals === 0 ? numberValue(field, read.value) : Number(read.value));
     };
 
     return html`

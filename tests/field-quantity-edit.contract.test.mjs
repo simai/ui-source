@@ -26,7 +26,8 @@ test('only a stepper number is drawn with sf-quantity; the default number edit i
   // decimal one otherwise; an integer field still writes a number.
   const plain = body('renderNumberEdit');
   assert.match(plain, /inputmode=\$\{decimals === 0 \? 'numeric' : 'decimal'\}/u);
-  assert.match(plain, /host\.setFieldValue\(field, asString \? read\.value : Number\(read\.value\)\)/u);
+  // FS-9: a whole number writes a number through numberValue, digits after the point a decimal string
+  assert.match(plain, /host\.setFieldValue\(field, asString \? read\.value : decimals === 0 \? numberValue\(field, read\.value\) : Number\(read\.value\)\)/u);
   assert.match(source, /\n    number: renderNumberEdit,\n/u);
   assert.doesNotMatch(source, /\n    integer: renderNumberEdit,\n/u);
 });

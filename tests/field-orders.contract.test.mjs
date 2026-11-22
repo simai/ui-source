@@ -95,10 +95,10 @@ test('FO-4: the set asks for its words when it publishes itself, and whenFieldRe
 
 test('FO-6: sf-form declares a ru.inn field\'s holder', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.14.1'); // GB17 F1b: start labels take the read list's type // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 // form fields: 1.7.0 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
+  assert.equal(manifest.version, '1.14.2'); // FS-6, FS-9 (feat/form-defects-fs, merged in GB17); // GB17 F1b: start labels take the read list's type // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 // form fields: 1.7.0 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
   assert.deepEqual(manifest.settings.fields.schema.items.properties.holder, {type: 'string', enum: ['any', 'organization', 'person']});
   // FL-7: a phone field's starting country is declared too.
   assert.deepEqual(manifest.settings.fields.schema.items.properties.defaultCountry, {type: 'string', pattern: '^[A-Za-z]{2}$'});
   assert.match(manifest.settings.fields.summary, /holder \(a ru\.inn field: any, organization -- 10 digits -- or person -- 12\)/);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.0'); // gb17-fields F4: option badges take the hue class (C411) // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // cards-fw: 1.25.0 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.1'); // FS-9 (feat/form-defects-fs, merged in GB17); // gb17-fields F4: option badges take the hue class (C411) // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // cards-fw: 1.25.0 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
