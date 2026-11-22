@@ -2,6 +2,7 @@
   "title": "Tags",
   "runtime": {
     "remove": "Remove",
+    "remove-named": "Remove {label}",
     "more": {
       "one": "{n} more: {names}",
       "other": "{n} more: {names}"

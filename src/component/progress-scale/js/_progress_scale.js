@@ -98,6 +98,26 @@ function ensureScaleText(root) {
   return text;
 }
 
+// The value's text written into the node that holds it (1.7.3, PS-1): the
+// Smart element's template (lit) drew that node and keeps a reference to it
+// and to its marker; textContent replaced both, and the next drawing (a
+// resize, a new value) threw «Cannot set properties of null (setting
+// 'data')». Only a text written by hand inside elements is replaced whole.
+function writeScaleText(text, value) {
+  const nodes = [...text.childNodes];
+  if (nodes.some((node) => node.nodeType === 1)) {
+    text.textContent = value;
+    return;
+  }
+  const words = nodes.filter((node) => node.nodeType === 3);
+  if (!words.length) {
+    text.append(document.createTextNode(value));
+    return;
+  }
+  if (words[0].data !== value) words[0].data = value;
+  for (const node of words.slice(1)) if (node.data) node.data = '';
+}
+
 function syncScaleClasses(root, step, size, tone) {
   for (let current = 0; current <= 100; current += 10) {
     root.classList.toggle(`sf-progress-scale--${current}`, current === step);
@@ -156,10 +176,14 @@ function renderProgressScale(root) {
   if (root.dataset.valueText || words) root.setAttribute('aria-valuetext', root.dataset.valueText || words);
   else root.removeAttribute('aria-valuetext');
 
-  const text = ensureScaleText(root);
-  // «72 %»: one spelling of a per cent (owner decision C203 (3)); a level keeps its words (C185 (5)).
-  text.textContent = level ? (root.dataset.valueText || words) : percentText(value, root);
-  text.hidden = !showText;
+  // A scale without its text writes none (the Smart element draws no text
+  // node then; one made here would stand beside the one it draws later).
+  const text = showText ? ensureScaleText(root) : root.querySelector('.sf-progress-scale-text, .sf-scale-text');
+  if (text) {
+    // «72 %»: one spelling of a per cent (owner decision C203 (3)); a level keeps its words (C185 (5)).
+    writeScaleText(text, level ? (root.dataset.valueText || words) : percentText(value, root));
+    text.hidden = !showText;
+  }
   return true;
 }
 

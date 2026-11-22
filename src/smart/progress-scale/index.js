@@ -156,8 +156,12 @@ class SfProgressScale extends ProgressScaleElement {
     return normalizeProgressValue(this.value);
   }
 
+  // A new value, status or name is patched into the drawn scale; whether the
+  // text is drawn at all (show-text) changes what the template holds, so it
+  // is drawn again (1.4.3, PS-1: a text made by the patch stood beside the
+  // one the template drew next).
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'show-text', 'status', 'tone', 'warning-at', 'error-at', 'meter', 'label', 'value-text', 'aria-label'];
+    const directPatchAttributes = ['value', 'status', 'tone', 'warning-at', 'error-at', 'meter', 'label', 'value-text', 'aria-label'];
     if (
       changedAttributes.length > 0 &&
       changedAttributes.every((attr) => directPatchAttributes.includes(attr))

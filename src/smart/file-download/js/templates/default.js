@@ -153,7 +153,7 @@ function renderFile(context) {
   const sign = !preparing
     ? html`<i class="sf-download-file__icon sf-icon" aria-hidden="true">${context.icon}</i>`
     : hasValue
-      ? html`<span class="sf-download-file__ring" aria-hidden="true"><span class="sf-progress-ring" style=${`--sf-progress-ring--value:${context.value}`}><span class="sf-progress-ring-indicator"></span></span></span>`
+      ? html`<span class="sf-download-file__ring" aria-hidden="true"><span class="sf-progress-ring" style=${`--sf-progress-ring-value:${context.value}`}><span class="sf-progress-ring-indicator"></span></span></span>`
       : createInlineSpinner({ className: 'sf-download-file__spinner' });
 
   const tab = opensTab

@@ -9,13 +9,14 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 7,
-    "translated": 7,
+    "words": 8,
+    "translated": 8,
     "share": 100
   },
   "words": {
     "sf-tag": {
       "remove": "移除",
+      "remove-named": "移除 {label}",
       "more": {
         "other": "另外 {n} 个：{names}"
       },

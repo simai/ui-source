@@ -41,7 +41,8 @@ try {
     });
     await page.close();
     const where = lang ? `lang="${lang}"` : 'no lang';
-    if (seen.tag !== words.tag) failures.push(`${where}: sf-tag closeLabel ${seen.tag}, expected ${words.tag}`);
+    // sf-tag 1.13.0 (TG-1): the cross is named by its tag, «Удалить A».
+    if (seen.tag !== `${words.tag} A`) failures.push(`${where}: sf-tag closeLabel ${seen.tag}, expected ${words.tag} A`);
     if (!seen.tagRendered.includes(words.tag)) failures.push(`${where}: sf-tag renders "${seen.tagRendered}", expected ${words.tag}`);
     if (seen.phone !== (lang || 'en')) failures.push(`${where}: sf-input-country locale ${seen.phone}`);
   }

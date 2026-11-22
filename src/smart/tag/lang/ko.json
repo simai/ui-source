@@ -1,6 +1,7 @@
 {
   "runtime": {
     "remove": "제거",
+    "remove-named": "{label} 제거",
     "more": {
       "other": "{n}개 더: {names}"
     },

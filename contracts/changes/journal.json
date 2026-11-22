@@ -19563,6 +19563,29 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/button/component.json"
+    },
+    {
+      "id": "token-progress-ring-value-public",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "component.progress-ring 1.8.0 and sf-progress-ring 1.8.0 (docs gap pages, DEV PR-1): the ring's value is the public variable --sf-progress-ring-value, without the internal double dash, and is listed in the variables tables. --sf-progress-ring--value, the former name, is the registered number the sheet draws and moves with; written inline on the root it still wins until remove_after. sf-progress-ring and sf-download-file write the new name. A CSS name cannot be noted at runtime: the scan of known consumers (scripts/sf-upgrade.mjs) finds the old name.",
+      "items": [
+        {
+          "component": "component.progress-ring",
+          "from": "--sf-progress-ring--value",
+          "to": "--sf-progress-ring-value"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-token",
+      "examples": {
+        "before": "<div class=\"sf-progress-ring sf-progress-ring--size-2\" style=\"--sf-progress-ring--value: 85\">",
+        "after": "<div class=\"sf-progress-ring sf-progress-ring--size-2\" style=\"--sf-progress-ring-value: 85\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/progress-ring/scss/_css__progress_ring.scss; src/smart/progress-ring/js/templates/default.js; src/smart/file-download/js/templates/default.js"
     }
   ]
 }

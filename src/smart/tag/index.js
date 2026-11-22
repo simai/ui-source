@@ -155,7 +155,9 @@ function bareToggle(element) {
   const original = element?._sfOriginal;
   if (original && original !== element) return original.kind === 'checkbox';
   const group = element?.parentElement;
-  const selecting = group?.localName === 'sf-tag-group' && normalize(group.getAttribute('selection') || 'many') !== 'none';
+  // A group selects only when asked (its selection defaults to none): a bare
+  // tag in a plain group is a plain tag (1.13.0, TG-4).
+  const selecting = group?.localName === 'sf-tag-group' && normalize(group.getAttribute('selection') || 'none') !== 'none';
   if (!element?._sfChangeHeard && !selecting) return false;
   if (!element._sfBareToggleNoted) {
     element._sfBareToggleNoted = true;
@@ -371,6 +373,21 @@ class SfTag extends TagElement {
   cutText() {
     const label = this.querySelector(':scope > .sf-tag .sf-tag-container');
     return String(label?.textContent ?? this.text ?? '').trim();
+  }
+
+  // The remove action's name (1.13.0, TG-1): close-label when the page gave
+  // one; else «Удалить Москва», the tag's own name in the words of
+  // sf-input-lookup's chips, so the crosses of a row are told apart; a tag
+  // with no name keeps «Удалить».
+  get closeLabel() {
+    const given = this.getAttribute('close-label');
+    if (given !== null) return given;
+    const name = String(this.text || this.getAttribute('aria-label') || '').trim();
+    return name ? this.sfWord('remove-named', {vars: {label: name}}) : this.sfWord('remove');
+  }
+
+  set closeLabel(value) {
+    super.closeLabel = value;
   }
 
   // The tag's id in a group (sf-tag-group's selected and selected-ids): its

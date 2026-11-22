@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
   "id": "smart.progress-ring",
   "tag": "sf-progress-ring",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -152,6 +152,11 @@
     "$comment": "The ring itself (.sf-progress-ring-indicator) carries role progressbar, or meter when meter is on, with aria-valuemin 0, aria-valuemax 100, aria-valuenow the value (none while indeterminate) and aria-valuetext the value-text when given; the slot content stays a sibling of it, so a picture keeps its own name. It takes no focus and no keys."
   },
   "css-variables": {
+    "--sf-progress-ring-value": {
+      "type": "number",
+      "state": "default",
+      "x-summary": "The value drawn, 0 to 100, written by the element on its root; a page that prints the class markup writes it. Formerly --sf-progress-ring--value (an internal double dash), still drawn when written on the root until 2027-01-01."
+    },
     "--sf-progress-ring-size": {
       "type": "length",
       "state": "default",
@@ -219,7 +224,8 @@
     "version 1.6.5 (2026-11-20, DEV look answer to the held r6-size-3 question, (c) and (b); above 1.6.4, the highest on every origin branch): a patch, a look. The percentage in the middle of the ring is written with no space before the sign, «100%» (the no-break space of «100 %», C203 (3), ran it past the middle of size 3); its spoken value (aria-valuetext) keeps the space, as everywhere else. The middle clips what still does not fit at its own edge (component.progress-ring 1.6.1), so text never runs over the line. Settings, values, events and keys unchanged.",
     "version 1.7.0 (2026-11-20, group build 15, A1, DEV look answer msg-1c3a4f0b; above 1.6.5, the highest on every origin branch): a minor, a look and a relation. Size 1 draws no text inside the ring: show-text writes the percentage from size 2 up (14 / 16 px at 2 / 3); at 1 «100%» ran 1-3 px past the 32 px middle and a smaller step would fall off the text ladder. Up to size 1 the value asked for is the ring's tooltip: the root names a dark tooltip of size 1/3 by data-tooltip (the tooltip composition, component.tooltip, a lazy relation fetched when such a ring draws), its text the spoken percentage «62 %»; aria-valuenow and aria-valuetext are unchanged. A ring with content or an unknown value has none. The class twin (component.progress-ring 1.7.0) hides an aria-hidden percentage at size 1 as below it. The reference example is size 2. Journal: behaviour-progress-ring-size-1-no-text.",
     "version 1.7.1 (2026-11-21, group build 15, DEV GB15-2; one patch above 1.7.0 on every origin branch): a value of four characters («100%») takes the next smaller text step at sizes 2 and 3 (12 / 14 px; at 14 px it ran 41 px in the 40 px middle of size 2); size 2 in a compact region on a wide screen (a 32 px middle, 12 px the floor of the text ladder) does not draw it inside, the value stays the ring's name and aria-valuetext. The content is marked sf-progress-ring-content--long; figures stay tabular. component.progress-ring 1.7.1.",
-    "version 1.7.2 (2026-11-21, group build 15, DEV look answer msg-8e6b1330; one patch above 1.7.1 on every origin branch): a patch. A ring that draws no inner text because its value fits no text step (1.7.1: «100%» at size 2 of a compact region on a wide screen) carries the same tooltip as a ring of size 1 (A1, 1.7.0): a dark tooltip of size 1/3 with the spoken value, the root its trigger. The sheet decides what is drawn, so the ring reads it after each draw and when the screen crosses 60rem. The value stays the accessible name and aria-valuetext; a ring that draws its text has no tooltip."
+    "version 1.7.2 (2026-11-21, group build 15, DEV look answer msg-8e6b1330; one patch above 1.7.1 on every origin branch): a patch. A ring that draws no inner text because its value fits no text step (1.7.1: «100%» at size 2 of a compact region on a wide screen) carries the same tooltip as a ring of size 1 (A1, 1.7.0): a dark tooltip of size 1/3 with the spoken value, the root its trigger. The sheet decides what is drawn, so the ring reads it after each draw and when the screen crosses 60rem. The value stays the accessible name and aria-valuetext; a ring that draws its text has no tooltip.",
+    "version 1.8.0 (2026-11-22, docs gap pages DEV msg-ee572eff: PR-1; numbered above every origin branch, 1.7.2 the highest): a minor. The value the ring draws is the public variable --sf-progress-ring-value (css-variables, the docs' variables tables); the element writes it on its root. --sf-progress-ring--value, the former name with the internal double dash, is the registered number the sheet draws and moves with; written on the root it still wins until 2027-01-01 (journal token-progress-ring-value-public, component.progress-ring 1.8.0). Nothing drawn differently."
   ],
   "x-registry": {
     "capabilities": [

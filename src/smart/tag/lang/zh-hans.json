@@ -1,6 +1,7 @@
 {
   "runtime": {
     "remove": "移除",
+    "remove-named": "移除 {label}",
     "more": {
       "other": "另外 {n} 个：{names}"
     },

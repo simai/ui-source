@@ -9,13 +9,14 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 7,
-    "translated": 7,
+    "words": 8,
+    "translated": 8,
     "share": 100
   },
   "words": {
     "sf-tag": {
       "remove": "Удалить",
+      "remove-named": "Удалить {label}",
       "more": {
         "one": "Ещё {n}: {names}",
         "few": "Ещё {n}: {names}",
