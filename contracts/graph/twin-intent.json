@@ -410,6 +410,30 @@
       "reason": "recorded by group build 16 (G11): a link drawn as a button with a bare label takes the appearance's on-colour; sf-button renders a <button> or an <a> with the text container and takes the fix as it is",
       "decision": "G11 DEV msg-0bea9d3c",
       "date": "2026-11-21"
+    },
+    {
+      "unit": "component.tabs",
+      "version": "1.5.7",
+      "twin": "smart.tabs",
+      "reason": "recorded by group build 17 (L5): the plain tabs sheet gives a fitted tab a basis of twice its inline padding, so the tabs of a full row are equal whatever their content (720/720 at 1440, 195/195 at 390); sf-tabs draws the same classes and takes the sheet as it is",
+      "decision": "GB17 L5 skeleton-tabs 704 vs 736",
+      "date": "2026-11-22"
+    },
+    {
+      "unit": "smart.file-download",
+      "version": "1.6.3",
+      "twin": "component.download-file",
+      "reason": "recorded by group build 17 (merge of feat/forms-feedback-docs-gap, PR-1): sf-download-file's template writes the progress ring's public variable --sf-progress-ring-value instead of the internal one; the plain download-file markup has no ring value to write",
+      "decision": "forms and feedback docs gap PR-1",
+      "date": "2026-11-22"
+    },
+    {
+      "unit": "smart.tag",
+      "version": "1.13.0",
+      "twin": "component.tags",
+      "reason": "recorded by group build 17 (merge of feat/forms-feedback-docs-gap, TG-1, TG-4): sf-tag names its remove button after its text and a bare tag in a group that selects nothing stays a plain tag; both are the element's behaviour, the plain tag classes are unchanged",
+      "decision": "forms and feedback docs gap TG-1, TG-4",
+      "date": "2026-11-22"
     }
   ]
 }
