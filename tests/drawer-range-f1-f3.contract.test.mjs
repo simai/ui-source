@@ -31,7 +31,7 @@ test('F2: the track stands half a thumb in, so the thumbs keep to the component 
   assert.match(custom, /\.sf-range-slider \.sf-range-slider-base \{[^}]*margin-inline: calc\(var\(--sf-thumb-handle--width, var\(--sf-icon-size-3\)\) \/ 2\);[^}]*width: auto;/u);
   const field = read('src/component/range-slider/scss/_css__range_slider_field.scss');
   // The scale follows the inset; its end labels reach out to the edges.
-  assert.match(field, /\.sf-range-slider-scale \{[^}]*padding-inline: calc\(var\(--sf-thumb-handle--width, var\(--sf-icon-size-3\)\) \/ 2\);/u);
+  assert.match(field, /\.sf-range-slider-scale \{[^}]*margin-inline: calc\(var\(--sf-thumb-handle--width, var\(--sf-icon-size-3\)\) \/ 2\);/u);
   assert.match(field, /\.sf-range-slider-scale-mark--start \{[^}]*margin-inline-start: calc\(var\(--sf-thumb-handle--width, var\(--sf-icon-size-3\)\) \/ -2\);/u);
   assert.match(field, /\.sf-range-slider-scale-mark--end \{[^}]*margin-inline-start: calc\(var\(--sf-thumb-handle--width, var\(--sf-icon-size-3\)\) \/ 2\);/u);
   // A read-only frame keeps its own inline space for the track.
