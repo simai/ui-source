@@ -138,6 +138,7 @@ test('the sheet takes every value from the systems: gaps 16 and 8 from the roles
   assert.match(template, /const held = !busy && !context\.done;/u);
   assert.match(element, /return this\.rowNeed\(root\) > inner \+ 0\.5;/u, 'BB-1: the overflow is measured by width');
   assert.match(element, /this\._compactFrame = requestAnimationFrame\(measure\);/u, 'BB-2: the phone switch is made in the next frame');
+  assert.match(element, /this\.fitRow\(\);\n[\s\S]{0,400}?this\._fitFrame = requestAnimationFrame\(\(\) => this\.fitRow\(\)\);\n  \}/u, 'the fit is read again a frame after each drawing (a late button moves no clipped edge)');
   const values = sheet.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\/\/.*$/gmu, '');
   assert.doesNotMatch(values, /#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b/iu);
 });

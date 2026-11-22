@@ -275,6 +275,11 @@ class SfBulkActions extends BulkActionsElement {
       this._rowObserver.observe(root);
     }
     this.fitRow();
+    // The held row keeps its size when a button comes in late (a new action
+    // button draws after the bar, and clipped it moves no edge the observer
+    // sees): the fit is read again in the next frame, once it has drawn.
+    cancelAnimationFrame(this._fitFrame);
+    this._fitFrame = requestAnimationFrame(() => this.fitRow());
   }
 
   rowWraps(root) {

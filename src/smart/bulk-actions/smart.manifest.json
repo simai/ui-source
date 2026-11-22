@@ -431,7 +431,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/bulk-actions/index.js",
-        "sha256": "8a59a1cccd243c8f9369510ab3964f6e77e1c2e0bf77c08ec83811b24e87ea8f"
+        "sha256": "f4f3d900e6974662d85dd461d686134f341ac8351bea41309e6b82ad1688c1d0"
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
