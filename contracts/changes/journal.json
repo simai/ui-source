@@ -20082,6 +20082,26 @@
         }
       ],
       "source": "src/smart/dropdown/component.json"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A component that read SF.__internal.pendingTags.settled(tag) to learn that another element's module failed reads SF.Loader.settled(tag) (\"defined\" | \"failed\") or listens to the window event sf-loader-module-failed instead; the internal store stays internal.",
+      "owner": "ui-source",
+      "id": "behaviour-loader-module-failed-signal",
+      "kind": "behaviour",
+      "summary": "core.runtime (group build 17, L2): the Loader says in public that an element's script could not be loaded (the file and its other form, on this load or stored as missing by an earlier one): the window event sf-loader-module-failed, detail {rule, tags, package}, once per rule; SF.Loader.settled(tag), a promise of \"defined\" or \"failed\" that waits without asking and never rejects; SF.Loader.ensure() settles at once for such a tag and lists it in failed (and in missing, as before).",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "SF.__internal.pendingTags.settled(tag) (internal), ensure() waiting for the timeout",
+          "to": "SF.Loader.settled(tag), sf-loader-module-failed, ensure().failed"
+        }
+      ],
+      "source": "src/core/js/loader.js"
     }
   ]
 }

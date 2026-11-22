@@ -3390,6 +3390,10 @@ SFLoaderPlugin.prototype.loadPlugin = function (
     } else {
       this.isRelationPlugin(pluginName, null, smart, point, module, true);
     }
+  } else if (this.notFoundFiles[missKey]?.js) {
+    // Stored as missing by an earlier load (SF_MISSING_PLUGINS): the script is
+    // not asked for again, and its tags are as failed as on that load.
+    this.reportModuleFailed(pluginName);
   }
   // The sheets a Smart element's style gate waits for (ensureStylesReady) are
   // asked for with its script, not when it first draws: the utilities its
@@ -4835,14 +4839,63 @@ SFLoaderPlugin.prototype.addToMissingFiles = function (
   }
   if (type === 'js') {
     // The rule's tags will not be defined: nothing waits for them (D2).
-    const pending = globalThis.window?.SF?.__internal?.pendingTags;
-    const tags = this.findPlugins?.[pluginName]?.tags;
-    if (pending?.fail && Array.isArray(tags)) tags.forEach((tag) => pending.fail(tag));
+    this.reportModuleFailed(pluginName);
   }
   safeSetItem(
       'SF_MISSING_PLUGINS',
       encodeCacheValue(JSON.stringify(this.getPersistentMissingFiles())),
   );
+};
+
+// A rule's script could not be loaded (the file failed and its other form
+// too, on this load or stored as missing by an earlier one; GB17 L2). Its tags
+// will not be defined: each is let go from the first-paint hold at once and
+// settles as "failed" for SF.Loader.settled(tag) and SF.Loader.ensure(), and
+// the page hears it once per rule as the window event sf-loader-module-failed,
+// detail {rule, tags, package}. A component that waits for another one's tag
+// reads this instead of the core's internal pending-tags store (sf-view-table
+// read SF.__internal.pendingTags.settled() for its sf-view, ui-control
+// 86db6b49). Kept off the Loader object: its own names are a public list.
+const reportedModuleFailures = new WeakMap();
+SFLoaderPlugin.prototype.reportModuleFailed = function (pluginName) {
+  const reported = reportedModuleFailures.get(this) || new Set();
+  reportedModuleFailures.set(this, reported);
+  if (!pluginName || reported.has(pluginName)) return false;
+  reported.add(pluginName);
+  const rule = this.findPlugins?.[pluginName];
+  const tags = Array.isArray(rule?.tags) ? [...rule.tags] : [];
+  const pending = globalThis.window?.SF?.__internal?.pendingTags;
+  if (pending?.fail) tags.forEach((tag) => pending.fail(tag));
+  const win = globalThis.window;
+  if (typeof win?.dispatchEvent === 'function' && typeof win.CustomEvent === 'function') {
+    win.dispatchEvent(new win.CustomEvent('sf-loader-module-failed', {
+      detail: {rule: pluginName, tags, package: rule?.package || null},
+    }));
+  }
+  return true;
+};
+
+// The tags of rules whose script failed to load on this page.
+function failedTagSet() {
+  const pending = globalThis.window?.SF?.__internal?.pendingTags;
+  return new Set(typeof pending?.failed === 'function' ? pending.failed() : []);
+}
+
+// SF.Loader.settled(tag): a promise of "defined" when the element is defined,
+// or "failed" when the Loader could not load its script; it never rejects. It
+// waits and does not ask for the element (SF.Loader.ensure asks). A tag no
+// rule claims and nobody defines stays pending, as customElements.whenDefined.
+// The name is read as ensure() reads it (context-menu is sf-context-menu).
+SFLoaderPlugin.prototype.settled = function (tag) {
+  const registry = globalThis.customElements;
+  const name = ensureTagName(tag, this.getCustomElementRules());
+  if (!name) return Promise.resolve('failed');
+  if (registry?.get?.(name)) return Promise.resolve('defined');
+  if (failedTagSet().has(name)) return Promise.resolve('failed');
+  const pending = globalThis.window?.SF?.__internal?.pendingTags;
+  if (typeof pending?.settled === 'function') return pending.settled(name);
+  if (registry?.whenDefined) return registry.whenDefined(name).then(() => 'defined');
+  return new Promise(() => {});
 };
 
 SFLoaderPlugin.prototype.getAssetVersion = function () {
@@ -6073,10 +6126,17 @@ SFLoaderPlugin.prototype.ensure = function (tags, {timeout = 3000} = {}) {
       .map((tag) => ensureTagName(tag, rules))
       .filter(Boolean))];
   const pending = names.filter((tag) => !registry?.get?.(tag));
-  const report = () => ({
-    ready: names.filter((tag) => registry?.get?.(tag)),
-    missing: names.filter((tag) => !registry?.get?.(tag)),
-  });
+  // failed: the missing tags whose script failed to load (settled() says
+  // "failed"); a tag whose module failed settles the wait at once instead of
+  // at the timeout (GB17 L2).
+  const report = () => {
+    const failed = failedTagSet();
+    return {
+      ready: names.filter((tag) => registry?.get?.(tag)),
+      missing: names.filter((tag) => !registry?.get?.(tag)),
+      failed: names.filter((tag) => !registry?.get?.(tag) && failed.has(tag)),
+    };
+  };
   if (!pending.length || !registry?.whenDefined) return Promise.resolve(report());
 
   this.ensureWaits = this.ensureWaits || new Map();
@@ -6084,7 +6144,7 @@ SFLoaderPlugin.prototype.ensure = function (tags, {timeout = 3000} = {}) {
     const rule = this.getCustomElementRules()[tag];
     if (rule) this.ensurePlugin(rule);
     if (!this.ensureWaits.has(tag)) {
-      this.ensureWaits.set(tag, registry.whenDefined(tag).finally(() => this.ensureWaits.delete(tag)));
+      this.ensureWaits.set(tag, this.settled(tag).finally(() => this.ensureWaits.delete(tag)));
     }
     return this.ensureWaits.get(tag);
   });

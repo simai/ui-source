@@ -171,6 +171,17 @@ SF.RuleLoader.registerPackage('pro', {
   lists the tags that are defined, `missing` those that are not, for the
   caller's fallback. A tag already defined costs nothing, and callers of one
   tag share one fetch and one wait.
+- When an element's script cannot be loaded (the file fails, and its other
+  form too, on this load or stored as missing by an earlier one), the Loader
+  says so in public; a component that waits for another one's tag reads this
+  and never the core's internals. `SF.Loader.ensure()` settles at once for
+  such a tag and lists it in `failed` (and in `missing`, as before).
+  `await SF.Loader.settled('sf-view')` is `"defined"` or `"failed"`; it waits
+  without asking for the element and never rejects (a tag no rule claims and
+  nobody defines stays pending, as `customElements.whenDefined`). The window
+  event `sf-loader-module-failed` comes once per rule, with
+  `detail: {rule, tags, package}` (the rule's name, its tags, its package or
+  `null`).
 - What an element renders from its own code outside its own render -- a
   window, a menu or a panel it draws into a box of its own (a portal) -- is
   read by the Loader as the page is. A Smart element inside such a box does
