@@ -36,8 +36,10 @@
   /* Info in the dark theme is a container (owner decision C420, an
      exception to C16 for this level and theme only): the info container
      (info 50 at 24, --sf-info-container) laid on the page surface, so the
-     sticky bar stays opaque. The light theme keeps the strong fill. */
-  --sf-alert-bar--info-background: var(--sf-alert-bar-info-background-color, var(--sf-alert-bar-info-background, light-dark(var(--sf-info), color-mix(in srgb, var(--sf-info-50) 24%, var(--sf-surface-page)))));
+     sticky bar stays opaque. The light theme keeps the strong fill. The
+     value, --sf-alert-bar--info-container, is written on the info bar by
+     places.sf-place-strong-dark-container (mix/_mix__places.scss). */
+  --sf-alert-bar--info-background: var(--sf-alert-bar-info-background-color, var(--sf-alert-bar-info-background, var(--sf-alert-bar--info-container))));
   --sf-alert-bar--list-background: var(--sf-alert-bar-list-background-color, var(--sf-alert-bar-list-background, var(--sf-surface-area)));
   /* The rung: 1/2. */
   --sf-alert-bar--line: var(--sf-text-height-1\/2);
@@ -122,21 +124,11 @@
      light ink: the ink 20 is 90, hover and press away from the place 15/10
      are 95/98, a link's hover and press towards it 25/30 are 85/80, a raised
      plate 90 is 30. The light halves are the info tones, so the light bar is
-     unchanged. Warning and error stay strong in both themes. */
+     unchanged. Warning and error stay strong in both themes. The tones are
+     written by places.sf-place-strong-dark-container, so the palette is read
+     in the places layer, not here. */
+  @include places.sf-place-strong-dark-container('info', 'alert-bar--info');
   --sf-alert-bar--info: var(--sf-alert-bar--fill);
-  --sf-on-alert-bar--info: light-dark(var(--sf-on-info), var(--sf-on-info-container));
-  --sf-alert-bar--info-20: light-dark(var(--sf-info-20), var(--sf-info-90));
-  --sf-alert-bar--info-15: light-dark(var(--sf-info-15), var(--sf-info-95));
-  --sf-alert-bar--info-10: light-dark(var(--sf-info-10), var(--sf-info-98));
-  --sf-alert-bar--info-25: light-dark(var(--sf-info-25), var(--sf-info-85));
-  --sf-alert-bar--info-30: light-dark(var(--sf-info-30), var(--sf-info-80));
-  --sf-alert-bar--info-40: var(--sf-info-40);
-  --sf-alert-bar--info-80: light-dark(var(--sf-info-80), var(--sf-info-20));
-  --sf-alert-bar--info-90: light-dark(var(--sf-info-90), var(--sf-info-30));
-  --sf-alert-bar--info-95: var(--sf-info-95);
-@each $step in (4, 8, 12, 16, 20, 24, 64, 80) {
-  --sf-alert-bar--info-20--alfa-#{$step}: color-mix(in srgb, var(--sf-transparent), var(--sf-alert-bar--info-20) #{$step}%);
-}
 }
 
 /* The bar is a strong coloured place of its level (C16; core

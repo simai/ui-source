@@ -4026,8 +4026,8 @@
         {
           "name": "--sf-alert-bar-info-background-color",
           "role": "background",
-          "summary": "The bar's fill when it holds only info items; the text keeps --sf-on-info. The former name --sf-alert-bar-info-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
-          "default": "var(--sf-info)",
+          "summary": "The bar's fill when it holds only info items: the strong info colour in the light theme, the info container laid on the page surface in the dark (owner decision C420, sf-alert-bar 1.8.0); the text keeps --sf-on-info in the light theme and --sf-on-info-container in the dark. The former name --sf-alert-bar-info-background is still read, under this one, until 2027-01-01 (C16 naming, src/core/contracts/token-aliases.v1.json).",
+          "default": "light-dark(var(--sf-info), color-mix(in srgb, var(--sf-info-50) 24%, var(--sf-surface-page)))",
           "since": "2026-11-08"
         },
         {

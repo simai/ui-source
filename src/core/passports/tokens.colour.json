@@ -34,7 +34,7 @@
     "src/core/scss/vars/_sf_var__color.scss",
     "src/core/scss/vars/_sf_var__hue.scss"
   ],
-  "content_sha256": "99a205464ccf5e221436ffad148b5533950ca37d27b77b84e4576345fd1abb7f",
+  "content_sha256": "bdfe25756b1fa24bff0a120840fe93a18122baecbdd93cf42b4eac88ed5379d2",
   "dependencies": [
     {
       "id": "core.styles",
