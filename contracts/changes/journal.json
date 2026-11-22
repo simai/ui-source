@@ -20122,6 +20122,26 @@
         }
       ],
       "source": "src/core/contracts/packages/pro.package.json"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-tabs-fit-component-tab-basis",
+      "kind": "behaviour",
+      "summary": "component.tabs 1.5.7 (group build 17 L5): under fit (type=\"full\", C96 item 7) a tab drawn by the page's own component (sf-tabs setData component, a span around an inert copy) shares the row exactly like a button tab: its flex basis is the two paddings a button tab carries (the line's --sf-tabs--padding-inline, now set on the span too), so the zero basis no longer puts the buttons' padding on top of their share.",
+      "items": [
+        {
+          "component": "component.tabs",
+          "from": "span 704 beside a button 736 at 1440 (181 / 209 at 390)",
+          "to": "720 / 720 (195 / 195)"
+        }
+      ],
+      "source": "src/component/tabs/scss/_css__tabs.scss"
     }
   ]
 }

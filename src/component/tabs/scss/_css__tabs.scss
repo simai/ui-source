@@ -446,6 +446,20 @@
     --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-2--space-x));
   }
 
+  // The span of a tab drawn by a page's own component reads the same padding
+  // (its basis under fit; group build 17 L5).
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1--space-x));
+  }
+
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))).sf-tabs--size-1-2 > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-1\/2--space-x));
+  }
+
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))).sf-tabs--size-2 > .sf-tabs-top-container > .sf-tabs-top > span[role="tab"] {
+    --sf-tabs--padding-inline: var(--sf-tabs-padding-inline, var(--sf-ui-2--space-x));
+  }
+
   // The label is as wide as its letters: sf-button stretches it (flex-1) in a
   // button wider than its content, which a shared row is.
   :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-button .sf-button-text-container {
@@ -738,9 +752,14 @@
   // contents: the span is the row's item and shares it like a button, and the
   // button inside fills it (group build 16, G7: under fit, which replaced
   // type="full" (C96 item 7), the span kept its own 81 px beside 1359; TB-04).
+  // Its basis is the two paddings a button tab carries (the line's
+  // --sf-tabs--padding-inline, set on the span too): from a zero basis the
+  // buttons' padding came on top of their share and the span, which has none
+  // of its own, was 32 px narrower (704 beside 736 at 1440, 181 beside 209 at
+  // 390; group build 17 L5).
   .sf-tabs-top-container[data-sf-tabs-fit] > .sf-tabs-top > span[role="tab"] {
     display: flex;
-    flex: 1 1 0;
+    flex: 1 1 calc(2 * var(--sf-tabs--padding-inline, calc(var(--sf-px) * 0)));
     min-inline-size: max-content;
   }
 
