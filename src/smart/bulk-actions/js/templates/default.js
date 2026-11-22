@@ -93,14 +93,19 @@ function done(context) {
 
 export function renderBulkActionsTemplate(context) {
   const {words, component, size} = context;
+  const busy = Boolean(context.run || context.result);
+  // The count row is held on one line (BB-1): what does not fit yet is
+  // clipped at the end until the code folds it, never a second line for a
+  // frame. A run, a result or a done line may still wrap.
+  const held = !busy && !context.done;
   const classes = [
     'sf-bulk-actions',
     `sf-bulk-actions--${context.place}`,
     `sf-bulk-actions--size-${size}`,
     context.compact ? 'sf-bulk-actions--compact' : '',
+    held ? 'sf-bulk-actions--held' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
-  const busy = Boolean(context.run || context.result);
   const quiet = busy || Boolean(context.done && !context.done.actions);
   let lead;
   if (busy) lead = context.run ? run(context) : result(context);

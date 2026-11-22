@@ -117,6 +117,7 @@ class SfBulkActions extends BulkActionsElement {
     this._rowObserver?.disconnect();
     this._rowObserver = null;
     cancelAnimationFrame(this._fitFrame);
+    cancelAnimationFrame(this._compactFrame);
     clearTimeout(this._sayTimer);
     clearTimeout(this._doneTimer);
     super.disconnectedCallback?.();
@@ -242,7 +243,13 @@ class SfBulkActions extends BulkActionsElement {
       this._compact = compact;
       this.requestComponentUpdate('compact');
     };
-    this._widthObserver = new ResizeObserver(measure);
+    // From the observer the switch is made in the next frame (BB-2): drawn
+    // inside its call, the new row resized the box it watches and the browser
+    // reported a «ResizeObserver loop» on every widening past the sm step.
+    this._widthObserver = new ResizeObserver(() => {
+      cancelAnimationFrame(this._compactFrame);
+      this._compactFrame = requestAnimationFrame(measure);
+    });
     this._widthObserver.observe(box);
     measure();
   }
@@ -278,6 +285,37 @@ class SfBulkActions extends BulkActionsElement {
     return Math.max(...middles) - Math.min(...middles) > Math.min(...parts.map((box) => box.height)) / 2;
   }
 
+  // The width the row needs on one line (BB-1): the held row never wraps, its
+  // parts shrink and overflow instead, so the need is the parts' own widths --
+  // a group (the start, the end, the actions) is the sum of its items and its
+  // gaps, a host drawn as display: contents is its button.
+  rowNeed(element) {
+    const items = [];
+    const take = (node) => {
+      for (const child of node.children) {
+        const style = getComputedStyle(child);
+        if (style.display === 'none') continue;
+        if (style.display === 'contents') take(child);
+        else items.push(child);
+      }
+    };
+    take(element);
+    const gap = Number.parseFloat(getComputedStyle(element).columnGap) || 0;
+    const widths = items.map((item) => (item.matches('.sf-bulk-actions__lead, .sf-bulk-actions__end, .sf-bulk-actions__actions')
+      ? this.rowNeed(item) : item.getBoundingClientRect().width)).filter((width) => width > 0);
+    return widths.reduce((sum, width) => sum + width, 0) + Math.max(0, widths.length - 1) * gap;
+  }
+
+  // Whether the row does not fit: on the held row (sf-bulk-actions--held,
+  // one line, clipped) by width; on a row that may wrap (a done line or a
+  // result) by its parts' lines.
+  rowOverflows(root) {
+    if (!root.classList.contains('sf-bulk-actions--held')) return this.rowWraps(root);
+    const style = getComputedStyle(root);
+    const inner = root.clientWidth - (Number.parseFloat(style.paddingInlineStart) || 0) - (Number.parseFloat(style.paddingInlineEnd) || 0);
+    return this.rowNeed(root) > inner + 0.5;
+  }
+
   fitRow() {
     const root = this._rowRoot;
     if (!root || !root.isConnected || root.hidden) return;
@@ -299,7 +337,7 @@ class SfBulkActions extends BulkActionsElement {
       // C309 (1): on a phone the offer goes first, then the actions.
       const offerShown = Boolean(root.querySelector('.sf-bulk-actions__offer'));
       if (this._offerFold === null) {
-        if (offerShown && this.rowWraps(root)) {
+        if (offerShown && this.rowOverflows(root)) {
           this._offerFold = width;
           this.requestComponentUpdate('offer-fold');
           return;
@@ -335,23 +373,7 @@ class SfBulkActions extends BulkActionsElement {
   rowRoom(root) {
     const style = getComputedStyle(root);
     const inner = root.clientWidth - (Number.parseFloat(style.paddingInlineStart) || 0) - (Number.parseFloat(style.paddingInlineEnd) || 0);
-    const columnGap = Number.parseFloat(style.columnGap) || 0;
-    const span = (element) => {
-      const boxes = [...element.children].map((child) => (getComputedStyle(child).display === 'contents' ? child.firstElementChild : child))
-        .filter(Boolean).map((child) => child.getBoundingClientRect()).filter((box) => box.width > 0);
-      if (!boxes.length) return 0;
-      return Math.max(...boxes.map((box) => box.right)) - Math.min(...boxes.map((box) => box.left));
-    };
-    let used = 0;
-    let items = 0;
-    for (const child of root.children) {
-      const width = child.classList.contains('sf-bulk-actions__lead') ? span(child) : child.getBoundingClientRect().width;
-      if (width > 0) {
-        used += width;
-        items += 1;
-      }
-    }
-    return inner - used - Math.max(0, items - 1) * columnGap;
+    return inner - this.rowNeed(root);
   }
 
   // LV3-27, LV4-23: the actions fold by width. While the row wraps the last
@@ -363,7 +385,7 @@ class SfBulkActions extends BulkActionsElement {
     const actions = root.querySelector('.sf-bulk-actions__actions');
     if (!actions) return;
     const shown = actions.querySelectorAll(':scope > .sf-bulk-actions__action').length;
-    if (this.rowWraps(root)) {
+    if (this.rowOverflows(root)) {
       if (shown > 0) {
         this._fit = shown - 1;
         this._fitAt = width;

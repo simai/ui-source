@@ -431,15 +431,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/bulk-actions/index.js",
-        "sha256": "675b3e2ad3cec9e021fe4269ec2725c8a096773cb414092d49738412350cab28"
+        "sha256": "8a59a1cccd243c8f9369510ab3964f6e77e1c2e0bf77c08ec83811b24e87ea8f"
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
-        "sha256": "a00b570ddb8833ec67491ace53150392ca3023e922f421040cbd8f5eaede255a"
+        "sha256": "36cf18f93223579fc58966f046abe02a11e087c11f31eb28959b9a291a838736"
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
-        "sha256": "cf2d9192d75c8f8802d9188fd92ead5ace9fe51c45224d4bd0e1865fb507b349"
+        "sha256": "02870f92a8c0e9467f3aa00e8002922ec49a06b2aeaed48c46d1ccb8a84620b3"
       },
       {
         "path": "src/smart/bulk-actions/rule.js",

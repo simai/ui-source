@@ -54,13 +54,23 @@
   display: none;
 }
 
-/* The first paint (LV3-27): the static row is one line at any width, as the
-   code's row is once it has folded what does not fit into «⋯»; until the code
-   comes what does not fit is clipped at the end, so the bar is its drawn
-   height before the code as after it. */
-.sf-bulk-actions[data-sf-static] {
+/* One line (LV3-27, BB-1): the static row and the drawn count row are held
+   on one line at any width; until the code folds what does not fit into «⋯»
+   (the next frame after a jump narrower, the first frame out of the phone
+   row, an action tried back) it is clipped at the end, so the bar keeps its
+   height in every frame. The code measures the overflow by width. A run, a
+   result or a done line (no --held) still wraps. */
+.sf-bulk-actions[data-sf-static],
+.sf-bulk-actions--held {
   flex-wrap: nowrap;
   overflow: clip;
+}
+
+// The count and the offer keep their width on the held row: what is clipped
+// is the end (the actions), never «Выбрано N».
+.sf-bulk-actions--held .sf-bulk-actions__lead {
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 /* The first paint (C55): the static markup is the wide row; where the code

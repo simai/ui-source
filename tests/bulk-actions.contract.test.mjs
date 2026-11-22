@@ -133,7 +133,11 @@ test('the sheet takes every value from the systems: gaps 16 and 8 from the roles
   assert.ok(publicCount >= 5 && publicCount <= 10, `5-10 public variables, ${publicCount}`);
   // LV3-27, LV4-23: an action's words never wrap; the static row is one line.
   assert.match(sheet, /\.sf-bulk-actions__actions > \* > button,[\s\S]*?white-space: nowrap;/u);
-  assert.match(sheet, /\.sf-bulk-actions\[data-sf-static\] \{\s*flex-wrap: nowrap;\s*overflow: clip;/u);
+  assert.match(sheet, /\.sf-bulk-actions\[data-sf-static\],\s*\.sf-bulk-actions--held \{\s*flex-wrap: nowrap;\s*overflow: clip;/u, 'BB-1: the drawn count row is held on one line too');
+  assert.match(sheet, /\.sf-bulk-actions--held \.sf-bulk-actions__lead \{\s*flex-wrap: nowrap;\s*flex-shrink: 0;/u, '«Выбрано N» is never the part clipped');
+  assert.match(template, /const held = !busy && !context\.done;/u);
+  assert.match(element, /return this\.rowNeed\(root\) > inner \+ 0\.5;/u, 'BB-1: the overflow is measured by width');
+  assert.match(element, /this\._compactFrame = requestAnimationFrame\(measure\);/u, 'BB-2: the phone switch is made in the next frame');
   const values = sheet.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\/\/.*$/gmu, '');
   assert.doesNotMatch(values, /#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b/iu);
 });
