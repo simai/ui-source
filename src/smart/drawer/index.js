@@ -71,9 +71,7 @@ const DRAWER_AREAS = ['edge', 'footer', 'header-action'];
 // the step, the step in words. The steps are widths in characters since owner
 // decision C396 (2026-11-19): 44, 52 and 64 (20, 24 and 30rem before). A host width that is none of them is still
 // drawn until the date and said once (noteOffLadderWidth).
-// The character is the drawer's own (--sf-drawer--char, the normal ladder's: RP-1), so a
-// compact region keeps the steps.
-const LADDER_WIDTHS = [['1/2', 'calc(44 * var(--sf-drawer--char))', '44 characters'], ['1', 'calc(52 * var(--sf-drawer--char))', '52 characters'], ['2', 'calc(64 * var(--sf-drawer--char))', '64 characters']];
+const LADDER_WIDTHS = [['1/2', 'var(--sf-measure-44)', '44 characters'], ['1', 'var(--sf-measure-52)', '52 characters'], ['2', 'var(--sf-measure-64)', '64 characters']];
 const OFF_LADDER_SINCE = '2026-11-15';
 const OFF_LADDER_UNTIL = '2027-01-01';
 const AREA_SELECTORS = [['edge', '[data-sf-drawer-edge]'], ['footer', '[data-sf-drawer-foot]'], ['header-action', '[data-sf-drawer-action]']];

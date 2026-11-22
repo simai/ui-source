@@ -20434,26 +20434,6 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "kind": "behaviour",
-      "id": "behaviour-drawer-widths-keep-under-compact",
-      "summary": "sf-drawer 1.22.0 (group build 17 Y3, DEV return RP-1): the width ladder 1/2, 1, 2 is 44, 52, 64 characters of the normal ladder (--sf-drawer--char); compact density no longer narrows the panel (size 1 at 1440: 364 -> 416 px). Heights and inner spacing still follow density; widths still follow the page text size.",
-      "items": [
-        {
-          "component": "smart.drawer",
-          "from": "compact density: 308 / 364 / 448 px",
-          "to": "352 / 416 / 512 px, as in normal density"
-        }
-      ],
-      "source": "src/smart/drawer/scss/_smart__drawer.scss"
-    },
-    {
-      "recorded_on": "2026-11-22",
-      "stage": "compat",
-      "deprecated_on": "2026-11-22",
-      "remove_after": "2027-01-01",
-      "rewrite": "none",
-      "manual": "Nothing to rewrite.",
-      "owner": "ui-source",
-      "kind": "behaviour",
       "id": "behaviour-tabs-vertical-state-steps",
       "summary": "component.tabs 1.5.8 (group build 17 Y4, VR5-12): resting vertical tabs take the state family 4 / 8 / 12 for hover, keyboard focus and press, as the pills do; a press drew the hover's 4.",
       "items": [
@@ -20509,6 +20489,26 @@
         }
       ],
       "source": "src/core/js/scrollbars.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-drawer-gb17-y3-withdrawn",
+      "kind": "behaviour",
+      "summary": "sf-drawer 1.22.0 (group build 17): feat/gb17-layers Y3 (the width steps in the normal ladder's character, so compact density kept 352 / 416 / 512) is withdrawn, it contradicts owner decision C396 (compact density scales widths by itself). The steps stay var(--sf-measure-44/52/64): a compact panel is 308 / 364 / 448 px at 1440. The number 1.22.0 is kept; it holds the 1.21.1 close-axis rule (F1) on top of 1.21.0.",
+      "items": [
+        {
+          "component": "smart.drawer",
+          "from": "feat/gb17-layers 1.22.0: compact panels 352 / 416 / 512",
+          "to": "1.22.0 here: compact panels 308 / 364 / 448 (C396)"
+        }
+      ],
+      "source": "src/smart/drawer/scss/_smart__drawer.scss"
     }
   ]
 }

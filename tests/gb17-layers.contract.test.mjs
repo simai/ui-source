@@ -1,4 +1,4 @@
-// Group build 17, layers, sizes and states (Y1, Y3, Y4, Y5, Y7): the source holds each rule in its lowest layer.
+// Group build 17, layers, sizes and states (Y1, Y4, Y5, Y7; Y3 withdrawn for C396): the source holds each rule in its lowest layer.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -13,17 +13,12 @@ test('Y1: a press on a layer above the popover is that layer\'s, and the popover
   assert.ok(JSON.parse(read('src/core/contracts/shared-runtime.v1.json')).modules['layer-stack'].exports.includes('pressInLayerAbove'));
 });
 
-test('Y3: the drawer widths are characters of the normal ladder, not of a compact region', () => {
+test('Y3 withdrawn (owner decision C396): the drawer steps stay on the measure ladder, which compact density scales', () => {
   const sheet = read('src/smart/drawer/scss/_smart__drawer.scss');
-  // The normal ladder's body text: --sf-b4 on a phone, --sf-b6 from 60rem (figma_text_text_size).
-  const text = read('src/core/figma_variables/figma_text_text_size.scss');
-  assert.match(text, /--sf-text--size-1: var\(--sf-b4\);/u);
-  assert.match(text, /--sf-text--size-1: var\(--sf-b6\);/u);
-  assert.match(sheet, /\.sf-drawer \{\n {4}--sf-drawer--char: calc\(var\(--sf-b4\) \/ 2\);/u);
-  assert.match(sheet, /@media \(min-width: map\.get\(bp\.\$breakpoint-array, lg\)\) \{\n {4}\.sf-drawer \{\n {6}--sf-drawer--char: calc\(var\(--sf-b6\) \/ 2\);/u);
-  assert.doesNotMatch(sheet, /--sf-drawer-width: var\(--sf-measure-/u);
-  // the density sheet restates the measure ladder, never the drawer's character
-  assert.doesNotMatch(read('src/core/scss/_sf_css__density.scss'), /--sf-drawer--char/u);
+  assert.doesNotMatch(sheet, /--sf-drawer--char/u);
+  assert.match(sheet, /--sf-drawer-width: var\(--sf-measure-44\);/u);
+  assert.match(sheet, /--sf-drawer-width: var\(--sf-measure-64\);/u);
+  assert.doesNotMatch(read('src/smart/drawer/index.js'), /--sf-drawer--char/u);
 });
 
 test('Y4: resting vertical tabs take 4 / 8 / 12 for hover, keyboard focus and press', () => {

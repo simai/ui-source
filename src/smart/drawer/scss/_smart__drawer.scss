@@ -17,26 +17,12 @@
      covered the bar's back, name and actions, which the docked ones already
      stood under (simai/ui-source#29). The scrim starts there too, so the bar
      stays in reach. */
-  /* The width ladder's character (RP-1, GB17 Y3): half the body text of the
-     normal ladder -- the phone's step, then the desktop's -- written with the
-     size steps the text ladder uses (figma_text_text_size: --sf-b4, from
-     60rem --sf-b6). Density moves heights and inner spacing, not the width
-     of a panel: --sf-measure--char follows a compact region's smaller text,
-     and a size 1 panel stood 364 instead of 416 in a compact admin. It still
-     follows the page's text size (rem), and the content inside stays dense. */
   .sf-drawer {
-    --sf-drawer--char: calc(var(--sf-b4) / 2);
     position: fixed;
     inset: 0;
     inset-block-start: var(--sf-drawer-block-start, 0);
     z-index: var(--sf-drawer-z-index, var(--sf-layer--window, 9000));
     pointer-events: none;
-  }
-
-  @media (min-width: map.get(bp.$breakpoint-array, lg)) {
-    .sf-drawer {
-      --sf-drawer--char: calc(var(--sf-b6) / 2);
-    }
   }
 
   .sf-drawer-overlay {
@@ -101,7 +87,7 @@
     /* A9 (DEV msg-6aead3f3): the step (or width) is the content's panel, its
        content inside the window inset (H6); an announced aside (aside-width,
        e.g. a sections column) is added on top of it, never taken from it. */
-    width: min(calc(var(--sf-drawer-width, calc(52 * var(--sf-drawer--char))) + var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))), 100vi);
+    width: min(calc(var(--sf-drawer-width, var(--sf-measure-52)) + var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))), 100vi);
     max-width: 100vi;
     /* The block size is the containing block's, from inset-block: 0: the
        viewport on a page, and the box of an ancestor that contains its fixed
@@ -160,15 +146,13 @@
      are legacy values the component still accepts; it renders the step. The
      widths are steps of the width ladder in characters (owner decision C396,
      2026-11-19): 1/2, 1 and 2 take 44, 52 and 64 characters (352, 416, 512px
-     at text 16; 20, 24 and 30rem before), following the page's text size;
-     the character is the normal ladder's, so compact density keeps the
-     widths (RP-1, --sf-drawer--char above). */
+     at text 16; 20, 24 and 30rem before), following the text. */
   .sf-drawer[data-sf-drawer-size='1\/2'] {
-    --sf-drawer-width: calc(44 * var(--sf-drawer--char));
+    --sf-drawer-width: var(--sf-measure-44);
   }
 
   .sf-drawer[data-sf-drawer-size='2'] {
-    --sf-drawer-width: calc(64 * var(--sf-drawer--char));
+    --sf-drawer-width: var(--sf-measure-64);
   }
 
   .sf-drawer[data-sf-drawer-size='full'] {
@@ -530,7 +514,7 @@
        far side of the window. */
     --sf-drawer-edge-inset: calc(
       var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset)
-      + min(calc(var(--sf-drawer-width, calc(52 * var(--sf-drawer--char))) + var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))), 100vi)
+      + min(calc(var(--sf-drawer-width, var(--sf-measure-52)) + var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))), 100vi)
       + var(--sf-space-1\/2)
     );
     position: absolute;

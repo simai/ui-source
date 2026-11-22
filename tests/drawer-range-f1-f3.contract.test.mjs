@@ -22,8 +22,8 @@ test('F1: only a compact switch, no wider than the head close cell, takes the cl
   // The head's row is the cell: its minimum block size is that token.
   assert.match(read('src/smart/drawer/scss/_smart__drawer.scss'), /min-height: var\(--sf-ui-2--control-height\);/u);
   assert.match(read('src/smart/drawer/docs.md'), /Широкая кнопка с текстом/u);
-  assert.equal(json('src/smart/drawer/component.json').version, '1.21.1') // GB17: F1 merged onto the released 1.21.0;
-  assert.equal(json('src/smart/drawer/smart.manifest.json').version, '1.21.1');
+  assert.equal(json('src/smart/drawer/component.json').version, '1.22.0'); // GB17: 1.22.0 after the layers merge (Y3 withdrawn), F1 merged onto the released 1.21.0;
+  assert.equal(json('src/smart/drawer/smart.manifest.json').version, '1.22.0');
 });
 
 test('F2: the track stands half a thumb in, so the thumbs keep to the component edges', () => {
