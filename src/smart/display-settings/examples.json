@@ -64,7 +64,7 @@
           "covers": "settings.label, settings.layout disclosure, settings.open, keyboard.host, accessibility",
           "steps": [
             {
-              "check": "(() => { const el = document.querySelector('#disclosure'); const b = el.querySelector('.sf-display-settings__trigger button'); const panel = el.querySelector('.sf-display-settings__panel'); return b.textContent.trim() === 'Версия для слабовидящих' && b.getAttribute('aria-expanded') === 'false' && b.getAttribute('aria-controls') === panel.id && panel.hidden && !el.hasAttribute('data-open'); })()"
+              "check": "(() => { const el = document.querySelector('#disclosure'); const b = el.querySelector('.sf-display-settings__trigger button'); const panel = el.querySelector('.sf-display-settings__panel'); return b.getAttribute('aria-label') === 'Версия для слабовидящих' && b.textContent.includes('Версия для слабовидящих') && b.getAttribute('aria-expanded') === 'false' && b.getAttribute('aria-controls') === panel.id && panel.hidden && !el.hasAttribute('data-open'); })()"
             },
             {
               "user": "click:#disclosure .sf-display-settings__trigger button",
