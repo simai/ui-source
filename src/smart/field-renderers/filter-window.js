@@ -156,6 +156,17 @@ export function filterWindowOpen({anchor, field = {}, value = {}, placement = 'b
       // The window's list scrolls inside it, under the band and the search
       // (C313): every box down to it may be shorter than its content.
       body.style.minBlockSize = '0';
+      // Only the rows scroll (group build 16 return GB16-3): the window fills
+      // the sheet under its head and over its foot (sf-drawer 1.21.0,
+      // data-sf-drawer-fill), so the band and the search stay put, and the
+      // last row's text stands from the foot's line as the first from the
+      // search's (C397, PH-8).
+      body.setAttribute('data-sf-drawer-fill', '');
+      // The sheet's title and its footer's buttons stand on the rows' text
+      // (C397, PH-9): the drawer's inset is the list's start column, the
+      // panel's inset and the row's padding (12 on a phone), as the popover's
+      // footer pads.
+      frame.style.setProperty('--sf-drawer-gutter', 'calc(var(--sf-space-1\\/4) + var(--sf-space-1\\/2))');
       frame.append(body);
       if (withFooter) {
         foot = doc.createElement('div');

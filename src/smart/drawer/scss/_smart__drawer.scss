@@ -451,6 +451,29 @@
     box-shadow: 0 calc(-1 * var(--sf-px)) 0 var(--sf-outline-variant);
   }
 
+  /* Content that scrolls itself (data-sf-drawer-fill on the body's one
+     child; 1.21.0, group build 16 return GB16-3): it takes the room the
+     panel has under the head and over the foot, and only its own scroller
+     moves -- a filter window's condition band and search stay where they
+     are while its rows scroll (C313, PH-7). The panel does not scroll; the
+     body ends on the foot's line, so the content's own end padding is the
+     inset there (C397: the last row's text from the line as from the
+     side), and the foot keeps its hairline, since the drawer cannot tell
+     whether content is below it. */
+  .sf-drawer-panel:has(> .sf-drawer-body > [data-sf-drawer-fill]) {
+    overflow: hidden;
+  }
+
+  .sf-drawer-panel:has(> .sf-drawer-body > [data-sf-drawer-fill]) > .sf-drawer-body {
+    flex-shrink: 1;
+    overflow: hidden;
+    padding-block-end: calc(var(--sf-px) * 0);
+  }
+
+  .sf-drawer-panel:has(> .sf-drawer-body > [data-sf-drawer-fill]) > .sf-drawer-foot:not(:empty) {
+    box-shadow: 0 calc(-1 * var(--sf-px)) 0 var(--sf-outline-variant);
+  }
+
   /* «Назад» in the head of a nested panel (C157 (6)) points to the start of
      the line: arrow_back is a directional glyph, so in a right-to-left page
      the icons sheet turns it (C151 point 3); a turn here as well turned it
