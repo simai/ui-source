@@ -14,8 +14,8 @@
 //
 // Cheap by design: no element is measured until it scrolls, the pointer
 // reaches its strip, the focus enters it or an idle scan finds it overflowing;
-// only the areas that overflow get a track, and only the shown ones and the
-// scrollbar-always ones are kept in step. One scroll listener (capture), one
+// only the areas that overflow get a track, and only the ones shown once and
+// the scrollbar-always ones are kept in step. One scroll listener (capture), one
 // pointer listener, one focus pair, one IntersectionObserver for the first
 // showing, one ResizeObserver and one MutationObserver for the whole page;
 // reads and writes are batched in one animation frame. A touch screen and
@@ -174,6 +174,11 @@ function install(win) {
 
   function detach(state) {
     clearTimeout(state.timer);
+    if (state.watched && sizes) {
+      sizes.unobserve(state.area);
+      for (const child of state.area.children) sizes.unobserve(child);
+      state.watched = false;
+    }
     if (state.tracks) {
       state.tracks.y.remove();
       state.tracks.x.remove();
@@ -357,6 +362,11 @@ function install(win) {
   function show(state) {
     if (!state.on || !state.values) state.values = null;
     if (!attach(state)) return;
+    // A shown track stays laid out after it fades (opacity only), so it keeps
+    // in step with its area from then on: a text size raised while it rested
+    // left the horizontal track at the old width, 2 px past a 390 px window
+    // (GB17 Y5, DSA evidence 2026-11-22).
+    watch(state);
     queue(state);
     setOn(state, true);
     schedule(state);
@@ -381,7 +391,9 @@ function install(win) {
     }, HIDE_AFTER);
   }
 
-  // scrollbar-always areas are kept in step with their size and content.
+  // An area whose tracks have been laid out (shown once, or scrollbar-always)
+  // is kept in step with its size and content; its values are read again, as
+  // a window resize reads them (the text size moves the radius and the room).
   let sizes = null;
   function watch(state) {
     if (state.watched || typeof win.ResizeObserver === 'undefined') return;
@@ -389,7 +401,9 @@ function install(win) {
       sizes = new win.ResizeObserver((entries) => {
         for (const entry of entries) {
           const owner = states.get(entry.target) || states.get(entry.target.parentElement);
-          if (owner) queue(owner);
+          if (!owner) continue;
+          owner.values = null;
+          queue(owner);
         }
       });
     }

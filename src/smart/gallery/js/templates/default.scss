@@ -341,7 +341,8 @@
 }
 
 /* The viewer's controls over a photo (C14 (3), C150 (7)): a dark translucent
-   circle -- black 48, 64 under the pointer, 80 pressed -- with a white icon
+   circle -- black 48; under the pointer and pressed, white 8 and 12 over it
+   in the site theme (below) -- with a white icon
    and a white 16 hairline, so the circle also reads on the black bar. The
    close is sf-button-close appearance="media", which draws the same circle;
    it takes the hairline here. In sf.overrides, as the close's own looks. */
@@ -358,5 +359,21 @@
 
   .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button:not(:disabled):active {
     background-color: var(--sf-black--alfa-80);
+  }
+
+  /* In the site theme the viewer is black, and darker steps of black do not
+     show on it: rest, hover and press drew one black circle (GB17 Y7, DSA
+     evidence 2026-11-22). The circle keeps its black 48 and the state family's
+     white is laid over it, as over the controls on the scrim (study VP-16,
+     C14 (3)): 8 under the pointer, 12 pressed. A colour scheme keeps its own
+     media plate (below, core display settings). */
+  :root:not([data-sf-scheme]) .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button:not(:disabled):hover {
+    background-color: var(--sf-black--alfa-48);
+    background-image: linear-gradient(var(--sf-scrim-control-state-hover), var(--sf-scrim-control-state-hover));
+  }
+
+  :root:not([data-sf-scheme]) .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button:not(:disabled):active {
+    background-color: var(--sf-black--alfa-48);
+    background-image: linear-gradient(var(--sf-scrim-control-state-active), var(--sf-scrim-control-state-active));
   }
 }
