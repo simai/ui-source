@@ -33,14 +33,13 @@ test('FS-6: a yes/no drawn as a checkbox keeps its help at the form\'s «?» siz
   assert.match(read('src/smart/form/js/templates/default.js'), /<sf-help-mark class="sf-form-help" size="1\/2"/u, 'the label row draws the same size');
 });
 
-test('FS-10: a script asked for before it runs is warmed once, never a link preload', () => {
+test('FS-10 withdrawn in group build 17: the Loader preloads a waiting script with a link preload, as on base', () => {
+  // The warm-up fetch brought 6 of 30 «sf-modal not defined in 10 s» when the server forbids caching and the page's
+  // CSP needs connect-src for it (dispatcher, GB17); the preload warning it removed is benign (no double request).
   const loader = read('src/core/js/loader.js');
   const body = loader.slice(loader.indexOf('SFLoaderPlugin.prototype.preloadScript = function'), loader.indexOf('// The page\'s language file while it is on its way'));
-  assert.doesNotMatch(body, /link\.rel = 'preload'/u, 'Chrome reports a link preload whose script waits past its quiet-network check');
-  assert.match(body, /if \(registry\.scripts\.has\(key\)\) return;/u, 'never for a script already asked for');
-  assert.match(body, /if \(registry\.warmed\.has\(key\)\) return;\n  registry\.warmed\.add\(key\);/u, 'once per URL, shared by every Loader and bundle');
-  assert.match(body, /globalThis\.fetch\(href, \{mode: 'no-cors', credentials: 'include', priority: 'high'\}\)/u, 'the request the script element makes');
-  assert.match(body, /if \(!\/\^https\?:\/u\.test\(key\)\) return;/u, 'not on file:');
+  assert.match(body, /link\.rel = 'preload';\n  link\.as = 'script';/u, 'a link preload, as on base');
+  assert.doesNotMatch(body, /globalThis\.fetch\(/u, 'no warm-up fetch: it needs connect-src and is asked twice under no-store');
 });
 
 test('FS-11: the country button shows its name as a tooltip', () => {
