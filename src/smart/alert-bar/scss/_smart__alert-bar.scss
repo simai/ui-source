@@ -39,7 +39,7 @@
      sticky bar stays opaque. The light theme keeps the strong fill. The
      value, --sf-alert-bar--info-container, is written on the info bar by
      places.sf-place-strong-dark-container (mix/_mix__places.scss). */
-  --sf-alert-bar--info-background: var(--sf-alert-bar-info-background-color, var(--sf-alert-bar-info-background, var(--sf-alert-bar--info-container))));
+  --sf-alert-bar--info-background: var(--sf-alert-bar-info-background-color, var(--sf-alert-bar-info-background, var(--sf-alert-bar--info-container)));
   --sf-alert-bar--list-background: var(--sf-alert-bar-list-background-color, var(--sf-alert-bar-list-background, var(--sf-surface-area)));
   /* The rung: 1/2. */
   --sf-alert-bar--line: var(--sf-text-height-1\/2);
@@ -127,7 +127,11 @@
      unchanged. Warning and error stay strong in both themes. The tones are
      written by places.sf-place-strong-dark-container, so the palette is read
      in the places layer, not here. */
+  // Custom properties, written in this layer as the raw tones were before:
+  // the mixin is a paint mixin, so the part is set to all around it.
+  @include paint.part(all);
   @include places.sf-place-strong-dark-container('info', 'alert-bar--info');
+  @include paint.part(shape);
   --sf-alert-bar--info: var(--sf-alert-bar--fill);
 }
 
