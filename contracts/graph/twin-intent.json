@@ -413,9 +413,9 @@
     },
     {
       "unit": "component.tabs",
-      "version": "1.5.7",
+      "version": "1.5.8",
       "twin": "smart.tabs",
-      "reason": "recorded by group build 17 (L5): the plain tabs sheet gives a fitted tab a basis of twice its inline padding, so the tabs of a full row are equal whatever their content (720/720 at 1440, 195/195 at 390); sf-tabs draws the same classes and takes the sheet as it is",
+      "reason": "recorded by group build 17 (L5): the plain tabs sheet gives a fitted tab a basis of twice its inline padding, so the tabs of a full row are equal whatever their content (720/720 at 1440, 195/195 at 390); sf-tabs draws the same classes and takes the sheet as it is; 1.5.8 (feat/gb17-layers Y4) adds the vertical tabs' focus and press steps in the same sheet, which sf-tabs also takes as it is",
       "decision": "GB17 L5 skeleton-tabs 704 vs 736",
       "date": "2026-11-22"
     },

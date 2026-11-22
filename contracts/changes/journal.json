@@ -20509,6 +20509,26 @@
         }
       ],
       "source": "src/smart/drawer/scss/_smart__drawer.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-editor-overlay-layer-stack-provenance",
+      "kind": "behaviour",
+      "summary": "smart.editor-overlay 1.12.10 (group build 17): its manifest's source hash of core/js/layer-stack.js follows sf-popover 1.11.0 (Y1), so the version moves with the bytes; behaviour unchanged.",
+      "items": [
+        {
+          "component": "smart.editor-overlay",
+          "from": "1.12.9",
+          "to": "1.12.10"
+        }
+      ],
+      "source": "src/smart/editor-overlay/smart.manifest.json"
     }
   ]
 }
