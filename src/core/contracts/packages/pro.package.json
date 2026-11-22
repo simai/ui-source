@@ -13,32 +13,6 @@
   },
   "provides": [
     {
-      "id": "smart.admin-menu",
-      "element": "sf-admin-menu",
-      "rule_name": "cl-admin-menu",
-      "folder": "admin-menu",
-      "requires": [
-        "component.admin-menu",
-        "component.avatars",
-        "component.badges",
-        "component.icons",
-        "component.inputs",
-        "component.kbd",
-        "smart.badge",
-        "smart.button",
-        "smart.button-icon",
-        "smart.dropdown",
-        "smart.empty-state",
-        "smart.icon",
-        "smart.input",
-        "smart.menu-context",
-        "smart.profile-picker",
-        "smart.resizer",
-        "smart.search",
-        "smart.sortable"
-      ]
-    },
-    {
       "id": "smart.chat-composer",
       "element": "sf-chat-composer",
       "rule_name": "cl-chat-composer",

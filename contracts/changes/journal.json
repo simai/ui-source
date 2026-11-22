@@ -20102,6 +20102,26 @@
         }
       ],
       "source": "src/core/js/loader.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: sf-admin-menu is served by the Admin set (admin-8cff3084cfaf) under the same rule cl-admin-menu.",
+      "owner": "ui-source",
+      "id": "behaviour-pro-package-drops-admin-menu",
+      "kind": "behaviour",
+      "summary": "pro.package.json and its larena alias (group build 17, G-PRO): smart.admin-menu (cl-admin-menu) is no longer among the elements the Pro package provides; the Admin set ships sf-admin-menu, so Pro can release without its own copy. cl-editor stays listed.",
+      "items": [
+        {
+          "component": "pro package",
+          "from": "provides smart.admin-menu",
+          "to": "the Admin set provides it"
+        }
+      ],
+      "source": "src/core/contracts/packages/pro.package.json"
     }
   ]
 }
