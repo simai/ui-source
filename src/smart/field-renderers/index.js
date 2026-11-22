@@ -1,6 +1,6 @@
 import {html, nothing} from "lit";
 import {unsafeHTML} from "lit/directives/unsafe-html.js";
-import {optionBadgeProps} from "../helpers/option-badge.js";
+import {optionBadgeLook} from "../helpers/option-badge.js";
 import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
 import {formatDate} from "../../core/js/format-date.js";
 import {NUMBER_FILTER_OPERATORS, PLACES, PROPERTY_TYPES, TEMPLATE_ALIASES, TYPE_ALIASES, modesOf} from "./registry.js";
@@ -832,7 +832,6 @@ const CELL_LINE = '1/2';
 // system's half step (12, 8 on a phone), through its public variable.
 const CELL_BADGE_LINE = 'text';
 const CELL_BADGE_ROOM = '--sf-badge-padding-inline: var(--sf-space-1\\/2)';
-const cellBadgeStyle = (style) => [CELL_BADGE_ROOM, style].filter(Boolean).join('; ');
 
 // A choice badge in a cell is tonal (sf-badge's default since 1.6.0, C140; it
 // was main, so the cells shipped filled and the consumer's owner asked for the
@@ -1024,7 +1023,7 @@ function renderChoicesBadgesCell(field, value) {
         const option = Array.isArray(options)
             ? options.find((candidate) => String(candidate?.value) === String(key))
             : null;
-        const badge = option ? optionBadgeProps(option) : null;
+        const badge = option ? optionBadgeLook(option) : null;
         const text = item && typeof item === 'object' && item.text !== undefined
             ? String(item.text)
             : String(option?.label ?? option?.text ?? key);
@@ -1036,7 +1035,8 @@ function renderChoicesBadgesCell(field, value) {
                     text,
                     appearance: badgeAppearanceOf(field),
                     ...(badge?.scheme ? {scheme: badge.scheme} : {}),
-                    rootStyle: cellBadgeStyle(badge?.rootStyle),
+                    ...(badge?.hue ? {hue: badge.hue} : {}),
+                    rootStyle: CELL_BADGE_ROOM,
                 },
             },
         };
@@ -1106,7 +1106,7 @@ function renderChoiceCell(field, value) {
     const option = options.find((item) => String(item?.value) === String(value));
     if (!option) return null;
 
-    const badge = optionBadgeProps(option);
+    const badge = optionBadgeLook(option);
 
     return {
         component: {
@@ -1116,7 +1116,8 @@ function renderChoiceCell(field, value) {
                 text: option.label ?? option.text ?? String(value),
                 appearance: badgeAppearanceOf(field),
                 ...(badge?.scheme ? {scheme: badge.scheme} : {}),
-                rootStyle: cellBadgeStyle(badge?.rootStyle),
+                ...(badge?.hue ? {hue: badge.hue} : {}),
+                rootStyle: CELL_BADGE_ROOM,
             },
         },
     };
@@ -3725,7 +3726,7 @@ function renderChoiceView(field, value) {
         ? options.find((item) => String(item?.value) === String(value))
         : null;
     if (!option) return nothing;
-    const badge = optionBadgeProps(option);
+    const badge = optionBadgeLook(option);
 
     // A table cell is a dense place: the badge keeps the tight side room
     // (sf-badge tight), as it had before sf-badge 1.3.0 widened the default.
@@ -3735,7 +3736,7 @@ function renderChoiceView(field, value) {
                 tight
                 appearance=${badgeAppearanceOf(field)}
                 scheme=${badge.scheme}
-                style=${badge.rootStyle || nothing}
+                hue=${badge.hue || nothing}
                 text=${String(option.label ?? option.text ?? value)}
         ></sf-badge>
     `;
@@ -3769,9 +3770,9 @@ function renderChoicesView(field, value) {
             ${value.map((item) => {
                 if (!badges) return html`<sf-tag root-class="flex-none" line=${VIEW_LINE} kind="default" text=${label(item)}></sf-tag>`;
                 const option = optionOf(item);
-                const badge = option ? optionBadgeProps(option) : null;
+                const badge = option ? optionBadgeLook(option) : null;
                 return html`<sf-badge line=${VIEW_LINE} tight appearance=${badgeAppearanceOf(field)}
-                        scheme=${badge?.scheme || nothing} style=${badge?.rootStyle || nothing} text=${label(item)}></sf-badge>`;
+                        scheme=${badge?.scheme || nothing} hue=${badge?.hue || nothing} text=${label(item)}></sf-badge>`;
             })}
         </span>
     `;

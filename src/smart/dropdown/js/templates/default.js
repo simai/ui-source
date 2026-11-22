@@ -3,7 +3,7 @@ import {renderFieldHelp} from '../../../helpers/field-help';
 import { renderInheritedSlot } from "../../../helpers/inherited-value";
 import { fieldWidthClass } from "../../../../component/field-size";
 import { avatarPicture } from "../../../avatar/js/picture";
-import { optionBadgeProps } from "../../../helpers/option-badge.js";
+import { optionBadgeLook } from "../../../helpers/option-badge.js";
 
 // An option's colour (owner decision C308 FO-4; color, one data word, C302):
 // the option's name is a tonal badge in that colour in its row, as in a cell,
@@ -35,11 +35,13 @@ function optionName(option) {
     };
   }
   if (!option.color || typeof option.text !== "string") return option;
-  const badge = optionBadgeProps({color: option.color});
+  // A hue of the static palette is the badge's hue class (C411), not two
+  // variables in a style.
+  const badge = optionBadgeLook({color: option.color});
   return {
     ...option,
     text: html`<sf-badge class="sf-dropdown-option-badge" appearance="tonal" tight line="1" scheme=${badge.scheme}
-                         root-style=${badge.rootStyle || nothing} text=${option.text}></sf-badge>`,
+                         hue=${badge.hue || nothing} text=${option.text}></sf-badge>`,
   };
 }
 import {

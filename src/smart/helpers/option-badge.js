@@ -71,6 +71,11 @@ const paletteStyle = (hue) =>
 // The data view port names the badge look `scheme` on a column's options; a
 // filter option has always said `color`. Both are read: reading only `color`
 // left every port column's scheme unread and its badges neutral.
+//
+// optionBadgeProps is the former form: the hue written as the badge's two
+// public variables in a style. The Framework's own parts draw a hue through
+// optionBadgeLook and the badge's hue class (C411); this one stays for hosts
+// until 2027-01-01 (journal class-option-badge-hue-class).
 export function optionBadgeProps(option = {}) {
     const raw = option?.scheme ?? option?.color;
     const color = typeof raw === "string" ? raw.trim() : "";
@@ -98,3 +103,30 @@ export function optionDotColor(option = {}) {
     if (OPTION_BADGE_PALETTE.includes(name)) return `var(--sf-${name}-50)`;
     return color;
 }
+
+/**
+ * The badge look of an option as the badge's own settings (owner decision
+ * C411): {scheme, hue}. scheme is a Framework badge scheme (a former name read
+ * as its canonical one), else neutral; hue is a name of the static palette
+ * (red, teal, gray...; C17), a hex drawn in the palette hue nearest it, else
+ * ''. A part gives the hue to sf-badge as hue="<name>", or to class markup as
+ * the class sf-badge--<name>: the class sets the fill (tone 50 at the fill
+ * step 24) and the text --sf-on-surface in both themes, so nothing is written
+ * in a style.
+ */
+export function optionBadgeLook(option = {}) {
+    const raw = option?.scheme ?? option?.color;
+    const color = typeof raw === "string" ? raw.trim() : "";
+    const scheme = canonicalBadgeScheme(color);
+    if (scheme) return {scheme, hue: ""};
+    const name = color.toLowerCase();
+    if (OPTION_BADGE_PALETTE.includes(name)) return {scheme: "neutral", hue: name};
+    if (HEX_COLOR.test(color)) return {scheme: "neutral", hue: nearestPaletteHue(color)};
+    return {scheme: "neutral", hue: ""};
+}
+
+/** The hue class of an option's badge for class markup ('' without a hue): sf-badge--<hue> (C411). */
+export const optionBadgeClass = (option = {}) => {
+    const {hue} = optionBadgeLook(option);
+    return hue ? `sf-badge--${hue}` : "";
+};

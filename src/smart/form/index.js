@@ -186,6 +186,18 @@ export function answeredByValue(field) {
   return drawn.type === 'boolean' && drawn.template !== 'buttons';
 }
 
+// A required yes/no drawn as a checkbox by its own template is a consent
+// («Я согласен с условиями»): it is answered only when ticked, as a native
+// required checkbox is (DEV msg-f27d2e7a, group build 17 F2). The switch is
+// a setting answered by its value, and the switch template a form saved by a
+// button draws as a checkbox (buttonSaved) stays so: only a field whose own
+// template is the checkbox asks for the tick.
+export function ticksToAnswer(field) {
+  if ((field?.propertyType || field?.type || field?.dataType) !== 'boolean') return false;
+  const drawn = fieldTemplate(field);
+  return drawn.type === 'boolean' && drawn.template === 'checkbox';
+}
+
 /** The fields as given, made safe: objects with a key and a type, each key once, width one of short, medium, full or none (s, m read as short, medium). */
 export function normalizeFields(list, noteWidth = null) {
   const seen = new Set();
@@ -286,7 +298,10 @@ class SfForm extends FormElement {
     // A control's own drawing may rewrite its native control's
     // aria-describedby: the form's lines are linked again after it.
     this._onControlDrawn = (event) => {
-      if (event.target !== this && event.target?.closest?.('.sf-form-control')) this.linkMessages();
+      if (event.target !== this && event.target?.closest?.('.sf-form-control')) {
+        this.markConsents();
+        this.linkMessages();
+      }
     };
   }
 
@@ -587,6 +602,10 @@ class SfForm extends FormElement {
     if (field.required === true && !answeredByValue(field) && !hasValue(value)) {
       return this.sfWord('value-missing', {vars: {label: field.label}});
     }
+    // A required checkbox of its own template is answered by the tick (F2).
+    if (field.required === true && ticksToAnswer(field) && value !== true) {
+      return this.sfWord('value-missing', {vars: {label: field.label}});
+    }
     const rendered = this._rendererErrors?.[key];
     if (rendered) return rendered;
     const control = this.controlOf(key);
@@ -825,6 +844,10 @@ class SfForm extends FormElement {
     if (!key) return;
     this._touched.add(key);
     if (!this._errors.has(key) || this._hostErrors.has(key)) return;
+    // A consent box is answered by its value, which its change writes: its
+    // input event comes first, and clearing the error then redrew the box
+    // under the click, so the change never came and the tick was lost (F2).
+    if (ticksToAnswer(this.fieldOf(key))) return;
     const control = this.controlOf(key);
     if (control?.validity?.valid && control.validity.valueMissing === false) {
       const field = this.fieldOf(key);
@@ -910,7 +933,22 @@ class SfForm extends FormElement {
         }
       }
     }
+    this.markConsents();
     this.linkMessages();
+  }
+
+  // A consent box (a required checkbox of its own template, F2) says it is
+  // required to a screen reader. Run after the form's drawing and after the
+  // box's own, which draws a new input when its error comes or goes.
+  markConsents() {
+    for (const field of this.list) {
+      if (!ticksToAnswer(field)) continue;
+      const box = this.controlOf(field.key)?.querySelector?.('input[type="checkbox"]');
+      if (!box) continue;
+      const asks = this.isEditing && field.required === true && field.readonly !== true;
+      if (asks && box.getAttribute('aria-required') !== 'true') box.setAttribute('aria-required', 'true');
+      else if (!asks && box.hasAttribute('aria-required')) box.removeAttribute('aria-required');
+    }
   }
 
   // The hint or the error line the form draws under a control is read with

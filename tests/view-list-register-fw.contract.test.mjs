@@ -22,7 +22,7 @@ test('VL-43: the quiet plate is the state family\'s 8, under the control plate',
 test('VL-43: the band of sf-dropdown lays the quiet plate, a page still tints it', () => {
   const css = read('src/component/dropdown/scss/_css__custom.scss');
   assert.match(css, /--sf-dropdown-field--background-color: var\(--sf-dropdown-background-color, var\(--sf-surface-container-low\)\);/u);
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.2'); // group build 17: VL-43 and DSA-2 both wrote 1.25.1
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.3'); // GB17: fields F4 joined, 1.25.3; // group build 17: VL-43 and DSA-2 both wrote 1.25.1
 });
 
 test('VL-65: the not-set ink is the text ink at the ink family\'s 64, and every place says it', () => {
@@ -75,8 +75,8 @@ test('VL-54: a cell\'s badge stands on the line of the row\'s text and keeps a w
   assert.match(source, /const CELL_BADGE_ROOM = '--sf-badge-padding-inline: var\(--sf-space-1\\\\\/2\)';/u);
   const choice = source.slice(source.indexOf('function renderChoiceCell('), source.indexOf('function renderHostFormattedCell('));
   assert.match(choice, /line: CELL_BADGE_LINE,/u);
-  assert.match(choice, /rootStyle: cellBadgeStyle\(badge\?\.rootStyle\),/u);
+  assert.match(choice, /rootStyle: CELL_BADGE_ROOM,/u); // GB17: the hue is the badge's setting (C411), the cell keeps only the word's room
   const badges = source.slice(source.indexOf('function renderChoicesBadgesCell('), source.indexOf('function renderChoicesBadgesCell(') + 1600);
   assert.match(badges, /line: CELL_BADGE_LINE,/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.2');
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.0'); // GB17: gb17-fields F4 joined
 });

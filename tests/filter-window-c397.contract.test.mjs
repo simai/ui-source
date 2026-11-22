@@ -45,9 +45,9 @@ test('PH-10: the condition band is one medium text «Условие: …», grey
 });
 
 test('C397 versions: the round-3 step of each part, with the journal records', () => {
-  assert.equal(json('src/smart/input-choice/component.json').version, '1.11.2');
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.2'); // VL-43: the band's quiet plate // group build 17: VL-43 and DSA-2 both wrote 1.25.1
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.2'); // VL-54: a cell's badge is the row's text
+  assert.equal(json('src/smart/input-choice/component.json').version, '1.12.0'); // group build 17 F3/F4: option badge row text and hue
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.3'); // GB17: fields F4 joined, 1.25.3; // group build 17 F4: option badge hue
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.0'); // group build 17 F4: option badge hue; // GB16-3: the phone sheet
   const ids = new Set(json('contracts/changes/journal.json').records.map((one) => one.id));
   for (const id of ['behaviour-input-choice-panel-list-inset', 'behaviour-filter-window-footer-start-column', 'behaviour-filter-window-condition-head-one-text']) assert.ok(ids.has(id), id);
 });

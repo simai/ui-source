@@ -31,7 +31,7 @@
 // the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {calendarDayOffset, msUntilNextDay, toDate} from '../../core/js/format-date.js';
+import {calendarDayOffset, knownTimeZone, msUntilNextDay, toDate} from '../../core/js/format-date.js';
 import {formatRelativeDay} from '../../core/js/format-relative.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderListTimelineTemplate} from './js/templates/default';
@@ -124,15 +124,15 @@ export function normalizeItems(value, seen = new Set(), depth = 0) {
 }
 
 /**
- * The events in runs of one calendar day (in the reader's time zone), in
- * their order: [{day, at, items}]. An event without a time joins the run
- * before it; grouping none is one run with no day.
+ * The events in runs of one calendar day (in `timeZone`, an IANA name, else
+ * the reader's zone), in their order: [{day, at, items}]. An event without a
+ * time joins the run before it; grouping none is one run with no day.
  */
-export function groupByDay(items, {group = 'day', now = new Date()} = {}) {
+export function groupByDay(items, {group = 'day', now = new Date(), timeZone = ''} = {}) {
   if (group !== 'day') return items.length ? [{day: null, at: null, items}] : [];
   const runs = [];
   for (const item of items) {
-    const day = item.at ? calendarDayOffset(item.at, {now}) : null;
+    const day = item.at ? calendarDayOffset(item.at, {now, timeZone}) : null;
     const last = runs[runs.length - 1];
     if (last && (day === null || day === last.day)) last.items.push(item);
     else runs.push({day, at: item.at, items: [item]});
@@ -176,16 +176,23 @@ class SfListTimeline extends ListTimelineElement {
     return normalizeItems(this.items);
   }
 
-  // The days move at the reader's midnight: one timer to it, with the
-  // reader's clock and day headings. The times are sf-time's, which keeps its
-  // own clock.
+  // The zone the list is written in (time-zone, C183 (3); Larena msg-17f0adf3:
+  // a History list said the reader's browser zone while its card said the
+  // site's): a name the browser knows, else '' -- the reader's own zone.
+  get zone() {
+    return knownTimeZone(text(this.timeZone)) ? text(this.timeZone) : '';
+  }
+
+  // The days move at the list's midnight (its zone's, else the reader's): one
+  // timer to it, with the day headings. The times are sf-time's, which keeps
+  // its own clock.
   syncTimer() {
     this.stopTimer();
     if (!this.isConnected || toDate(text(this.now)) || this.group !== 'day' || !this.list.some((item) => item.at)) return;
     this._timer = setTimeout(() => {
       this._timer = 0;
       this.requestComponentUpdate('day');
-    }, msUntilNextDay(new Date()) + 1000);
+    }, msUntilNextDay(new Date(), {timeZone: this.zone}) + 1000);
   }
 
   stopTimer() {
@@ -275,9 +282,10 @@ class SfListTimeline extends ListTimelineElement {
         ? [this.sfWord(`state-${item.state}`), TONES[item.status] ? this.sfWord(`step-status-${item.status}`) : ''].filter(Boolean).join(', ')
         : item.status === 'neutral' ? '' : this.sfWord(`status-${item.status}`),
     });
-    const runs = groupByDay(list, {group, now}).map((run, at) => ({
+    const timeZone = this.zone;
+    const runs = groupByDay(list, {group, now, timeZone}).map((run, at) => ({
       id: `${this._uid}-day-${at}`,
-      day: run.day === null || !run.at ? '' : formatRelativeDay(run.at, {now, capital: true, node: this,
+      day: run.day === null || !run.at ? '' : formatRelativeDay(run.at, {now, capital: true, node: this, timeZone,
         today: this.sfWord('today'), yesterday: this.sfWord('yesterday'), tomorrow: this.sfWord('tomorrow')}),
       date: run.day === 0 || run.day === -1 ? run.at.toISOString() : '',
       entries: foldRuns(run.items, {collapse, opened: this._opened}).map((entry) => (entry.fold
@@ -294,6 +302,7 @@ class SfListTimeline extends ListTimelineElement {
       label: this.label,
       runs,
       now: text(this.now),
+      zone: timeZone,
       // itemFormat, not timeFormat: the time-format prop keeps its own value (auto) in the context.
       itemFormat: this.timeFormatFor(group === 'day'),
       sticky: Boolean(this.stickyHeadings),

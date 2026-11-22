@@ -1,6 +1,6 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-import {optionBadgeProps, optionDotColor} from '../../../helpers/option-badge.js';
+import {optionBadgeLook, optionDotColor} from '../../../helpers/option-badge.js';
 import {optionLook} from '../choice-model.mjs';
 
 // sf-input-choice's markup: the label row, the cards and the hint or error
@@ -145,11 +145,16 @@ function renderVisual(context, item, {icon = true} = {}) {
   return nothing;
 }
 
+// The name badge is the row's own text (LV4-8, group build 17 F3): line text
+// takes the size and line of the name it stands in (C95 point 6), so an
+// option drawn as a badge reads as large as a plain option beside it (16, 14
+// compact; line 1 drew it a step down, 14 in a 16 list). A palette hue is the
+// badge's hue class (C411), not two variables in a style.
 function renderName(context, item, disabled, id = '') {
   if (!item.color || optionLook(item, context.optionLook) !== 'badge') return id ? html`<span class="sf-choice-title-text" id=${id}>${item.label}</span>` : item.label;
-  const badge = optionBadgeProps({color: item.color});
-  return html`<sf-badge class="sf-choice-name-badge" id=${id || nothing} appearance="tonal" tight line="1" scheme=${badge.scheme}
-                        root-style=${badge.rootStyle || nothing} root-class=${disabled ? 'sf-badge--disabled' : nothing}
+  const badge = optionBadgeLook({color: item.color});
+  return html`<sf-badge class="sf-choice-name-badge" id=${id || nothing} appearance="tonal" tight line="text" scheme=${badge.scheme}
+                        hue=${badge.hue || nothing} root-class=${disabled ? 'sf-badge--disabled' : nothing}
                         text=${item.label}></sf-badge>`;
 }
 

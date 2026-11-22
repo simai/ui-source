@@ -20202,6 +20202,107 @@
         }
       ],
       "source": "src/smart/pagination/static/default/bulk.html"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "id": "behaviour-form-labels-start-beside-from-20rem",
+      "kind": "behaviour",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A host that laid sf-form's labels=\"start\" itself in a side panel can drop that rule.",
+      "summary": "sf-form 1.14.0 (owner decision C401, group build 17 F1): labels=\"start\" stands each label beside its field from a form wider than 20rem and over it below md, as sf-list-description's layout auto (C180 (3)); it was 40rem, so a side panel stood every label over its field. The labels of a group share one column, as wide as the longest label up to 40 % of the row, the field rows a subgrid of it.",
+      "items": [
+        {
+          "component": "sf-form",
+          "from": "labels=\"start\": beside from 40rem of the form's width, the label in a third of the row (1fr 2fr), the gap --sf-space-2",
+          "to": "beside from a form wider than 20rem and a viewport from md, the label column fit-content(40 %) shared by the group, the gap --sf-ui-1--space-x (1/2 at size 1/2)"
+        }
+      ],
+      "source": "src/smart/form/scss/_smart__form.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "id": "behaviour-form-required-checkbox-consent",
+      "kind": "behaviour",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A required yes/no meant as a setting takes the switch template (the default) or drops required.",
+      "summary": "sf-form 1.14.0 (group build 17 F2, DEV msg-f27d2e7a): a required yes/no whose own template is the checkbox is answered only when ticked: unticked it shows «Заполните поле «…»» on leaving it after a change and on submit, joins sf-form-invalid's fields and its box says aria-required. The switch, the switch drawn as a checkbox in a form saved by a button, and the «Да» | «Нет» buttons keep their rule.",
+      "items": [
+        {
+          "component": "sf-form",
+          "from": "a required checkbox is answered by its value (unticked = «Нет»), never an error",
+          "to": "a required checkbox of its own template is a consent: unticked is value-missing"
+        }
+      ],
+      "source": "src/smart/form/index.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "id": "behaviour-input-choice-name-badge-row-text",
+      "kind": "behaviour",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "summary": "sf-input-choice 1.12.0 (group build 17 F3, LV4-8): an option whose name is drawn as a badge (an option colour, option-look badge) takes the row's own text, sf-badge line text (C95 point 6): 16, 14 compact, as a plain option beside it; line 1 drew it a step down (14 in a 16 list).",
+      "items": [
+        {
+          "component": "sf-input-choice",
+          "from": "the name badge at line 1 (text 1/2 step, 14 at text 16)",
+          "to": "the name badge at line text (the row's own size and line)"
+        }
+      ],
+      "source": "src/smart/input-choice/js/templates/default.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "id": "global-option-badge-props-style-to-hue",
+      "kind": "global",
+      "rewrite": "manual",
+      "manual": "Call optionBadgeLook(option) and give its hue to sf-badge as hue=\"<hue>\" (or the class sf-badge--<hue> in class markup) instead of optionBadgeProps(option).rootStyle in a style or root-style.",
+      "summary": "module.smart-helpers 1.21.0 (owner decision C411, group build 17 F4): helpers/option-badge.js optionBadgeLook(option) answers {scheme, hue}, the badge's own settings, and optionBadgeClass(option) the class sf-badge--<hue>. The Framework's field renderers, sf-input-choice, sf-dropdown and sf-segmented draw an option's palette hue or hex through the hue class, with no style. optionBadgeProps keeps its former answer {scheme, rootStyle} (the two public variables in a style) for hosts until 2027-01-01.",
+      "items": [
+        {
+          "component": "module.smart-helpers",
+          "from": "optionBadgeProps(option).rootStyle in style / root-style",
+          "to": "optionBadgeLook(option).hue as sf-badge hue (class sf-badge--<hue>)",
+          "match": "optionBadgeProps\\("
+        }
+      ],
+      "source": "src/smart/helpers/option-badge.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-dropdown-gb17-merge-fields-hue",
+      "kind": "behaviour",
+      "summary": "sf-dropdown 1.25.3 (group build 17): feat/gb17-fields wrote 1.25.2 for its option badge hue class (F4, C411) while the group build's 1.25.2 joined VL-43 and DSA-2; the three looks together, one patch above both.",
+      "items": [
+        {
+          "component": "smart.dropdown",
+          "from": "1.25.2 twice (VL-43 + DSA-2; F4)",
+          "to": "1.25.3 with all three"
+        }
+      ],
+      "source": "src/smart/dropdown/component.json"
     }
   ]
 }

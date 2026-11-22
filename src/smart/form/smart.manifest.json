@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.13.1",
+  "version": "1.14.0",
   "title": "Form",
   "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "kind": "smart",
@@ -89,7 +89,7 @@
       "labels": {
         "type": "string",
         "default": "top",
-        "description": "top: the label above its field (the default). start: from 40rem of the form's own width the label stands beside its field in a third of the row, the field in the rest -- the row of a settings page and of an admin card; narrower, above. The value name top is a working name (name to confirm)",
+        "description": "top: the label above its field (the default). start: the label stands beside its field, the labels of a group in one column as wide as the longest label up to 40 % of the row and every field after it on one axis -- the row of a settings page and of an admin card, and a record's group edited in place (C401); it switches as sf-list-description's layout auto does (C180 (3)): beside from a form wider than 20rem, above in a narrower one and on a phone (below md). The value name top is a working name (name to confirm)",
         "enum": [
           "top",
           "start"
@@ -409,7 +409,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "49950b27053475f99f154f378d03eafc6d971e33bada3c63246ee742d8b96508"
+        "sha256": "71af037c44147db4109367ca8469b1576778e4f60d416c657831d352ccf3da89"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
@@ -425,7 +425,7 @@
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "00c1b16699acd90d165de04a34ae5f0d8c7a29c0895339d078a71be0b3543a01"
+        "sha256": "ee078924c546d25903290cc2c6bf7964d874e0e3299ef3d5b5b3b9656e626187"
       }
     ],
     "generated_runtime": []

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-timeline",
-  "version": "1.5.6",
+  "version": "1.6.0",
   "title": "Timeline",
   "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming drawn with sf-steps' line, sub-events folded under a disclosure row, host content under an event (slot), a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
   "kind": "smart",
@@ -68,7 +68,7 @@
       "group": {
         "type": "string",
         "default": "day",
-        "description": "day: the events under a heading per calendar day in the reader's time zone («Сегодня», «Вчера», the weekday within a week, else the date), the days in the order the events come; none: one list",
+        "description": "day: the events under a heading per calendar day in the list's time zone (time-zone, else the reader's: «Сегодня», «Вчера», the weekday within a week, else the date), the days in the order the events come; none: one list",
         "enum": [
           "day",
           "none"
@@ -83,6 +83,11 @@
           "relative",
           "exact"
         ]
+      },
+      "time-zone": {
+        "type": "string",
+        "default": "",
+        "description": "The time zone the events are written in, an IANA name (Europe/Moscow), for a product that knows the site's or the person's zone, as sf-time's time-zone (owner decision C183 (3)): every sf-time of the list takes it, and the day headings, today and yesterday and the midnight they move at are that zone's days; empty or a name the browser does not know: the reader's own zone"
       },
       "now": {
         "type": "string",
@@ -318,11 +323,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "050fcf8d58db225e68bf4255ea6304469358349e2b318baa382fdc19c7c655d0"
+        "sha256": "4a8a848635956d34ab4ef871a701fa1c40ab35d6dca42345c3107766a29ac038"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
-        "sha256": "887b33db6b85035d9ef9a7d4efc045a826e861bf07cb5299bd010e686991c0b3"
+        "sha256": "115b934722a1d2ebd9c9b5106dd28aca09a0a94bd724bbb3ea4b48b3b9344a26"
       },
       {
         "path": "src/smart/list-timeline/js/fold-runs.mjs",
@@ -338,7 +343,7 @@
       },
       {
         "path": "src/smart/list-timeline/docs.md",
-        "sha256": "4378ea2e20e3387618ef3b3a0b6b44f2d3af9fe8b4363d3447efc5b00431480d"
+        "sha256": "4e1139a9114c972d683b9ea70dae1592d64adbdebdfbf16619cd22e0baf79d1b"
       }
     ],
     "generated_runtime": []

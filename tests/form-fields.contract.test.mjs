@@ -14,7 +14,7 @@ const json = (path) => JSON.parse(read(path));
 
 test('sf-form 1.7.0 takes a field host, a property only, and an action to draw again', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.13.1'); // forms-fb: FO-1..FO-4 // look answers: widths short and medium // GB13 notes: 1.12.3 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
+  assert.equal(manifest.version, '1.14.0'); // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
   const setting = manifest.settings['field-host'];
   assert.equal(setting.type, 'object');
   assert.equal(setting.default, null);
@@ -48,16 +48,16 @@ test('a link\'s address box is text with the address keyboard: a path and an anc
   const edit = source.slice(source.indexOf('function renderLinkEdit'), source.indexOf('function renderInnEdit'));
   assert.doesNotMatch(edit, /input-type="url"/u);
   assert.match(edit, /inputmode="url"/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.2'); // View list register VL-54: a cell's badge is the row's text; // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // feat/field-width merged: the width parameter (C396) // GB13 notes: 1.26.1 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.0'); // gb17-fields F4: option badges take the hue class (C411) // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // feat/field-width merged: the width parameter (C396) // GB13 notes: 1.26.1 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.2'); // View list register VL-43: the band's quiet plate; // group build 16 G8: PH-1..PH-3, band variables; // feat/field-width merged: the width setting (C396) // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 14: 1.22.0 moved on by the merged branches or the C278 language patch // group build 17: VL-43 and DSA-2 both wrote 1.25.1
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.28.2'); // View list register VL-54: a cell's badge is the row's text; // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.3'); // GB17: fields F4 joined, 1.25.3; // gb17-fields F4: the option badge's hue class (C411), above 1.25.1 on origin // group build 16 G8: PH-1..PH-3, band variables; // feat/field-width merged: the width setting (C396) // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 14: 1.22.0 moved on by the merged branches or the C278 language patch
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.0'); // gb17-fields F4: option badges take the hue class (C411) // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.2'); // View list register VL-43: the band's quiet plate; // group build 16 G8: PH-1..PH-3, band variables; // C396 WM-4: the width setting // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge // group build 17: VL-43 and DSA-2 both wrote 1.25.1
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.3'); // GB17: fields F4 joined, 1.25.3; // gb17-fields F4: the option badge's hue class (C411), above 1.25.1 on origin // group build 16 G8: PH-1..PH-3, band variables; // C396 WM-4: the width setting // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge
   const source = read('src/smart/dropdown/index.js');
   assert.match(source, /this\.watchOptionNodes\(optionNodes\);/u);
   assert.match(source, /this\._optionWatch\.observe\(node, \{attributes: true\}\);/u);
