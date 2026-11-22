@@ -87,7 +87,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The panel's width: three steps and the screen (owner decision C157 (2)) -- 1/2 44 characters, 1 52 (the default), 2 64 (--sf-measure-44/52/64, owner decision C396: 352, 416, 512px at text 16, following the text; 20, 24, 30rem before), full the whole screen. The step is the panel's outer width; the content stands inside the window inset (C105 H6, --sf-space-2: 20 px a side on a desktop, 16 in compact density and on a phone): 312, 376, 472px on a desktop. No other widths: a panel that needs its own width carries an sf-resizer within 1/2...2. width replaces the step.",
+        "description": "The panel's width: three steps and the screen (owner decision C157 (2)) -- 1/2 44 characters, 1 52 (the default), 2 64 (of the normal ladder, --sf-drawer--char; owner decision C396 and DEV return RP-1: 352, 416, 512px at text 16, following the page's text size, not the density; 20, 24, 30rem before), full the whole screen. The step is the panel's outer width; the content stands inside the window inset (C105 H6, --sf-space-2: 20 px a side on a desktop, 16 in compact density and on a phone): 312, 376, 472px on a desktop. No other widths: a panel that needs its own width carries an sf-resizer within 1/2...2. width replaces the step.",
         "enum": [
           "1/2",
           "1",
@@ -929,11 +929,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "0d1ce445fa4847017ccf541c8a640ab65b142b2d16fc008d0215d752ac0fd2bf"
+        "sha256": "de4c5a0f189a8753d9c9c1878cc6f352bc86d349e9d9549337f15072e72d10b8"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "46a005b6c5e1bbded13cf08fa950334b3b1e8b87740fdad6cab82b29eec5bbc0"
+        "sha256": "1a76caf4ba1ec628262121b63b0cb651f5e11ec80f65ef2caf7ae4853f6dc84a"
       },
       {
         "path": "src/smart/drawer/rule.js",

@@ -92,7 +92,7 @@ test('2 (round 2): the reveal fades, slides 4 px and scales from 0.9 in 0.3 s; r
 test('versions: engine and class slider are majors, the carousel a minor on the same engine', async () => {
   assert.equal((await passport('swiper')).version, '2.0.0');
   assert.equal((await passport('slider')).version, '2.2.0'); // GB16 returns: the dots offset is the inside position's
-  assert.equal((await passport('carousel')).version, '1.6.0');
+  assert.equal((await passport('carousel')).version, '1.6.1');
   const ranges = (p) => Object.fromEntries(p.dependencies.map((d) => [d.id, d.range]));
   assert.equal(ranges(await passport('slider'))['component.swiper'], '^2.0.0');
   assert.equal(ranges(await passport('carousel'))['component.swiper'], '^2.0.0');

@@ -16,7 +16,7 @@ const ASIDE = 'var(--sf-drawer-aside-width, calc(var(--sf-px) * 0))';
 test('A9: aside-width is a setting of sf-drawer 1.20.0, in its manifest and docs', () => {
   for (const file of ['src/smart/drawer/component.json', 'src/smart/drawer/smart.manifest.json']) {
     const manifest = json(file);
-    assert.equal(manifest.version, '1.21.0', file); // GB16 returns: data-sf-drawer-fill // group build 15: moved on by the merged branches or a GB15 assembly item
+    assert.equal(manifest.version, '1.22.0', file); // GB17 Y3: widths keep under compact // GB16 returns: data-sf-drawer-fill // group build 15: moved on by the merged branches or a GB15 assembly item
   }
   const setting = json('src/smart/drawer/component.json').settings['aside-width'];
   assert.equal(setting.type, 'string');
@@ -28,12 +28,13 @@ test('A9: aside-width is a setting of sf-drawer 1.20.0, in its manifest and docs
 });
 
 test('A9: the panel is the step plus the aside, at every step, never wider than the window', () => {
-  assert.ok(sheet.includes(`width: min(calc(var(--sf-drawer-width, var(--sf-measure-52)) + ${ASIDE}), 100vi);`));
+  assert.ok(sheet.includes(`width: min(calc(var(--sf-drawer-width, calc(52 * var(--sf-drawer--char))) + ${ASIDE}), 100vi);`));
   // The edge strip stands beside the same width.
-  assert.ok(sheet.includes(`+ min(calc(var(--sf-drawer-width, var(--sf-measure-52)) + ${ASIDE}), 100vi)`));
+  assert.ok(sheet.includes(`+ min(calc(var(--sf-drawer-width, calc(52 * var(--sf-drawer--char))) + ${ASIDE}), 100vi)`));
   // Each step only sets the content's width; none of them reads the aside.
-  for (const [step, token] of [['1-2', '--sf-measure-44'], ['2', '--sf-measure-64']]) {
-    assert.ok(sheet.includes(`--sf-drawer-width: var(${token});`), step);
+  // GB17 Y3 (RP-1): in characters of the normal ladder, --sf-drawer--char.
+  for (const [step, chars] of [['1-2', 44], ['2', 64]]) {
+    assert.ok(sheet.includes(`--sf-drawer-width: calc(${chars} * var(--sf-drawer--char));`), step);
   }
   // A phone's whole-screen panel adds nothing.
   assert.match(sheet, /--sf-drawer-width: 100%;\s*--sf-drawer-aside-width: calc\(var\(--sf-px\) \* 0\);/u);

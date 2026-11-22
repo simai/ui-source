@@ -52,7 +52,7 @@
         "full"
       ],
       "default": "1",
-      "summary": "The panel's width: three steps and the screen (owner decision C157 (2)) -- 1/2 44 characters, 1 52 (the default), 2 64 (--sf-measure-44/52/64, owner decision C396: 352, 416, 512px at text 16, following the text; 20, 24, 30rem before), full the whole screen. The step is the panel's outer width; the content stands inside the window inset (C105 H6, --sf-space-2: 20 px a side on a desktop, 16 in compact density and on a phone): 312, 376, 472px on a desktop. No other widths: a panel that needs its own width carries an sf-resizer within 1/2...2. width replaces the step.",
+      "summary": "The panel's width: three steps and the screen (owner decision C157 (2)) -- 1/2 44 characters, 1 52 (the default), 2 64 (of the normal ladder, --sf-drawer--char; owner decision C396 and DEV return RP-1: 352, 416, 512px at text 16, following the page's text size, not the density; 20, 24, 30rem before), full the whole screen. The step is the panel's outer width; the content stands inside the window inset (C105 H6, --sf-space-2: 20 px a side on a desktop, 16 in compact density and on a phone): 312, 376, 472px on a desktop. No other widths: a panel that needs its own width carries an sf-resizer within 1/2...2. width replaces the step.",
       "x-scale": "width"
     },
     "close-on-esc": {

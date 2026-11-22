@@ -41,7 +41,7 @@ test('drawer r-077 (1): the close is first outside and last in the head (C14)', 
 
 test('drawer r-077 (2): a width off the ladder is drawn and said once, naming the steps', () => {
   // C396 (2026-11-19): the steps are widths in characters, 44 · 52 · 64 (20 · 24 · 30rem before).
-  assert.match(source, /const LADDER_WIDTHS = \[\['1\/2', 'var\(--sf-measure-44\)', '44 characters'\], \['1', 'var\(--sf-measure-52\)', '52 characters'\], \['2', 'var\(--sf-measure-64\)', '64 characters'\]\];/u);
+  assert.match(source, /const LADDER_WIDTHS = \[\['1\/2', 'calc\(44 \* var\(--sf-drawer--char\)\)', '44 characters'\], \['1', 'calc\(52 \* var\(--sf-drawer--char\)\)', '52 characters'\], \['2', 'calc\(64 \* var\(--sf-drawer--char\)\)', '64 characters'\]\];/u);
   assert.match(source, /const OFF_LADDER_UNTIL = '2027-01-01';/u);
   assert.match(source, /if \(!width \|\| this\._offLadderWidth === width/u);
   assert.match(source, /measure\('100vi'\)/u);

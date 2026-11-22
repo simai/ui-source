@@ -33,7 +33,7 @@
     pointer-events: none;
   }
 
-  @media (min-width: 60rem) {
+  @media (min-width: map.get(bp.$breakpoint-array, lg)) {
     .sf-drawer {
       --sf-drawer--char: calc(var(--sf-b6) / 2);
     }
