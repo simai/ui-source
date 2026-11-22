@@ -116,6 +116,7 @@ class SfBulkActions extends BulkActionsElement {
     this._widthObserver = null;
     this._rowObserver?.disconnect();
     this._rowObserver = null;
+    cancelAnimationFrame(this._fitFrame);
     clearTimeout(this._sayTimer);
     clearTimeout(this._doneTimer);
     super.disconnectedCallback?.();
@@ -257,7 +258,13 @@ class SfBulkActions extends BulkActionsElement {
     if (root && typeof ResizeObserver === 'function' && this._rowRoot !== root) {
       this._rowObserver?.disconnect();
       this._rowRoot = root;
-      this._rowObserver = new ResizeObserver(() => this.fitRow());
+      // The fit is made in the next frame, not inside the observer's call: a
+      // fold changes the bar's height, and a change made while the observer
+      // delivers is reported as a «ResizeObserver loop» error (LV3-27).
+      this._rowObserver = new ResizeObserver(() => {
+        cancelAnimationFrame(this._fitFrame);
+        this._fitFrame = requestAnimationFrame(() => this.fitRow());
+      });
       this._rowObserver.observe(root);
     }
     this.fitRow();
