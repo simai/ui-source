@@ -229,11 +229,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/display-settings/index.js",
-        "sha256": "9fc6ef4c5956939bcedfbda2c52fdec319c3ea5ea71a9b1c9bb9dd7dc4f1428a"
+        "sha256": "e4c41fa40cd2aa52a142468fdab90d57e237fa29925660f97a1997bb0a1ed557"
       },
       {
         "path": "src/smart/display-settings/js/templates/default.js",
-        "sha256": "70a62b071001127a5d620139b2bc6519f5875afd2498a8a329ee75ee57e35d35"
+        "sha256": "3c489a226fcf9c32d5e50d123dd6ae015fa17bc51dab2d692d64300a2f9e305c"
       },
       {
         "path": "src/smart/display-settings/scss/_smart__display_settings.scss",
@@ -245,7 +245,7 @@
       },
       {
         "path": "src/smart/display-settings/docs.md",
-        "sha256": "02994e8f07fd216dcfbf7e8c2057bd3011cbc85789b3495b229ecf8f1c8cb1e1"
+        "sha256": "180fb17f22effa2af0cbc27b57b26751c2dd6040628c6ab1e9a12d9d50f3e9f5"
       }
     ],
     "generated_runtime": []
