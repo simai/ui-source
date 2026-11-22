@@ -219,7 +219,7 @@ try {
     check(`${id}: the browser names it «${want}»`, name === want, {got: name});
   }
   const smartNames = {
-    avatar: await nameOf(tab, '#s-avatar button'),
+    avatar: await nameOf(tab, '#s-avatar :is(button, [role="img"])'),
     iconButton: await nameOf(tab, '#s-button button'),
   };
   evidence.smartNames = smartNames;

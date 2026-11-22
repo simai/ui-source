@@ -30,7 +30,9 @@ const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/avatars/css/avatars.css', 'component/component/icon-buttons/css/icon-buttons.css',
   'component/component/badges/css/badges.css', 'component/component/menu/css/menu.css',
   'component/component/admin-menu/css/admin-menu.css', 'component/component/context-menu/css/context-menu.css'];
-const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/badges/js/badges.js',
+// core/lang/ru.js: Russian is a language file since C282 (the probe adds the
+// scripts by hand, so it adds the words first, as a page does; GB17 L6).
+const SCRIPTS = ['core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'component/component/badges/js/badges.js',
   'smart/smart/icon/js/icon.js', 'smart/smart/avatar/js/avatar.js', 'smart/smart/button-icon/js/button-icon.js'];
 const SIZES = ['1/3', '1/2', '1', '2', '3'];
 const SHAPES = ['round', 'square', 'rounded'];
@@ -299,7 +301,7 @@ try {
     check(`Smart ${lang}: an icon's dot`, smart.si.width === TABLE[1].dot, smart.si);
     check(`Smart ${lang}: icon size 5 carries a medium count`, smart['si-count'].height === TABLE[2].count, smart['si-count']);
     const online = await page.evaluate(() => {
-      const a = document.querySelector('#sa-online button').getBoundingClientRect();
+      const a = document.querySelector('#sa-online :is(button, [role="img"])').getBoundingClientRect();
       const i = document.querySelector('#sa-online .sf-online-indicator').getBoundingClientRect();
       const b = document.querySelector('#sa-online .sf-badge').getBoundingClientRect();
       return {indicatorAtBottomEnd: near(i.bottom, a.bottom) && near(i.right, a.right), badgeAbove: b.bottom < i.top};
@@ -309,7 +311,7 @@ try {
     // A count that changes is drawn again.
     await page.evaluate(() => document.getElementById('sa').setAttribute('badge-count', '0'));
     await page.waitForTimeout(100);
-    check(`Smart ${lang}: badge-count set to 0 hides the badge and restores the name`, await page.locator('#sa .sf-badge').count() === 0 && await nameOf(page, '#sa button') === 'Анна Белова');
+    check(`Smart ${lang}: badge-count set to 0 hides the badge and restores the name`, await page.locator('#sa .sf-badge').count() === 0 && await nameOf(page, '#sa :is(button, [role="img"])') === 'Анна Белова');
     await page.close();
   }
 
