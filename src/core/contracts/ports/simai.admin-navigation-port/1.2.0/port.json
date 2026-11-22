@@ -2112,7 +2112,6 @@
     },
     "activity.load": {
       "summary": "Since 1.2.0. What runs in the background now; answered with activity_page. Asked when the indicator connects and again when the host says the runs changed.",
-      "event": "sf-admin-activity-intent",
       "payload": {
         "type": "object",
         "required": [],
@@ -2129,7 +2128,6 @@
     },
     "activity.retry": {
       "summary": "Since 1.2.0. A person pressed Retry on a run that failed or was cancelled: the host starts it again and answers with activity_page.",
-      "event": "sf-admin-activity-intent",
       "payload": {
         "type": "object",
         "required": [
@@ -2152,7 +2150,6 @@
     },
     "activity.cancel": {
       "summary": "Since 1.2.0. A person pressed Cancel on a running run: the host stops it, or refuses, and answers with activity_page.",
-      "event": "sf-admin-activity-intent",
       "payload": {
         "type": "object",
         "required": [

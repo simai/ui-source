@@ -20574,6 +20574,26 @@
         }
       ],
       "source": "src/smart/progress-run/js/templates/default.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: 1.2.0 is not released; a host answers activity.load, activity.retry and activity.cancel through the port as before, and no element ever sent the event.",
+      "owner": "ui-source",
+      "id": "behaviour-admin-navigation-port-activity-no-event",
+      "kind": "behaviour",
+      "summary": "simai.admin-navigation-port 1.2.0 (unreleased; group build 17, ASR-2): the activity intents name no event (sf-admin-activity-intent is gone: no component sends it, sf-admin-activity raises them on the host port directly); the host port schema (composite-host-port.v1, x-simai-version 1.2.0) makes an intent's event optional for intents raised only through the port.",
+      "items": [
+        {
+          "component": "simai.admin-navigation-port",
+          "from": "1.2.0 draft, activity intents with event sf-admin-activity-intent",
+          "to": "1.2.0, activity intents without an event"
+        }
+      ],
+      "source": "src/core/contracts/ports/simai.admin-navigation-port/1.2.0/port.json"
     }
   ]
 }

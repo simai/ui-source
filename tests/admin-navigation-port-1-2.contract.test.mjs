@@ -132,3 +132,19 @@ test('the kit is 1.1.0\'s cases byte for byte, and five of 1.2.0 that a 1.1.0 ho
   assert.deepEqual(kase('1.2.0', 'a-notification-says-its-object-level-and-resolved').then.answer_must_include,
     kase('1.1.0', 'notifications-arrive-grouped-by-time').then.answer_must_include);
 });
+
+// ASR-2 (group build 17, before 1.2.0 is released): no component sends an
+// sf-admin-activity-intent event -- sf-admin-activity raises its intents on the
+// host port directly -- so the activity intents name no event, which the host
+// port schema allows since its 1.2.0; the menu's intents keep theirs.
+test('ASR-2: the activity intents name no event; the menu intents keep sf-admin-menu-intent', () => {
+  for (const name of now.capabilities.activity.intents) assert.equal(now.intents[name].event, undefined, name);
+  assert.doesNotMatch(readFileSync(join(at('1.2.0'), 'port.json'), 'utf8'), /sf-admin-activity-intent/u);
+  for (const [name, intent] of Object.entries(now.intents)) {
+    if (!name.startsWith('activity.')) assert.equal(intent.event, 'sf-admin-menu-intent', name);
+  }
+  const schema = JSON.parse(readFileSync(join(root, 'src/core/contracts/composite-host-port.v1.schema.json'), 'utf8'));
+  const intent = schema.properties.intents.additionalProperties;
+  assert.ok(!intent.required.includes('event'), 'an intent raised only through the port names no event');
+  assert.equal(schema['x-simai-version'], '1.2.0');
+});
