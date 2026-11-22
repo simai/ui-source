@@ -1,0 +1,29 @@
+{
+  "id": "a-language-not-offered-is-refused",
+  "intent": "preference.language",
+  "capability": "preferences",
+  "summary": "A language the host does not offer is refused.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "preference.language",
+    "payload": {
+      "language": "xx"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

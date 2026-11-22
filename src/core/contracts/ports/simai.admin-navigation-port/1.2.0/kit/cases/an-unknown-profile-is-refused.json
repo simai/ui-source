@@ -1,0 +1,29 @@
+{
+  "id": "an-unknown-profile-is-refused",
+  "intent": "view.profile",
+  "capability": "menu-profiles",
+  "summary": "A profile that does not exist is refused.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.profile",
+    "payload": {
+      "profile": "no-such-profile"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

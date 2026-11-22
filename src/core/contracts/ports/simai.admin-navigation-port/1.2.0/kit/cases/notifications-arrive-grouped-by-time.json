@@ -1,0 +1,33 @@
+{
+  "id": "notifications-arrive-grouped-by-time",
+  "intent": "notifications.load",
+  "capability": "notifications",
+  "summary": "Notifications arrive grouped by the host, with how many are unread.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "notifications.load",
+    "payload": {
+      "cursor": null
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "groups",
+      "unread"
+    ],
+    "data_must_include": [
+      "notifications_page"
+    ]
+  }
+}

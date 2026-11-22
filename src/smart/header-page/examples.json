@@ -54,6 +54,30 @@
       }
     },
     {
+      "name": "path-end",
+      "title": "Конец строки пути: индикатор у крошек",
+      "children": "<sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/sites\">Сайты</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"path-end\" size=\"1/2\" appearance=\"ghost\" scheme=\"on-surface\" icon-start=\"sync\" text=\"Идёт 2\"></sf-button>",
+      "settings": {
+        "heading": "Сайты",
+        "star": false
+      },
+      "expect": {
+        "heading": "Сайты"
+      }
+    },
+    {
+      "name": "long-heading",
+      "title": "Длинное название без действий: переносится целиком",
+      "children": "<sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/sites\">Сайты</sf-breadcrumbs-item></sf-breadcrumbs>",
+      "settings": {
+        "heading": "Резервная копия stage.larena.cloud от 22 ноября: восстановление на новый сервер",
+        "star": false
+      },
+      "expect": {
+        "heading": "Резервная копия stage.larena.cloud от 22 ноября: восстановление на новый сервер"
+      }
+    },
+    {
       "name": "no-star",
       "title": "Без звезды",
       "settings": {

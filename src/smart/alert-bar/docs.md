@@ -100,6 +100,24 @@ the button. After «Прочитано» or × in a row, focus moves to the row 
 its place -- the next one, from the last row the one before; with no row left,
 to the bar. Nothing is announced: the person opened the list.
 
+## Colour
+
+Each level is a strong coloured place of its colour (C16): error and warning
+draw the theme's strong fill with its on-colour in both themes, and so does
+info in the light theme (info 40 with white).
+
+**Info in the dark theme is a container (1.8.0, owner decision C420, an
+exception to C16 for this level and theme only).** The tone-80 strong fill was
+a bright light-blue band with dark text above a dark page; the bar now draws
+the info container laid on the page (info 50 at 24 over the page surface, so
+the sticky bar stays opaque) with the container's ink (info 90), as the
+`sf-alert` info notice does. What stands on it -- the action's tonal plate,
+its hover and press, the close glyph at 64, the focus ring -- takes that ink
+on the alpha scale, as on a strong place. Warning and error keep their strong
+fill in the dark theme: they ask for action now and stay loud. A fill set
+through `--sf-alert-bar-info-background-color` is used in both themes, as
+before.
+
 ## Layout
 
 The steps are the Framework's horizontal standard (C105): 16 from the edge,
@@ -223,7 +241,8 @@ open list (from the last row the one before), or to the bar's first control. Mot
 
 - `--sf-alert-bar-error-background-color`, `--sf-alert-bar-warning-background-color`,
   `--sf-alert-bar-info-background-color` — the level fills (the theme's error,
-  warning and info roles by default; the text keeps their on- role).
+  warning and info roles by default, info in the dark theme the info container
+  on the page; the text keeps their on- role).
 - `--sf-alert-bar-padding-inline` — the bar's inline inset (16, or the page
   column on a site bar), to line the text up with the header under it.
 - `--sf-alert-bar-gap` — the space between the bar's text and its actions

@@ -1,0 +1,27 @@
+{
+  "id": "signing-out-is-the-hosts",
+  "intent": "session.sign-out",
+  "capability": "sign-out",
+  "summary": "Signing out answers with where the browser goes next.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "session.sign-out",
+    "payload": {}
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "href"
+    ]
+  }
+}

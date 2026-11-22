@@ -19,7 +19,10 @@ tag in three looks (`look`, owner decision C34):
   The row carries no name: the job is named by the row's own cell. Outside a
   table use `notice`, the look with the name.
 - `notice` — one row for a corner panel: the ring in the icon field, the
-  name, a line of figures and Expand. The panel itself (where it stands,
+  name, a line of figures and Expand; a run that stopped and can be run
+  again (`retryable`: failed, partial or cancelled) shows Retry before
+  Expand, an icon button that sends `sf-progress-run-retry` as in the other
+  looks (1.6.0). The panel itself (where it stands,
   several runs in it) is the page's composition.
 
 ```html
@@ -233,6 +236,13 @@ Minimize for the notice's Expand), focus moves to the button that took the
 pressed one's place, so the next key goes on from there.
 
 ## Changes
+
+- 1.6.0 (2026-11-22, AS-4, owner decisions C420-C421) — the notice look shows
+  Retry (the `replay` icon button, «Повторить», or «Повторить неудачные»
+  after a partial result) before Expand on a run that stopped and is
+  `retryable`; it sends the same `sf-progress-run-retry` event as the other
+  looks. The admin's activity list (sf-admin-activity) uses it. The row look
+  is unchanged.
 
 - 1.4.6 (2026-11-16, R082 note N1, decisions C34 and C44) — the title reads
   the card title's size and line, so in compact density it stays 16/24 like

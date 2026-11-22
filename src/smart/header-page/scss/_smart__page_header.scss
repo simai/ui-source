@@ -53,6 +53,42 @@
   gap: var(--sf-page-header-line-gap, var(--sf-space-1));
 }
 
+/* The path-end slot (1.12.0, AS-2): a part at the end of the path's row,
+   the crumbs taking the room before it. The row's items stand on the crumbs'
+   baseline, and the row holds the 1/2 control height (the admin's activity
+   indicator), so it does not grow when the part draws; core.css holds the
+   same height before this sheet. */
+.sf-page-header-path:has(> .sf-page-header-path-end) {
+  align-items: baseline;
+  gap: var(--sf-page-header-line-gap, var(--sf-space-1));
+  min-block-size: var(--sf-ui-1\/2--control-height);
+}
+
+.sf-page-header-path:has(> .sf-page-header-path-end) > :not(.sf-page-header-path-end) {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-page-header-path-end {
+  flex: none;
+  align-items: baseline;
+  margin-inline-start: auto;
+  gap: var(--sf-gap--actions);
+}
+
+/* A head with no actions (1.12.0, AS-3, C324): nothing needs the room beside
+   the heading, so a long heading wraps whole and is never cut; a word longer
+   than the line breaks, so a narrow page does not scroll sideways. The count,
+   the marks and the star stand beside its last line (last baseline). HD-12's
+   ellipsis stays for a head with actions. */
+.sf-page-header--wrap .sf-page-header-title {
+  align-items: last baseline;
+}
+
+.sf-page-header-heading--wrap {
+  overflow-wrap: anywhere;
+}
+
 /* The marks keep their size; only the heading gives way. The badge and the
    icon button hosts are display: contents, so their boxes are the items. */
 .sf-page-header-title > :not(.sf-page-header-heading, .sf-page-header-name),

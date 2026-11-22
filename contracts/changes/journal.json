@@ -19663,6 +19663,66 @@
         }
       ],
       "source": "src/component/slider/scss/_css__slider.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-alert-bar-info-dark-container",
+      "summary": "smart.alert-bar 1.8.0 (AS-1, owner decision C420): in the dark theme the info level draws as a container -- the info container laid on the page surface, the container's ink (info 90) -- instead of the strong tone-80 fill with tone-20 ink; warning and error keep the strong fill, the light theme is unchanged.",
+      "items": [
+        {
+          "component": "smart.alert-bar",
+          "from": "info, dark theme: strong fill --sf-info (info 80) with --sf-on-info (info 20)",
+          "to": "info container (info 50 at 24 over --sf-surface-page) with --sf-on-info-container (info 90); a page's --sf-alert-bar-info-background-color still wins in both themes"
+        }
+      ],
+      "source": "src/smart/alert-bar/scss/_smart__alert-bar.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-header-page-path-end-heading-wrap",
+      "summary": "smart.header-page 1.12.0 (AS-2, AS-3; owner decisions C420, C324): a new slot path-end at the end of the path's row (the admin's activity indicator), and a head with no actions wraps a long heading whole instead of one line with an ellipsis.",
+      "items": [
+        {
+          "component": "smart.header-page",
+          "from": "a part beside the crumbs went into the path slot inside the page's own div wrap; a long heading always ended in an ellipsis on one line",
+          "to": "slot path-end at the row's end on the crumbs' baseline (the row holds the 1/2 control height); without actions the heading wraps whole and the star stands beside its last line; with actions HD-12's ellipsis stays"
+        }
+      ],
+      "source": "src/smart/header-page/js/templates/default.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-progress-run-notice-retry",
+      "summary": "smart.progress-run 1.6.0 (AS-4, owner decisions C420-C421): the notice look shows Retry before Expand on a run that stopped and is retryable, sending the existing sf-progress-run-retry event; the row look is unchanged.",
+      "items": [
+        {
+          "component": "smart.progress-run",
+          "from": "look notice: Expand only, whatever the state",
+          "to": "look notice: Retry (replay icon button) before Expand when retryable and failed, partial or cancelled"
+        }
+      ],
+      "source": "src/smart/progress-run/js/templates/default.js"
     }
   ]
 }

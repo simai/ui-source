@@ -462,6 +462,17 @@
         "errors-total": 40,
         "look": "notice"
       }
+    },
+    {
+      "name": "notice-failed",
+      "title": "Уведомление: не удалось, «Повторить» рядом с «Развернуть»",
+      "settings": {
+        "label": "Копия demo.test",
+        "run-state": "failed",
+        "retryable": true,
+        "look": "notice",
+        "result-text": "Хранилище не ответило"
+      }
     }
   ],
   "pages": [

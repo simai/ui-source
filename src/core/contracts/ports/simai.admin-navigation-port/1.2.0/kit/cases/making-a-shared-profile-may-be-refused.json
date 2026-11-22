@@ -1,0 +1,31 @@
+{
+  "id": "making-a-shared-profile-may-be-refused",
+  "intent": "view.create",
+  "capability": "menu-profiles",
+  "summary": "Making a shared profile without the right is refused.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.create",
+    "payload": {
+      "label": "Для всех",
+      "shared": true,
+      "from": "regular"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ]
+  }
+}

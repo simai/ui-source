@@ -1670,6 +1670,12 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
   --sf-page-header--box-path: calc(var(--sf-ui-1\/3--control-height) + var(--sf-page-header-gap, var(--sf-space-1\/2)));
 }
 
+/* A part at the path row's end (sf-header-page 1.12.0, path-end): the row
+   holds the 1/2 control height, as the head's sheet does. */
+:where(:is(sf-header-page, sf-page-header)):has(> [slot="path-end"], > header > .sf-page-header-path > .sf-page-header-path-end > [slot="path-end"]) {
+  --sf-page-header--box-path: calc(var(--sf-ui-1\/2--control-height) + var(--sf-page-header-gap, var(--sf-space-1\/2)));
+}
+
 /* The actions are buttons of the default size 1 unless every one says 1/2;
    one of size 2 makes the line that tall. The slot content is the host's
    child until the element draws, then a child of the drawn head's rows:

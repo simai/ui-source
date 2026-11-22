@@ -1,0 +1,89 @@
+{
+  "id": "an-object-menu-comes-with-its-page",
+  "intent": "navigation.load",
+  "summary": "A page that shows one object is answered with that object's menu, which the second column draws in place of a root.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ],
+    "context": {
+      "title": "demo-owned.test",
+      "subtitle": "PHP 8.3",
+      "status": {
+        "text": "Работает",
+        "status": "success"
+      },
+      "back": {
+        "label": "Все сайты",
+        "href": "/panel/sites"
+      },
+      "groups": [
+        {
+          "label": null,
+          "items": [
+            {
+              "key": "site.overview",
+              "label": "Обзор",
+              "href": "/panel/sites/demo",
+              "icon": "dashboard"
+            },
+            {
+              "key": "site.backups",
+              "label": "Резервные копии",
+              "href": "/panel/sites/demo/backups",
+              "icon": "backup",
+              "badge": {
+                "text": "1",
+                "status": "error"
+              }
+            }
+          ]
+        },
+        {
+          "label": "Дополнительно",
+          "items": [
+            {
+              "key": "site.php",
+              "label": "PHP и веб-сервер",
+              "href": "/panel/sites/demo/php",
+              "icon": "code"
+            }
+          ]
+        }
+      ],
+      "current": "site.overview"
+    }
+  },
+  "when": {
+    "intent": "navigation.load",
+    "payload": {
+      "reason": "requested",
+      "site": null,
+      "sequence": 3,
+      "page": "/panel/sites/demo"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision",
+      "echo",
+      "site",
+      "items",
+      "favourites",
+      "profiles",
+      "rights",
+      "person"
+    ],
+    "data_must_include": [
+      "navigation"
+    ],
+    "note": "The object menu is `context` beside the menu, given whole: the next answer replaces it or, without `context`, takes it away. A host with no object menus never sends it, so the kit requires it of no host; one that sends it sends this shape."
+  }
+}

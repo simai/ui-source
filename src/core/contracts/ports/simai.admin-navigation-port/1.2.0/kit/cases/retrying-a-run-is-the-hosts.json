@@ -1,0 +1,41 @@
+{
+  "id": "retrying-a-run-is-the-hosts",
+  "intent": "activity.retry",
+  "capability": "activity",
+  "summary": "Since 1.2.0: Retry on a failed run is the person's request; the host starts it again and answers with the runs.",
+  "given": {
+    "capabilities": [
+      "activity",
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ],
+    "runs": [
+      {
+        "id": "r2",
+        "label": "Обновление stage.larena.cloud",
+        "state": "failed",
+        "retryable": true
+      }
+    ]
+  },
+  "when": {
+    "intent": "activity.retry",
+    "payload": {
+      "id": "r2"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "runs"
+    ],
+    "data_must_include": [
+      "activity_page"
+    ]
+  }
+}

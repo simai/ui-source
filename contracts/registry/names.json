@@ -426,8 +426,20 @@
       ],
       "names": [
         {
+          "element": "sf-admin-activity",
+          "status": "preview"
+        },
+        {
           "element": "sf-admin-menu",
           "status": "released"
+        },
+        {
+          "element": "sf-admin-notifications",
+          "status": "preview"
+        },
+        {
+          "element": "sf-admin-shell",
+          "status": "preview"
         }
       ],
       "source": "ui-pro components/src/smart at 5c92812 (package pro)"

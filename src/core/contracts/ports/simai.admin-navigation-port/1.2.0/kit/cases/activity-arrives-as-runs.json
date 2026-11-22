@@ -1,0 +1,50 @@
+{
+  "id": "activity-arrives-as-runs",
+  "intent": "activity.load",
+  "capability": "activity",
+  "summary": "Since 1.2.0: the background runs arrive whole, running ones first, each with its state.",
+  "given": {
+    "capabilities": [
+      "activity",
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ],
+    "runs": [
+      {
+        "id": "r1",
+        "label": "Копия demo.test",
+        "state": "running",
+        "value": 4,
+        "total": 10,
+        "unit": "файл|файла|файлов",
+        "cancelable": true
+      },
+      {
+        "id": "r2",
+        "label": "Обновление stage.larena.cloud",
+        "state": "failed",
+        "text": "Хранилище не ответило",
+        "object": "stage.larena.cloud",
+        "retryable": true
+      }
+    ]
+  },
+  "when": {
+    "intent": "activity.load",
+    "payload": {}
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "runs"
+    ],
+    "data_must_include": [
+      "activity_page"
+    ]
+  }
+}

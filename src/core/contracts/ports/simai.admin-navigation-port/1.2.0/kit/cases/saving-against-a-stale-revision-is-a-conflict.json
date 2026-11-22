@@ -1,0 +1,37 @@
+{
+  "id": "saving-against-a-stale-revision-is-a-conflict",
+  "intent": "view.save",
+  "capability": "menu-profiles",
+  "summary": "A save against a revision someone moved past is a conflict carrying the layout as it now stands.",
+  "given": {
+    "capabilities": [
+      "favourites",
+      "menu-profiles",
+      "notifications",
+      "preferences",
+      "search",
+      "sign-out",
+      "site-switch"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "profile": "regular",
+      "revision": "stale",
+      "layout": {
+        "schema_version": 1,
+        "items": {},
+        "own": []
+      }
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "revision",
+      "layout"
+    ],
+    "note": "The conflict carries the stored layout, not only the revision. Two administrators editing the shared profile must see each other's change, not overwrite it."
+  }
+}

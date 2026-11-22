@@ -20,7 +20,11 @@ Attributes:
   step 6 (C161 (2)); a page of a site keeps its own h1 at step 6. A long
   heading ends in an ellipsis on one line: beside the actions while it has
   at least 20rem (the g0 step) there, and the count, the install mark and the
-  star stay whole right after it.
+  star stay whole right after it. A head with no actions has nothing to keep
+  that room for, so there a long heading wraps whole onto as many lines as it
+  needs and is never cut (1.12.0, C324: the page's whole name); a word longer
+  than the line breaks, so a phone does not scroll sideways, and the count,
+  the marks and the star stand beside its last line.
 - `heading-level` — the heading element's level, 1 to 6, `1` by default:
   the page's own title. A head inside a page that has its own h1 (a
   conversation embedded in a page) says `2`. Only the tag changes; the look
@@ -87,6 +91,13 @@ Attributes:
 Slots:
 
 - `path` — where the page is, usually an `sf-breadcrumbs` starting at the site.
+- `path-end` — a part at the end of the path's row (1.12.0, owner decision
+  C420): the admin's background activity indicator (`sf-admin-activity`)
+  beside the crumbs. The crumbs take the room before it; it stands on their
+  baseline, and the row then holds the 1/2 control height, so it does not
+  grow when the part draws. Drawn only when given (the row is drawn for it
+  even without a `path`); it folds away with the path in a sticky head under
+  scrolled content.
 - `start` — the start of the line, before the heading: «назад» (an
   `sf-button-icon` `arrow_back`, ghost, on-surface) on the head of a page an
   app opens from a list, or a phone's ☰.
