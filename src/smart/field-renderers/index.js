@@ -823,6 +823,17 @@ export function renderFilterField(field = {}, host) {
 // 51 on mobile.
 const CELL_LINE = '1/2';
 
+// A value's badge in a row is the row's text (owner remark LV4-11, View list
+// register VL-54: «Tags small» -- 12 beside a row's 16). sf-badge's line of
+// the text beside it (line="text", C95 (6)): the badge inherits the cell's
+// size and line, so it is the row's text at every density and in every table
+// size, its height the text's line, no block padding. That mode keeps a
+// count's quarter at the sides; a word keeps the badge's own room, the space
+// system's half step (12, 8 on a phone), through its public variable.
+const CELL_BADGE_LINE = 'text';
+const CELL_BADGE_ROOM = '--sf-badge-padding-inline: var(--sf-space-1\\/2)';
+const cellBadgeStyle = (style) => [CELL_BADGE_ROOM, style].filter(Boolean).join('; ');
+
 // A choice badge in a cell is tonal (sf-badge's default since 1.6.0, C140; it
 // was main, so the cells shipped filled and the consumer's owner asked for the
 // calmer one) -- and a table row is the place for it: a column of
@@ -1021,11 +1032,11 @@ function renderChoicesBadgesCell(field, value) {
             component: {
                 type: 'badge',
                 props: {
-                    line: CELL_LINE,
+                    line: CELL_BADGE_LINE,
                     text,
                     appearance: badgeAppearanceOf(field),
                     ...(badge?.scheme ? {scheme: badge.scheme} : {}),
-                    ...(badge?.rootStyle ? {rootStyle: badge.rootStyle} : {}),
+                    rootStyle: cellBadgeStyle(badge?.rootStyle),
                 },
             },
         };
@@ -1101,11 +1112,11 @@ function renderChoiceCell(field, value) {
         component: {
             type: 'badge',
             props: {
-                line: CELL_LINE,
+                line: CELL_BADGE_LINE,
                 text: option.label ?? option.text ?? String(value),
                 appearance: badgeAppearanceOf(field),
                 ...(badge?.scheme ? {scheme: badge.scheme} : {}),
-                ...(badge?.rootStyle ? {rootStyle: badge.rootStyle} : {}),
+                rootStyle: cellBadgeStyle(badge?.rootStyle),
             },
         },
     };

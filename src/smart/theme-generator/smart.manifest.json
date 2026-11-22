@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "title": "Theme generator",
   "summary": "Leaving until 2027-01-01 (C84): use sf-input-color variant=\"brand\". A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
@@ -117,7 +117,7 @@
       }
     },
     "toCSS": {
-      "summary": "The theme as one stylesheet rule of its 64 primitives and 80 translucent steps (the four theme palettes), under the given selector or the `selector` attribute.",
+      "summary": "The theme as one stylesheet rule of its 64 primitives and 82 translucent steps (the four theme palettes), under the given selector or the `selector` attribute.",
       "arguments": [
         {
           "name": "selector",
@@ -241,7 +241,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
+            "description": "The 146 custom properties of the four theme palettes -- 64 tones and 82 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -276,7 +276,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
+            "description": "The 146 custom properties of the four theme palettes -- 64 tones and 82 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -311,7 +311,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
+            "description": "The 146 custom properties of the four theme palettes -- 64 tones and 82 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -346,7 +346,7 @@
           },
           "variables": {
             "type": "object",
-            "description": "The 144 custom properties of the four theme palettes -- 64 tones and 80 translucent steps -- {name: value}."
+            "description": "The 146 custom properties of the four theme palettes -- 64 tones and 82 translucent steps -- {name: value}."
           },
           "css": {
             "type": "string",
@@ -487,11 +487,11 @@
       },
       {
         "path": "src/smart/theme-generator/docs.md",
-        "sha256": "62046e73a95fac741c3d61560e32ee0ff48ea9c5a468bcd90052d7bd61f7acb6"
+        "sha256": "2b03269b143c95b2800b6772e672fef98f43a968bc6e49fb4bc2b7c0423e742b"
       },
       {
         "path": "src/core/js/theme-palette.js",
-        "sha256": "76e817016150ceb8f7a7346398efcaa3d87e6e625d31d83f6405c4210630d8bd"
+        "sha256": "f04c4434d4a832ade130d0f73bdcb171572c6a5cbb79e8f7b4f2351fca4f1f3b"
       }
     ],
     "generated_runtime": []

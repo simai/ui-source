@@ -15,7 +15,7 @@ const primitives = readFileSync(join(root, 'src/core/scss/_sf_figma_colors_varia
 // The rules are the generator's, and the Framework's colours were made with
 // them: the default colour has to give back every shipped primitive, or the
 // component would re-theme a page that asked for nothing.
-test('the default colour gives back the 64 shipped primitives of the dynamic palettes and their 80 translucent steps exactly', () => {
+test('the default colour gives back the 64 shipped primitives of the dynamic palettes and their 82 translucent steps exactly', () => {
   const theme = themeFromColor(DEFAULT_THEME_COLOR);
   const variables = themeVariables(theme);
   assert.deepEqual([...THEME_PALETTES], ['primary', 'secondary', 'tertiary', 'neutral']);
@@ -24,7 +24,7 @@ test('the default colour gives back the 64 shipped primitives of the dynamic pal
   // Every translucent step core declares on a palette tone is one the theme writes.
   assert.deepEqual([...new Set(declared)].filter((name) => !(name in variables)), []);
   assert.equal(Object.keys(variables).length, THEME_PALETTES.length * THEME_TONES.length + new Set(declared).size);
-  assert.equal(Object.keys(variables).length, 144);
+  assert.equal(Object.keys(variables).length, 146); // 144 until the not-set ink's two steps (C402)
   const off = [];
   for (const [name, value] of Object.entries(variables)) {
     const shipped = primitives.match(new RegExp(`${name}: (#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?);`))?.[1]?.toLowerCase();
@@ -88,11 +88,11 @@ test('a dynamic palette rule can be overridden, and a bad colour is refused', ()
   assert.throws(() => themeFromColor('#12345'), TypeError);
 });
 
-test('the CSS is one rule of the 64 primitives and 80 translucent steps under the selector', () => {
+test('the CSS is one rule of the 64 primitives and 82 translucent steps under the selector', () => {
   const css = themeToCss(themeFromColor('#005bbe'), '.site-main');
   assert.match(css, /^\.site-main \{\n/u);
   assert.equal((css.match(/--sf-[a-z]+-\d+: #[0-9a-f]{6};/gu) ?? []).length, 64);
-  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 80);
+  assert.equal((css.match(/--sf-[a-z]+-\d+--alfa-\d+: #[0-9a-f]{8};/gu) ?? []).length, 82);
 });
 
 // The copied HCT files are the package's own bytes: a copy that drifted would
@@ -257,5 +257,5 @@ test('brandVariables: a light colour fills the header and the cover as it is, wi
     assert.deepEqual(brandVariables(themeFromColor(color)), {'--sf-brand': 'var(--sf-primary)', '--sf-on-brand': 'var(--sf-on-primary)'}, color);
   }
   assert.deepEqual(brandVariables(themeFromHct({hue: 90, chroma: 60})), {'--sf-brand': 'var(--sf-primary)', '--sf-on-brand': 'var(--sf-on-primary)'});
-  assert.equal(Object.keys(themeVariables(themeFromColor('#ffd600'))).length, 144, 'the theme itself stays 144 variables');
+  assert.equal(Object.keys(themeVariables(themeFromColor('#ffd600'))).length, 146, 'the theme itself stays 146 variables');
 });

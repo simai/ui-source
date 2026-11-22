@@ -49,6 +49,8 @@
     --sf-on-surface-hover: var(--sf-on-surface-media);
     --sf-on-surface-active: var(--sf-on-surface-media);
     --sf-on-surface-variant: var(--sf-white--alfa-80);
+    // A value not set (C402): glass has no readable step under white at 80.
+    --sf-on-surface-not-set: var(--sf-white--alfa-80);
     --sf-on-surface-container-variant: var(--sf-white--alfa-80);
     --sf-surface-state-hover: var(--sf-white--alfa-4);
     --sf-surface-state-select: var(--sf-white--alfa-8);

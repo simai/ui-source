@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-description",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Description list",
   "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's card with sections, a record's header, a job's parameters, licence details). The labels stand in one column for the whole record and go over their values on a phone; a value can be monospace, figures, a link, copied with a button, a badge, carry a status, a hint and an action; a label a help mark; a section a title and an action; a long value wraps or is cut with the whole of it on demand; an empty one says «Не указан». layout grid is a summary in up to four columns.",
   "kind": "smart",
@@ -291,7 +291,7 @@
       },
       {
         "path": "src/smart/list-description/scss/_smart__list-description.scss",
-        "sha256": "d55d3f19043fc1028a3ab34e72346d858404604e6f4baa4cff205eae9170fbd2"
+        "sha256": "9ce3dc290824a939c37ee4de3c0e3af1408e506aee1af428d94f025fb4a93eb7"
       },
       {
         "path": "src/smart/list-description/rule.js",
@@ -299,7 +299,7 @@
       },
       {
         "path": "src/smart/list-description/docs.md",
-        "sha256": "eda26676852c361a5c2c9b7d8560c41c9282d56603d4e12cf3ea26f8a84ede1d"
+        "sha256": "ed047518ddc9b28351b6c842624c94d77a5ee2d6400bf15e71bf3c70e59ce655"
       }
     ],
     "generated_runtime": []

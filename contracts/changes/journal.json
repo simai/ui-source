@@ -19643,6 +19643,67 @@
         }
       ],
       "source": "src/component/slider/scss/_css__slider.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "value-dropdown-band-quiet-plate",
+      "kind": "value",
+      "summary": "sf-dropdown 1.25.1 (View list register VL-43, owner remark LV4-13 under C397): appearance=\"band\" lays the quiet plate, the new core role --sf-surface-container-low (the state family's 8 in both themes), not the control plate --sf-surface-container (12). The filter window's condition head is paler than the filter chip beside it; it was as strong (0.12 = 0.12). A page that tints the band through --sf-dropdown-background-color keeps its tint.",
+      "items": [
+        {
+          "component": "sf-dropdown",
+          "attribute": "appearance=band fill",
+          "from": "--sf-surface-container (12)",
+          "to": "--sf-surface-container-low (8)"
+        }
+      ],
+      "source": "src/component/dropdown/scss/_css__custom.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "value-field-renderers-cell-badge-row-text",
+      "kind": "value",
+      "summary": "module.smart-field-renderers 1.28.2 (View list register VL-54, owner remark LV4-11 «Tags small»): a choice cell's badge and the badges template's badges stand on the line of the text beside them (sf-badge line=\"text\", C95 (6)) and inherit the cell's size, so a badge is the row's text size at every density and table size: 16 in a size 1 row, where it was 12 (line 1/2 drew the text a step under the line). The badge keeps its own side room, --sf-space-1/2, through --sf-badge-padding-inline. The record view's badges are unchanged.",
+      "items": [
+        {
+          "component": "module.smart-field-renderers",
+          "from": "cell badge {line: '1/2'}: text 12 beside a 16 row",
+          "to": "cell badge {line: 'text', rootStyle: '--sf-badge-padding-inline: var(--sf-space-1\\/2)'}: the row's text"
+        }
+      ],
+      "source": "src/smart/field-renderers/index.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "value-list-description-empty-not-set-ink",
+      "kind": "value",
+      "summary": "sf-list-description 1.4.1 (owner decision C402, View list register VL-65): the words of a value not set (an item's empty, the element's empty-text) take the new core role --sf-on-surface-not-set, the text ink at the ink family's 64 (light 5.17:1 on the page, dark 6.49; 4.61 at the least, on a dark popup), paler than the label and still text. They took the label's colour, --sf-list-description-label-color or --sf-on-surface-variant; a page that set the label's colour to colour the empty words too sets color on .sf-list-description-empty.",
+      "items": [
+        {
+          "component": "sf-list-description",
+          "from": ".sf-list-description-empty in the label's colour",
+          "to": ".sf-list-description-empty in --sf-on-surface-not-set"
+        }
+      ],
+      "source": "src/smart/list-description/scss/_smart__list-description.scss"
     }
   ]
 }

@@ -798,9 +798,12 @@
    step and the panel's inset above and below: 48 at size 1, 44 on a phone),
    a hairline under it; the text where the open list's rows put theirs (the
    panel's inset and the row's padding, 16 / 12) and the chevron's glyph
-   ending there too. The fill is the container grey, the same while the menu
-   is open, under the focus and after a choice; under the pointer the state
-   layer darkens it. A page tints it with the public variable
+   ending there too. The fill is the quiet plate, --sf-surface-container-low
+   (8): a window's head is paler than the controls in and around it -- a
+   chip, a tonal button, 12 (owner decision C397, View list register VL-43,
+   remark LV4-13: the head was as strong as the filter chip). The same while
+   the menu is open, under the focus and after a choice; under the pointer
+   the state layer darkens it. A page tints it with the public variable
    --sf-dropdown-background-color (the fill family: the scheme's
    -container, 12 % light, 24 % dark); the text keeps the text ink. The
    ring turns inwards, as every field's. The selectors outrank the open and
@@ -855,7 +858,7 @@
     --sf-dropdown-field--padding-bottom: 0;
     --sf-dropdown-field--padding-inline-start: var(--sf-dropdown--band-inset);
     --sf-dropdown-field--padding-inline-end: calc(var(--sf-dropdown--band-inset) + var(--sf-dropdown--band-end));
-    --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-container));
+    --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-container-low));
     box-sizing: border-box;
     /* The search header's height, its hairline inside (VR11-4: one pixel
        more stood the band at 49 over a 48 search, 41 over 40). */

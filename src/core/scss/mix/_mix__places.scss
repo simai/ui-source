@@ -85,6 +85,7 @@ $sf-place-theme-roles: (
   'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-85))',
   'on-surface-icon': 'light-dark(var(--sf-neutral-25), var(--sf-neutral-80))',
   'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-70))',
+  'on-surface-not-set': 'light-dark(var(--sf-neutral-10--alfa-64), var(--sf-neutral-90--alfa-64))',
   'on-surface-container-variant': 'light-dark(var(--sf-neutral-35), var(--sf-neutral-85))',
   'surface-state-hover': 'light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4))',
   'surface-state-select': 'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))',
@@ -706,6 +707,9 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
     --sf-on-surface-hover: var(--sf-on-#{$c});
     --sf-on-surface-active: var(--sf-on-#{$c});
     --sf-on-surface-variant: #{sf-ink($c, 80)};
+    // A value not set (C402): no readable step under the dim ink on a colour
+    // (64 is the disabled ink), so it is the place's dim ink.
+    --sf-on-surface-not-set: #{sf-ink($c, 80)};
     --sf-on-surface-container-variant: #{sf-ink($c, 80)};
     --sf-surface-state-hover: #{sf-ink($c, 4)};
     --sf-surface-state-select: #{sf-ink($c, 8)};

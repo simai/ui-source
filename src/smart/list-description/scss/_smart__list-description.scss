@@ -420,8 +420,11 @@ sf-list-description {
   .sf-list-description-link {
     color: var(--sf-link);
   }
+  /* A value not set (owner decision C402): its words are paler than the
+     label and still text, --sf-on-surface-not-set; they followed the
+     label's colour. */
   .sf-list-description-empty {
-    color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
+    color: var(--sf-on-surface-not-set);
   }
   .sf-list-description-icon--success {
     color: var(--sf-success);

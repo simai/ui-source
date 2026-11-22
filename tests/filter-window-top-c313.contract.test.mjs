@@ -22,7 +22,8 @@ test('C313 (1), FF-11: sf-dropdown band -- no frame, no radius, the search heade
   const block = css.slice(css.indexOf('.sf-dropdown.sf-dropdown--band {'));
   assert.match(block, /--sf-dropdown--band-inset: calc\(#\{panel\.\$inset\} \+ #\{panel\.\$row-padding\} \+ var\(--sf-dropdown--band-edge\)\);/u);
   assert.match(block, /--sf-dropdown-field--border-end-end-radius: 0;/u);
-  assert.match(block, /--sf-dropdown-field--background-color: var\(--sf-dropdown-background-color, var\(--sf-surface-container\)\);/u);
+  // The quiet plate since 1.25.1 (View list register VL-43): paler than a chip.
+  assert.match(block, /--sf-dropdown-field--background-color: var\(--sf-dropdown-background-color, var\(--sf-surface-container-low\)\);/u);
   assert.match(block, /min-block-size: calc\(var\(--sf-dropdown--band-row\) \+ 2 \* #\{panel\.\$inset\}\);/u);
   // VR11-4 (group build 16): the band's hairline sits inside the search's height, not one pixel more.
   assert.doesNotMatch(block, /min-block-size: calc\(var\(--sf-dropdown--band-row\) \+ 2 \* #\{panel\.\$inset\} \+ var\(--sf-px\)\);/u);

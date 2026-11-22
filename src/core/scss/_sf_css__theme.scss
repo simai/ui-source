@@ -328,6 +328,14 @@
        primary-container (C23); the pressed plate (20) is above every state.
        The tinted containers keep their steps (12-20 light, 24-32 dark). */
     --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    /* The quiet plate (owner decision C397, View list register VL-43, remark
+       LV4-13): a band that heads a window -- the filter window's condition
+       head -- is grey and paler than a control's plate (a chip, a tonal
+       button, 12), so the head does not weigh what the controls weigh. The
+       state family's 8, in both themes, as the disabled plate: under the
+       lightest working plate, above the hover state, and the pointer's hover
+       laid over it stays under the plate's hover (16). */
+    --sf-surface-container-low: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
     --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
     --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20));
     --sf-on-surface: light-dark(var(--sf-neutral-10), var(--sf-neutral-90));
@@ -357,6 +365,18 @@
        60 gave Lc 42 on the page against Lc 82 for the light pair, and a quiet
        key (its fill an 8 % of this ink) 4.25:1 on a card. Light unchanged. */
     --sf-on-surface-variant: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
+    /* A value that is not set (owner decision C402, 2026-11-21; View list
+       register VL-65): the words that stand for it -- «не заполнено», «Не
+       указан» -- are paler than a field's label (--sf-on-surface-variant)
+       and still read as text. The text ink at the ink family's 64: light
+       5.17:1 on the page, 5.07 on the area, 4.91 on surface-2 (the label
+       6.47, 6.17, 5.71); dark 6.49 on the page, 5.18 on surface-3, 4.61 on
+       the popup's step (the label 8.26, 5.76, and the popup's own 6.57).
+       --sf-on-surface-muted, which C402 names, is the disabled ink since C43
+       (3.10:1), below text's 4.5:1. On a strong colour and on glass the
+       alpha scale has no readable step under the dim ink, so the role is the
+       place's dim ink there (mix/_mix__places.scss, _sf_css__surface_places.scss). */
+    --sf-on-surface-not-set: light-dark(var(--sf-neutral-10--alfa-64), var(--sf-neutral-90--alfa-64));
     /* Dimmed text on a container fill (--sf-surface-container over any of the
        surfaces 0 to 3). The fill is translucent, so the text lies on the fill
        and the surface together: neutral-60 measured 4.0:1 in the dark theme,
