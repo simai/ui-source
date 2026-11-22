@@ -74,7 +74,7 @@ test('RG-NV 12: sf-pagination numbers fit seven or five places by its own room',
   assert.match(source, /return Boolean\(this\._sfNarrow\?\.matches\) \|\| this\._sfCramped === true;/u);
   assert.match(source, /fitPlaces\(\) \{/u);
   assert.match(source, /this\.noteFooterParts\(\);\n(?:\s+this\.\w+\(\);\n)*\s+this\.fitPlaces\(\);/u);
-  assert.equal((await json('src/smart/pagination/component.json')).version, '1.10.1'); // reds-before-gb15: 1.10.1 probe only; // LF-11: 1.10.0 // group build 9: 1.7.2 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch // C295: 1.9.0, the band is sf-bulk-actions
+  assert.equal((await json('src/smart/pagination/component.json')).version, '1.10.2'); // GB17: 1.10.2 bulk snapshot; // reds-before-gb15: 1.10.1 probe only; // LF-11: 1.10.0 // group build 9: 1.7.2 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch // C295: 1.9.0, the band is sf-bulk-actions
 });
 
 test('C237: sf-page-number--circle is a retired name that draws the square', async () => {
