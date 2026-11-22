@@ -338,9 +338,10 @@ component's class markup keeps its modifier `.sf-dropdown--outlined`.
 
 Since 1.23.0 `appearance="band"` draws the field as a band across its
 place: no frame and no radius, the height of an open list's search header
-(48 at size 1, 44 on a phone) with a hairline under it, the container grey
-fill (`--sf-surface-container`) darkened by the state layer under the
-pointer, and the text and the chevron at the open list's row edge (16, 12 on
+(48 at size 1, 44 on a phone) with a hairline under it, the quiet grey
+plate (`--sf-surface-container-low`, 8 %; since 1.25.1 -- a window's head is
+paler than a chip or a tonal button, 12 %, View list register VL-43) darkened
+by the state layer under the pointer, and the text and the chevron at the open list's row edge (16, 12 on
 a phone). It stays grey while its menu is open and after a choice; a page
 tints it through `--sf-dropdown-background-color` (the filter field window
 uses a scheme's `-container`: 12 % in the light theme, 24 % in the dark).

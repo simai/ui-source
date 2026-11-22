@@ -109,6 +109,8 @@ function pairs() {
     add('--sf-on-surface-active', surface, null, 4.5, true, 'ink on a surface');
     add('--sf-on-surface-icon', surface, null, 3, true, 'icon on a surface');
     add('--sf-on-surface-variant', surface, null, 4.5, true, 'ink on a surface');
+    // A value not set (C402): paler than the label and still text.
+    add('--sf-on-surface-not-set', surface, null, 4.5, true, 'ink on a surface');
     if (OWN_VARIANT[place]) add(`--sf-on-surface-${OWN_VARIANT[place]}`, surface, null, 4.5, true, 'ink on a surface');
     add('--sf-on-surface-disabled', surface, null, 4.5, false, 'disabled (exempt)');
     for (const fill of FILLS) {

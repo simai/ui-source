@@ -5,7 +5,7 @@
 // --sf-<palette>-<tone>, 98 down to 5 -- and every semantic token (--sf-primary,
 // --sf-surface, --sf-outline, ...) reads them through light-dark(). A theme is
 // the four dynamic palettes -- primary, secondary, tertiary and neutral, 64
-// primitives and their 80 translucent steps -- and nothing else needs to
+// primitives and their 82 translucent steps -- and nothing else needs to
 // change. The four status palettes are not the theme's: core declares them as
 // var() of the static hues (C17), and a theme that wrote them as literal
 // colours froze them at the hues of the day it was made (TG-01, 2026-11-11:
@@ -126,7 +126,8 @@ export const THEME_ALPHA = Object.freeze({
   primary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   secondary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
   tertiary: {20: [4, 8, 12, 16, 20, 24, 64, 80], 50: [4, 8, 12, 16, 20, 24, 28, 32], 90: [4, 8, 12, 24]},
-  neutral: {50: [4, 8, 12, 16, 20, 24, 32, 48, 80], 60: [48, 64], 80: [48], 90: [4, 8, 12, 16, 20, 24, 32, 48]},
+  // neutral 10 and 90 at 64: the not-set ink (C402, --sf-on-surface-not-set).
+  neutral: {10: [64], 50: [4, 8, 12, 16, 20, 24, 32, 48, 80], 60: [48, 64], 80: [48], 90: [4, 8, 12, 16, 20, 24, 32, 48, 64]},
 });
 
 const STATUS_NAMES = Object.freeze(Object.keys(STATUS_HUES));

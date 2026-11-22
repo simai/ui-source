@@ -52,6 +52,9 @@
     --sf-neutral-90--alfa-24: #e3e2e73d;
     --sf-neutral-90--alfa-32: #e3e2e752;
     --sf-neutral-90--alfa-48: #e3e2e77a;
+    /* The dark text ink at the ink family's 64 (C402, --sf-on-surface-not-set):
+       6.49:1 on the page, 4.61 on the popup's step. */
+    --sf-neutral-90--alfa-64: #e3e2e7a3;
     --sf-neutral-85: #d4d4d9;
     --sf-neutral-80: #c6c6cb;
     --sf-neutral-70: #ababb0;
@@ -94,6 +97,9 @@
     --sf-neutral-20: #2f3035;
     --sf-neutral-15: #24262a;
     --sf-neutral-10: #1a1b1f;
+    /* The text ink at the ink family's 64: a value that is not set (C402,
+       --sf-on-surface-not-set). 5.17:1 on the page, 4.91 on surface-2. */
+    --sf-neutral-10--alfa-64: #1a1b1fa3;
     --sf-neutral-5: #0f1115;
     --sf-primary-98: #f9f9ff;
     --sf-secondary-98: #f9f9ff;

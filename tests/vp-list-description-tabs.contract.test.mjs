@@ -14,7 +14,7 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 test('VP-24: list-description 1.4.0 declares the item slot', () => {
   const component = JSON.parse(read('src/smart/list-description/component.json'));
-  assert.equal(component.version, '1.4.0');
+  assert.equal(component.version, '1.4.1'); // C402, VL-65: the not-set ink
   assert.deepEqual(component.settings.items.schema.items.properties.slot, {type: 'string'});
   assert.match(component.settings.items.summary, /slot\?\}/u);
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.4.0') && line.includes('VP-24')));

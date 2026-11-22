@@ -18,7 +18,7 @@ const tones = THEME_PALETTES.length * THEME_TONES.length;
 const steps = total - tones;
 
 test('the theme numbers every description tells are the calculation\'s', () => {
-  assert.deepEqual([total, tones, steps], [144, 64, 80]);
+  assert.deepEqual([total, tones, steps], [146, 64, 82]); // 144 / 80 until the not-set ink's two steps (C402)
   const docs = read('src/smart/theme-generator/docs.md');
   for (const number of [total, tones, steps]) assert.match(docs, new RegExp(`\\b${number}\\b`, 'u'), `docs.md: ${number}`);
   const component = JSON.parse(read('src/smart/theme-generator/component.json'));

@@ -852,7 +852,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "005450b479143c49396620965f9ded2a35ebc53c38902cef409c998b5a59d833",
+      "manifest_sha256": "a3c34ad5274fe859bac0e75f0dc9b149b4c002ed8034d7d4767f330b9c593480",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2096,7 +2096,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-description/smart.manifest.json",
-      "manifest_sha256": "d79711bdc7bd466a57bb66208cd87718cb874d195ccb4752dfee9520536f401d",
+      "manifest_sha256": "1a413ba927cbd25f1e560add2a3d3023a0063d79f855fc6debbbaddebb968c69",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2487,7 +2487,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/popover/smart.manifest.json",
-      "manifest_sha256": "769f5fd384871734741a45c3e23e4ad54ee119847594219337e98766aca46288",
+      "manifest_sha256": "06b1cb0b12db1880a7cbd55eaf6cb57df8ae2282886551f6390b4bb3d20a7fe7",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3384,7 +3384,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "0c1d2e570cb65ec2cbc94bddf75be88e13e8b316b9c210b43e812ead9c34fc02",
+      "manifest_sha256": "b8a6fdbfbb3a491ed39e1776d644a2e08c5acd7f253bd289ce9bbebe7fe0c40a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
