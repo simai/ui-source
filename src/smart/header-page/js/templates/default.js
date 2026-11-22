@@ -24,7 +24,7 @@ import {unsafeStatic, html as staticHtml} from 'lit/static-html.js';
 // A head with no actions has nothing to keep the line beside its heading, so
 // a long heading wraps whole (1.12.0, C324: the page's whole name) instead of
 // closing down to its ellipsis; the count, the marks and the star stand
-// beside its last line. HD-12's ellipsis stays for a head with actions. The
+// beside its last line, on its centre line. HD-12's ellipsis stays for a head with actions. The
 // path-end slot (1.12.0) stands at the end of the path's row -- the admin's
 // activity indicator beside the crumbs -- and is drawn only when given.
 export function renderPageHeaderTemplate(context) {

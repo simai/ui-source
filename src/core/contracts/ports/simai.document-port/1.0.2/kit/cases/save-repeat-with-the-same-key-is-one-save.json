@@ -1,0 +1,340 @@
+{
+  "id": "save-repeat-with-the-same-key-is-one-save",
+  "intent": "document.save",
+  "capability": null,
+  "summary": "A save repeated with the same client_key and values after a lost answer is answered with the revision it made, not a conflict with itself; the key with other values is an idempotency-conflict.",
+  "given": {
+    "capabilities": [],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    }
+  },
+  "when": {
+    "intent": "document.save",
+    "payload": {
+      "values": {
+        "ru": {
+          "schema": "simai.composition.document",
+          "schema_version": 1,
+          "id": "page",
+          "profile": "ui-layout",
+          "locale": "ru",
+          "root": {
+            "id": "root",
+            "type": "layout.page",
+            "slots": {
+              "default": [
+                {
+                  "id": "shell",
+                  "type": "layout.regions",
+                  "slots": {
+                    "regions": [
+                      {
+                        "id": "r-main",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "main",
+                          "landmark": "main"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "main-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Автосохранение"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "expected_revision": "7",
+      "client_key": "save-1"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "revision",
+      "values"
+    ]
+  },
+  "after": [
+    {
+      "when": {
+        "intent": "document.save",
+        "payload": {
+          "values": {
+            "ru": {
+              "schema": "simai.composition.document",
+              "schema_version": 1,
+              "id": "page",
+              "profile": "ui-layout",
+              "locale": "ru",
+              "root": {
+                "id": "root",
+                "type": "layout.page",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "shell",
+                      "type": "layout.regions",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "r-main",
+                            "type": "layout.region",
+                            "props": {
+                              "name": "main",
+                              "landmark": "main"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "main-1",
+                                  "type": "content.paragraph",
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "text": "Автосохранение"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "expected_revision": "7",
+          "client_key": "save-1"
+        }
+      },
+      "then": {
+        "answer": "applied",
+        "expect": [
+          {
+            "path": "data.revision",
+            "equals_step": "when",
+            "step_path": "data.revision"
+          }
+        ]
+      }
+    },
+    {
+      "when": {
+        "intent": "document.load",
+        "payload": {}
+      },
+      "then": {
+        "answer": "applied",
+        "expect": [
+          {
+            "path": "data.revision",
+            "equals_step": "when",
+            "step_path": "data.revision"
+          }
+        ]
+      }
+    },
+    {
+      "when": {
+        "intent": "document.save",
+        "payload": {
+          "values": {
+            "ru": {
+              "schema": "simai.composition.document",
+              "schema_version": 1,
+              "id": "page",
+              "profile": "ui-layout",
+              "locale": "ru",
+              "root": {
+                "id": "root",
+                "type": "layout.page",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "shell",
+                      "type": "layout.regions",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "r-main",
+                            "type": "layout.region",
+                            "props": {
+                              "name": "main",
+                              "landmark": "main"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "main-1",
+                                  "type": "content.paragraph",
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "text": "Другое"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "expected_revision": "7",
+          "client_key": "save-1"
+        }
+      },
+      "then": {
+        "answer": "conflict",
+        "expect": [
+          {
+            "path": "reason",
+            "equals": "idempotency-conflict"
+          }
+        ]
+      }
+    }
+  ]
+}

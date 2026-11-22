@@ -24,7 +24,7 @@ Attributes:
   that room for, so there a long heading wraps whole onto as many lines as it
   needs and is never cut (1.12.0, C324: the page's whole name); a word longer
   than the line breaks, so a phone does not scroll sideways, and the count,
-  the marks and the star stand beside its last line.
+  the marks and the star stand beside its last line, on its centre line.
 - `heading-level` — the heading element's level, 1 to 6, `1` by default:
   the page's own title. A head inside a page that has its own h1 (a
   conversation embedded in a page) says `2`. Only the tag changes; the look

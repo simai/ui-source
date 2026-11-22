@@ -340,16 +340,6 @@
         },
         "language": {
           "$ref": "#/$defs/language"
-        },
-        "limit": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "On a size diagnostic (max-nodes, max-bytes, max-total-bytes): the limit the host announced."
-        },
-        "total": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "On a size diagnostic: what the refused value measured, counted as the limit counts (nodes or bytes)."
         }
       }
     },

@@ -125,63 +125,6 @@
       "max_nodes": 200,
       "max_bytes": 262144
     },
-    "drafts": [
-      {
-        "revision": "5",
-        "at": "2026-11-10T08:00:00Z",
-        "languages": [
-          "ru"
-        ],
-        "values": {
-          "ru": {
-            "schema": "simai.composition.document",
-            "schema_version": 1,
-            "id": "page",
-            "profile": "ui-layout",
-            "locale": "ru",
-            "root": {
-              "id": "root",
-              "type": "layout.page",
-              "slots": {
-                "default": [
-                  {
-                    "id": "shell",
-                    "type": "layout.regions",
-                    "slots": {
-                      "regions": [
-                        {
-                          "id": "r-main",
-                          "type": "layout.region",
-                          "props": {
-                            "name": "main",
-                            "landmark": "main"
-                          },
-                          "slots": {
-                            "default": [
-                              {
-                                "id": "main-1",
-                                "type": "content.paragraph",
-                                "data": {
-                                  "content": [
-                                    {
-                                      "text": "Команда, опубликовано вне порта"
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      ]
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    ],
     "publications": [],
     "published": {
       "id": null,
@@ -217,6 +160,6 @@
         ]
       }
     ],
-    "note": "given.published as an object is the fixture of such a state: the harness puts an outside publication of revision 5 live; given.drafts carries revision 5's values, so a harness that stores a publication by its draft has them (Larena, 2026-11-22)."
+    "note": "given.published as an object is the fixture of such a state: the harness puts an outside publication of revision 5 live."
   }
 }

@@ -19699,7 +19699,7 @@
         {
           "component": "smart.header-page",
           "from": "a part beside the crumbs went into the path slot inside the page's own div wrap; a long heading always ended in an ellipsis on one line",
-          "to": "slot path-end at the row's end on the crumbs' baseline (the row holds the 1/2 control height); without actions the heading wraps whole and the star stands beside its last line; with actions HD-12's ellipsis stays"
+          "to": "slot path-end at the row's end on the crumbs' baseline (the row holds the 1/2 control height); without actions the heading wraps whole and the star and the badges stand on the centre line of its last line; with actions HD-12's ellipsis stays"
         }
       ],
       "source": "src/smart/header-page/js/templates/default.js"
@@ -19723,6 +19723,27 @@
         }
       ],
       "source": "src/smart/progress-run/js/templates/default.js"
+    },
+    {
+      "id": "port-document-1-0-2-kit-corrected",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "simai.document-port 1.0.2 (the admin set's parts, item DP; dispatcher decision 2026-11-22): 1.0.1 is released, so the corrected kit case and diagnostic schema are their own edition and 1.0.1 stays byte for byte as released. 1.0.2: the case load-describes-a-publication-made-outside-the-port gives the history its draft revision 5 with its values, which the outside publication names, and $defs/diagnostic declares limit and total (integers, at least 0), which too-large already sent. No intent, answer or reason changes; kit 44 cases as 1.0.1.",
+      "items": [
+        {
+          "component": "simai.document-port",
+          "attribute": "version",
+          "from": "1.0.1 (draft 3)",
+          "to": "1.0.2 (draft 3, corrected)"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "An adapter accepted against 1.0.1 stays valid; to announce 1.0.2 it runs the 1.0.2 kit, whose one changed case gives the draft its outside publication names.",
+      "owner": "ui-source",
+      "source": "src/core/contracts/ports/simai.document-port/1.0.2"
     }
   ]
 }

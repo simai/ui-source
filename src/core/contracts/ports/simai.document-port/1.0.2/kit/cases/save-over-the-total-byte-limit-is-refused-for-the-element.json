@@ -1,0 +1,281 @@
+{
+  "id": "save-over-the-total-byte-limit-is-refused-for-the-element",
+  "intent": "document.save",
+  "capability": null,
+  "summary": "A host that announces limits.max_total_bytes refuses a save whose language values together pass it too-large, though each value is within max_bytes; the diagnostic max-total-bytes at /values names the limit and the total (draft 3).",
+  "given": {
+    "capabilities": [],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144,
+      "max_total_bytes": 938
+    }
+  },
+  "when": {
+    "intent": "document.save",
+    "payload": {
+      "expected_revision": "7",
+      "values": {
+        "en": {
+          "schema": "simai.composition.document",
+          "schema_version": 1,
+          "id": "page",
+          "profile": "ui-layout",
+          "locale": "en",
+          "root": {
+            "id": "root",
+            "type": "layout.page",
+            "slots": {
+              "default": [
+                {
+                  "id": "shell",
+                  "type": "layout.regions",
+                  "slots": {
+                    "regions": [
+                      {
+                        "id": "r-main",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "main",
+                          "landmark": "main"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "main-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team team "
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "expect": [
+      {
+        "path": "reason",
+        "equals": "too-large"
+      },
+      {
+        "path": "data.diagnostics.0.code",
+        "equals": "max-total-bytes"
+      },
+      {
+        "path": "data.diagnostics.0.path",
+        "equals": "/values"
+      },
+      {
+        "path": "data.diagnostics.0.limit",
+        "equals": 938
+      },
+      {
+        "path": "data.diagnostics.0.total",
+        "equals": 1239
+      }
+    ],
+    "note": "Bytes as max_bytes counts them, per stored value (simai:area keys removed), summed over every language the element would hold after the save."
+  },
+  "after": [
+    {
+      "when": {
+        "intent": "document.load",
+        "payload": {}
+      },
+      "then": {
+        "answer": "applied",
+        "expect": [
+          {
+            "path": "data.revision",
+            "equals": "7"
+          },
+          {
+            "path": "data.limits.max_total_bytes",
+            "equals": 938
+          },
+          {
+            "path": "data.values.en",
+            "equals": {
+              "schema": "simai.composition.document",
+              "schema_version": 1,
+              "id": "page",
+              "profile": "ui-layout",
+              "locale": "en",
+              "root": {
+                "id": "root",
+                "type": "layout.page",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "shell",
+                      "type": "layout.regions",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "r-main",
+                            "type": "layout.region",
+                            "props": {
+                              "name": "main",
+                              "landmark": "main"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "main-1",
+                                  "type": "content.paragraph",
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "text": "Team"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

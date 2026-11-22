@@ -1,0 +1,332 @@
+{
+  "id": "save-of-a-language-outside-rights-is-refused",
+  "intent": "document.save",
+  "capability": null,
+  "summary": "A reader who may write only some languages (rights.languages) is refused access-denied for another one, written or removed; a write in an allowed one is applied.",
+  "given": {
+    "capabilities": [],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    },
+    "rights": {
+      "save": true,
+      "publish": false,
+      "languages": [
+        "ru"
+      ]
+    }
+  },
+  "when": {
+    "intent": "document.save",
+    "payload": {
+      "values": {
+        "en": {
+          "schema": "simai.composition.document",
+          "schema_version": 1,
+          "id": "page",
+          "profile": "ui-layout",
+          "locale": "en",
+          "root": {
+            "id": "root",
+            "type": "layout.page",
+            "slots": {
+              "default": [
+                {
+                  "id": "shell",
+                  "type": "layout.regions",
+                  "slots": {
+                    "regions": [
+                      {
+                        "id": "r-main",
+                        "type": "layout.region",
+                        "props": {
+                          "name": "main",
+                          "landmark": "main"
+                        },
+                        "slots": {
+                          "default": [
+                            {
+                              "id": "main-1",
+                              "type": "content.paragraph",
+                              "data": {
+                                "content": [
+                                  {
+                                    "text": "Team, edited"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "expected_revision": "7"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "expect": [
+      {
+        "path": "reason",
+        "equals": "access-denied"
+      }
+    ]
+  },
+  "after": [
+    {
+      "when": {
+        "intent": "document.save",
+        "payload": {
+          "values": {
+            "en": null
+          },
+          "expected_revision": "7"
+        }
+      },
+      "then": {
+        "answer": "refused",
+        "expect": [
+          {
+            "path": "reason",
+            "equals": "access-denied"
+          }
+        ]
+      }
+    },
+    {
+      "when": {
+        "intent": "document.save",
+        "payload": {
+          "values": {
+            "ru": {
+              "schema": "simai.composition.document",
+              "schema_version": 1,
+              "id": "page",
+              "profile": "ui-layout",
+              "locale": "ru",
+              "root": {
+                "id": "root",
+                "type": "layout.page",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "shell",
+                      "type": "layout.regions",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "r-main",
+                            "type": "layout.region",
+                            "props": {
+                              "name": "main",
+                              "landmark": "main"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "main-1",
+                                  "type": "content.paragraph",
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "text": "Команда, правка"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "expected_revision": "7"
+        }
+      },
+      "then": {
+        "answer": "applied",
+        "expect": [
+          {
+            "path": "data.values.en",
+            "equals": {
+              "schema": "simai.composition.document",
+              "schema_version": 1,
+              "id": "page",
+              "profile": "ui-layout",
+              "locale": "en",
+              "root": {
+                "id": "root",
+                "type": "layout.page",
+                "slots": {
+                  "default": [
+                    {
+                      "id": "shell",
+                      "type": "layout.regions",
+                      "slots": {
+                        "regions": [
+                          {
+                            "id": "r-main",
+                            "type": "layout.region",
+                            "props": {
+                              "name": "main",
+                              "landmark": "main"
+                            },
+                            "slots": {
+                              "default": [
+                                {
+                                  "id": "main-1",
+                                  "type": "content.paragraph",
+                                  "data": {
+                                    "content": [
+                                      {
+                                        "text": "Team"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

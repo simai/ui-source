@@ -81,11 +81,38 @@
 /* A head with no actions (1.12.0, AS-3, C324): nothing needs the room beside
    the heading, so a long heading wraps whole and is never cut; a word longer
    than the line breaks, so a narrow page does not scroll sideways. The count,
-   the marks and the star stand beside its last line (last baseline). HD-12's
+   the marks and the star stand beside its last line, on its centre line. HD-12's
    ellipsis stays for a head with actions. */
 .sf-page-header--wrap .sf-page-header-title {
   align-items: last baseline;
 }
+
+/* The star and the badges (count, install mark) stand on the centre line of
+   the heading's last line (dispatcher, 2026-11-22: 0 px, as a one-line head
+   was centred before). A mark's baseline is not its centre: on the last
+   baseline the star stood 2-3 px high and a badge 1.5-2 px low. Each is put
+   at the title's end and given back half the difference between the
+   heading's line (--sf-heading-4--height, the heading is always sf-h-4) and
+   its own height, above and below, so its margin box is one heading line:
+   its centre is the last line's centre and the title is no taller than the
+   heading (a one-line head lays out as it did centred). The star's height is
+   its rung's control height; a badge's is its own --sf-badge--min-size. A
+   name with a description (the conversation head) keeps the last baseline. */
+.sf-page-header--wrap .sf-page-header-title:not(:has(> .sf-page-header-name)) > sf-button-icon > .sf-icon-button,
+.sf-page-header--wrap .sf-page-header-title:not(:has(> .sf-page-header-name)) > sf-badge > .sf-badge {
+  align-self: flex-end;
+  margin-block: calc((var(--sf-heading-4--height) - var(--sf-page-header--mark-height)) / 2);
+}
+
+.sf-page-header--wrap .sf-page-header-title > sf-badge > .sf-badge {
+  --sf-page-header--mark-height: var(--sf-badge--min-size);
+}
+
+.sf-page-header--wrap .sf-page-header-title > sf-button-icon > .sf-icon-button--size-1\/3 { --sf-page-header--mark-height: var(--sf-ui-1\/3--control-height); }
+.sf-page-header--wrap .sf-page-header-title > sf-button-icon > .sf-icon-button--size-1\/2 { --sf-page-header--mark-height: var(--sf-ui-1\/2--control-height); }
+.sf-page-header--wrap .sf-page-header-title > sf-button-icon > .sf-icon-button--size-1 { --sf-page-header--mark-height: var(--sf-ui-1--control-height); }
+.sf-page-header--wrap .sf-page-header-title > sf-button-icon > .sf-icon-button--size-2 { --sf-page-header--mark-height: var(--sf-ui-2--control-height); }
+.sf-page-header--wrap .sf-page-header-title > sf-button-icon > .sf-icon-button--size-3 { --sf-page-header--mark-height: var(--sf-ui-3--control-height); }
 
 .sf-page-header-heading--wrap {
   overflow-wrap: anywhere;
