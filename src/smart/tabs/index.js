@@ -1298,8 +1298,8 @@ class SfTabs extends TabsElement {
       // shortened, with an ellipsis; every other tab is whole or in «Ещё».
       if (laid.squeezed >= 0) {
         hosts[laid.squeezed].classList.add('sf-tabs-squeezed');
-        const grow = triggerExtra(textBox, label);
-        this.squeezeCurrent(hosts[laid.squeezed], list, more, grow ? grow(this._overflowed.length) : 0);
+        const extraFor = triggerExtra(textBox, label);
+        this.squeezeCurrent(hosts[laid.squeezed], list, more, extraFor ? extraFor(this._overflowed.length) : 0);
       }
       hosts.forEach((host, at) => {
         // A class, not a data attribute: sf-button moves its data attributes

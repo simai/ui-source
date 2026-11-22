@@ -28,7 +28,7 @@ test('GB16-2: a tab of words keeps two letters; the trigger gives way, never the
 
 test('GB16-1/2: sf-tabs runs the step on the squeezed current tab and clears it on every layout', () => {
   const source = read('src/smart/tabs/index.js');
-  assert.match(source, /this\.squeezeCurrent\(hosts\[laid\.squeezed\], list, more, grow \? grow\(this\._overflowed\.length\) : 0\)/u);
+  assert.match(source, /this\.squeezeCurrent\(hosts\[laid\.squeezed\], list, more, extraFor \? extraFor\(this\._overflowed\.length\) : 0\)/u);
   assert.match(source, /host\.classList\.remove\('sf-tabs-overflowed', 'sf-tabs-squeezed', 'sf-tabs-icon-only'\)/u);
   assert.match(source, /container\?\.removeAttribute\('data-sf-tabs-more-compact'\)/u);
   assert.match(source, /--sf-tabs--squeezed-min/u);
