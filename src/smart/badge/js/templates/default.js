@@ -61,6 +61,9 @@ export function renderBadgeTemplate(context) {
     // One colour name, as the styles expect: the run state's role, the status
     // or the colour role (the component's paintedScheme).
     `sf-badge--${context.paintedScheme}`,
+    // A colour from the static palette (owner decision C411): the class
+    // sf-badge--<hue>; the sheet lets a status win over it.
+    context.hue ? `sf-badge--${context.hue}` : '',
     `sf-badge--size-${context.size}`,
     context.line ? `sf-badge--line-${context.line}` : '',
     // The class sf-badge--icon-only, and until 2027-01-01 its former name

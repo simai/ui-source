@@ -44,8 +44,8 @@ test('C317 public variable: --sf-badge-divider-color, and the badge stays within
 
 test('C317 Smart: value, value-label and the slot value; the word in the language files', () => {
   const component = json('src/smart/badge/component.json');
-  assert.equal(component.version, '1.7.0');
-  assert.equal(json('src/component/badges/passport.json').version, '1.13.0');
+  assert.equal(component.version, '1.8.0'); // C411: moved on by the hue setting
+  assert.equal(json('src/component/badges/passport.json').version, '1.14.0'); // C411: moved on by the hue classes
   assert.deepEqual(component.settings.value, {...component.settings.value, type: 'string', default: ''});
   assert.equal(component.settings['value-label']['default-from'], 'runtime.value-label');
   assert.ok(component.slots.value);

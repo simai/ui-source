@@ -29,6 +29,10 @@
       "  <sf-badge id=\"bd-value-word\" text=\"Ключ\" value=\"Значение\"></sf-badge>",
       "  <sf-badge id=\"bd-value-slot\" text=\"PHP\" appearance=\"outline\"><span slot=\"value\"><b>8.2</b></span></sf-badge>",
       "  <sf-badge id=\"bd-value-label\" text=\"sf-tabs\" value=\"1.5.2\" aria-label=\"Компонент sf-tabs, версия 1.5.2\"></sf-badge>",
+      "  <sf-badge id=\"bd-hue\" text=\"Дизайн\" hue=\"teal\"></sf-badge>",
+      "  <sf-badge id=\"bd-hue-status\" text=\"Оплачен\" hue=\"red\" status=\"success\"></sf-badge>",
+      "  <sf-badge id=\"bd-hue-unknown\" text=\"Другой\" hue=\"magenta\"></sf-badge>",
+      "  <span id=\"bd-hue-fill\" style=\"background-color: var(--sf-teal-50--alfa-24); color: var(--sf-on-surface)\">fill</span>",
       "</main>"
     ]
   },
@@ -261,6 +265,30 @@
         },
         {
           "check": "document.querySelector('#bd-value').value.value === '1.5.3' && !document.querySelector('#bd .sf-badge-divider') && !document.querySelector('#bd .sf-badge-value')"
+        }
+      ]
+    },
+    {
+      "id": "p-hue",
+      "title": "hue draws the palette class sf-badge--<hue>: tone 50 at the fill step 24 under --sf-on-surface; a status wins over it; an unknown name draws no hue (C411)",
+      "covers": "settings.hue",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#bd-hue .sf-badge'); const ref = getComputedStyle(document.querySelector('#bd-hue-fill')); const own = getComputedStyle(b); return b.classList.contains('sf-badge--teal') && own.backgroundColor === ref.backgroundColor && own.color === ref.color; })()",
+          "expect": {
+            "values": {
+              "#bd-hue.hue": "teal"
+            }
+          }
+        },
+        {
+          "check": "(() => { const b = document.querySelector('#bd-hue-status .sf-badge'); const s = document.querySelector('#bd-status .sf-badge'); return b.classList.contains('sf-badge--red') && b.classList.contains('sf-badge--success') && getComputedStyle(b).backgroundColor === getComputedStyle(s).backgroundColor; })()"
+        },
+        {
+          "check": "(() => { const b = document.querySelector('#bd-hue-unknown .sf-badge'); const n = document.querySelector('#bd .sf-badge'); return ![...b.classList].some((c) => /^sf-badge--(red|orange|amber|yellow|lime|green|teal|cyan|sky|blue|indigo|violet|purple|pink|brown|gray|magenta)$/u.test(c)) && document.querySelector('#bd-hue-unknown').hue === ''; })()"
+        },
+        {
+          "check": "document.querySelector('#bd-hue').value.hue === 'teal' && !document.querySelector('#bd .sf-badge').className.includes('teal')"
         }
       ]
     }

@@ -92,11 +92,23 @@ FIXTURES.push(...PRESS_PLACES.map(([name, open, close]) => `${open}
 ${PRESS_LOOKS.flatMap((look) => ['primary', 'on-surface'].map((scheme) => `<button type="button" class="sf-button sf-button--size-1 sf-button--${look} sf-button--${scheme} active"><i class="sf-icon" aria-hidden="true" data-case="H1 ${look} ${scheme} pressed glyph on ${name}" data-need="3">check</i><span class="sf-button-text-container" data-case="H1 ${look} ${scheme} pressed label on ${name}" data-need="4.5">Pressed</span></button>`)).join('\n')}
 ${close}`));
 
+// C411 (owner 2026-11-22): a badge coloured from the static palette takes a
+// hue class, sf-badge--<hue>: the hue's tone 50 at the fill step 24 under
+// --sf-on-surface, the same in light and dark. Its text holds 4.5:1 on that
+// fill laid over every opaque neutral surface a badge stands on, in every hue.
+const BADGE_HUES = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray'];
+const BADGE_GROUNDS = ['page', 'card', 'raised', 'popup', 'popup-nested'];
+FIXTURES.push(...BADGE_GROUNDS.map((place) => `
+<div style="background: var(--sf-surface-${place})">
+${BADGE_HUES.map((hue) => `<span class="sf-badge sf-badge--${hue} sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text" data-case="C411 sf-badge--${hue} text on --sf-surface-${place}" data-need="4.5">Badge</span></span></span>`).join('\n')}
+</div>`));
+
 // The sheets a case needs, from the build output root.
 export function markupSheets(out) {
   return [
     'core/core/css/core.css',
     'core/core/css/utility.full.css',
+    'component/component/badges/css/badges.css',
     'component/component/buttons/css/buttons.css',
     'component/component/icon-buttons/css/icon-buttons.css',
     'component/component/slider/css/slider.css',

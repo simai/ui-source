@@ -220,6 +220,7 @@ class SfBadge extends BadgeElement {
       type: this.appearance,
       scheme: this.scheme,
       status: this.status,
+      hue: this.hue,
       activity: this.activity,
       iconOnly: this.iconOnly,
       tight: this.tight,

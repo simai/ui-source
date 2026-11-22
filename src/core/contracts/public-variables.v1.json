@@ -10,25 +10,27 @@
         {
           "name": "--sf-badge-background-color",
           "role": "background",
-          "summary": "The badge's fill.",
+          "summary": "The badge's fill; it wins over a hue class sf-badge--<hue> too (C411: the class draws tone 50 at the fill step 24).",
           "default": "var(--sf-surface-container)",
           "since": "2026-10-13",
           "varies_with": [
             "appearance",
             "scheme",
-            "status"
+            "status",
+            "hue"
           ]
         },
         {
           "name": "--sf-badge-color",
           "role": "color",
-          "summary": "The text and icon colour.",
+          "summary": "The text and icon colour; it wins over a hue class sf-badge--<hue> too (C411: the class draws --sf-on-surface).",
           "default": "var(--sf-on-surface)",
           "since": "2026-10-13",
           "varies_with": [
             "appearance",
             "scheme",
-            "status"
+            "status",
+            "hue"
           ]
         },
         {

@@ -14,6 +14,10 @@ control when the element performs an action.
   `warning`, `error`, `on-surface` (a status may also be given as `status`).
   `danger`, the former name of `error`, still draws the error badge and is
   noted in `SF.deprecations` until 2026-12-01 (journal `class-status-aliases`);
+- hue (a colour from the static palette, owner decision C411, 1.14.0):
+  `sf-badge--red`, `--orange`, `--amber`, `--yellow`, `--lime`, `--green`,
+  `--teal`, `--cyan`, `--sky`, `--blue`, `--indigo`, `--violet`, `--purple`,
+  `--pink`, `--brown`, `--gray` (`hue` in the constructor and on `sf-badge`);
 - size: `1/3`, `1/2`, `1`;
 - optional text and decorative icon at the logical start or end.
 
@@ -102,6 +106,27 @@ click (C319).
   <span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">sf-wizard</span></span>
   <span class="sf-badge-divider" aria-hidden="true"></span>
   <span class="sf-badge-value"><span class="sr-only">, версия </span>1.5.3</span>
+</span>
+```
+
+A colour from the palette (component.badges 1.14.0, owner decision C411): a
+badge whose colour comes from data -- a section, a tag, a choice in a table
+cell -- takes a hue class, `sf-badge--<hue>`, for the sixteen static palette
+names (`red`, `orange`, `amber`, `yellow`, `lime`, `green`, `teal`, `cyan`,
+`sky`, `blue`, `indigo`, `violet`, `purple`, `pink`, `brown`, `gray`). The
+class sets the fill, the hue's tone 50 at the fill step 24
+(`--sf-<hue>-50--alfa-24`), and the text `--sf-on-surface`, the same in light
+and dark; on an inverse place its edge is the hue's graphic ink. It replaces
+the two public variables a page wrote for it before. Status colours stay with
+the status classes: with `sf-badge--info`, `--success`, `--warning` or
+`--error` on the same badge the status wins. The hue draws on the tonal looks;
+`sf-badge--outline` and the error count keep their own colours. The public
+`--sf-badge-background-color` and `--sf-badge-color` still win. No raw colour
+is drawn in a badge. `BADGE_HUES` in `js/contract.js` lists the names.
+
+```html
+<span class="sf-badge sf-badge--teal sf-badge--size-1/3 inline-flex flex-row flex-nowrap justify-center items-center">
+  <span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Дизайн</span></span>
 </span>
 ```
 

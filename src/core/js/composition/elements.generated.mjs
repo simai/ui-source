@@ -32,6 +32,29 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "hue": {
+          "default": "",
+          "enum": [
+            "",
+            "red",
+            "orange",
+            "amber",
+            "yellow",
+            "lime",
+            "green",
+            "teal",
+            "cyan",
+            "sky",
+            "blue",
+            "indigo",
+            "violet",
+            "purple",
+            "pink",
+            "brown",
+            "gray"
+          ],
+          "type": "string"
+        },
         "icon": {
           "default": "",
           "type": "string"
@@ -118,7 +141,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.badge",
-    "version": "1.7.0"
+    "version": "1.8.0"
   },
   "sf-button": {
     "inputs": {

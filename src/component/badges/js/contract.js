@@ -17,6 +17,21 @@ export const BADGE_SCHEMES = Object.freeze([
 // stylesheet matches `.sf-badge--danger` beside it for markup written by hand.
 export const BADGE_SCHEME_ALIASES = Object.freeze({danger: 'error'});
 export const BADGE_SIZES = Object.freeze(['1/3', '1/2', '1']);
+// The hues of the static palette a badge takes as a class, sf-badge--<hue>
+// (owner decision C411): the sixteen names of src/core/scss/vars/_sf_var__hue.scss
+// ($sf-static-hues), in its order. The class draws tone 50 at the fill step 24
+// under --sf-on-surface in both themes; status colours stay with the status
+// classes, so a hue is never a status.
+export const BADGE_HUES = Object.freeze([
+    'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan',
+    'sky', 'blue', 'indigo', 'violet', 'purple', 'pink', 'brown', 'gray',
+]);
+
+// The hue for a name, '' when it is not one of BADGE_HUES.
+export function canonicalBadgeHue(value) {
+    const name = String(value ?? '').trim().toLowerCase();
+    return BADGE_HUES.includes(name) ? name : '';
+}
 
 // The default look is tonal (owner decision C140 (1), badges study BG-1): a
 // badge without an appearance is the calm grey mark. It was main, the dark
