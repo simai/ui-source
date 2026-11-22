@@ -19563,6 +19563,86 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/button/component.json"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-tabs-tightest-row",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.5.1, component.tabs 1.5.6 (group build 16 returns GB16-1, GB16-2; DEV's answer to question 1): the current tab alone beside «Ещё» keeps at least two letters before its ellipsis; below that a tab with an icon draws its icon alone, whole, with its own padding (sf-tabs-icon-only), a tab of words keeps two letters and «…»; when even that does not stand beside «Ещё (n)», the trigger draws its glyph alone as a square (data-sf-tabs-more-compact, as shrink=\"icon\", C370). The current tab never goes into «Ещё».",
+      "items": [
+        {
+          "component": "smart.tabs",
+          "from": "in a narrow row the current tab is a 16 px button with a cut icon, an empty sliver, or one letter",
+          "to": "two letters and «…», else the whole icon, else «Ещё» as its glyph alone"
+        }
+      ],
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-drawer-fill-content",
+      "kind": "behaviour",
+      "summary": "sf-drawer 1.21.0 (group build 16 return GB16-3): the body's one child marked data-sf-drawer-fill takes the room under the head and over the foot; the panel does not scroll, only the content's own scroller moves; the body ends on the foot's line and the foot keeps its hairline. Without the marker nothing changes.",
+      "items": [
+        {
+          "component": "smart.drawer",
+          "from": "content with its own scroller scrolled away with the panel",
+          "to": "data-sf-drawer-fill: the content fills the body and scrolls itself"
+        }
+      ],
+      "source": "src/smart/drawer/scss/_smart__drawer.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-filter-sheet-rows-scroll",
+      "kind": "behaviour",
+      "summary": "module.smart-field-renderers 1.28.1 (group build 16 return GB16-3; C397, PH-7, PH-8, PH-9 in the phone sheet): the filter window's sheet fills the drawer (data-sf-drawer-fill), so only its rows scroll and the condition band and the search stay; the last row's text stands 12 from the foot's line as the first from the search's; the sheet's title and footer buttons stand on the rows' text (--sf-drawer-gutter = the panel inset and the row padding, 12 on a phone).",
+      "items": [
+        {
+          "component": "module.smart-field-renderers",
+          "from": "the phone sheet scrolled the band and the search away (737 px with 30 options); last row 24 from the foot; title and buttons at 16 beside rows' text at 12",
+          "to": "rows scroll alone; last row 12 from the foot; title, rows and buttons on one 12 column"
+        }
+      ],
+      "source": "src/smart/field-renderers/filter-window.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-slider-dots-offset-inside",
+      "kind": "behaviour",
+      "summary": "component.slider 2.2.0 (group build 16 returns): --sf-slider-dots-offset-block is the distance of the position inside the picture from its bottom edge (data-indicator=\"inside\", C398; default --sf-space-2). Under the picture the bar stands the block's gap, --sf-slider-gap, below the strip (as the default drew it); the variable no longer moves that bar, where 2.0.0's calc took it less the gap and no part took the value.",
+      "items": [
+        {
+          "component": "component.slider",
+          "from": "--sf-slider-dots-offset-block: the bar's distance under the strip, less the block's gap (default --sf-space-1)",
+          "to": "the inside position's distance from the picture's bottom edge (default --sf-space-2); under the picture --sf-slider-gap"
+        }
+      ],
+      "source": "src/component/slider/scss/_css__slider.scss"
     }
   ]
 }
