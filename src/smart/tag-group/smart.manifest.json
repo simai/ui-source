@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag-group",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Tag group",
   "summary": "A row of tags: 4 apart, a list to a screen reader, one Tab stop with arrows and Delete, one line with «+N» that opens the hidden tags in a popover, and single or multiple choice for filter tags.",
   "kind": "smart",
@@ -221,7 +221,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag-group/index.js",
-        "sha256": "97df098694c2f4d4e47724865d9eebecd001af3207116cf9713b415564975770"
+        "sha256": "f307df71f5e3dbf937df4dfecca39a0bef8ec6c3a50e59268d895a3a07ce5d38"
       },
       {
         "path": "src/smart/tag-group/js/templates/default.js",
@@ -237,7 +237,7 @@
       },
       {
         "path": "src/smart/tag-group/docs.md",
-        "sha256": "9272a36e752e302bdfc27be0955708c0991be139d598c154a68f3743f2eb83b1"
+        "sha256": "07d5b952c40e450af0344036ee678e939e3efdc37d3373772f503ab652d9c687"
       }
     ],
     "generated_runtime": []

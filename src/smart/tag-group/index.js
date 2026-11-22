@@ -91,6 +91,13 @@ class SfTagGroup extends GroupElement {
     return {...super.props, templateName: {attribute: 'template', default: 'default'}};
   }
 
+  // selected-ids is a list, which the manifest base reads as an attribute
+  // only once, on the first connect; observed here (1.2.1, FF-1), a write of
+  // the attribute after the row connected chooses too, as selected does.
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, 'selected', 'selected-ids'])];
+  }
+
   constructor() {
     super();
     this._frame = 0;

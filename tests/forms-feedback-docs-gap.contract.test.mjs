@@ -51,6 +51,17 @@ test('TG-3, REF-1: the manifest declares selected, selected-ids and the name of 
   assert.match(group, /chooseEarly\(keys\) \{\s*if \(!this\._settled\) this\._chosen = keys;/u);
 });
 
+test('FF-1: sf-tag-group observes selected-ids, so a write after load chooses (attribute and property)', () => {
+  const group = read('src/smart/tag-group/index.js');
+  assert.match(group, /static get observedAttributes\(\) \{\s*return \[\.\.\.new Set\(\[\.\.\.super\.observedAttributes, 'selected', 'selected-ids'\]\)\];/u);
+  // the attribute after load goes the way the first one does: kept, then applied when the row settles
+  assert.match(group, /this\._chosen = name === 'selected' \? \(newValue === '' \? \[\] : \[newValue\]\) : listOf\(newValue\);\s*this\.schedule\(\);/u);
+  // the property after load chooses at once
+  assert.match(group, /set selectedIds\(value\) \{\s*this\.chooseEarly\(listOf\(value\)\);/u);
+  assert.match(group, /chooseEarly\(keys\) \{\s*if \(!this\._settled\) this\._chosen = keys;\s*this\.choose\(keys\);/u);
+  assert.equal(json('src/smart/tag-group/component.json').version, '1.2.1');
+});
+
 test('TG-4: a group without selection does not make a bare tag a toggle', () => {
   const tag = read('src/smart/tag/index.js');
   assert.match(tag, /normalize\(group\.getAttribute\('selection'\) \|\| 'none'\) !== 'none'/u);

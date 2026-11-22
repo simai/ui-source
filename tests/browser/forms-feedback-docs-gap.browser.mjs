@@ -12,6 +12,7 @@
 // - TG-2 a cross pressed with the mouse, and Enter on a cross, remove the tag
 //   and leave the focus on the neighbour (Delete always did), not the body;
 // - TG-3 selected and selected-ids written as attributes choose the tags;
+// - FF-1 selected-ids written after the row connected (attribute and property) chooses too;
 // - TG-4 a bare sf-tag in a group without selection is a plain tag;
 // - FO-1 apply instant: typing «abc» and leaving sends one sf-form-change;
 // - FO-2 in a sandboxed frame without allow-forms, «Сохранить» sends
@@ -148,6 +149,21 @@ try {
       check('TG-3 selected-ids attribute chooses', JSON.stringify(chosen.many) === '["b","c"]' && JSON.stringify(chosen.manyProperty) === '["b","c"]', chosen.many);
       check('TG-3 selected attribute chooses', JSON.stringify(chosen.one) === '["y"]', chosen.one);
       check('TG-4 bare tag is plain in a group without selection', chosen.bare.every((tag) => tag.kind === 'default' && !tag.pressed), chosen.bare);
+
+      // FF-1: selected-ids written after the row connected, as an attribute, then as a property.
+      const later = async (how) => {
+        await page.evaluate((how) => {
+          const group = document.querySelector('#tg-many');
+          if (how === 'attribute') group.setAttribute('selected-ids', '["a"]');
+          else group.selectedIds = ['a', 'c'];
+        }, how);
+        await page.waitForTimeout(150);
+        return page.evaluate(() => ({active: [...document.querySelectorAll('#tg-many > sf-tag[active]')].map((tag) => tag.getAttribute('key')), ids: document.querySelector('#tg-many').selectedIds}));
+      };
+      const byAttribute = await later('attribute');
+      check('FF-1 selected-ids attribute written after load chooses', JSON.stringify(byAttribute.active) === '["a"]' && JSON.stringify(byAttribute.ids) === '["a"]', byAttribute);
+      const byProperty = await later('property');
+      check('FF-1 selectedIds property written after load chooses', JSON.stringify(byProperty.active) === '["a","c"]' && JSON.stringify(byProperty.ids) === '["a","c"]', byProperty);
 
       // FO-1: type «abc» into «Заголовок», leave with Tab; then tick «Флаг».
       await page.locator('#fo-instant [data-key="title"] input').first().click();

@@ -75,7 +75,8 @@ group.addEventListener('sf-tag-close', (event) => event.target.remove());
 Тег узнаётся по `key`, без него — по тексту. Значения группы: `selected` —
 ключ выбранного (при `many` — первого), `selected-ids` — ключи всех выбранных
 по порядку. Оба можно записать свойством или атрибутом хоста
-(`selected="new"`, `selected-ids='["new","mine"]'`).
+(`selected="new"`, `selected-ids='["new","mine"]'`), в разметке или позже из
+скрипта.
 Тег без `kind` в группе без выбора — обычный тег. Выбор человека группа сообщает событием
 `sf-tag-group-select` с `detail` `{ids, id, selected}`.
 

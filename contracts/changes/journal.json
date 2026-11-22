@@ -19586,6 +19586,26 @@
       },
       "owner": "ui-source",
       "source": "src/component/progress-ring/scss/_css__progress_ring.scss; src/smart/progress-ring/js/templates/default.js; src/smart/file-download/js/templates/default.js"
+    },
+    {
+      "id": "behaviour-tag-group-selected-ids-observed",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-tag-group 1.2.1 (DEV return FF-1): the selected-ids attribute is observed, so writing it after the row connected chooses those tags, as the selected attribute and the selectedIds property do. Before, only the attribute present on the first connect was read.",
+      "items": [
+        {
+          "component": "smart.tag-group",
+          "from": "selected-ids attribute read once, on the first connect",
+          "to": "selected-ids attribute read on every write"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "source": "src/smart/tag-group/component.json"
     }
   ]
 }
