@@ -42,6 +42,11 @@ const types = {'.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'tex
 const pages = new Map();
 const server = createServer((request, response) => {
   const path = decodeURIComponent(new URL(request.url, 'http://probe').pathname);
+  // The browser asks for a page icon on the first load; it is not the Framework's.
+  if (path === '/favicon.ico') {
+    response.writeHead(204);
+    return response.end();
+  }
   if (pages.has(path)) {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
     return response.end(pages.get(path));
