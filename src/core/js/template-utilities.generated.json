@@ -100,9 +100,7 @@
   ],
   "cl-display-settings": [
     "font-family/default",
-    "resize/default",
-    "text-decoration/default",
-    "visibility/default"
+    "text-decoration/default"
   ],
   "cl-drawer": [
     "display/default",

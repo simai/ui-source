@@ -229,7 +229,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/display-settings/index.js",
-        "sha256": "74c9bc4bfda1b7c638711605b6ba3f018fabce37f2ff186f07334dddd0a00944"
+        "sha256": "9fc6ef4c5956939bcedfbda2c52fdec319c3ea5ea71a9b1c9bb9dd7dc4f1428a"
       },
       {
         "path": "src/smart/display-settings/js/templates/default.js",

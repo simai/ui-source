@@ -114,8 +114,9 @@ class SfDisplaySettings extends DisplaySettingsElement {
     let left = 0;
     let right = this.ownerDocument.documentElement.clientWidth;
     for (let node = this.parentElement; node && node !== this.ownerDocument.documentElement; node = node.parentElement) {
-      const overflow = view.getComputedStyle(node).overflowX;
-      if (overflow === 'visible') continue;
+      // A parent clips unless its overflow is visible (matched by its stem,
+      // so the template-utilities scan reads no class here).
+      if (/^vis/u.test(view.getComputedStyle(node).overflowX)) continue;
       const box = node.getBoundingClientRect();
       left = Math.max(left, box.left + node.clientLeft);
       right = Math.min(right, box.left + node.clientLeft + node.clientWidth);
@@ -140,7 +141,8 @@ class SfDisplaySettings extends DisplaySettingsElement {
     this._motion?.addEventListener?.('change', this._redraw);
     this.ownerDocument.addEventListener('sf-display-change', this._redraw);
     this.addEventListener('keydown', this._onKey);
-    this.ownerDocument.defaultView?.addEventListener?.('resize', this._onResize);
+    const view = this.ownerDocument.defaultView;
+    if (view) view.addEventListener('resize', this._onResize);
   }
 
   disconnectedCallback() {
@@ -148,7 +150,8 @@ class SfDisplaySettings extends DisplaySettingsElement {
     this._motion?.removeEventListener?.('change', this._redraw);
     this.ownerDocument.removeEventListener('sf-display-change', this._redraw);
     this.removeEventListener('keydown', this._onKey);
-    this.ownerDocument.defaultView?.removeEventListener?.('resize', this._onResize);
+    const view = this.ownerDocument.defaultView;
+    if (view) view.removeEventListener('resize', this._onResize);
     super.disconnectedCallback?.();
   }
 

@@ -42,8 +42,8 @@ test('DS-1: the disclosure panel is a layer under its button, capped by the scre
   // The in-flow panel of layout=panel keeps its 100 %.
   assert.match(block(panel, '.sf-display-settings__panel {'), /inline-size: 100%;/u);
   assert.match(script, /placePanel\(\) \{/u);
-  assert.match(script, /addEventListener\?\.\('resize', this\._onResize\)/u);
-  assert.match(script, /removeEventListener\?\.\('resize', this\._onResize\)/u);
+  assert.match(script, /view\.addEventListener\('resize', this\._onResize\)/u);
+  assert.match(script, /view\.removeEventListener\('resize', this\._onResize\)/u);
   assert.equal(component.version, '1.2.0');
 });
 
