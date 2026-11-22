@@ -542,3 +542,30 @@ for (const tag of parts) Assembly.interfaces.register(tag, await (await fetch('/
 Assembly.define(${JSON.stringify(assembly.manifest).replace(/</g, '\\u003c')}, {layouts: ${JSON.stringify(assembly.layouts).replace(/</g, '\\u003c')}});
 window.__sfAssemblyDefined = true;
 </script>`;
+
+// A start tag's attributes in name order (GB17 L7). The snapshot is printed in
+// the order the element holds its attributes, and a component may set two of
+// them in either order depending on timing (sf-button-icon's inner button:
+// title before or after aria-haspopup), so the same markup printed twice could
+// differ by order alone and a check called the snapshot stale (the Editor set's
+// release stopped on it). The written files keep the printed order; the
+// writer and the check compare this form, so a file whose markup differs only
+// by attribute order is unchanged. The printer writes a value in double
+// quotes (escaped) or a bare name; single-quoted and unquoted values are read
+// too. Text and comments are left as they are.
+const START_TAG = /<([a-zA-Z][\w:.-]*)((?:\s+[^\s"'<>/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)*)(\s*\/?)>/gu;
+const ATTRIBUTE = /\s+([^\s"'<>/=]+)(?:\s*=\s*("[^"]*"|'[^']*'|[^\s"'=<>`]+))?/gu;
+export function sortedAttributes(html) {
+  return String(html).replace(START_TAG, (whole, tag, attrs, end) => {
+    if (!attrs) return whole;
+    const list = [...attrs.matchAll(ATTRIBUTE)].map(([, name, value]) => [name, value === undefined ? '' : `=${value}`]);
+    if (list.length < 2) return whole;
+    list.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    return `<${tag}${list.map(([name, value]) => ` ${name}${value}`).join('')}${end}>`;
+  });
+}
+
+/** Two snapshot bodies are the same markup when they are equal with every start tag's attributes in name order. */
+export function sameSnapshot(a, b) {
+  return a === b || sortedAttributes(a) === sortedAttributes(b);
+}

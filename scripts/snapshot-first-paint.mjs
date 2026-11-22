@@ -37,7 +37,7 @@ import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, rmSync}
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {ensureLocalPlaywright} from './playwright-local.mjs';
-import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, lateGiven, lateHeld, fontsReady, sizeProblem, freezeClock, PAGE_CONTEXT, watchRequests, serializeSettled, settleSheets} from './first-paint-lib.mjs';
+import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, lateGiven, lateHeld, fontsReady, sizeProblem, freezeClock, PAGE_CONTEXT, watchRequests, serializeSettled, settleSheets, sameSnapshot} from './first-paint-lib.mjs';
 import {renderSkeletonTemplate, renderPartSkeleton} from './first-paint-skeleton.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -172,7 +172,7 @@ function compare(file, body, example = null) {
   if (large) results.tooLarge.push(`${relative(repo, file)}: ${large}`);
   if (check) {
     if (!existsSync(file)) results.missing.push(relative(repo, file));
-    else if (readFileSync(file, 'utf8') !== body) {
+    else if (!sameSnapshot(readFileSync(file, 'utf8'), body)) {
       results.stale.push(relative(repo, file));
       // What this run rendered, to compare (FIRST_PAINT_STALE_DIR).
       if (process.env.FIRST_PAINT_STALE_DIR) {
@@ -184,7 +184,8 @@ function compare(file, body, example = null) {
     else results.unchanged += 1;
     return;
   }
-  if (existsSync(file) && readFileSync(file, 'utf8') === body) { results.unchanged += 1; return; }
+  // The same markup in another attribute order keeps the committed file (L7).
+  if (existsSync(file) && sameSnapshot(readFileSync(file, 'utf8'), body)) { results.unchanged += 1; return; }
   mkdirSync(dirname(file), {recursive: true});
   writeFileSync(file, body);
   results.written.push(relative(repo, file));
@@ -204,7 +205,7 @@ async function worker() {
       // A check renders a differing example again before it calls it stale:
       // one render on a loaded machine can be taken before the page settled.
       for (let again = 0; check && again < 2 && existsSync(files.html)
-        && readFileSync(files.html, 'utf8') !== `${header(component, example, 'static markup')}${got.html}\n`; again += 1) {
+        && !sameSnapshot(readFileSync(files.html, 'utf8'), `${header(component, example, 'static markup')}${got.html}\n`); again += 1) {
         got = await snapshot(component, example);
       }
       if (got.errors.length) throw new Error(got.errors.join('; '));
