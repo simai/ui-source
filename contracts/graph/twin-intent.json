@@ -434,6 +434,14 @@
       "reason": "recorded by group build 17 (merge of feat/forms-feedback-docs-gap, TG-1, TG-4): sf-tag names its remove button after its text and a bare tag in a group that selects nothing stays a plain tag; both are the element's behaviour, the plain tag classes are unchanged",
       "decision": "forms and feedback docs gap TG-1, TG-4",
       "date": "2026-11-22"
+    },
+    {
+      "unit": "smart.segmented",
+      "version": "1.8.3",
+      "twin": "component.button-group",
+      "reason": "recorded by group build 17 (merge of feat/gb17-fields, F4): sf-segmented draws an option's palette colour by the badge's hue setting (C411) instead of two public variables in a style; the plain button group draws no option badges",
+      "decision": "gb17-fields F4, C411",
+      "date": "2026-11-22"
     }
   ]
 }
