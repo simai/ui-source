@@ -144,7 +144,9 @@ test('a text container\'s width never reads a base ladder point (C396 grep gate)
   // The scripts that write a width.
   const drawer = read('src/smart/drawer/index.js');
   const ladder = /const LADDER_WIDTHS = (\[[^\n]+\]);/u.exec(drawer)?.[1] ?? '';
-  assert.match(ladder, /'1\/2', 'var\(--sf-measure-44\)'.*'1', 'var\(--sf-measure-52\)'.*'2', 'var\(--sf-measure-64\)'/u);
+  // GB17 Y3 (DEV return RP-1): the drawer counts its steps in its own character, the
+  // normal ladder's, so compact density does not narrow it; still 44/52/64 steps.
+  assert.match(ladder, /'1\/2', 'calc\(44 \* var\(--sf-drawer--char\)\)'.*'1', 'calc\(52 \* var\(--sf-drawer--char\)\)'.*'2', 'calc\(64 \* var\(--sf-drawer--char\)\)'/u);
   if (BASE_POINT.test(ladder)) wrong.push('src/smart/drawer/index.js: LADDER_WIDTHS');
   const tags = read('src/smart/tag-group/index.js');
   assert.match(tags, /popover\.setAttribute\('width', 'var\(--sf-measure-44\)'\);/u);
