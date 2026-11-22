@@ -3,8 +3,9 @@ import {html, nothing} from 'lit';
 // sf-display-settings' markup (scss/ draws it; prototype
 // accessibility-panel-study, panel B).
 //
-// - disclosure: an outline sf-button (the label) with aria-expanded and
-//   aria-controls, and the panel under it, hidden while closed;
+// - disclosure: an outline sf-button (the eye glyph and the label) with
+//   aria-expanded and aria-controls, and the panel under it, hidden while
+//   closed; the button folds to its glyph when its words do not fit;
 // - panel: the panel alone.
 // The panel is a group named by the label; each setting a group named by its
 // word, its choices outline sf-buttons with aria-pressed (C12 pressed look on
@@ -13,6 +14,11 @@ import {html, nothing} from 'lit';
 // disabled and says so.
 
 const BUTTON = {size: '1/2', appearance: 'outline', scheme: 'on-surface'};
+
+// The trigger's glyph (DSA-3): the eye a reader looks for beside «Версия для
+// слабовидящих», and what the trigger folds to when its words do not fit
+// (sf-button shrink="icon", C370; index.js fitTrigger).
+const TRIGGER_ICON = 'visibility';
 
 function choice(context, group, option) {
   return html`<sf-button class="sf-display-settings__choice" size=${BUTTON.size} appearance=${BUTTON.appearance}
@@ -60,6 +66,7 @@ export function renderDisplaySettingsTemplate(context) {
   if (context.layout === 'panel') return html`<div class=${classes}>${panel(context)}</div>`;
   return html`<div class=${classes}>
     <sf-button class="sf-display-settings__trigger" size=${BUTTON.size} appearance=${BUTTON.appearance} scheme=${BUTTON.scheme}
+      icon-start=${TRIGGER_ICON} shrink="icon"
       text=${context.label} expanded=${context.shown ? 'true' : 'false'} aria-controls=${context.panelId}
       @click=${() => context.component.toggle()}></sf-button>
     ${panel(context)}

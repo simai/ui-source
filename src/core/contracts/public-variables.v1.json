@@ -4686,8 +4686,8 @@
         {
           "name": "--sf-display-settings-background",
           "role": "background",
-          "summary": "The panel's surface.",
-          "default": "var(--sf-surface-card)",
+          "summary": "The panel's surface: the popup surface while layout=disclosure opens it as a layer over the page (the default), the card surface for layout=panel in the page.",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-11-15"
         },
         {

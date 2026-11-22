@@ -39,6 +39,7 @@
 @use 'sass:map';
 @use 'mix/mix__role_aliases' as aliases;
 @use './mix/mix__paint' as paint;
+@use './mix/mix__shadow' as shadow;
 
 @layer sf.base {
   // ---------------------------------------------------------------------
@@ -68,6 +69,17 @@
   // The text tone at a step of the alpha scale, as --sf-alpha-N is built.
   @function scheme-alpha($step) {
     @return color-mix(in srgb, var(--sf-transparent), var(--sf-scheme-text) #{$step + '%'});
+  }
+
+  // The ground at a step of the alpha scale (the veil, DS-5).
+  @function scheme-ground-alpha($step) {
+    @return color-mix(in srgb, var(--sf-transparent), var(--sf-scheme-ground) #{$step + '%'});
+  }
+
+  // The text tone with the ground at a step of the state family laid over it,
+  // as one opaque colour (a plate's hover and press, DSA-4).
+  @function scheme-text-under-ground($step) {
+    @return color-mix(in srgb, var(--sf-scheme-text), var(--sf-scheme-ground) #{$step + '%'});
   }
 
   // A family's tones on the scheme: the ink side of the polarity takes the
@@ -137,6 +149,64 @@
         --sf-tone-#{$tone}-container: #{scheme-alpha(12)};
         --sf-on-tone-#{$tone}-container: var(--sf-scheme-text);
       }
+    }
+    // What floats over the page gets an edge in the text tone (DS-4,
+    // ui-control control/evidence/2026-11-22-display-settings-roles): a popup
+    // stands on the ground, as the page does, and a black shadow on a black
+    // ground (or a 16 % one on a pale one) separates nothing, so a dropdown's
+    // list lay over the form with no line between. The edge is a 1 px ring
+    // drawn before the place's own shadow, on the shadow roles every popup,
+    // menu, popover, tooltip, toast and window reads, so no component is
+    // repainted; the text tone on the ground meets 3:1 (WCAG 1.4.11) by the
+    // scheme's own construction. A filter takes no spread: the ring is four
+    // drop-shadows a pixel out on each side, around the arrow too.
+    @if paint.writes-paint() {
+      --sf-shadow-overlay: 0 0 0 var(--sf-px) var(--sf-scheme-text), #{shadow.sf-shadow('overlay')};
+      --sf-shadow-overlay-filter: drop-shadow(var(--sf-px) 0 0 var(--sf-scheme-text)) drop-shadow(calc(-1 * var(--sf-px)) 0 0 var(--sf-scheme-text)) drop-shadow(0 var(--sf-px) 0 var(--sf-scheme-text)) drop-shadow(0 calc(-1 * var(--sf-px)) 0 var(--sf-scheme-text)) #{shadow.sf-drop-shadow('overlay')};
+      --sf-shadow-modal: 0 0 0 var(--sf-px) var(--sf-scheme-text), #{shadow.sf-shadow('modal')};
+    }
+    // The roles that read black, white or a fixed hue (DS-5): controls on a
+    // picture stand on the text tone with the ground's ink, as a filled
+    // button does; the veil is the ground at the scrim's strength; a chart's
+    // areas are the text tone on the fill family of the alpha scale (odd
+    // series 12 / 16 / 20, even 24 / 28 / 32 for rest, hover, press), the
+    // ends of a diverging scale the text tone and its ink step 64, the
+    // middle the 12 step. Series are then told apart by shape and label, as
+    // a scheme asks (no hue is left to tell them).
+    // Hover and press on that plate (DSA-4, ui-control
+    // control/evidence/2026-11-22-ds-roles-acceptance): the state family's
+    // 8 and 12 of the plate's ink (the ground) laid over the text tone, as
+    // the glass does with white over black (--sf-scrim-control-state-*);
+    // rest, hover and press were one value, so a carousel's switch on a
+    // picture showed no change under the pointer or the press.
+    @if paint.writes-shape() {
+      --sf-surface-media: var(--sf-scheme-text);
+      --sf-surface-media-hover: #{scheme-text-under-ground(8)};
+      --sf-surface-media-active: #{scheme-text-under-ground(12)};
+      --sf-on-surface-media: var(--sf-scheme-ground);
+      --sf-scrim-control-state-hover: #{scheme-ground-alpha(8)};
+      --sf-scrim-control-state-active: #{scheme-ground-alpha(12)};
+      --sf-surface-veil: #{scheme-ground-alpha(64)};
+    }
+    @include aliases.sf-role-aliases(('surface-veil',));
+    @if paint.writes-shape() {
+      @for $series from 1 through 8 {
+        $rest: 12;
+        @if $series % 2 == 0 {
+          $rest: 24;
+        }
+        --sf-chart-#{$series}-fill: #{scheme-alpha($rest)};
+        --sf-chart-#{$series}-fill-hover: #{scheme-alpha($rest + 4)};
+        --sf-chart-#{$series}-fill-active: #{scheme-alpha($rest + 8)};
+      }
+      --sf-chart-brand-fill: #{scheme-alpha(12)};
+      --sf-chart-brand-fill-hover: #{scheme-alpha(16)};
+      --sf-chart-brand-fill-active: #{scheme-alpha(20)};
+      --sf-chart-diverging-bad: var(--sf-scheme-text);
+      --sf-chart-diverging-low: var(--sf-scheme-text);
+      --sf-chart-diverging-good: #{scheme-alpha(64)};
+      --sf-chart-diverging-high: #{scheme-alpha(64)};
+      --sf-chart-midpoint: #{scheme-alpha(12)};
     }
   }
 
@@ -226,9 +296,25 @@
 
   // WCAG 1.4.12: line height 1.5, paragraphs 2 apart, letters 0.12 and words
   // 0.16 of the text size.
-  :root[data-sf-text-spacing='wide'] body {
-    letter-spacing: 0.12em;
-    word-spacing: 0.16em;
+  //
+  // These are the visitor's overrides, as a user style sheet is (DS-2,
+  // ui-control control/evidence/2026-11-22-display-settings-roles): written
+  // !important, they win over every author layer and over unlayered site
+  // CSS (an important declaration in an earlier layer beats the later
+  // layers' and the unlayered ones). The spacing goes on every element in
+  // its own text size, not on body alone: a form field does not inherit it
+  // from the UA sheet and a component that sets its own letter-spacing kept
+  // it (DS-3: sf-input's input stayed at normal and 0). An icon glyph keeps
+  // its own: it is a ligature of its name, and spaced letters break the
+  // ligature into the word.
+  :root[data-sf-text-spacing='wide'] body,
+  :root[data-sf-text-spacing='wide'] body *:not(.sf-icon, sf-icon),
+  :root[data-sf-text-spacing='wide'] input,
+  :root[data-sf-text-spacing='wide'] textarea,
+  :root[data-sf-text-spacing='wide'] select,
+  :root[data-sf-text-spacing='wide'] button {
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
   }
 
   $spaced: ();
@@ -236,11 +322,11 @@
     $spaced: list.append($spaced, ":root[data-sf-text-spacing='wide'] #{$tag}", $separator: comma);
   }
   #{$spaced} {
-    line-height: 1.5;
+    line-height: 1.5 !important;
   }
 
   :root[data-sf-text-spacing='wide'] p {
-    margin-block-end: 2em;
+    margin-block-end: 2em !important;
   }
 
   :root[data-sf-font='sans'] {
@@ -273,14 +359,17 @@
     $hidden: list.append($hidden, ":root[data-sf-images='hide'] #{$picture}", $separator: comma);
   }
 
+  // The visitor's overrides (DS-2): !important, so a site's own
+  // img { display: block } or filter does not bring a hidden or coloured
+  // picture back beside its caption.
   #{$grey} {
-    filter: grayscale(1);
+    filter: grayscale(1) !important;
   }
 
   // Hidden, a picture leaves its text alternative in its place (the caption
   // core writes after an image with an alt); a decorative one leaves nothing.
   #{$hidden} {
-    display: none;
+    display: none !important;
   }
 
   .sf-image-caption {
@@ -288,7 +377,7 @@
   }
 
   :root[data-sf-images='hide'] .sf-image-caption {
-    display: block;
+    display: block !important;
     box-sizing: border-box;
     max-inline-size: 100%;
     padding: var(--sf-space-1\/4) var(--sf-space-1\/3);

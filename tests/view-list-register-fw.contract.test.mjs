@@ -22,7 +22,7 @@ test('VL-43: the quiet plate is the state family\'s 8, under the control plate',
 test('VL-43: the band of sf-dropdown lays the quiet plate, a page still tints it', () => {
   const css = read('src/component/dropdown/scss/_css__custom.scss');
   assert.match(css, /--sf-dropdown-field--background-color: var\(--sf-dropdown-background-color, var\(--sf-surface-container-low\)\);/u);
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.1');
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.25.2'); // group build 17: VL-43 and DSA-2 both wrote 1.25.1
 });
 
 test('VL-65: the not-set ink is the text ink at the ink family\'s 64, and every place says it', () => {

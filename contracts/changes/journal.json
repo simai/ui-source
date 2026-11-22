@@ -20002,6 +20002,86 @@
         }
       ],
       "source": "src/smart/list-description/scss/_smart__list-description.scss"
+    },
+    {
+      "id": "behaviour-display-settings-ds-roles",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "smart.display-settings 1.2.0 and core.styles (fingerprint only), DS-1..DS-5 of ui-control control/evidence/2026-11-22-display-settings-roles (DEV letter msg-8977f46e): layout=disclosure opens its panel as a layer under the button (it grew to one 2651 px row in sf-header-site's tools and folded the header's menu); the wide text spacing and the hidden and grey pictures are the visitor's overrides, written !important so unlayered site CSS and later Framework layers no longer beat them; the spacing goes on every element and form field; in a colour scheme the overlay and modal shadows carry a 1 px text-tone edge (popups, menus, tooltips, toasts, windows); --sf-surface-media*, --sf-on-surface-media, --sf-surface-veil (and its former name --sf-surface-overlay), --sf-chart-N-fill*, --sf-chart-brand-fill*, --sf-chart-diverging-* and --sf-chart-midpoint take the scheme's tones.",
+      "items": [
+        {
+          "component": "smart.display-settings",
+          "from": "layout=disclosure panel in the flow at 100 % of its slot",
+          "to": "a layer under the button (absolute, --sf-layer--popover, overlay shadow), max --sf-measure-96 and the screen less --sf-space-1 a side, moved in at the edge"
+        },
+        {
+          "component": "core.styles",
+          "from": "data-sf-text-spacing / data-sf-images rules in sf.base, normal importance; spacing on body only; schemes: popups with a shadow only, media / veil / chart roles in site colours",
+          "to": "the same rules !important; spacing on every element, input, textarea, select, button; schemes: overlay / modal shadows with a 1 px --sf-scheme-text ring, media on the text tone with the ground's ink, veil the ground at 64, chart fills the text tone at 12/16/20 (odd) and 24/28/32 (even), diverging ends the text tone and its 64 step, midpoint the 12 step"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A site that styled the disclosure panel in the flow (a width on .sf-display-settings__panel) sees it as a layer now; a site that relied on its own CSS beating the visitor's spacing or hidden pictures no longer does.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__display.scss; src/smart/display-settings/scss/_smart__display_settings.scss; src/smart/display-settings/index.js"
+    },
+    {
+      "id": "behaviour-display-settings-dsa",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "DEV acceptance of display settings DS-1..DS-5, returns DSA-2..DSA-4 (ui-control control/evidence/2026-11-22-ds-roles-acceptance; evidence control/evidence/2026-11-22-dsa): smart.display-settings 1.3.0 folds its disclosure trigger to its eye glyph where the words do not fit (sf-button shrink=\"icon\"; in sf-header-site's tools at 390 with the text at 200 % the page scrolled sideways, 557 px); smart.dropdown 1.25.1 / component.dropdown 1.18.4 draw the field placeholder role on the input's placeholder (it was the browser's own grey, 3.56-4.1:1); core.styles (fingerprint only): in a colour scheme --sf-surface-media-hover and -active are the text tone under the ground at 8 and 12 and --sf-scrim-control-state-* the ground at 8 and 12 (rest, hover and press were one value); smart.gallery 1.5.5: in a scheme the viewer stands on the scheme's ground with its text (its controls were black on black on the dark-ground schemes).",
+      "items": [
+        {
+          "component": "smart.display-settings",
+          "from": "disclosure trigger: the label only, never folds",
+          "to": "the eye glyph and the label; folds to the glyph (sf-button shrink=icon) where the whole button crosses the screen or its row"
+        },
+        {
+          "component": "component.dropdown",
+          "from": "input::placeholder colour: none (the browser's grey)",
+          "to": "--sf-dropdown-placeholder--color, by default --sf-on-surface-variant, disabled --sf-on-surface-disabled"
+        },
+        {
+          "component": "core.styles",
+          "from": "schemes: --sf-surface-media, -hover, -active all the text tone; scrim-control states white at 8 / 12",
+          "to": "hover and press the text tone under the ground at 8 / 12; scrim-control states the ground at 8 / 12"
+        },
+        {
+          "component": "smart.gallery",
+          "from": "viewer in a scheme: black, the scheme's ground as its ink",
+          "to": "the scheme's ground with its text and the page's roles; its round controls the scheme's media plate (rest, hover, press)"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A page that styled the display-settings trigger as text only sees the eye glyph beside the label.",
+      "owner": "ui-source",
+      "source": "src/smart/display-settings/index.js; src/smart/display-settings/js/templates/default.js; src/component/dropdown/scss/_css__dropdown.scss; src/core/scss/_sf_css__display.scss; src/smart/gallery/js/templates/default.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-dropdown-gb17-merge-band-plate-placeholder",
+      "kind": "behaviour",
+      "summary": "sf-dropdown 1.25.2 (group build 17): feat/register-fw-items (VL-43, the band's quiet plate) and feat/display-settings-ds (DSA-2, the field placeholder role) both wrote 1.25.1; the merged look takes one patch above both.",
+      "items": [
+        {
+          "component": "smart.dropdown",
+          "from": "two different 1.25.1",
+          "to": "1.25.2 with both looks"
+        }
+      ],
+      "source": "src/smart/dropdown/component.json"
     }
   ]
 }

@@ -28,7 +28,10 @@ test('the sheet draws exactly the schemes core knows, and only from palette tone
 test('no component background or edge is reset with !important', () => {
   const code = sheet.replace(/\/\/.*$/gmu, '');
   for (const [, property] of code.matchAll(/([a-z-]+):[^;]*!important/gu)) {
-    assert.ok(['animation-duration', 'animation-iteration-count', 'transition-duration', 'scroll-behavior'].includes(property), `${property} !important`);
+    // Motion, and since DS-2 (2026-11-22) the visitor's spacing and pictures:
+    // never a colour, a background or an edge.
+    assert.ok(['animation-duration', 'animation-iteration-count', 'transition-duration', 'scroll-behavior',
+      'letter-spacing', 'word-spacing', 'line-height', 'margin-block-end', 'filter', 'display'].includes(property), `${property} !important`);
   }
 });
 

@@ -1,4 +1,18 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:selector";
+@use "sass:string";
 @use "../../../../core/scss/mix/mix__breakpoint" as mq;
+@use "../../../../core/scss/mix/mix__places" as places;
+@use "../../../../core/scss/mix/mix__role_aliases" as aliases;
+
+// The five colour schemes of core display settings (core/scss/_sf_css__display.scss):
+// only these names apply one, as there.
+$schemes: ("black-on-white", "white-on-black", "yellow-on-black", "blue-on-sky", "brown-on-cream");
+$scheme-roots: ();
+@each $name in $schemes {
+  $scheme-roots: list.append($scheme-roots, ":root[data-sf-scheme='#{$name}'] .sf-gallery-viewer", $separator: comma);
+}
 
 /* sf-gallery 1.3.0 (owner decision C150): the grid of picture tiles and the
    «main picture + thumbnails» look; the tiles, the grid and the check boxes
@@ -333,6 +347,39 @@
   .sf-gallery-viewer-caption {
     color: var(--sf-gallery-caption-color, var(--sf-on-surface-variant));
   }
+  /* In a colour scheme (core display settings) the viewer is the page: the
+     scheme's ground with its text, the page's roles back on the viewer and
+     the page's accent, link and ring back on its children (DSA-4, ui-control
+     control/evidence/2026-11-22-dsa). A scheme maps the glass's white and
+     black to its tones -- the ink to the ground -- and the viewer, drawn
+     black, kept it: on yellow-on-black and white-on-black its controls, its
+     name and its count were black on black, and their hover and press steps
+     were white over a plate the viewer never draws. A scheme keeps no fixed
+     black: the person chose the ground pictures are seen on. */
+  #{$scheme-roots} {
+    --sf-surface-place: var(--sf-surface-page);
+    --sf-surface-place-solid: var(--sf-surface-page);
+    --sf-surface-place-ground: var(--sf-surface-page);
+    --sf-place--ink-variant: var(--sf-on-surface-container-variant);
+    --sf-place--ink: initial;
+    @each $role, $value in map.merge(places.$sf-place-theme-roles, places.$sf-place-colour-roles) {
+      --sf-#{$role}: #{string.unquote($value)};
+    }
+    @include aliases.sf-role-aliases(places.$sf-place-aliased);
+    --sf-place--control-hover: initial;
+    --sf-place--control-active: initial;
+    background-color: var(--sf-surface-page);
+    color: var(--sf-on-surface);
+  }
+  #{selector.append($scheme-roots, '::backdrop')} {
+    background-color: var(--sf-surface-page);
+  }
+  #{selector.nest($scheme-roots, '> *')} {
+    @each $role, $value in map.merge(places.$sf-place-glass-accent-roles, places.$sf-place-container-ink-roles) {
+      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+    }
+    --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
+  }
 }
 
 /* The page under the viewer does not scroll. */
@@ -358,5 +405,26 @@
 
   .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button:not(:disabled):active {
     background-color: var(--sf-black--alfa-80);
+  }
+
+  /* In a colour scheme the circle is the scheme's media plate (DSA-4): the
+     text tone with the ground's glyph, the ground at 8 and 12 over it under
+     the pointer and pressed (core display settings). Black 48 / 64 / 80 did
+     not show on a black ground and turned grey on a light one, the glyph
+     3.5:1 on it. */
+  #{selector.nest($scheme-roots, '.sf-gallery-viewer-control .sf-icon-button')} {
+    --sf-icon--color: var(--sf-on-surface-media);
+    --sf-button-close--ink: var(--sf-on-surface-media);
+    background-color: var(--sf-surface-media);
+    box-shadow: none;
+    color: var(--sf-on-surface-media);
+  }
+
+  #{selector.nest($scheme-roots, '.sf-gallery-viewer-control .sf-icon-button:not(:disabled):hover')} {
+    background-color: var(--sf-surface-media-hover);
+  }
+
+  #{selector.nest($scheme-roots, '.sf-gallery-viewer-control .sf-icon-button:not(:disabled):active')} {
+    background-color: var(--sf-surface-media-active);
   }
 }
