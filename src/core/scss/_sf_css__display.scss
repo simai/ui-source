@@ -76,6 +76,12 @@
     @return color-mix(in srgb, var(--sf-transparent), var(--sf-scheme-ground) #{$step + '%'});
   }
 
+  // The text tone with the ground at a step of the state family laid over it,
+  // as one opaque colour (a plate's hover and press, DSA-4).
+  @function scheme-text-under-ground($step) {
+    @return color-mix(in srgb, var(--sf-scheme-text), var(--sf-scheme-ground) #{$step + '%'});
+  }
+
   // A family's tones on the scheme: the ink side of the polarity takes the
   // text, the surface side the ground.
   @mixin scheme-family($family, $polarity) {
@@ -167,11 +173,19 @@
     // ends of a diverging scale the text tone and its ink step 64, the
     // middle the 12 step. Series are then told apart by shape and label, as
     // a scheme asks (no hue is left to tell them).
+    // Hover and press on that plate (DSA-4, ui-control
+    // control/evidence/2026-11-22-ds-roles-acceptance): the state family's
+    // 8 and 12 of the plate's ink (the ground) laid over the text tone, as
+    // the glass does with white over black (--sf-scrim-control-state-*);
+    // rest, hover and press were one value, so a carousel's switch on a
+    // picture showed no change under the pointer or the press.
     @if paint.writes-shape() {
       --sf-surface-media: var(--sf-scheme-text);
-      --sf-surface-media-hover: var(--sf-scheme-text);
-      --sf-surface-media-active: var(--sf-scheme-text);
+      --sf-surface-media-hover: #{scheme-text-under-ground(8)};
+      --sf-surface-media-active: #{scheme-text-under-ground(12)};
       --sf-on-surface-media: var(--sf-scheme-ground);
+      --sf-scrim-control-state-hover: #{scheme-ground-alpha(8)};
+      --sf-scrim-control-state-active: #{scheme-ground-alpha(12)};
       --sf-surface-veil: #{scheme-ground-alpha(64)};
     }
     @include aliases.sf-role-aliases(('surface-veil',));

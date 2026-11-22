@@ -44,7 +44,7 @@ test('DS-1: the disclosure panel is a layer under its button, capped by the scre
   assert.match(script, /placePanel\(\) \{/u);
   assert.match(script, /view\.addEventListener\('resize', this\._onResize\)/u);
   assert.match(script, /view\.removeEventListener\('resize', this\._onResize\)/u);
-  assert.equal(component.version, '1.2.0');
+  assert.equal(component.version, '1.3.0'); // DSA-3: 1.2.0 moved on by the trigger's fold
 });
 
 test('DS-2: the visitor\'s spacing and pictures are !important, so site CSS and later layers do not beat them', () => {

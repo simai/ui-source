@@ -87,13 +87,58 @@ class SfDisplaySettings extends DisplaySettingsElement {
       this.open = false;
       this.querySelector('.sf-display-settings__trigger')?.focus?.();
     };
-    this._onResize = () => this.placePanel();
+    this._onResize = () => {
+      this.fitTrigger();
+      this.placePanel();
+    };
+    this._foldedTrigger = false;
   }
 
   afterRender(changed) {
     const result = super.afterRender?.(changed);
+    this.fitTrigger();
     this.placePanel();
     return result;
+  }
+
+  // layout=disclosure (DSA-3): the trigger folds to its glyph when its words
+  // do not fit the room it stands in. In sf-header-site's tools at 390 with
+  // the text at 200 % the whole button was 389 px in a 314 px row and the
+  // page scrolled sideways (557 px), against the reflow the panel exists for
+  // (WCAG 1.4.10). It folds through sf-button's own shrink="icon" (C370), the
+  // state a bar sets: a square of the button's height, ghost, its name and a
+  // tooltip with the words. A bar's request (sf-header-site collapse auto) is
+  // the bar's and is left alone; the panel undoes only its own fold. The
+  // whole button is measured with the fold lifted and put back in the same
+  // task, so no frame shows it.
+  fitTrigger() {
+    const trigger = this.querySelector(':scope > .sf-display-settings--disclosure > .sf-display-settings__trigger');
+    const button = trigger?.querySelector(':scope > button');
+    if (!trigger || !button) return;
+    const shrunk = trigger.getAttribute('data-shrunk') === 'true';
+    if (shrunk && !this._foldedTrigger) return;
+    if (shrunk) trigger.removeAttribute('data-shrunk');
+    const fold = this.overflows(button);
+    if (fold) trigger.setAttribute('data-shrunk', 'true');
+    this._foldedTrigger = fold;
+  }
+
+  // Whether `element` crosses the screen or the content box of a box around
+  // it (the header's row; a wrapper sized by its content holds it exactly).
+  overflows(element) {
+    const view = this.ownerDocument.defaultView;
+    const rect = element.getBoundingClientRect();
+    if (!rect.width) return false;
+    if (rect.right > this.ownerDocument.documentElement.clientWidth + 0.5 || rect.left < -0.5) return true;
+    for (let node = this.parentElement; node && node !== this.ownerDocument.documentElement; node = node.parentElement) {
+      const style = view.getComputedStyle(node);
+      if (style.display === 'contents') continue;
+      const box = node.getBoundingClientRect();
+      const start = box.left + node.clientLeft + (parseFloat(style.paddingLeft) || 0);
+      const end = box.left + node.clientLeft + node.clientWidth - (parseFloat(style.paddingRight) || 0);
+      if (rect.right > end + 0.5 || rect.left < start - 0.5) return true;
+    }
+    return false;
   }
 
   // layout=disclosure (DS-1): the open panel is a layer under its button
