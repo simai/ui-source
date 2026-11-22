@@ -1,15 +1,16 @@
 import { html, nothing } from 'lit';
 import { createInlineSpinner } from '../../../../component/spinner/js/_spinner-draw';
-import { optionBadgeProps } from '../../../helpers/option-badge.js';
+import { optionBadgeLook } from '../../../helpers/option-badge.js';
 
 // An option's colour (owner decision C308 FO-4): its name is a tonal badge in
 // that colour (sf-badge tight, line 1), as in a cell, a view, a checklist and
-// a dropdown; the label stays the segment's name.
+// a dropdown; the label stays the segment's name. A palette hue is the
+// badge's hue class (C411).
 function renderLabel(item) {
   if (!item.color) return item.label;
-  const badge = optionBadgeProps({color: item.color});
+  const badge = optionBadgeLook({color: item.color});
   return html`<sf-badge class="sf-button-group-badge" appearance="tonal" tight line="1" scheme=${badge.scheme}
-                        root-style=${badge.rootStyle || nothing} text=${item.label}></sf-badge>`;
+                        hue=${badge.hue || nothing} text=${item.label}></sf-badge>`;
 }
 
 function segmentFor(index, total) {

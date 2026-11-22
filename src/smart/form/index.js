@@ -183,6 +183,18 @@ export function answeredByValue(field) {
   return drawn.type === 'boolean' && drawn.template !== 'buttons';
 }
 
+// A required yes/no drawn as a checkbox by its own template is a consent
+// («Я согласен с условиями»): it is answered only when ticked, as a native
+// required checkbox is (DEV msg-f27d2e7a, group build 17 F2). The switch is
+// a setting answered by its value, and the switch template a form saved by a
+// button draws as a checkbox (buttonSaved) stays so: only a field whose own
+// template is the checkbox asks for the tick.
+export function ticksToAnswer(field) {
+  if ((field?.propertyType || field?.type || field?.dataType) !== 'boolean') return false;
+  const drawn = fieldTemplate(field);
+  return drawn.type === 'boolean' && drawn.template === 'checkbox';
+}
+
 /** The fields as given, made safe: objects with a key and a type, each key once, width one of short, medium, full or none (s, m read as short, medium). */
 export function normalizeFields(list, noteWidth = null) {
   const seen = new Set();
@@ -532,6 +544,10 @@ class SfForm extends FormElement {
     if (field.required === true && !answeredByValue(field) && !hasValue(value)) {
       return this.sfWord('value-missing', {vars: {label: field.label}});
     }
+    // A required checkbox of its own template is answered by the tick (F2).
+    if (field.required === true && ticksToAnswer(field) && value !== true) {
+      return this.sfWord('value-missing', {vars: {label: field.label}});
+    }
     const rendered = this._rendererErrors?.[key];
     if (rendered) return rendered;
     const control = this.controlOf(key);
@@ -784,6 +800,13 @@ class SfForm extends FormElement {
       const speaks = speaksError(control);
       // A yes/no checkbox carries its label (a box beside its name, not under it).
       if (speaks && control.localName === 'sf-checkbox' && control.getAttribute('label') !== field.label) control.setAttribute('label', field.label);
+      // A consent box says it is required to a screen reader (F2).
+      if (speaks && control.localName === 'sf-checkbox') {
+        const box = control.querySelector('input[type="checkbox"]');
+        const asks = this.isEditing && field.required === true && field.readonly !== true && ticksToAnswer(field);
+        if (box && asks && box.getAttribute('aria-required') !== 'true') box.setAttribute('aria-required', 'true');
+        else if (box && !asks && box.hasAttribute('aria-required')) box.removeAttribute('aria-required');
+      }
       if (speaks) {
         if (message) {
           if (control.getAttribute('error-message') !== message) control.setAttribute('error-message', message);

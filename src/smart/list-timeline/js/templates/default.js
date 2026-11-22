@@ -76,7 +76,8 @@ function title(context, item) {
 
 function meta(context, item) {
   const time = item.iso
-    ? html`<sf-time class="sf-list-timeline-time" datetime=${item.iso} format=${context.itemFormat} now=${context.now || nothing}></sf-time>`
+    ? html`<sf-time class="sf-list-timeline-time" datetime=${item.iso} format=${context.itemFormat} now=${context.now || nothing}
+        time-zone=${context.zone || nothing}></sf-time>`
     : nothing;
   const words = item.kind === 'comment' ? '' : item.text;
   if (!item.iso && !words) return nothing;
@@ -144,7 +145,7 @@ function run(context, day) {
     <div class=${`sf-group-heading sf-list-timeline-day${context.size === '1' ? '' : ` sf-group-heading--size-${context.size}`}${context.sticky ? ' sf-group-heading--sticky' : ''}`}
       role="heading" aria-level=${String(context.level)} id=${day.id}>${day.day}${day.date
         ? html` <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime=${day.date}
-            now=${context.now || nothing}></sf-time>` : nothing}</div>
+            now=${context.now || nothing} time-zone=${context.zone || nothing}></sf-time>` : nothing}</div>
     <ol class=${classes} aria-labelledby=${day.id}>${entries(context, day.entries)}</ol>
   </div>`;
 }

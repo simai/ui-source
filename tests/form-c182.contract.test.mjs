@@ -15,7 +15,7 @@ const sheet = read('src/smart/form/scss/_smart__form.scss');
 test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, footer, the descriptor list', () => {
   assert.equal(manifest.tag, 'sf-form');
   assert.equal(manifest.family, 'form');
-  assert.equal(manifest.version, '1.13.0'); // look answers: widths short and medium // GB13 notes: 1.12.3 (a required yes/no as buttons asks for an answer) // group build 13: 1.12.0 (written as 1.9.0 on fix/larena-lf-data, LF-12) // 1.11.0 (written as 1.8.0 and 1.6.0, above 1.9.0 on origin) // 1.10.0 (written as 1.4.0, above HEAD's released 1.4.0): field conditions (FO-3) // 1.7.0 form fields: a hidden field is not sent (FO3-1) // 1.4.0: field conditions (FO-3) // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.14.0'); // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 (a required yes/no as buttons asks for an answer) // group build 13: 1.12.0 (written as 1.9.0 on fix/larena-lf-data, LF-12) // 1.11.0 (written as 1.8.0 and 1.6.0, above 1.9.0 on origin) // 1.10.0 (written as 1.4.0, above HEAD's released 1.4.0): field conditions (FO-3) // 1.7.0 form fields: a hidden field is not sent (FO3-1) // 1.4.0: field conditions (FO-3) // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
   assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'field-host', 'apply', 'size', 'state', 'labels', 'footer', 'label']);
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.ok(manifest.settings.labels.values.includes('start'));
@@ -57,9 +57,10 @@ test('C182 (7): the buttons under the fields, «Сохранить» first and n
   assert.match(sheet, /\.sf-form-footer\[data-sticky\] \{[^}]*position: sticky;/u);
 });
 
-test('C182 (4), (5), C52: one column, pairs from 44rem, labels beside from 40rem, gaps from the space system', () => {
+test('C182 (4), (5), C52, C401: one column, pairs from 44rem, labels beside from 20rem (as sf-list-description), gaps from the space system', () => {
   assert.match(sheet, /@container \(min-width: #\{mq\.container-step\(h1\)\}\)/u);
-  assert.match(sheet, /@container \(min-width: #\{mq\.container-step\(h0\)\}\)/u);
+  // C401 (gb17-fields F1): beside from a form wider than g0 (20rem), over it below md; it was h0 (40rem).
+  assert.match(sheet, /@container not \(max-width: #\{mq\.container-step\(g0\)\}\)/u);
   assert.match(sheet, /--sf-form--field-gap: var\(--sf-form-field-gap, var\(--sf-space-1\)\);/u);
   assert.match(sheet, /--sf-form--group-gap: var\(--sf-form-group-gap, var\(--sf-space-3\)\);/u);
   // No raw pixel value anywhere in the sheet.
