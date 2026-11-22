@@ -20554,6 +20554,26 @@
       "manual": "A host that read a whole-number field's typed value as a string reads a number: compare with Number(value) or the number itself.",
       "owner": "ui-source",
       "source": "src/smart/field-renderers/index.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: a cancelable run in the notice look now offers Cancel; a host that listens for sf-progress-run-cancel already handles it.",
+      "owner": "ui-source",
+      "id": "behaviour-progress-run-notice-cancel",
+      "kind": "behaviour",
+      "summary": "smart.progress-run 1.6.1 (group build 17, ASR-1): the notice look shows Cancel on a running or paused cancelable run, before Expand, firing sf-progress-run-cancel as the other looks do; before, only the row and full looks offered it.",
+      "items": [
+        {
+          "component": "smart.progress-run",
+          "from": "1.6.0, notice: Pause/Continue and Expand while running",
+          "to": "1.6.1, notice: Pause/Continue, Cancel and Expand while running"
+        }
+      ],
+      "source": "src/smart/progress-run/js/templates/default.js"
     }
   ]
 }

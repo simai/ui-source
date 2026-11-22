@@ -189,7 +189,8 @@ function actions(context) {
   </div>`;
 }
 
-// The icon actions of the compact and notice looks.
+// The icon actions of the compact and notice looks. A running cancelable run
+// shows Cancel in both (the notice since 1.6.1, ASR-1), as a stopped one shows Retry.
 function iconActions(context) {
   const {component, size, words, showCancel, showRetry, showPause, showResume, view, regionLabel} = context;
   const below = BELOW[size];
@@ -198,7 +199,7 @@ function iconActions(context) {
   return html`<span class="sf-progress-run-icon-actions">
     ${showPause ? one('pause', 'pause', words.pause, () => component.onPause()) : nothing}
     ${showResume ? one('resume', 'play_arrow', words.resume, () => component.onResume()) : nothing}
-    ${showCancel && view === 'row' ? one('cancel', 'close', words.cancel, () => component.onCancel()) : nothing}
+    ${showCancel ? one('cancel', 'close', words.cancel, () => component.onCancel()) : nothing}
     ${showRetry ? one('retry', 'replay', context.retryWord, () => component.onRetry()) : nothing}
     ${view === 'notice' ? one('expand', 'open_in_full', `${words.expand}: ${regionLabel}`, () => component.onExpand()) : nothing}
   </span>`;
