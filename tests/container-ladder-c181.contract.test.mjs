@@ -57,6 +57,7 @@ const SCREEN_QUERIES = {
   'src/smart/confirm': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/confirm-change': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/list-description': 'owner decision C180 (3): on a phone (below md, sf-drawer\'s whole-screen panel) a label is always over its value; a phone\'s list is wider than a 24rem panel\'s, so no container step tells them apart',
+  'src/smart/form': 'owner decision C401: labels="start" puts the label over its field on a phone (below md), as sf-list-description layout auto (C180 (3)); a phone\'s form is wider than a narrow panel\'s, so no container step tells them apart',
   'src/smart/resizer': 'page frame: on a phone screen (below sm) every split is under the split step (C158 (4)), so the handle is not there; the sheet says it before the script measures the split, and the printed first paint holds at 390 (fix/first-paint-390)',
   'src/component/admin-menu': 'page frame: below sm the panel fills a phone screen; the root stands in the application shell, where a contained root would collapse (dispatcher decision 2026-11-15, C181 (2) follow-up)',
   // Kept on the screen by decision (C181 (2) follow-up, dispatcher 2026-11-15;
