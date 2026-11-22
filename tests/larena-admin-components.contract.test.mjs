@@ -149,7 +149,7 @@ test('sf-progress-run: host-driven, its run-state, chunk, step and clear, and th
 // sf-progress-run 1.6.0 (AS-4): Retry in the notice look too.
 test('sf-progress-run 1.6.0: the notice look offers Retry before Expand on a retryable run that stopped', () => {
   const manifest = json('src/smart/progress-run/component.json');
-  assert.equal(manifest.version, '1.6.0');
+  assert.equal(manifest.version, '1.6.1'); // 1.6.1 (GB17 ASR-1): Cancel in the notice look too
   const template = code('src/smart/progress-run/js/templates/default.js');
   assert.match(template, /\$\{showRetry \? one\('retry', 'replay', context\.retryWord, \(\) => component\.onRetry\(\)\) : nothing\}\s*\$\{view === 'notice' \? one\('expand'/u);
 });
