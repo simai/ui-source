@@ -290,9 +290,11 @@
   // layers' and the unlayered ones). The spacing goes on every element in
   // its own text size, not on body alone: a form field does not inherit it
   // from the UA sheet and a component that sets its own letter-spacing kept
-  // it (DS-3: sf-input's input stayed at normal and 0).
+  // it (DS-3: sf-input's input stayed at normal and 0). An icon glyph keeps
+  // its own: it is a ligature of its name, and spaced letters break the
+  // ligature into the word.
   :root[data-sf-text-spacing='wide'] body,
-  :root[data-sf-text-spacing='wide'] body *,
+  :root[data-sf-text-spacing='wide'] body *:not(.sf-icon, sf-icon),
   :root[data-sf-text-spacing='wide'] input,
   :root[data-sf-text-spacing='wide'] textarea,
   :root[data-sf-text-spacing='wide'] select,

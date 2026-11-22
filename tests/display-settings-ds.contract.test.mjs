@@ -60,6 +60,8 @@ test('DS-3: the wide spacing reaches every element and the form fields', () => {
   for (const target of ['body', 'body *', 'input', 'textarea', 'select', 'button']) {
     assert.ok(head.includes(`:root[data-sf-text-spacing='wide'] ${target}`), target);
   }
+  // An icon is a ligature of its name: spacing would spell the name out.
+  assert.ok(head.includes(":root[data-sf-text-spacing='wide'] body *:not(.sf-icon, sf-icon)"), 'icons keep their own spacing');
 });
 
 test('DS-4: in a scheme every floating surface has a 1 px edge in the text tone', () => {
