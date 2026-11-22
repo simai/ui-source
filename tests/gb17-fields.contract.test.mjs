@@ -99,7 +99,7 @@ test('F5: sf-list-timeline takes time-zone for its times, day runs and midnight'
 
 test('F1-F5 versions: above every origin branch at the time of writing', () => {
   const version = (path) => json(path).version;
-  assert.equal(version('src/smart/form/component.json'), '1.14.0');
+  assert.equal(version('src/smart/form/component.json'), '1.14.1'); // GB17 F1b
   assert.equal(version('src/smart/input-choice/component.json'), '1.12.0');
   assert.equal(version('src/smart/dropdown/component.json'), '1.25.3'); // GB17: joined with VL-43 and DSA-2
   assert.equal(version('src/smart/segmented/component.json'), '1.8.3');

@@ -14,7 +14,7 @@ const json = (path) => JSON.parse(read(path));
 
 test('sf-form 1.7.0 takes a field host, a property only, and an action to draw again', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.14.0'); // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
+  assert.equal(manifest.version, '1.14.1'); // GB17 F1b // gb17-fields F1, F2: 1.14.0 (C401 labels beside from 20rem; a required checkbox is a consent) // look answers: widths short and medium // GB13 notes: 1.12.3 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
   const setting = manifest.settings['field-host'];
   assert.equal(setting.type, 'object');
   assert.equal(setting.default, null);

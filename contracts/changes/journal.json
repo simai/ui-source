@@ -20303,6 +20303,26 @@
         }
       ],
       "source": "src/smart/dropdown/component.json"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. Other label placements keep the field label's size (C153 (1)).",
+      "owner": "ui-source",
+      "id": "behaviour-form-start-labels-read-list-type",
+      "kind": "behaviour",
+      "summary": "sf-form 1.14.1 (group build 17 F1b, dispatcher decision under C401): a labels=\"start\" form draws its labels in the read list's label type at every width (the rung below's, as sf-list-description: 12 below 60rem, 14 from it), not the field label's 14 below 60rem, so its label column is the list's and each control starts where the read value stood (768: 141 -> 125).",
+      "items": [
+        {
+          "component": "smart.form",
+          "from": "labels=\"start\": label 14 px below 60rem (C153 (1))",
+          "to": "labels=\"start\": the read list's label type, 12 px below 60rem"
+        }
+      ],
+      "source": "src/smart/form/scss/_smart__form.scss"
     }
   ]
 }

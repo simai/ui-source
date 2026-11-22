@@ -211,6 +211,17 @@
   --sf-form--label-gap: var(--sf-ui-1\/2--space-x);
 }
 
+/* C401 (dispatcher F1b, group build 17): the left-label form takes the read
+   list's label -- sf-list-description's, the rung below's type at every width
+   (12 below 60rem, 14 from it) -- not the field label's 14 on a phone and a
+   tablet (C153 (1)). The label column is as wide as its longest label, so a
+   larger label moved every control 16 px after the value it replaces at 768
+   (141 / 125): labels and values stay in place between read and edit. */
+.sf-form[data-labels="start"] {
+  --sf-form--label-size: var(--sf-text-size-1\/2);
+  --sf-form--label-line: var(--sf-text-height-1\/2);
+}
+
 @media (min-width: map.get(bp.$breakpoint-array, md)) {
   @container not (max-width: #{mq.container-step(g0)}) {
     .sf-form[data-labels="start"] .sf-form-fields {
