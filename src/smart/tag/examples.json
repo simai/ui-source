@@ -328,11 +328,11 @@
         },
         {
           "id": "p10-close-label-word",
-          "title": "the remove action is named by the page's word",
+          "title": "the remove action is named by the page's word and the tag's name (TG-1: «Удалить Дизайн»)",
           "covers": "settings.close-label default-from runtime.remove",
           "steps": [
             {
-              "check": "document.querySelector('#t-rm sf-button-close button').getAttribute('aria-label') === 'Удалить'"
+              "check": "document.querySelector('#t-rm sf-button-close button').getAttribute('aria-label') === 'Удалить Дизайн'"
             }
           ]
         },
