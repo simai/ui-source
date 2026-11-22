@@ -93,9 +93,10 @@ Slots:
 - `path` — where the page is, usually an `sf-breadcrumbs` starting at the site.
 - `path-end` — a part at the end of the path's row (1.12.0, owner decision
   C420): the admin's background activity indicator (`sf-admin-activity`)
-  beside the crumbs. The crumbs take the room before it; it stands on their
-  baseline, and the row then holds the 1/2 control height, so it does not
-  grow when the part draws. Drawn only when given (the row is drawn for it
+  beside the crumbs. The crumbs take the room before it; the row then holds
+  the 1/2 control height, so it does not grow when the part draws, and its
+  items stand centred, which puts a 1/2 button's label on the crumbs'
+  baseline. Drawn only when given (the row is drawn for it
   even without a `path`); it folds away with the path in a sticky head under
   scrolled content.
 - `start` — the start of the line, before the heading: «назад» (an

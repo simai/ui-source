@@ -54,12 +54,15 @@
 }
 
 /* The path-end slot (1.12.0, AS-2): a part at the end of the path's row,
-   the crumbs taking the room before it. The row's items stand on the crumbs'
-   baseline, and the row holds the 1/2 control height (the admin's activity
-   indicator), so it does not grow when the part draws; core.css holds the
-   same height before this sheet. */
+   the crumbs taking the room before it. The row holds the 1/2 control height
+   (the admin's activity indicator), so it does not grow when the part draws;
+   core.css holds the same height before this sheet. The items stand centred
+   on the row, which puts a 1/2 button's label on the crumbs' baseline (0 px
+   at 1440, 1 px at 390); flex baseline alignment put it 4-5 px off and made
+   the row 3 px taller than the control (the crumbs' first baseline is their
+   list's, not their text's). */
 .sf-page-header-path:has(> .sf-page-header-path-end) {
-  align-items: baseline;
+  align-items: center;
   gap: var(--sf-page-header-line-gap, var(--sf-space-1));
   min-block-size: var(--sf-ui-1\/2--control-height);
 }
@@ -71,7 +74,6 @@
 
 .sf-page-header-path-end {
   flex: none;
-  align-items: baseline;
   margin-inline-start: auto;
   gap: var(--sf-gap--actions);
 }

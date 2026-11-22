@@ -50,11 +50,11 @@ test('core counts the description line and a written media size in the bare tag 
 });
 
 // sf-header-page 1.12.0 (AS-2, AS-3; owner decisions C420, C324).
-test('path-end stands at the end of the path row, drawn only when given; the row holds the 1/2 control height', () => {
+test('path-end stands at the end of the path row, drawn only when given; the row holds the 1/2 control height, items centred', () => {
   assert.ok(page.slots['path-end']);
   assert.match(template, /hasHostSlot\('path'\) \|\| hasHostSlot\('path-end'\)/u);
   assert.match(template, /html`<div class="sf-page-header-path-end flex items-cross-center">\$\{hostSlot\('path-end'\)\}<\/div>`/u);
-  assert.match(sheet, /\.sf-page-header-path:has\(> \.sf-page-header-path-end\) \{\s*align-items: baseline;[^}]*min-block-size: var\(--sf-ui-1\\\/2--control-height\);/u);
+  assert.match(sheet, /\.sf-page-header-path:has\(> \.sf-page-header-path-end\) \{\s*align-items: center;[^}]*min-block-size: var\(--sf-ui-1\\\/2--control-height\);/u);
   assert.match(sheet, /\.sf-page-header-path-end \{[^}]*margin-inline-start: auto;/u);
   assert.match(core, /\[slot="path-end"\][^{]*\{\s*--sf-page-header--box-path: calc\(var\(--sf-ui-1\\\/2--control-height\) \+ var\(--sf-page-header-gap, var\(--sf-space-1\\\/2\)\)\);/u);
 });
