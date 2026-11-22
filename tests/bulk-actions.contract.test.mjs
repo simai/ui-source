@@ -208,4 +208,5 @@ test('LV3-27, LV4-23: the actions fold by width into «⋯», the dangerous ones
   assert.equal(actionsThatFit({room: 300, widths: [120, undefined]}), 2);
   assert.match(element, /fitActions\(root, width\)/u);
   assert.match(element, /this\._fit = shown - 1;/u, 'one by one while the row wraps');
+  assert.match(element, /getComputedStyle\(root\)\.display !== 'flex'\) return;/u, 'nothing is measured before the bar\'s sheet draws it as a row');
 });

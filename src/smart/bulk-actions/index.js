@@ -283,6 +283,11 @@ class SfBulkActions extends BulkActionsElement {
     if (!root || !root.isConnected || root.hidden) return;
     const width = root.getBoundingClientRect().width;
     if (!(width > 0)) return;
+    // Nothing is measured before the bar's own sheet draws it as a row: an
+    // unstyled bar stacks its parts and would fold every action (and keep
+    // their unstyled widths). The sheet's arrival resizes the bar, and the
+    // observer fits it then.
+    if (getComputedStyle(root).display !== 'flex') return;
     this.measureActions(root);
     if (!this._compact) {
       if (this._offerFold !== null) {
@@ -319,7 +324,9 @@ class SfBulkActions extends BulkActionsElement {
       const button = host.localName === 'button' ? host : host.querySelector('button');
       const action = id ? this.findAction(id) : null;
       const box = button?.getBoundingClientRect();
-      if (action && box && box.width > 0) this._widths.set(this.widthKey(action), box.width);
+      // A button without its sheet yet is not a width to keep.
+      const styled = button && getComputedStyle(button).display.includes('flex');
+      if (action && styled && box.width > 0) this._widths.set(this.widthKey(action), box.width);
     }
   }
 
