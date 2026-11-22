@@ -120,7 +120,7 @@ test('C251, SM-RD-1 / SM-SW-1: sf-radio and sf-switch take position start | end,
   assert.match(rule(row, end), /inline-size: auto;/u);
   assert.match(rule(row, `.sf-checkable-row > ${end}`), /flex: 1 1 auto;/u);
   assert.match(row, /> \.sf-checkable--text > \.sf-radio-button-container \+ \.sf-radio-button-box, > \.sf-checkable--text > \.sf-switch-container-wrap \+ \.sf-switch-toggler\) \{\s+grid-template-columns: minmax\(0, auto\) auto 1fr auto;/u);
-  assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.19.0'); // feat/button-truncate-appearance: field-appearance.js (one look vocabulary for every field) // group build 10: 1.15.0 moved on by the merged branches or a GB10 patch // group build 13: 1.16.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.20.0'); // forms-fb: FO-4 the press holds the leave check // feat/button-truncate-appearance: field-appearance.js (one look vocabulary for every field) // group build 10: 1.15.0 moved on by the merged branches or a GB10 patch // group build 13: 1.16.0 moved on by the merged branches or a GB11 merge
 });
 
 test('C251, SM-SW-1: sf-switch draws the class markup\'s thumb glyphs, icon alone or icon with icon-on', () => {

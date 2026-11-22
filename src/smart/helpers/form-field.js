@@ -233,6 +233,55 @@ function fieldCheck() {
   return shared;
 }
 
+// A pointer pressed on the page (FO-4, module.smart-helpers 1.20.0): a field
+// it leaves holds its leave check until the press is over and a task after
+// it, so the error line drawn under that field does not move the button the
+// pointer is on before the click lands (at 390 a cleared required field's
+// line moved «Сохранить» 20 px down and the save was lost). The press's own
+// click checks every field when it submits. A release the page never hears
+// ends the hold after PRESS_HOLD_MS. One record for every bundle's copy.
+const PRESS_KEY = Symbol.for('simai.framework.field-press');
+const PRESS_HOLD_MS = 4000;
+
+function fieldPress() {
+  const shared = globalThis[PRESS_KEY] || (globalThis[PRESS_KEY] = {down: false, queue: [], timer: 0});
+  if (!shared.listening && typeof document !== 'undefined') {
+    shared.listening = true;
+    const end = () => {
+      if (!shared.down) return;
+      shared.down = false;
+      clearTimeout(shared.timer);
+      setTimeout(() => {
+        if (shared.down) return;
+        for (const run of shared.queue.splice(0)) {
+          try {
+            run();
+          } catch {
+            /* a field taken out of the page while the press lasted */
+          }
+        }
+      }, 0);
+    };
+    const start = () => {
+      if (shared.down) return;
+      shared.down = true;
+      clearTimeout(shared.timer);
+      shared.timer = setTimeout(end, PRESS_HOLD_MS);
+    };
+    document.addEventListener('pointerdown', start, true);
+    document.addEventListener('mousedown', start, true);
+    for (const type of ['pointerup', 'pointercancel', 'mouseup', 'dragend']) document.addEventListener(type, end, true);
+  }
+  return shared;
+}
+
+/** Runs `check` now, or once a pointer press in progress is over (FO-4). */
+export function afterPress(check) {
+  const shared = fieldPress();
+  if (shared.down) shared.queue.push(check);
+  else check();
+}
+
 /**
  * Says that `element` failed a check now. Returns true when it is the first
  * wrong field of a pass the person started, the one that takes the focus.
@@ -357,8 +406,9 @@ export const ShownValidity = (Base) => class extends Base {
     this.__sfErrorShown = false;
     this.__sfTouched = false;
     // The page-wide pass listens from the first field on, so the press that
-    // submits is seen before the check it starts.
+    // submits is seen before the check it starts; so does the press record.
     fieldCheck();
+    fieldPress();
     // Capture: the host's own `invalid` and its native control's, which
     // would draw a second bubble; neither bubbles, so only capture sees both.
     this.addEventListener('invalid', (event) => {
@@ -384,14 +434,19 @@ export const ShownValidity = (Base) => class extends Base {
       // A layer of the field (a list, a picker) holds the focus for it.
       if (this.matches?.(':focus-within')) return;
       if (!this.__sfTouched && !formTried(this)) return;
-      this.sfSyncValidity?.();
-      const wrong = this.validity ? !this.validity.valid : false;
-      if (wrong !== this.__sfErrorShown) {
-        this.__sfErrorShown = wrong;
-        this.requestComponentUpdate?.('validity');
-      } else if (wrong) {
-        this.requestComponentUpdate?.('validity');
-      }
+      // A press that left the field holds the check until it is over (FO-4);
+      // what the press did meanwhile (a reset, a submit) is read then.
+      afterPress(() => {
+        if (!this.isConnected || (!this.__sfTouched && !formTried(this))) return;
+        this.sfSyncValidity?.();
+        const wrong = this.validity ? !this.validity.valid : false;
+        if (wrong !== this.__sfErrorShown) {
+          this.__sfErrorShown = wrong;
+          this.requestComponentUpdate?.('validity');
+        } else if (wrong) {
+          this.requestComponentUpdate?.('validity');
+        }
+      });
     });
   }
 

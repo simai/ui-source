@@ -1,6 +1,7 @@
 {
   "runtime": {
     "remove": "Remover",
+    "remove-named": "Remover {label}",
     "more": {
       "one": "mais {n}: {names}",
       "many": "mais {n}: {names}",

@@ -158,6 +158,9 @@ const clone = (value) => {
     return {...value};
   }
 };
+// FO-4: what ends a press, and how long a press may hold a field's check.
+const PRESS_ENDS = ['pointerup', 'pointercancel', 'mouseup', 'dragend'];
+const PRESS_HOLD_MS = 4000;
 const same = (a, b) => {
   try {
     return JSON.stringify(a) === JSON.stringify(b);
@@ -260,7 +263,24 @@ class SfForm extends FormElement {
     // (Отмена); null when the host set pending itself.
     this._pressed = null;
     this._hosts = new Map();
+    // apply instant (1.13.1, FO-1): what each field last applied (sent as
+    // sf-form-change), by key, as JSON; a key not in it applied the saved
+    // state. The input events on their way through the form: a value written
+    // while one is dispatched is typed, not yet applied.
+    this._applied = new Map();
+    this._typing = new Set();
+    // FO-4: a press that began on the form while a field was left holds that
+    // field's check until the press is over.
+    this._pressing = false;
+    this._held = new Set();
     this._onSubmit = (event) => this.onNativeSubmit(event);
+    this._onPress = (event) => this.onSubmitPress(event);
+    this._onTyping = (event) => {
+      if (!this.isInstant) return;
+      this.typing();
+      this._typing.add(event);
+    };
+    this._onPressStart = () => this.holdChecks();
     this._onFocusOut = (event) => this.onFieldLeave(event);
     this._onInput = (event) => this.onFieldInput(event);
     // A control's own drawing may rewrite its native control's
@@ -273,17 +293,26 @@ class SfForm extends FormElement {
   onConnected() {
     super.onConnected?.();
     this.addEventListener('submit', this._onSubmit);
+    this.addEventListener('click', this._onPress);
     this.addEventListener('focusout', this._onFocusOut);
+    this.addEventListener('input', this._onTyping, true);
     this.addEventListener('input', this._onInput);
+    this.addEventListener('pointerdown', this._onPressStart, true);
+    this.addEventListener('mousedown', this._onPressStart, true);
     this.addEventListener('sf-after-render', this._onControlDrawn);
   }
 
   onDisconnected() {
     super.onDisconnected?.();
     this.removeEventListener('submit', this._onSubmit);
+    this.removeEventListener('click', this._onPress);
     this.removeEventListener('focusout', this._onFocusOut);
+    this.removeEventListener('input', this._onTyping, true);
     this.removeEventListener('input', this._onInput);
+    this.removeEventListener('pointerdown', this._onPressStart, true);
+    this.removeEventListener('mousedown', this._onPressStart, true);
     this.removeEventListener('sf-after-render', this._onControlDrawn);
+    this.releaseChecks();
   }
 
   // The ids the template writes come from the instance path (§7.1.1), never
@@ -324,6 +353,7 @@ class SfForm extends FormElement {
   set value(next) {
     this._saved = clone(next);
     this._values = clone(next);
+    this._applied.clear();
     this.forget();
     this.requestComponentUpdate('value');
   }
@@ -493,7 +523,13 @@ class SfForm extends FormElement {
     this._hostErrors.delete(key);
     this.setDirty(!same(this._values, this._saved));
     this.sfEmit('input', {key, value});
-    if (this.isInstant) this.sfEmit('change', {key, value});
+    // apply instant: one sf-form-change per commit of the field (FO-1). A
+    // value typed (written while an input event is on its way) is applied
+    // when the control commits it -- its change, which writes it again -- or
+    // when the person leaves the field; a value written any other way (a
+    // choice, a box, a file) is applied at once. Either way only a value
+    // that differs from the one last applied is sent.
+    if (this.isInstant && !this.typing()) this.applyField(key);
     // A shown error goes the moment the value is right, and keeps the words
     // of what is wrong now (C153 (3)).
     if (this._errors.has(key)) {
@@ -509,6 +545,25 @@ class SfForm extends FormElement {
     // with it (FO-3).
     for (const other of [...this._errors.keys()]) if (other !== key && this.list.find((one) => one.key === other)?.when) this.recheck(other);
     this.requestComponentUpdate('value');
+  }
+
+  // Whether an input event is being dispatched through the form now (the
+  // events done are let go: eventPhase is NONE once the dispatch is over).
+  typing() {
+    for (const event of this._typing) if (event.eventPhase === 0) this._typing.delete(event);
+    return this._typing.size > 0;
+  }
+
+  // apply instant: the field's value is applied, sent once as sf-form-change
+  // when it differs from what it last applied (the saved state before).
+  applyField(key) {
+    if (!this.isInstant) return;
+    const value = this._values[key];
+    const now = JSON.stringify(value);
+    const before = this._applied.has(key) ? this._applied.get(key) : JSON.stringify(this._saved[key]);
+    if (now === before) return;
+    this._applied.set(key, now);
+    this.sfEmit('change', {key, value});
   }
 
   writeRendererError(key, message) {
@@ -614,6 +669,58 @@ class SfForm extends FormElement {
     this.submit();
   }
 
+  // The form's own submit button pressed -- a click, or Enter in a one-line
+  // field, which the browser turns into a click on it (1.13.1, FO-2): the
+  // form submits without the browser's form submission, which a sandboxed
+  // frame without allow-forms blocks (no submit, no invalid, «Blocked form
+  // submission»). The press is the form's; the browser submits nothing.
+  onSubmitPress(event) {
+    if (event.defaultPrevented) return;
+    const button = event.target?.closest?.('button[type="submit"], input[type="submit"]');
+    const root = button?.form;
+    if (!root || !root.classList?.contains('sf-form') || root.closest('sf-form') !== this) return;
+    if (button.disabled) return;
+    event.preventDefault();
+    this.submit();
+  }
+
+  // FO-4: a pointer pressed on the form. A field it leaves keeps its check
+  // until the press is over, so an error line drawn under that field does
+  // not move «Сохранить» from under the pointer before the click lands (at
+  // 390 the line moved it 20 px down and the save was lost). The press's own
+  // click checks every field when it is «Сохранить»; the held checks run
+  // after it.
+  holdChecks() {
+    if (this._pressing) return;
+    this._pressing = true;
+    const doc = this.ownerDocument;
+    const done = () => {
+      for (const type of PRESS_ENDS) doc.removeEventListener(type, done, true);
+      clearTimeout(this._pressTimer);
+      // After the click the release starts (a task later), not before it.
+      setTimeout(() => this.releaseChecks(), 0);
+    };
+    this._pressDone = done;
+    for (const type of PRESS_ENDS) doc.addEventListener(type, done, true);
+    // A release the page never hears (outside the window) ends the hold too.
+    this._pressTimer = setTimeout(done, PRESS_HOLD_MS);
+  }
+
+  releaseChecks() {
+    const doc = this.ownerDocument;
+    if (this._pressDone) for (const type of PRESS_ENDS) doc?.removeEventListener(type, this._pressDone, true);
+    this._pressDone = null;
+    clearTimeout(this._pressTimer);
+    this._pressing = false;
+    const held = [...this._held];
+    this._held.clear();
+    if (!this.isConnected || !this.isEditing) return;
+    for (const key of held) {
+      if (!this._touched.has(key) && !this._submitted && !this._errors.has(key)) continue;
+      this.recheck(key);
+    }
+  }
+
   submit() {
     if (this.isAnswer) return this.answer(true);
     if (!this.isEditing || this.isInstant) return refused('mode');
@@ -664,6 +771,7 @@ class SfForm extends FormElement {
 
   restore() {
     this._values = clone(this._saved);
+    this._applied.clear();
     this._rendererErrors = {};
     this.forget();
     this.sfHostState('data-invalid', false);
@@ -697,7 +805,13 @@ class SfForm extends FormElement {
     // A layer of the field (a list, a picker) holds the focus for it.
     queueMicrotask(() => {
       if (box.matches(':focus-within')) return;
+      // apply instant: leaving the field applies what was typed (FO-1).
+      if (this.isInstant) this.applyField(key);
       if (!this._touched.has(key) && !this._submitted && !this._errors.has(key)) return;
+      if (this._pressing) {
+        this._held.add(key);
+        return;
+      }
       this.recheck(key);
     });
   }

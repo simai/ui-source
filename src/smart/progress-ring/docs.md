@@ -153,7 +153,9 @@ says the value too.
 
 ## Look
 
-Public variables: `--sf-progress-ring-size`, `--sf-progress-ring-line-width`
+Public variables: `--sf-progress-ring-value` (the value the element writes on
+its root, 0 to 100; `--sf-progress-ring--value` is its former name until
+2027-01-01), `--sf-progress-ring-size`, `--sf-progress-ring-line-width`
 (2 px), `--sf-progress-ring-gap` (2 px), `--sf-progress-ring-fill-color`,
 `--sf-progress-ring-track-color` (`--sf-surface-container`) and
 `--sf-progress-ring-color` (the percentage). A bare `0` is a valid line or

@@ -29,7 +29,7 @@ export function ringPercent(text) {
 }
 
 // The class markup of the ring (src/component/progress-ring): the root holds
-// the value as --sf-progress-ring--value, the ring (.sf-progress-ring-indicator)
+// the value as --sf-progress-ring-value (public, 1.8.0), the ring (.sf-progress-ring-indicator)
 // carries the role and the value, and the middle holds the slot content or the
 // percentage, which is aria-hidden: the ring says the value once.
 export function renderProgressRingTemplate(context) {
@@ -83,7 +83,7 @@ export function renderProgressRingTemplate(context) {
     unknown ? 'sf-progress-ring--indeterminate' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
-  const style = [`--sf-progress-ring--value: ${unknown ? 0 : value}`, context.rootStyle].filter(Boolean).join('; ');
+  const style = [`--sf-progress-ring-value: ${unknown ? 0 : value}`, context.rootStyle].filter(Boolean).join('; ');
 
   return html`
     <div class=${rootClasses} style=${style} data-value=${String(value)} data-status=${status}

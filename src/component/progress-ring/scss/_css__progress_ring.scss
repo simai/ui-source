@@ -15,6 +15,12 @@
 // then a valid length and the arithmetic holds (docs/foundation-composition-
 // geometry.md). The value is a registered number, so the fill moves between
 // two values instead of jumping.
+//
+// The value a page writes is the public --sf-progress-ring-value (1.8.0,
+// PR-1: a public variable has no internal double dash). The registered
+// --sf-progress-ring--value the sheet draws with reads it; written inline on
+// the root under its former name, the registered one still wins until
+// 2027-01-01 (journal token-progress-ring-value-public).
 
 @property --sf-progress-ring--value {
   syntax: '<number>';
@@ -42,6 +48,7 @@
 
 @layer sf.components {
   .sf-progress-ring {
+    --sf-progress-ring--value: var(--sf-progress-ring-value, 0);
     --sf-progress-ring--size: var(--sf-progress-ring-size, var(--sf-progress-ring--step-size));
     --sf-progress-ring--line-width: var(--sf-progress-ring-line-width, var(--sf-progress-ring--step-line-width));
     --sf-progress-ring--gap: var(--sf-progress-ring-gap, var(--sf-a2));

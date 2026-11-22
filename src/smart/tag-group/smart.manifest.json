@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag-group",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "title": "Tag group",
   "summary": "A row of tags: 4 apart, a list to a screen reader, one Tab stop with arrows and Delete, one line with «+N» that opens the hidden tags in a popover, and single or multiple choice for filter tags.",
   "kind": "smart",
@@ -72,9 +72,20 @@
           "many"
         ]
       },
+      "selected": {
+        "type": "string",
+        "default": "",
+        "description": "The chosen tag's key (its key, else its text; §18.2); with selection many, the first chosen. Writable: chooses that tag and no other"
+      },
       "aria-label": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The row's accessible name, said with the list: what the tags are, «Города» or «Фильтры» (§3.1). Recommended; aria-labelledby names it from a heading instead"
+      },
+      "selected-ids": {
+        "type": "array",
+        "default": [],
+        "description": "The keys of the chosen tags in the row's order (§18.2). Writable: chooses those tags and no other (with selection one, the first)"
       }
     },
     "additionalProperties": false
@@ -210,7 +221,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag-group/index.js",
-        "sha256": "9ead937a558c1f96d66f75627f140a2cb18c5e8b721d9296be5fea2ec18b0e0c"
+        "sha256": "f307df71f5e3dbf937df4dfecca39a0bef8ec6c3a50e59268d895a3a07ce5d38"
       },
       {
         "path": "src/smart/tag-group/js/templates/default.js",
@@ -226,7 +237,7 @@
       },
       {
         "path": "src/smart/tag-group/docs.md",
-        "sha256": "8b6ae5f2cf5fe6529607e9a65d898f88a78cdc0314e32ac2be983b3ad88fb046"
+        "sha256": "07d5b952c40e450af0344036ee678e939e3efdc37d3373772f503ab652d9c687"
       }
     ],
     "generated_runtime": []

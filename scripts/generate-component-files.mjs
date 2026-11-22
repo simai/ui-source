@@ -491,6 +491,10 @@ export function fieldSchema(spec) {
   let out = {};
   if (t.type === 'enum') out = t.values.length === 1 ? {const: t.values[0]} : {enum: [...t.values, ...(t.nullable && !t.values.includes(null) ? [null] : [])]};
   else if (t.type === 'id') out = {};
+  // A carried field of any type (sf-form's input and change value: a field's
+  // value is text, a number, a yes/no, a list or an object) is JSON of any
+  // type, not a string (FO-3).
+  else if (t.type === 'any') out = {};
   else if (t.type === 'number' && t.integer) out = {type: 'integer'};
   else out = {type: jsonType(t.type)};
   if (t.nullable && out.type) out.type = [out.type, 'null'];

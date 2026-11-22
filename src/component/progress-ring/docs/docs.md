@@ -2,7 +2,7 @@
 
 `sf-progress-ring` draws a value from 0 to 100 as a ring in the room of a
 control, with the percentage or a picture in the middle. It is CSS only: the
-value is the custom property `--sf-progress-ring--value` on the root, so a page
+value is the public variable `--sf-progress-ring-value` on the root, so a page
 that prints the classes fetches the sheet and no script. `sf-progress-ring`
 (the Smart element) writes this markup and keeps the value, the role and the
 name in step; a page that prints the class markup itself keeps them in step.
@@ -11,7 +11,7 @@ name in step; a page that prints the class markup itself keeps them in step.
 
 ```html
 <div class="sf-progress-ring sf-progress-ring--size-2 sf-progress-ring--warning"
-     style="--sf-progress-ring--value: 85">
+     style="--sf-progress-ring-value: 85">
   <span class="sf-progress-ring-indicator" role="meter" aria-label="Использовано"
         aria-valuemin="0" aria-valuemax="100" aria-valuenow="85"></span>
   <span class="sf-progress-ring-content" aria-hidden="true">85&nbsp;%</span>
@@ -67,6 +67,7 @@ the look), and the fill no longer moves between values.
 
 | Variable | What | Default |
 |:---|:---|:---|
+| `--sf-progress-ring-value` | the value, a number from 0 to 100, on the root | `0` |
 | `--sf-progress-ring-size` | the box | `--sf-ui-<size>--control-height` |
 | `--sf-progress-ring-line-width` | the line | `--sf-a2` (2 px) |
 | `--sf-progress-ring-gap` | between the line and the middle | `--sf-a2` (2 px) |
@@ -75,3 +76,6 @@ the look), and the fill no longer moves between values.
 | `--sf-progress-ring-color` | the percentage | `--sf-on-surface` |
 
 The lengths are read through registered lengths, so a bare `0` is valid.
+`--sf-progress-ring--value`, the former name of the value (an internal double
+dash), still draws when written on the root until 2027-01-01 (journal
+`token-progress-ring-value-public`); write `--sf-progress-ring-value`.

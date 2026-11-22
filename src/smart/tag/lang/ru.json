@@ -2,6 +2,7 @@
   "title": "Теги",
   "runtime": {
     "remove": "Удалить",
+    "remove-named": "Удалить {label}",
     "more": {
       "one": "Ещё {n}: {names}",
       "few": "Ещё {n}: {names}",

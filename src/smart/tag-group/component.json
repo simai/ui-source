@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tag-group's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.16 and vocabulary 1.1.5: owner decision C145 (3)-(5) (2026-11-14; tags study ui-control control/research/2026-11-14-tags.md #q-group, #q-keys, #q-more, prototype prototypes/tags-study.html).",
   "id": "smart.tag-group",
   "tag": "sf-tag-group",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "kind": "leaf",
   "family": "tag",
   "settings": {
@@ -29,10 +29,12 @@
   "values": {
     "selected": {
       "type": "id",
+      "default": "",
       "summary": "The chosen tag's key (its key, else its text; §18.2); with selection many, the first chosen. Writable: chooses that tag and no other"
     },
     "selected-ids": {
       "type": "list",
+      "default": [],
       "of": {
         "id": "id"
       },
@@ -130,9 +132,16 @@
     "version 1.0.5 (written on the branch as 1.0.2; 2026-11-17, owner decision C268; numbered above 1.0.1 on origin/fix/first-paint-c1): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.0.6 (written on the branch as 1.0.3; 2026-11-17, owner decision C280; numbered above 1.0.2 on origin/fix/utilities-c264): a patch, nothing drawn or done differently. Its filter examples and docs write kind=\"checkbox\" on the tags they choose, since a bare sf-tag is a plain tag (sf-tag 1.12.0); a group that selects still toggles bare tags until 2027-01-01, noted. Settings, values, events and keys unchanged.",
     "version 1.0.7 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
-    "version 1.1.0 (2026-11-19, owner decision C396; research ui-control control/research/2026-11-19-text-measure section 8.3; written above every origin branch, 1.0.7 the highest): a minor. The «+N» list of hidden tags opens 44 characters wide, --sf-measure-44 (352px at text 16; --sf-g0, 320, before). Settings, values, events and keys unchanged."
+    "version 1.1.0 (2026-11-19, owner decision C396; research ui-control control/research/2026-11-19-text-measure section 8.3; written above every origin branch, 1.0.7 the highest): a minor. The «+N» list of hidden tags opens 44 characters wide, --sf-measure-44 (352px at text 16; --sf-g0, 320, before). Settings, values, events and keys unchanged.",
+    "version 1.2.0 (2026-11-22, docs gap pages DEV msg-ee572eff: TG-2, TG-3, REF-1; numbered above every origin branch, 1.1.0 the highest): a minor. TG-2: a cross pressed with the mouse, Enter or Space removes the tag as Delete does and the focus goes to the neighbour that took its place, or the one before the last (it fell to the page's body): the group hears sf-tag-close on the way down, before the page removes the tag, and moves the focus when it stood in the tag. TG-3: selected and selected-ids have defaults (an empty key, an empty list), so the manifest declares them as inputs and the generated reference lists them; written on the host (the attribute selected, the JSON list selected-ids) they choose as the properties do, once the tags are there. REF-1: aria-label has its description (x-registry.inputs). The crosses are named by sf-tag 1.13.0 («Удалить Москва», TG-1); a bare tag in a group without selection is a plain tag there (sf-tag 1.13.0, TG-4).",
+    "forms-fb FF-1 (DEV msg-f27d2e7a, 2026-11-22): selected-ids is observed, so a write of the attribute after the row connected chooses, as selected does; the property already did"
   ],
   "x-registry": {
+    "inputs": {
+      "aria-label": {
+        "description": "The row's accessible name, said with the list: what the tags are, «Города» or «Фильтры» (§3.1). Recommended; aria-labelledby names it from a heading instead"
+      }
+    },
     "capabilities": [
       "render",
       "interaction",

@@ -1,6 +1,7 @@
 {
   "runtime": {
     "remove": "削除",
+    "remove-named": "{label} を削除",
     "more": {
       "other": "他 {n} 件: {names}"
     },

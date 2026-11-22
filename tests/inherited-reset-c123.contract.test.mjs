@@ -63,5 +63,5 @@ test('the versions move with the look', () => {
     const note = new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123`, 'u');
     assert.ok(component['x-decisions'].some((line) => note.test(line)), `${folder} ${version} note`);
   }
-  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.19.0'); // feat/button-truncate-appearance: field-appearance.js (one look vocabulary for every field) // 1.13.0: the anchored badge's .sf-dot (C185 (8)); 1.13.1 char-count (area E) // C282: 1.13.1 moved on by the language-file patch (Russian is a language file) // group build 13: 1.16.0 moved on by the merged branches or a GB11 merge
+  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.20.0'); // forms-fb: FO-4 the press holds the leave check // feat/button-truncate-appearance: field-appearance.js (one look vocabulary for every field) // 1.13.0: the anchored badge's .sf-dot (C185 (8)); 1.13.1 char-count (area E) // C282: 1.13.1 moved on by the language-file patch (Russian is a language file) // group build 13: 1.16.0 moved on by the merged branches or a GB11 merge
 });

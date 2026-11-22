@@ -26,8 +26,9 @@ root preserves the ordinary BEM classes and applies `root-class`, author
   `inline`, `root-class`;
 - state: `active` (a value: the tag holds it and reports it), `disabled`,
   `closable` (absent: the kind decides), `interactive`;
-- accessible names: `aria-label` (a host attribute), `close-label` («Удалить»,
-  "Remove" in the page's language when unset).
+- accessible names: `aria-label` (a host attribute), `close-label` (when unset,
+  the tag's name in the page's language: «Удалить Москва», "Remove Moscow";
+  «Удалить» for a tag with no text or `aria-label`).
 
 `height` (`low`, `default`, `high`, `highest`) picks the tag's height from the
 size's steps, as on `sf-button` (C27). `spacing` is its former name until

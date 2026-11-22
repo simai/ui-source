@@ -200,7 +200,7 @@ const sfTagMeta = {
     "close-label": {
       "kind": "custom",
       "valueType": "string",
-      "description": "Accessible name of the remove action. Defaults to Remove, or Удалить on a Russian page."
+      "description": "Accessible name of the remove action. Defaults to the tag's name in the words of sf-input-lookup's chips: Remove Moscow, or Удалить Москва on a Russian page (runtime remove-named); a tag with no text or aria-label says Remove, Удалить"
     },
     "active": {
       "kind": "boolean",

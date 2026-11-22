@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.12.7",
+  "version": "1.13.0",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -205,7 +205,7 @@
       },
       "close-label": {
         "type": "string",
-        "description": "Accessible name of the remove action. Defaults to Remove, or Удалить on a Russian page."
+        "description": "Accessible name of the remove action. Defaults to the tag's name in the words of sf-input-lookup's chips: Remove Moscow, or Удалить Москва on a Russian page (runtime remove-named); a tag with no text or aria-label says Remove, Удалить"
       },
       "active": {
         "type": "boolean",
@@ -438,7 +438,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "10485e93155ef805857113d28e149030c8a50dec7870453cfd2b2f529b28e956"
+        "sha256": "7ea903753edb25311fe314ef730a09d15ab7fb65faf6b12b4a2da67bedf0ed4e"
       }
     ],
     "generated_runtime": [
