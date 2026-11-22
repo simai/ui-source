@@ -44,6 +44,6 @@ test('DSA-4: in a scheme a media plate has distinct rest, hover and press', () =
 
 test('DSA-4: in a scheme the gallery viewer stands on the ground with the text', () => {
   for (const name of ['black-on-white', 'white-on-black', 'yellow-on-black', 'blue-on-sky', 'brown-on-cream']) assert.match(gallery, new RegExp(`"${name}"`, 'u'));
-  assert.match(gallery, /--sf-on-surface-media: var\(--sf-on-surface\);/u);
+  assert.match(gallery, /background-color: var\(--sf-surface-media-hover\);/u);
   assert.match(gallery, /background-color: var\(--sf-surface-page\);\s*color: var\(--sf-on-surface\);/u);
 });

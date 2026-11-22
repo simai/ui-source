@@ -106,7 +106,9 @@ Full screen and black in both themes (pictures are judged on black). In a
 colour scheme of the display settings (`sf-display-settings`) the viewer stands
 on the scheme's ground with the scheme's text, as the page does: the person
 chose the ground pictures are seen on, and the glass's white ink, taken to the
-ground by the scheme, read black on black.
+ground by the scheme, read black on black. Its round buttons take the scheme's
+plate: the text colour with the ground's glyph, a step darker under the pointer
+and when pressed.
 
 - the bar: «3 / 12» (and the file's name when it has one) at the start; the
   zoom, download, open-in-a-tab and «Закрыть» buttons at the end, 8 apart;

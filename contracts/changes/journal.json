@@ -19614,7 +19614,7 @@
         {
           "component": "smart.gallery",
           "from": "viewer in a scheme: black, the scheme's ground as its ink",
-          "to": "the scheme's ground with its text and the page's roles"
+          "to": "the scheme's ground with its text and the page's roles; its round controls the scheme's media plate (rest, hover, press)"
         }
       ],
       "deprecated_on": "2026-11-22",

@@ -366,7 +366,6 @@ $scheme-roots: ();
       --sf-#{$role}: #{string.unquote($value)};
     }
     @include aliases.sf-role-aliases(places.$sf-place-aliased);
-    --sf-on-surface-media: var(--sf-on-surface);
     --sf-place--control-hover: initial;
     --sf-place--control-active: initial;
     background-color: var(--sf-surface-page);
@@ -406,5 +405,26 @@ $scheme-roots: ();
 
   .sf-gallery-viewer .sf-gallery-viewer-control .sf-icon-button:not(:disabled):active {
     background-color: var(--sf-black--alfa-80);
+  }
+
+  /* In a colour scheme the circle is the scheme's media plate (DSA-4): the
+     text tone with the ground's glyph, the ground at 8 and 12 over it under
+     the pointer and pressed (core display settings). Black 48 / 64 / 80 did
+     not show on a black ground and turned grey on a light one, the glyph
+     3.5:1 on it. */
+  #{selector.nest($scheme-roots, '.sf-gallery-viewer-control .sf-icon-button')} {
+    --sf-icon--color: var(--sf-on-surface-media);
+    --sf-button-close--ink: var(--sf-on-surface-media);
+    background-color: var(--sf-surface-media);
+    box-shadow: none;
+    color: var(--sf-on-surface-media);
+  }
+
+  #{selector.nest($scheme-roots, '.sf-gallery-viewer-control .sf-icon-button:not(:disabled):hover')} {
+    background-color: var(--sf-surface-media-hover);
+  }
+
+  #{selector.nest($scheme-roots, '.sf-gallery-viewer-control .sf-icon-button:not(:disabled):active')} {
+    background-color: var(--sf-surface-media-active);
   }
 }
