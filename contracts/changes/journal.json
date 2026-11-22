@@ -19714,7 +19714,7 @@
       "owner": "ui-source",
       "kind": "behaviour",
       "id": "behaviour-tabs-vertical-state-steps",
-      "summary": "component.tabs 1.5.7 (group build 17 Y4, VR5-12): resting vertical tabs take the state family 4 / 8 / 12 for hover, keyboard focus and press, as the pills do; a press drew the hover's 4.",
+      "summary": "component.tabs 1.5.8 (group build 17 Y4, VR5-12): resting vertical tabs take the state family 4 / 8 / 12 for hover, keyboard focus and press, as the pills do; a press drew the hover's 4.",
       "items": [
         {
           "component": "component.tabs",

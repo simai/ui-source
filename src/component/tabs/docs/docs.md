@@ -71,7 +71,7 @@ default), with no fill and no border whatever the button scheme; the pointer
 paints them only with the surface state layer -- 4 % on hover, 8 % with
 keyboard focus, 12 % pressed -- in the light and dark themes alike. The
 vertical look (`.sf-tabs--vertical`, the menu column) takes the same three
-steps on its resting tabs since component.tabs 1.5.7 (VR5-12: a press drew the
+steps on its resting tabs since component.tabs 1.5.8 (VR5-12: a press drew the
 hover's 4 %).
 
 Tabs controls use `--sf-radius--ui`; pills remain explicitly rounded. Borders
