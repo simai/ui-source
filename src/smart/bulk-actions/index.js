@@ -38,13 +38,13 @@ import {openLayers} from '../../core/js/layer-stack';
 import {pageLocale} from '../../core/js/page-language';
 import {BREAKPOINTS} from '../../core/js/breakpoints.js';
 import {isDestructiveAction, orderActions} from './js/danger.js';
-import {LONG_OVER, VISIBLE, VISIBLE_COMPACT, isLongAction, normalizeAction, number, resultRoute, splitActions} from './js/actions.js';
+import {LONG_OVER, VISIBLE, VISIBLE_COMPACT, actionsThatFit, foldActions, isLongAction, normalizeAction, number, resultRoute, splitActions} from './js/actions.js';
 import {renderBulkActionsTemplate} from './js/templates/default';
 import manifest from './component.json';
 import './scss/index.scss';
 import {files as languageFiles} from './lang/index.mjs';
 
-export {isDestructiveAction, isLongAction, normalizeAction, orderActions, resultRoute, splitActions};
+export {actionsThatFit, foldActions, isDestructiveAction, isLongAction, normalizeAction, orderActions, resultRoute, splitActions};
 
 const SIZES = ['1/2', '1', '2'];
 const PLACES = ['dock', 'top', 'float', 'inline'];
@@ -93,6 +93,14 @@ class SfBulkActions extends BulkActionsElement {
     // row would take a second line; _offerFold is the bar's width it was
     // folded at, so it comes back only on a wider bar (no flicker).
     this._offerFold = null;
+    // LV3-27, LV4-23: the fold by width. _fit is how many of the visible
+    // actions stand in the row (null: all of them), _fitAt the bar's width
+    // it last folded or tried at, _widths each action button's measured
+    // width (by id, words, size and phone), _fitSig what the row was made of.
+    this._fit = null;
+    this._fitAt = 0;
+    this._widths = new Map();
+    this._fitSig = '';
     this._onKey = (event) => this.onDocumentKey(event);
   }
 
@@ -267,23 +275,108 @@ class SfBulkActions extends BulkActionsElement {
     const root = this._rowRoot;
     if (!root || !root.isConnected || root.hidden) return;
     const width = root.getBoundingClientRect().width;
-    const offerShown = Boolean(root.querySelector('.sf-bulk-actions__offer'));
+    if (!(width > 0)) return;
+    this.measureActions(root);
     if (!this._compact) {
       if (this._offerFold !== null) {
         this._offerFold = null;
         this.requestComponentUpdate('offer-fold');
+        return;
+      }
+    } else {
+      // C309 (1): on a phone the offer goes first, then the actions.
+      const offerShown = Boolean(root.querySelector('.sf-bulk-actions__offer'));
+      if (this._offerFold === null) {
+        if (offerShown && this.rowWraps(root)) {
+          this._offerFold = width;
+          this.requestComponentUpdate('offer-fold');
+          return;
+        }
+      } else if (width > this._offerFold + 1) {
+        this._offerFold = null;
+        this.requestComponentUpdate('offer-fold');
+        return;
+      }
+    }
+    this.fitActions(root, width);
+  }
+
+  widthKey(action) {
+    return `${action.id}|${action.text}|${this.size}|${this._compact ? 'icon' : 'text'}`;
+  }
+
+  // The width of each action button drawn now, kept for when it is in «⋯».
+  measureActions(root) {
+    for (const host of root.querySelectorAll('.sf-bulk-actions__actions > .sf-bulk-actions__action')) {
+      const id = host.getAttribute('data-sf-bulk-action') ?? host.querySelector('[data-sf-bulk-action]')?.getAttribute('data-sf-bulk-action');
+      const button = host.localName === 'button' ? host : host.querySelector('button');
+      const action = id ? this.findAction(id) : null;
+      const box = button?.getBoundingClientRect();
+      if (action && box && box.width > 0) this._widths.set(this.widthKey(action), box.width);
+    }
+  }
+
+  // The free width of the row beside what stands in it: the start slot, the
+  // count and the offer, and the end group (the actions, «⋯», ×).
+  rowRoom(root) {
+    const style = getComputedStyle(root);
+    const inner = root.clientWidth - (Number.parseFloat(style.paddingInlineStart) || 0) - (Number.parseFloat(style.paddingInlineEnd) || 0);
+    const columnGap = Number.parseFloat(style.columnGap) || 0;
+    const span = (element) => {
+      const boxes = [...element.children].map((child) => (getComputedStyle(child).display === 'contents' ? child.firstElementChild : child))
+        .filter(Boolean).map((child) => child.getBoundingClientRect()).filter((box) => box.width > 0);
+      if (!boxes.length) return 0;
+      return Math.max(...boxes.map((box) => box.right)) - Math.min(...boxes.map((box) => box.left));
+    };
+    let used = 0;
+    let items = 0;
+    for (const child of root.children) {
+      const width = child.classList.contains('sf-bulk-actions__lead') ? span(child) : child.getBoundingClientRect().width;
+      if (width > 0) {
+        used += width;
+        items += 1;
+      }
+    }
+    return inner - used - Math.max(0, items - 1) * columnGap;
+  }
+
+  // LV3-27, LV4-23: the actions fold by width. While the row wraps the last
+  // visible action goes into «⋯», one by one (the words never wrap and
+  // «Выбрано N» stays on the line); when the row has room for the next one
+  // by its measured width it comes back. One not measured yet is tried once
+  // the bar is wider than where it last folded.
+  fitActions(root, width) {
+    const actions = root.querySelector('.sf-bulk-actions__actions');
+    if (!actions) return;
+    const shown = actions.querySelectorAll(':scope > .sf-bulk-actions__action').length;
+    if (this.rowWraps(root)) {
+      if (shown > 0) {
+        this._fit = shown - 1;
+        this._fitAt = width;
+        this.requestComponentUpdate('fit');
       }
       return;
     }
-    if (this._offerFold === null) {
-      if (offerShown && this.rowWraps(root)) {
-        this._offerFold = width;
-        this.requestComponentUpdate('offer-fold');
-      }
-    } else if (width > this._offerFold + 1) {
-      this._offerFold = null;
-      this.requestComponentUpdate('offer-fold');
+    if (this._fit === null) return;
+    const base = this.baseSplit();
+    const next = base.visible.slice(this._fit);
+    if (!next.length) {
+      this._fit = null;
+      return;
     }
+    const widths = next.map((action) => this._widths.get(this.widthKey(action)));
+    if (!Number.isFinite(widths[0]) && width <= this._fitAt + 1) return;
+    const gap = Number.parseFloat(getComputedStyle(actions).columnGap) || 0;
+    const more = actions.querySelector(':scope > .sf-bulk-actions__more > button')?.getBoundingClientRect().width ?? 0;
+    const freed = !base.rest.length && !this.offerFolded ? more + gap : 0;
+    // A pixel of slack: a measured width that rounds over the edge is not
+    // taken back to wrap and fold again.
+    const take = actionsThatFit({room: this.rowRoom(root) - 1, widths, gap, freed});
+    if (take <= 0) return;
+    const fit = this._fit + take;
+    this._fit = fit >= base.visible.length ? null : fit;
+    this._fitAt = width;
+    this.requestComponentUpdate('fit');
   }
 
   get offerFolded() {
@@ -627,10 +720,26 @@ class SfBulkActions extends BulkActionsElement {
     if (action) this.runAction(action, {retry: true});
   }
 
-  split() {
+  // Up to three labelled actions (one icon button on a phone), by priority.
+  baseSplit() {
     return this._compact
       ? splitActions(this.actionList, VISIBLE_COMPACT, {iconOnly: true})
       : splitActions(this.actionList, VISIBLE);
+  }
+
+  // What the row shows: the split, less what the width folds (LV3-27).
+  split() {
+    return foldActions(this.baseSplit(), this._fit);
+  }
+
+  // A new set of actions, another size or the phone's row is measured anew.
+  resetFit() {
+    const sig = [this.size, this._compact ? 'icon' : 'text',
+      ...this.actionList.map((item, index) => normalizeAction(item, index)).filter(Boolean).map((action) => `${action.id}:${action.text}`)].join('|');
+    if (sig === this._fitSig) return;
+    this._fitSig = sig;
+    this._fit = null;
+    this._fitAt = 0;
   }
 
   // «Выбрать все N» once the whole page is selected and the total is larger;
@@ -647,6 +756,7 @@ class SfBulkActions extends BulkActionsElement {
   }
 
   templateContext() {
+    this.resetFit();
     const count = this.selectedCount;
     const effective = this.effectiveCount;
     const total = this.total;

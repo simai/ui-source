@@ -96,3 +96,39 @@ export function resultRoute({long = false, failed = 0, undo = false} = {}) {
   // A reversible action's notice already said it, with «Отменить» (C25).
   return {bar: undo ? null : 'done', notice: null, record: false};
 }
+
+/**
+ * The fold by width (LV3-27, LV4-23): of the visible actions the first fit
+ * stand in the row, the others go into «⋯» first, in their order, before the
+ * ones that were already there (the dangerous ones stay last). fit null: as
+ * split.
+ */
+export function foldActions({visible = [], rest = []} = {}, fit = null) {
+  if (fit === null || fit === undefined || !Number.isFinite(Number(fit))) return {visible, rest};
+  const keep = Math.max(0, Math.min(visible.length, Math.trunc(Number(fit))));
+  if (keep >= visible.length) return {visible, rest};
+  return {visible: visible.slice(0, keep), rest: [...visible.slice(keep), ...rest]};
+}
+
+/**
+ * How many more actions fit the row (LV3-27): room is the free width beside
+ * the count and the end group, widths the measured widths of the next folded
+ * actions (undefined: not measured yet), gap the space before each one, and
+ * freed what «⋯» gives back when the last one leaves it. An unmeasured action
+ * is tried once (the next drawing measures it, and folds it again when the
+ * row wraps). Answers the number of actions to take back.
+ */
+export function actionsThatFit({room = 0, widths = [], gap = 0, freed = 0} = {}) {
+  let left = room;
+  let taken = 0;
+  for (let index = 0; index < widths.length; index += 1) {
+    const width = widths[index];
+    if (!Number.isFinite(width)) return taken + 1;
+    const last = index === widths.length - 1;
+    if (width + gap <= left + (last ? freed : 0)) {
+      left -= width + gap;
+      taken += 1;
+    } else break;
+  }
+  return taken;
+}

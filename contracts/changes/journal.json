@@ -19563,6 +19563,26 @@
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
       "source": "src/smart/button/component.json"
+    },
+    {
+      "id": "behaviour-bulk-actions-fold-by-width",
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-bulk-actions 1.3.0 (the owner's list review LV3-26, LV3-27, LV4-23 via DEV): the padding is the view settings panel's (space-1/3 above, below and at the end, space-1 at the start: 8 / 16 / 8 on a desktop, was 4 / 12 / 4), set through the new public --sf-bulk-actions-padding-block and --sf-bulk-actions-padding-inline, so the bar is 58 at size 1 (was 50). The actions fold by width: an action's words never wrap, the last visible ones go into «⋯» while the row would wrap and come back when it has room; «Выбрано N» stays on the bar's line.",
+      "items": [
+        {
+          "component": "sf-bulk-actions",
+          "from": "padding 4 / 12 / 4, no variable; three labelled actions at any width above the phone step, their words wrapping",
+          "to": "padding 8 / 16 / 8 through two public variables; as many of the three as fit, the rest in «⋯», words on one line"
+        }
+      ],
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "A page that wants the old tighter bar sets --sf-bulk-actions-padding-block: var(--sf-space-1\\/4) and --sf-bulk-actions-padding-inline: var(--sf-space-1\\/2) var(--sf-space-1\\/4). A host that folded the actions itself (rowWraps over split) can drop that code.",
+      "owner": "ui-source",
+      "source": "src/smart/bulk-actions/index.js fitActions, scss/_smart__bulk-actions.scss"
     }
   ]
 }

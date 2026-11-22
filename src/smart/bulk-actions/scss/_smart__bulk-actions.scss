@@ -4,10 +4,16 @@
 /* sf-bulk-actions (standard simai.smart-component 1.3.16 §6; owner decision
    C295; prototype sf-bulk-actions-study, variant A). One row: the count and
    the offer at the start, the actions, «⋯» and the clear cross at the end.
-   Its height is the rung's control height and the space-1/4 above and below
-   (C18: 42 at 1/2, 50 at 1 with the edge); the groups wrap 16 apart (the role --sf-gap--groups),
+   Its padding is the view settings panel's (LV3-26, the owner's list review):
+   space-1/3 above and below and at the end, space-1 at the start (8 / 16 / 8
+   on a desktop), so its height is the rung's control height and 2 x space-1/3
+   and its edges (50 at 1/2, 58 at 1, 66 at 2: inside the edge the 48, 56 and
+   64 steps); the groups wrap 16 apart (the role --sf-gap--groups),
    inside a group 8 (the role --sf-gap--actions, C105: one group 8). The buttons are sf-button's
-   own look (outline on-surface, C116); nothing here repaints a button.
+   own look (outline on-surface, C116); nothing here repaints a button. An
+   action's words never wrap (LV3-27, LV4-23): the code folds by width, the
+   actions that do not fit go into «⋯» one by one, and «Выбрано N» stays on
+   the bar's line.
 
    place: dock (default) stands over the list's bottom edge at the card's
    width and sticks to the bottom of the scroll; top is the toolbar's place
@@ -20,10 +26,14 @@
      --sf-bulk-actions-border-color   the bar's edge
      --sf-bulk-actions-color          the count's text
      --sf-bulk-actions-gap            between the groups
+     --sf-bulk-actions-padding-block  above and below the row
+     --sf-bulk-actions-padding-inline at the start and the end (one or two values)
      --sf-bulk-actions-radius         the bar's corners */
 .sf-bulk-actions {
   --sf-bulk-actions--gap: var(--sf-bulk-actions-gap, var(--sf-gap--groups));
   --sf-bulk-actions--group-gap: var(--sf-gap--actions);
+  --sf-bulk-actions--padding-block: var(--sf-bulk-actions-padding-block, var(--sf-space-1\/3));
+  --sf-bulk-actions--padding-inline: var(--sf-bulk-actions-padding-inline, var(--sf-space-1) var(--sf-space-1\/3));
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -31,8 +41,8 @@
   column-gap: var(--sf-bulk-actions--gap);
   box-sizing: border-box;
   min-inline-size: 0;
-  padding-block: var(--sf-space-1\/4);
-  padding-inline: var(--sf-space-1\/2) var(--sf-space-1\/4);
+  padding-block: var(--sf-bulk-actions--padding-block);
+  padding-inline: var(--sf-bulk-actions--padding-inline);
   border-width: var(--sf-px);
   border-style: solid;
   border-radius: var(--sf-bulk-actions-radius, var(--sf-radius--surface));
@@ -42,6 +52,15 @@
 
 .sf-bulk-actions[hidden] {
   display: none;
+}
+
+/* The first paint (LV3-27): the static row is one line at any width, as the
+   code's row is once it has folded what does not fit into «⋯»; until the code
+   comes what does not fit is clipped at the end, so the bar is its drawn
+   height before the code as after it. */
+.sf-bulk-actions[data-sf-static] {
+  flex-wrap: nowrap;
+  overflow: clip;
 }
 
 /* The first paint (C55): the static markup is the wide row; where the code
@@ -97,6 +116,19 @@
 
 .sf-bulk-actions__end {
   margin-inline-start: auto;
+}
+
+// The actions keep their words and the ladder's height (LV3-27, LV4-23): a
+// button never shrinks or breaks a label onto a second line; what does not
+// fit the row goes into «⋯» (the code measures it).
+.sf-bulk-actions__actions {
+  flex-wrap: nowrap;
+}
+
+.sf-bulk-actions__actions > * > button,
+.sf-bulk-actions__lead:not([data-sf-bulk-done]) .sf-bulk-actions__offer > button {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .sf-bulk-actions__count,
@@ -175,9 +207,9 @@
 }
 
 /* A phone: the actions are icon buttons named in their tooltips; the start
-   steps in to the screen's edge. */
+   steps in to the screen's edge, as the end. */
 .sf-bulk-actions--compact {
-  padding-inline-start: var(--sf-space-1\/3);
+  --sf-bulk-actions--padding-inline: var(--sf-bulk-actions-padding-inline, var(--sf-space-1\/3));
 }
 
 .sf-bulk-actions--compact.sf-bulk-actions--dock {
