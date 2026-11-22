@@ -19592,6 +19592,26 @@
       "rewrite": "none",
       "manual": "Nothing to rewrite.",
       "owner": "ui-source",
+      "id": "behaviour-tabs-label-beside-glyph",
+      "kind": "behaviour",
+      "summary": "sf-tabs 1.5.2 (group build 16 returns GB16-5, GB16-6; DEV msg-ae20b3b7): when two letters of the current tab do not stand beside «Ещё (n)», the trigger draws its glyph alone and the label is decided again in the room it gives back (the whole word where it fits, else two letters or more and «…»); only when two letters do not stand even there does an icon tab draw its icon alone. The glyph-alone trigger and the icon-only current tab name a Framework tooltip of their hidden words (component.tooltip: hover, keyboard focus, long press); the accessible names are unchanged.",
+      "items": [
+        {
+          "component": "smart.tabs",
+          "from": "in a 120-176 px row the current tab draws its icon alone beside a bare chevron while its whole name fits; the hidden names have no tooltip",
+          "to": "the label beside the glyph-alone trigger; the hidden names as the Framework tooltip"
+        }
+      ],
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
       "id": "behaviour-drawer-fill-content",
       "kind": "behaviour",
       "summary": "sf-drawer 1.21.0 (group build 16 return GB16-3): the body's one child marked data-sf-drawer-fill takes the room under the head and over the foot; the panel does not scroll, only the content's own scroller moves; the body ends on the foot's line and the foot keeps its hairline. Without the marker nothing changes.",

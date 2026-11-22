@@ -38,7 +38,7 @@ function fn(name) {
 }
 
 test('1.4.0 is noted', () => {
-  assert.equal(component.version, '1.5.1'); // GB16 returns: the tightest row; // group build 16: G9 fold; // board-fw: 1.4.5, a panel row with no panel content is hidden // C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.4.2 moved on by the merged branches or a GB10 patch // group build 13: 1.4.5 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(component.version, '1.5.2'); // GB16-5/6: the label beside the glyph, name tooltips; // GB16 returns: the tightest row; // group build 16: G9 fold; // board-fw: 1.4.5, a panel row with no panel content is hidden // C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.4.2 moved on by the merged branches or a GB10 patch // group build 13: 1.4.5 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.4.0') && line.includes('C181 (2)')));
 });
 

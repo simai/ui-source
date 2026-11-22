@@ -45,6 +45,8 @@ const FITS = ['auto', 'always', 'never'];
 // look without a type, full and the scheme fills are retired.
 const RETIRED = { since: '2026-11-12', remove_after: '2027-01-01' };
 // A field that says it is wrong, inside a panel (goToError).
+// The tooltip controller asked for by a row that hides a name (GB16-6).
+let rowTipsAsked = false;
 const INVALID = '[aria-invalid="true"], [invalid]:not([invalid="false"]), :invalid';
 // What takes the focus inside a panel: a panel holding one is not a tab stop
 // of its own (APG tabs; R184 T8).
@@ -1174,6 +1176,7 @@ class SfTabs extends TabsElement {
 
   layoutOverflow() {
     this.layoutRow();
+    this.syncRowTips();
     // The sheet shares a narrow row of two to four tabs by itself, so the
     // printed first frame is the laid row (C96 item 7 by C181 (2)); a narrow
     // row whose tabs keep their own widths says so with data-sf-tabs-own.
@@ -1296,16 +1299,19 @@ class SfTabs extends TabsElement {
       kept = laid.kept;
       // The current tab alone is wider than the row: it alone may be
       // shortened, with an ellipsis; every other tab is whole or in «Ещё».
-      if (laid.squeezed >= 0) {
-        hosts[laid.squeezed].classList.add('sf-tabs-squeezed');
-        const extraFor = triggerExtra(textBox, label);
-        this.squeezeCurrent(hosts[laid.squeezed], list, more, extraFor ? extraFor(this._overflowed.length) : 0);
-      }
       hosts.forEach((host, at) => {
         // A class, not a data attribute: sf-button moves its data attributes
         // to the button inside it, and only class and style stay on the host.
         if (!kept.includes(at)) host.classList.add('sf-tabs-overflowed');
       });
+      // Measured once the tabs «Ещё» holds have left the row (GB16-5): with
+      // them still in it, the label's room read the room of four tabs, and
+      // the current one went to its icon with its whole name fitting.
+      if (laid.squeezed >= 0) {
+        hosts[laid.squeezed].classList.add('sf-tabs-squeezed');
+        const extraFor = triggerExtra(textBox, label);
+        this.squeezeCurrent(hosts[laid.squeezed], list, more, extraFor ? extraFor(this._overflowed.length) : 0);
+      }
       this.expectTabSizes(hosts, widths, kept);
       if (more) {
         const text = label(this._overflowed.length);
@@ -1332,11 +1338,15 @@ class SfTabs extends TabsElement {
     const widthOfText = textWidth(text);
     if (!widthOfText || !name.length) return;
     const twoLetters = widthOfText(name.length > 2 ? `${name.slice(0, 2).join('')}\u2026` : name.join(''));
-    const style = getComputedStyle(text);
-    const inner = parseFloat(style.width) || 0;
-    const sides = ['paddingInlineStart', 'paddingInlineEnd', 'borderInlineStartWidth', 'borderInlineEndWidth']
-      .reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
-    const textRoom = (style.boxSizing === 'border-box' ? inner - sides : inner) - extra;
+    // The label's own width as laid out now (its content box).
+    const labelWidth = () => {
+      const style = getComputedStyle(text);
+      const inner = parseFloat(style.width) || 0;
+      const sides = ['paddingInlineStart', 'paddingInlineEnd', 'borderInlineStartWidth', 'borderInlineEndWidth']
+        .reduce((sum, edge) => sum + (parseFloat(style[edge]) || 0), 0);
+      return style.boxSizing === 'border-box' ? inner - sides : inner;
+    };
+    const textRoom = labelWidth() - extra;
     const tabRoom = layoutRowRoom(list) - extra;
     let iconOnly = null;
     if (box.querySelector(':scope > sf-icon, :scope > .sf-icon')) {
@@ -1347,16 +1357,90 @@ class SfTabs extends TabsElement {
     const container = list.parentElement;
     const trigger = more?.querySelector(':scope > button');
     let moreGain = 0;
+    let compactTextRoom = null;
     if (container && trigger) {
       const full = layoutWidth(trigger) + extra;
       container.setAttribute('data-sf-tabs-more-compact', '');
       moreGain = full - layoutWidth(trigger);
+      // The label beside the glyph-alone trigger, as it will stand (GB16-5):
+      // the room the trigger gives back is decided on, not left empty.
+      compactTextRoom = labelWidth();
       container.removeAttribute('data-sf-tabs-more-compact');
     }
-    const step = squeezeStep({tabRoom, textRoom, twoLetters, iconOnly, moreGain});
+    const step = squeezeStep({tabRoom, textRoom, twoLetters, iconOnly, moreGain, compactTextRoom});
     if (step.icon) host.classList.replace('sf-tabs-squeezed', 'sf-tabs-icon-only');
     else text.style.setProperty('--sf-tabs--squeezed-min', `${twoLetters}px`);
     if (step.compact) container?.setAttribute('data-sf-tabs-more-compact', '');
+  }
+
+  // The names the tightest row hides (group build 16 return GB16-6): the
+  // trigger drawn as its glyph alone and the current tab drawn as its icon
+  // alone keep their words out of sight, as their accessible names; a mouse
+  // and a keyboard get them as the Framework's tooltip (component.tooltip,
+  // C59, C160 (1)), not a browser title -- the surface is a .sf-tooltip in
+  // the row's container that the button names by data-tooltip, and the
+  // tooltip controller, asked for here only when a name is hidden, links it
+  // and shows it on hover, keyboard focus and a long press. A name the row
+  // draws again loses its tooltip. The controller does not describe the
+  // button with a tooltip that repeats its name.
+  syncRowTips() {
+    const container = this.tabList?.parentElement;
+    const wanted = new Map();
+    if (container) {
+      const trigger = container.hasAttribute('data-sf-tabs-more-compact')
+        ? container.querySelector(':scope > .sf-tabs-more > button') : null;
+      const words = trigger ? String(trigger.closest('.sf-tabs-more')?.getAttribute('aria-label') || trigger.getAttribute('aria-label') || '').trim() : '';
+      if (trigger && words) wanted.set('more', {button: trigger, words});
+      const host = Array.from(this.tabList.children).find((element) => element.classList.contains('sf-tabs-icon-only'));
+      const button = host && !isTag(host, 'sf-button-icon') ? tabBox(host) : null;
+      const label = button ? String(this.computedItems[tabIndexOf(host)]?.label ?? '').trim() : '';
+      if (button && label) wanted.set('tab', {button, words: label});
+    }
+    this._rowTips ??= new Map();
+    for (const [part, tip] of this._rowTips) {
+      const next = wanted.get(part);
+      // A surface still standing in the row is kept, even when the button
+      // that names it was drawn anew: a surface put in again is a new node
+      // the Loader scans, and that scan woke every row again (step-0 probe).
+      if (next && tip.surface.isConnected && tip.surface.parentElement === container) {
+        if (next.button !== tip.button && tip.button.getAttribute('data-tooltip') === tip.surface.id) tip.button.removeAttribute('data-tooltip');
+        tip.button = next.button;
+        continue;
+      }
+      if (tip.button.getAttribute('data-tooltip') === tip.surface.id) tip.button.removeAttribute('data-tooltip');
+      tip.surface.remove();
+      this._rowTips.delete(part);
+    }
+    if (!wanted.size) return;
+    // Asked for once a page: the Loader's ensurePlugin rescans the page until
+    // the plugin is there, and a row laid out on every rescan asked again --
+    // a 248-row page laid every row out for ever (step-0 probe). A Loader not
+    // ready yet (false) is asked again by the next layout.
+    if (!rowTipsAsked) rowTipsAsked = globalThis.SF?.Loader?.ensurePlugin?.('tooltip') === true;
+    for (const [part, next] of wanted) {
+      // A tooltip the page linked itself stays its own.
+      const linked = next.button.getAttribute('data-tooltip');
+      let tip = this._rowTips.get(part);
+      if (linked && linked !== tip?.surface.id) continue;
+      if (!tip) {
+        const surface = document.createElement('span');
+        surface.className = 'sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tabs-tooltip';
+        surface.id = `${this.tabsId}--${part}-tooltip`;
+        surface.hidden = true;
+        const content = document.createElement('span');
+        content.className = 'sf-tooltip-content';
+        const text = document.createElement('span');
+        text.className = 'sf-tooltip-text';
+        content.append(text);
+        surface.append(content);
+        container.append(surface);
+        tip = {button: next.button, surface};
+        this._rowTips.set(part, tip);
+      }
+      const text = tip.surface.querySelector('.sf-tooltip-text');
+      if (text && text.textContent !== next.words) text.textContent = next.words;
+      if (next.button.getAttribute('data-tooltip') !== tip.surface.id) next.button.setAttribute('data-tooltip', tip.surface.id);
+    }
   }
 
   // The errors of some tabs, by index: what «Ещё» sums.

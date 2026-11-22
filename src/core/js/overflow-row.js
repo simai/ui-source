@@ -89,10 +89,22 @@ export function fitBesideMore({widths, gap = 0, room, must = [], current = -1, e
 //   textRoom: the label's own width there; twoLetters: the label's width with
 //   two letters and the ellipsis; iconOnly: the tab's width with its icon
 //   alone, or null for a tab without one; moreGain: how much narrower the
-//   trigger is with its glyph alone.
+//   trigger is with its glyph alone; compactTextRoom: the label's width
+//   beside the trigger drawn as its glyph alone (measured; else textRoom and
+//   the gain).
+// The label is decided again beside the glyph-alone trigger before the tab
+// gives up its words (group build 16 return GB16-5, 2026-11-22): the trigger
+// keeps its name out of sight and as a tooltip, the current tab's name is the
+// row's content -- an icon beside a bare chevron with 40-96 px empty and the
+// whole name fitting there read as a fault. So: two letters or more beside
+// «Ещё (n)»; else two letters or more (up to the whole word) beside the
+// glyph alone; else the icon alone, the trigger keeping its words while the
+// icon stands beside them; a tab of words keeps two letters.
 // Answers {icon, compact}: the tab draws its icon alone; the trigger its glyph.
-export function squeezeStep({tabRoom, textRoom, twoLetters, iconOnly = null, moreGain = 0}) {
+export function squeezeStep({tabRoom, textRoom, twoLetters, iconOnly = null, moreGain = 0, compactTextRoom = null}) {
   if (textRoom + TOLERANCE >= twoLetters) return {icon: false, compact: false};
+  const besideGlyph = compactTextRoom ?? textRoom + moreGain;
+  if (moreGain > 0 && besideGlyph + TOLERANCE >= twoLetters) return {icon: false, compact: true};
   if (iconOnly !== null) return {icon: true, compact: tabRoom + TOLERANCE < iconOnly && moreGain > 0};
   return {icon: false, compact: moreGain > 0};
 }
