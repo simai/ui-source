@@ -442,6 +442,14 @@
       "reason": "recorded by group build 17 (merge of feat/gb17-fields, F4): sf-segmented draws an option's palette colour by the badge's hue setting (C411) instead of two public variables in a style; the plain button group draws no option badges",
       "decision": "gb17-fields F4, C411",
       "date": "2026-11-22"
+    },
+    {
+      "unit": "component.icon-buttons",
+      "version": "1.20.2",
+      "twin": "smart.button-icon",
+      "reason": "recorded by group build 17 (merge of feat/form-defects-fs, FS-11): the shared name tooltip also serves a control marked data-sf-name-tip (the country code button); sf-button-icon keeps its own tooltip and is unchanged",
+      "decision": "FS-11, DEV msg-3f4a9bb9543f4bb9a8be",
+      "date": "2026-11-22"
     }
   ]
 }
