@@ -70,7 +70,11 @@
 @container sf-bulk-actions (width < #{mq.container-step(g6)}) {
   // sf-button's host is display: contents (its inline style), so the
   // inner button is what is hidden.
-  .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action ~ .sf-bulk-actions__action > button,
+  // The code's phone row shows the first action that has an icon (an action
+  // without one goes into «⋯», 1.2.1): the static row does the same, so it
+  // never shows an empty button beside «⋯» (msg-afb6bff8).
+  .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action > button:not(:has(.sf-icon)),
+  .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action:has(> button .sf-icon) ~ .sf-bulk-actions__action > button,
   .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action .sf-button-text-container {
     display: none;
   }

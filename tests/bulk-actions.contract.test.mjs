@@ -76,7 +76,7 @@ test('up to three labelled actions, the rest in «⋯», the dangerous one alway
 
 test('the manifest: a new component of family bulk with the contract of C295', () => {
   assert.equal(manifest.tag, 'sf-bulk-actions');
-  assert.equal(manifest.version, '1.3.0'); // LV3-26, LV3-27, LV4-23: the settings panel's padding, the fold by width
+  assert.equal(manifest.version, '1.3.1'); // msg-afb6bff8: one «⋯» on a phone (1.3.0: LV3-26/27, LV4-23)
   assert.equal(manifest.family, 'bulk');
   for (const name of ['count', 'page-count', 'total', 'all-selected', 'count-text', 'place', 'size', 'label', 'actions']) {
     assert.ok(manifest.settings[name], name);
@@ -209,4 +209,19 @@ test('LV3-27, LV4-23: the actions fold by width into «⋯», the dangerous ones
   assert.match(element, /fitActions\(root, width\)/u);
   assert.match(element, /this\._fit = shown - 1;/u, 'one by one while the row wraps');
   assert.match(element, /getComputedStyle\(root\)\.display !== 'flex'\) return;/u, 'nothing is measured before the bar\'s sheet draws it as a row');
+});
+
+test('msg-afb6bff8: a phone bar shows exactly one «⋯» -- an action without an icon never stands in its row', () => {
+  const bare = [{id: 'paid', text: 'Отметить оплаченными'}, {id: 'manager', text: 'Передать', icon: 'person'}, {id: 'export', text: 'Выгрузить', icon: 'download'}];
+  const first = splitActions(bare, VISIBLE_COMPACT, {iconOnly: true});
+  assert.deepEqual(first.visible.map((a) => a.id), ['manager'], 'the first action with an icon');
+  assert.ok(first.rest.some((a) => a.id === 'paid'), 'the bare one in «⋯» with its label');
+  const none = splitActions(bare.map(({id, text}) => ({id, text})), VISIBLE_COMPACT, {iconOnly: true});
+  assert.deepEqual(none.visible, [], 'no icon anywhere: only «⋯»');
+  assert.equal(foldActions(none, null).visible.length, 0);
+  assert.doesNotMatch(template, /more_horiz'\}/u, 'no more_horiz fallback for an action');
+  assert.match(template, /if \(!action\.icon\) return nothing;/u, 'the template draws no phone action without an icon');
+  assert.equal((template.match(/icon="more_horiz"/gu) ?? []).length, 1, 'one «⋯» button in the template');
+  assert.match(sheet, /\.sf-bulk-actions__action > button:not\(:has\(\.sf-icon\)\)/u, 'the static phone row hides a bare action');
+  assert.match(sheet, /\.sf-bulk-actions__action:has\(> button \.sf-icon\) ~ \.sf-bulk-actions__action > button/u, 'and shows the first with an icon');
 });
