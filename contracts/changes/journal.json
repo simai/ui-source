@@ -20162,6 +20162,26 @@
         }
       ],
       "source": "src/core/js/iconSubsetRuntime.js"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-loader-scripts-after-sheets",
+      "kind": "behaviour",
+      "summary": "core.runtime (group build 17, L3): the Loader appends the scripts it asks for after the sheets asked for in the same task (at the end of the task's microtasks, in their order). On an HTTP/1.1 origin the browser opens six connections; six component scripts asked first took all six and the first paint's sheets (icon-buttons, close, icons, badges, dot, utilities) waited for the slowest script, so in the first-paint gate (scripts held 400 ms) the drawer and the site header drew no frame before their code on about one load in five at 390.",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "a rule's script element appended before its sheets",
+          "to": "the sheets of the task first, then the scripts"
+        }
+      ],
+      "source": "src/core/js/loader.js"
     }
   ]
 }

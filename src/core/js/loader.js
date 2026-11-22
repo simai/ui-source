@@ -5167,13 +5167,33 @@ SFLoaderPlugin.prototype.insertScript = function (src, pluginURL, param = {}) {
       }
     }
 
-    // Smart definitions wait for the next frame in a batch (smart-base); a
-    // script asked for now may name them as relations, and a relation is
-    // defined before the element that names it runs.
-    globalThis[Symbol.for('simai.sf.smart-base.definitions')]?.flush?.();
-    head.append(script);
+    queueScriptInsert(() => {
+      // Smart definitions wait for the next frame in a batch (smart-base); a
+      // script asked for now may name them as relations, and a relation is
+      // defined before the element that names it runs.
+      globalThis[Symbol.for('simai.sf.smart-base.definitions')]?.flush?.();
+      head.append(script);
+    });
   });
 };
+
+// Scripts go into the document after the sheets asked for in the same task
+// (group build 17 L3). The Loader asks for a rule's script and then for its
+// sheets and its relations' sheets; on an HTTP/1.1 origin the browser opens
+// six connections, and six scripts asked first took all six, so the first
+// paint's sheets waited for the slowest script (the first-paint gate's held
+// 400 ms: icon-buttons, close, icons, badges, dot and the utilities came in at
+// 500 ms; the drawer and the site header drew no frame before their code).
+// A script element appended at the end of the task's microtasks keeps its
+// order among the scripts and starts after the sheets.
+const scriptInserts = [];
+function queueScriptInsert(insert) {
+  scriptInserts.push(insert);
+  if (scriptInserts.length > 1) return;
+  queueMicrotask(() => {
+    while (scriptInserts.length) scriptInserts.shift()();
+  });
+}
 
 SFLoaderPlugin.prototype.setPreloaderParams = function () {
   if (this.params.preloader) {
