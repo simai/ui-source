@@ -94,7 +94,8 @@ const read = (tab) => tab.evaluate(async () => {
     button: await settledIn('sf-button', 5000),
     failed: window.__failed.map(({rule, tags, package: pkg}) => ({rule, tags, package: pkg})),
     publicMember: typeof SF.Loader.settled,
-    ownKeys: Object.keys(SF.Loader).filter((key) => /fail|settle|report/iu.test(key)),
+    // The L2 names live on the Loader's prototype, never as own instance keys.
+    ownKeys: ['settled', 'reportModuleFailed'].filter((key) => Object.hasOwn(SF.Loader, key)),
   };
 });
 try {
@@ -122,18 +123,21 @@ try {
         if (got.publicMember !== 'function') say('SF.Loader.settled is not a function', got.publicMember);
         if (got.ownKeys.length) say('own Loader names added', got.ownKeys);
         if (got.button !== 'defined') say('sf-button not settled as defined', got.button);
-        if (got.ensured.ready.join() !== 'sf-button') say('ensure ready', got.ensured.ready);
         if (step === 'served') {
           if (got.tag !== 'defined' || got.tagShort !== 'defined') say('served sf-tag not defined', [got.tag, got.tagShort]);
           if (got.failed.length) say('event without a failure', got.failed);
           if (got.ensured.failed.length || got.ensured.missing.length) say('ensure lists a served tag', got.ensured);
+          if (got.ensured.ready.slice().sort().join() !== 'sf-button,sf-tag') say('ensure ready', got.ensured.ready);
         } else {
           if (got.tag !== 'failed' || got.tagShort !== 'failed') say('sf-tag not settled as failed', [got.tag, got.tagShort]);
           const events = got.failed.filter((one) => one.tags.includes('sf-tag'));
           if (events.length !== 1) say('sf-loader-module-failed for sf-tag not heard once', got.failed);
           if (got.ensured.failed.join() !== 'sf-tag' || got.ensured.missing.join() !== 'sf-tag') say('ensure failed/missing', got.ensured);
           if (got.ensureMs > 1000) say('ensure waited for a failed tag', got.ensureMs);
-          if (step === 'stored' && tagAsked) say('the stored-missing script was asked again', tagAsked);
+          if (got.ensured.ready.join() !== 'sf-button') say('ensure ready', got.ensured.ready);
+          // A stored-missing rule the rule set still names is tried once more (revalidateMissingPlugins:
+          // a deployment may have added the file); it must fail the same way, once, without a second form.
+          if (step === 'stored' && tagAsked > 1) say('the stored-missing script was asked in both forms', tagAsked);
         }
         if (errors.length) say('console', errors);
         await tab.close();
