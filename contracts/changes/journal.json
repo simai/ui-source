@@ -20142,6 +20142,26 @@
         }
       ],
       "source": "src/component/tabs/scss/_css__tabs.scss"
+    },
+    {
+      "recorded_on": "2026-11-22",
+      "stage": "compat",
+      "deprecated_on": "2026-11-22",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A component that handed its glyphs to SF.Loader.adoptStaticIcons only to show them sooner (outside an ignored region) may stop; inside data-sf-observer=\"ignore\" the hand-over stays the way.",
+      "owner": "ui-source",
+      "id": "behaviour-loader-static-icon-drawn-at-once",
+      "kind": "behaviour",
+      "summary": "core.runtime (group build 17, L1; View list register LV2-5): a class-markup icon that comes into the page after load, or whose name changes, to a name the font in place already draws is marked loaded straight from the Loader's observer, before the next frame, not after the observer's 100 ms debounce (it stayed unseen 100-130 ms; sf-view-table handed its checked ticks over with adoptStaticIcons). A name the font does not draw yet waits for its font as before; an ignored region is still the page's.",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "an added icon of a drawn name unseen for the 100 ms debounce",
+          "to": "loaded on the first frame"
+        }
+      ],
+      "source": "src/core/js/iconSubsetRuntime.js"
     }
   ]
 }

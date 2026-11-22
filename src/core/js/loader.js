@@ -3047,6 +3047,14 @@ SFLoaderPlugin.prototype.search = function () {
     relevantChanges.forEach((change) => {
       if (change.type === 'characterData' || change.type === 'childList') {
         _this.holdChangedStaticIcon?.(change.target);
+        // A name the font already draws shows now, not after the debounce
+        // (group build 17 L1): the changed icon, and the icons of what came in.
+        _this.showDrawnStaticIcon?.(change.target);
+        if (change.type === 'childList' && _this.showDrawnStaticIconsIn) {
+          change.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && !_this.shouldSkipNode(node)) _this.showDrawnStaticIconsIn(node);
+          });
+        }
       }
     });
 

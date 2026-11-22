@@ -1318,6 +1318,48 @@ export function installIconSubsetRuntime(
     }
   };
 
+  // The other half, also straight from the observer (group build 17 L1,
+  // View list register LV2-5): a class-markup icon that comes into the page,
+  // or whose name changes, to a name the font in place already draws is
+  // marked loaded at once. It waited for the observer's 100 ms debounce
+  // unseen (a checked box's tick in sf-view-table: 102-126 ms measured, so
+  // the table handed its ticks over with adoptStaticIcons to show them).
+  // Only names the font is known to draw -- registered, in the manifest, in
+  // the loaded descriptors, the local font in: nothing here reads a computed
+  // style; any other name waits for the debounced scan as before.
+  SFLoaderPlugin.prototype.isTrackedIconKnownDrawn = function (tracked) {
+    if (!tracked?.icon) return false;
+    if (registeredIcon(tracked.icon)) return true;
+    const loadAttrs = this.getIconLoadAttrs(tracked.attrs);
+    if (!this.isIconSubsetEnabled()) return this.isLocalIconFontReady(loadAttrs.type);
+    if (this.isIconCoveredByManifest(tracked.icon, loadAttrs)) return true;
+    return this.loadedIcons.has(this.getLoadedIconDescriptorKey(tracked.icon, tracked.attrs));
+  };
+
+  SFLoaderPlugin.prototype.showDrawnStaticIcon = function (node) {
+    const el = this.getStaticIconElement(node);
+    if (!el || el.classList.contains("sf-icon-loaded")) return false;
+    const tracked = this.getTrackedStaticIconAttrs(el);
+    if (!tracked || !this.isTrackedIconKnownDrawn(tracked)) return false;
+    el.classList.add("sf-icon-loaded");
+    checkIconGlyph(el);
+    return true;
+  };
+
+  // The icons of an added subtree, the same way: the node itself when it is
+  // one, else the glyphs below it (a live list by class, no selector walk).
+  SFLoaderPlugin.prototype.showDrawnStaticIconsIn = function (node) {
+    if (!node || node.nodeType !== Node.ELEMENT_NODE) return 0;
+    if (node.classList?.contains("sf-icon")) return this.showDrawnStaticIcon(node) ? 1 : 0;
+    const glyphs = node.getElementsByClassName?.("sf-icon");
+    if (!glyphs?.length) return 0;
+    let shown = 0;
+    for (let index = 0; index < glyphs.length; index++) {
+      if (this.showDrawnStaticIcon(glyphs[index])) shown += 1;
+    }
+    return shown;
+  };
+
   SFLoaderPlugin.prototype.syncStaticIconLoadedState = function (root = null) {
     const host = root || document.body;
     if (!host) return;
