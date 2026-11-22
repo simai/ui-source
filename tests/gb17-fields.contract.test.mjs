@@ -22,7 +22,7 @@ test('F1 (C401): labels="start" switches as sf-list-description layout auto, one
   // One label column, as wide as the longest label up to 40 %, the rows a subgrid.
   assert.match(block, /--sf-form--label-width: 40%;/u);
   assert.match(block, /grid-template-columns: fit-content\(var\(--sf-form--label-width\)\) minmax\(0, 1fr\);/u);
-  assert.match(block, /grid-template-columns: subgrid;/u);
+  assert.match(block, /grid-template-columns: subgrid;[\s\S]*?column-gap: var\(--sf-form--label-gap\);/u);
   assert.match(block, /--sf-form--label-gap: var\(--sf-ui-1--space-x\);/u);
   assert.match(block, /\[data-size="1\/2"\] \{\s*--sf-form--label-gap: var\(--sf-ui-1\\\/2--space-x\);/u);
   // The same switch as sf-list-description's layout auto.
@@ -44,6 +44,9 @@ test('F2: a required checkbox of its own template is answered only when ticked',
   assert.match(form, /for \(const field of this\.shownFields\(\)\) \{\s*const message = this\.errorOf\(field\);/u);
   // The box says it is required.
   assert.match(form, /box\.setAttribute\('aria-required', 'true'\)/u);
+  // after the box's own drawing too, and the input event leaves its error to the change.
+  assert.match(form, /this\.markConsents\(\);\s*this\.linkMessages\(\);\s*\}/u);
+  assert.match(form, /if \(ticksToAnswer\(this\.fieldOf\(key\)\)\) return;/u);
 });
 
 test('F3 (LV4-8): an option name badge in sf-input-choice takes the row text', () => {

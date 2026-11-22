@@ -222,6 +222,10 @@
       display: grid;
       grid-column: 1 / -1;
       grid-template-columns: subgrid;
+      /* A subgrid keeps its own gap: the field's 4 would take 6 px off the
+         label column on each side and set every control 12 px before the
+         value it replaces. */
+      column-gap: var(--sf-form--label-gap);
       row-gap: var(--sf-space-1\/4);
       align-items: start;
     }

@@ -278,7 +278,10 @@ class SfForm extends FormElement {
     // A control's own drawing may rewrite its native control's
     // aria-describedby: the form's lines are linked again after it.
     this._onControlDrawn = (event) => {
-      if (event.target !== this && event.target?.closest?.('.sf-form-control')) this.linkMessages();
+      if (event.target !== this && event.target?.closest?.('.sf-form-control')) {
+        this.markConsents();
+        this.linkMessages();
+      }
     };
   }
 
@@ -727,6 +730,10 @@ class SfForm extends FormElement {
     if (!key) return;
     this._touched.add(key);
     if (!this._errors.has(key) || this._hostErrors.has(key)) return;
+    // A consent box is answered by its value, which its change writes: its
+    // input event comes first, and clearing the error then redrew the box
+    // under the click, so the change never came and the tick was lost (F2).
+    if (ticksToAnswer(this.fieldOf(key))) return;
     const control = this.controlOf(key);
     if (control?.validity?.valid && control.validity.valueMissing === false) {
       const field = this.fieldOf(key);
@@ -800,13 +807,6 @@ class SfForm extends FormElement {
       const speaks = speaksError(control);
       // A yes/no checkbox carries its label (a box beside its name, not under it).
       if (speaks && control.localName === 'sf-checkbox' && control.getAttribute('label') !== field.label) control.setAttribute('label', field.label);
-      // A consent box says it is required to a screen reader (F2).
-      if (speaks && control.localName === 'sf-checkbox') {
-        const box = control.querySelector('input[type="checkbox"]');
-        const asks = this.isEditing && field.required === true && field.readonly !== true && ticksToAnswer(field);
-        if (box && asks && box.getAttribute('aria-required') !== 'true') box.setAttribute('aria-required', 'true');
-        else if (box && !asks && box.hasAttribute('aria-required')) box.removeAttribute('aria-required');
-      }
       if (speaks) {
         if (message) {
           if (control.getAttribute('error-message') !== message) control.setAttribute('error-message', message);
@@ -819,7 +819,22 @@ class SfForm extends FormElement {
         }
       }
     }
+    this.markConsents();
     this.linkMessages();
+  }
+
+  // A consent box (a required checkbox of its own template, F2) says it is
+  // required to a screen reader. Run after the form's drawing and after the
+  // box's own, which draws a new input when its error comes or goes.
+  markConsents() {
+    for (const field of this.list) {
+      if (!ticksToAnswer(field)) continue;
+      const box = this.controlOf(field.key)?.querySelector?.('input[type="checkbox"]');
+      if (!box) continue;
+      const asks = this.isEditing && field.required === true && field.readonly !== true;
+      if (asks && box.getAttribute('aria-required') !== 'true') box.setAttribute('aria-required', 'true');
+      else if (!asks && box.hasAttribute('aria-required')) box.removeAttribute('aria-required');
+    }
   }
 
   // The hint or the error line the form draws under a control is read with
