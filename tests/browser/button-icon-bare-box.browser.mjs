@@ -38,30 +38,30 @@ for (const size of ['', '1/3', '1/2', '1', '2', '3']) {
   const id = size ? size.replace('/', '_') : 'none';
   for (const [kind, extra] of [['button', ''], ['link', LINK]]) {
     cases.push({id: `block-${kind}-${id}`, html: `<div class="c">${bi(`${sz} ${extra}`)}</div>`});
-    cases.push({id: `flex-${kind}-${id}`, html: `<div class="c row"><span>Счёт 1043</span>${bi(`${sz} ${extra}`)}<span class="next">после</span></div>`});
-    cases.push({id: `cell-${kind}-${id}`, html: `<table class="c t"><tr><td>Счёт 1043</td><td>${bi(`${sz} ${extra}`)}</td><td class="next">12 500 ₽</td></tr></table>`});
-    cases.push({id: `text-${kind}-${id}`, html: `<p class="c">Счёт ${bi(`${sz} ${extra}`)} <span class="next">после</span></p>`});
+    cases.push({id: `flex-${kind}-${id}`, html: `<div class="c row"><span class="w">Счёт 1043</span>${bi(`${sz} ${extra}`)}<span class="w next">после</span></div>`});
+    cases.push({id: `cell-${kind}-${id}`, html: `<table class="c t"><tr><td><span class="w">Счёт 1043</span></td><td>${bi(`${sz} ${extra}`)}</td><td><span class="w next">12 500 ₽</span></td></tr></table>`});
+    cases.push({id: `text-${kind}-${id}`, html: `<p class="c"><span class="w">Счёт</span> ${bi(`${sz} ${extra}`)} <span class="w next">после</span></p>`});
   }
 }
 for (const size of ['1/2', '1']) {
   for (const [kind, extra] of [['button', ''], ['link', LINK]]) {
-    cases.push({id: `fulltable-${kind}-${size.replace('/', '_')}`, html: `<table class="c t full"><tr><td>Счёт 1043</td><td class="num next">12 500 ₽</td><td>${bi(`size="${size}" ${extra}`)}</td></tr></table>`});
+    cases.push({id: `fulltable-${kind}-${size.replace('/', '_')}`, html: `<table class="c t full"><tr><td><span class="w">Счёт 1043</span></td><td class="num"><span class="w next">12 500 ₽</span></td><td>${bi(`size="${size}" ${extra}`)}</td></tr></table>`});
   }
 }
 for (const size of ['1', '2', '3']) {
   for (const height of ['low', 'high', 'highest']) {
     for (const [kind, extra] of [['button', ''], ['link', LINK]]) {
-      cases.push({id: `flex-${kind}-${size}-${height}`, html: `<div class="c row"><span>Счёт</span>${bi(`size="${size}" height="${height}" ${extra}`)}<span class="next">после</span></div>`});
+      cases.push({id: `flex-${kind}-${size}-${height}`, html: `<div class="c row"><span class="w">Счёт</span>${bi(`size="${size}" height="${height}" ${extra}`)}<span class="w next">после</span></div>`});
     }
   }
 }
 for (const [kind, extra] of [['button', ''], ['link', LINK]]) {
-  cases.push({id: `padvars-${kind}`, html: `<div class="c row pad"><span>Счёт</span>${bi(`size="1" ${extra}`)}<span class="next">после</span></div>`});
+  cases.push({id: `padvars-${kind}`, html: `<div class="c row pad"><span class="w">Счёт</span>${bi(`size="1" ${extra}`)}<span class="w next">после</span></div>`});
 }
 
 const body = `<main id="stage">${cases.map((one) => `<section data-case="${one.id}">${one.html}<div class="mark">·</div></section>`).join('\n')}</main>`;
 const pageCss = `.c{margin:0}.row{display:flex;gap:8px;align-items:center}.t{border-collapse:collapse}.t td{padding:4px 8px;border:1px solid}
-.full{inline-size:100%}.num{text-align:right}.pad{--sf-icon-button-padding-block:2px;--sf-icon-button-padding-inline:10px}section{padding:4px 0}`;
+.w{display:inline-block;inline-size:6rem;white-space:nowrap;overflow:hidden}.full{inline-size:100%}.num{text-align:right}.pad{--sf-icon-button-padding-block:2px;--sf-icon-button-padding-inline:10px}section{padding:4px 0}`;
 const html = (theme, code) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="${base}core/css/core.css">
   <style>${pageCss}</style>
@@ -84,6 +84,16 @@ const read = () => [...document.querySelectorAll('section[data-case]')].map((sec
     next: next && [next.left, next.right].map(round), mark: round(mark.top)};
 });
 
+// The text faces load on use (unicode ranges): both pages read once the
+// words' faces came; the words around the control stand in boxes of a fixed
+// width as well, so a load that set them in the metric fallback (Inter
+// Fallback, 1-3 px narrower on these words, seen once in 24 loads) does not
+// move the control.
+const faces = async () => {
+  await document.fonts.load('400 1rem "Inter Variable"', 'Счёт 1043 после 12 500 ₽ ·');
+  await document.fonts.ready;
+};
+
 const browser = await chromium.launch({headless: true, channel: 'chrome', ignoreDefaultArgs: ['--hide-scrollbars']});
 let compared = 0;
 try {
@@ -103,12 +113,12 @@ try {
       page.on('pageerror', (error) => failures.push({view, name: 'page error', said: error.message}));
 
       await page.goto('http://probe.test/held');
-      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(faces);
       const held = await page.evaluate(read);
 
       await page.goto('http://probe.test/drawn');
       await page.waitForFunction(() => [...document.querySelectorAll('sf-button-icon')].every((host) => host.matches(':defined') && host.querySelector(':scope > button, :scope > a')), null, {timeout: 20000});
-      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(faces);
       await page.waitForTimeout(500);
       const drawn = await page.evaluate(read);
       const cls = await page.evaluate(() => window.__cls);
