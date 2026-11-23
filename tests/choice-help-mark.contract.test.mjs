@@ -14,7 +14,7 @@ for (const kind of ['checkbox', 'radio', 'switch']) {
     // The help, the text column and the row come from the shared base (C63 W9).
     const base = await read('src/smart/helpers/checkable-row.js');
     assert.match(base, /<sf-help-mark class=\$\{className\} size=\$\{CHECKABLE_HELP_SIZE\[context\.size\] \|\| '1\/3'\} text=\$\{context\.help\}/);
-    assert.match(base, /CHECKABLE_HELP_SIZE = Object\.freeze\(\{'1\/2': '1\/3', 1: '1\/3', 2: '1\/2'\}\)/);
+    assert.match(base, /CHECKABLE_HELP_SIZE = Object\.freeze\(\{'1\/2': '1\/3', 1: '1\/2', 2: '1\/2'\}\)/);
     assert.match(source, /renderCheckableHelp\(context, 'sf-[a-z-]+-help'\)/);
     // The checkbox and the switch hand the row their error line too (field orders FO-1).
     assert.match(source, kind === 'radio'

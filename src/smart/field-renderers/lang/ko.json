@@ -256,6 +256,7 @@
     "rangeFromWord": "부터",
     "rangeToWord": "까지",
     "filterTextPlaceholder": "텍스트",
-    "filterRemoveCondition": "조건 제거"
+    "filterRemoveCondition": "조건 제거",
+    "template-email-input": "이메일 입력란"
   }
 }

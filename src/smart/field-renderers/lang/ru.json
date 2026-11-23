@@ -268,6 +268,7 @@
     "rangeFromWord": "от",
     "rangeToWord": "до",
     "filterTextPlaceholder": "Текст",
-    "filterRemoveCondition": "Снять условие"
+    "filterRemoveCondition": "Снять условие",
+    "template-email-input": "Поле адреса почты"
   }
 }

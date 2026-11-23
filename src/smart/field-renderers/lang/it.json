@@ -264,6 +264,7 @@
     "rangeFromWord": "da",
     "rangeToWord": "a",
     "filterTextPlaceholder": "Testo",
-    "filterRemoveCondition": "Rimuovi condizione"
+    "filterRemoveCondition": "Rimuovi condizione",
+    "template-email-input": "Campo email"
   }
 }

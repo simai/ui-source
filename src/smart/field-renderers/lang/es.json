@@ -264,6 +264,7 @@
     "rangeFromWord": "desde",
     "rangeToWord": "hasta",
     "filterTextPlaceholder": "Texto",
-    "filterRemoveCondition": "Quitar condición"
+    "filterRemoveCondition": "Quitar condición",
+    "template-email-input": "Campo de correo"
   }
 }

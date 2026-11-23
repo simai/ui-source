@@ -31,9 +31,11 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.modal",
       "smart.button",
       "smart.help-mark",
-      "smart.icon"
+      "smart.icon",
+      "smart.modal"
     ],
     "public_parts": []
   },
@@ -506,11 +508,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "1a761c314ed2f8bc26a0b62847834971248d99337288643e30a6c0f81bf93b85"
+        "sha256": "1c9c0ae2be0781613a29bc670b0d8378ff9678f685a46615d8eebe4203e0a65a"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
-        "sha256": "f8b2c91604c643e65834a128b9178e3e3948f78e7b25caa8e188c21ee54609ac"
+        "sha256": "584bf30f8cab2a53d6ffb6f369ea8be617fb9b603005d2b8023d6e3d68a0860c"
       },
       {
         "path": "src/smart/form/js/choice-list.js",
@@ -518,7 +520,7 @@
       },
       {
         "path": "src/smart/form/rule.js",
-        "sha256": "4b78c6a55f21a4f39766775e5141a4581a51fe5720174a6a0733e9aa270fb741"
+        "sha256": "dcd6ae767dc41a68bbdc4ec7be462937883bbc65f2a59eb50d85baa7f519c065"
       },
       {
         "path": "src/smart/form/docs.md",

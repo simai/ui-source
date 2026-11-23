@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 249,
-    "translated": 249,
+    "words": 250,
+    "translated": 250,
     "share": 100
   },
   "words": {
@@ -283,7 +283,8 @@
       "rangeFromWord": "от",
       "rangeToWord": "до",
       "filterTextPlaceholder": "Текст",
-      "filterRemoveCondition": "Снять условие"
+      "filterRemoveCondition": "Снять условие",
+      "template-email-input": "Поле адреса почты"
     }
   }
 }

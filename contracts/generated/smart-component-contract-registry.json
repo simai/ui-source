@@ -1120,9 +1120,11 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.modal",
           "smart.button",
           "smart.help-mark",
-          "smart.icon"
+          "smart.icon",
+          "smart.modal"
         ]
       },
       "contract_schema": {
@@ -1134,7 +1136,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/form/smart.manifest.json",
-      "manifest_sha256": "623b7a294b2db5db7d7121f7ea1dc1fba65c9d2de104cc9b7db68671dafd3b06",
+      "manifest_sha256": "87596a947d80c483d88563fe121632ae5b9af871e681a229f1f8ca85cd0398b7",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

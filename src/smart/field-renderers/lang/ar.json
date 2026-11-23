@@ -276,6 +276,7 @@
     "rangeFromWord": "من",
     "rangeToWord": "إلى",
     "filterTextPlaceholder": "نص",
-    "filterRemoveCondition": "إزالة الشرط"
+    "filterRemoveCondition": "إزالة الشرط",
+    "template-email-input": "حقل البريد الإلكتروني"
   }
 }

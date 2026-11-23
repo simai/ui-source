@@ -260,6 +260,7 @@
     "rangeFromWord": "von",
     "rangeToWord": "bis",
     "filterTextPlaceholder": "Text",
-    "filterRemoveCondition": "Bedingung entfernen"
+    "filterRemoveCondition": "Bedingung entfernen",
+    "template-email-input": "E-Mail-Feld"
   }
 }

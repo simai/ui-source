@@ -438,6 +438,14 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-modal",
+      "$comment": ["The leave question (FS-4): an sf-modal size question with its two answers."]
+    },
+    {
+      "name": "modal",
+      "$comment": ["holdFieldsReadOnly from component/modal/js/_focus.js: the fields are held while a save runs (FS-2, C159 (9))."]
     }
   ],
   "templates": {

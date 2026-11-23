@@ -256,6 +256,7 @@
     "rangeFromWord": "从",
     "rangeToWord": "到",
     "filterTextPlaceholder": "文本",
-    "filterRemoveCondition": "移除条件"
+    "filterRemoveCondition": "移除条件",
+    "template-email-input": "邮箱输入框"
   }
 }

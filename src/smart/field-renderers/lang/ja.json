@@ -256,6 +256,7 @@
     "rangeFromWord": "から",
     "rangeToWord": "まで",
     "filterTextPlaceholder": "テキスト",
-    "filterRemoveCondition": "条件を削除"
+    "filterRemoveCondition": "条件を削除",
+    "template-email-input": "メール入力欄"
   }
 }

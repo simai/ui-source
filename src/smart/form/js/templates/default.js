@@ -28,7 +28,7 @@ import {html, nothing} from 'lit';
 //   no «Изменить»; expired is the line alone; declined draws nothing.
 // - Under a field whose descriptor says where its value comes from (FS-1,
 //   C422), the origin line: an own value with the upper level's value and
-//   «Вернуть общее» (a link button, 1/3), or the reason a field is closed
+//   «Вернуть общее» (a plain button, 1/3), or the reason a field is closed
 //   above; a polite status, so the line that appears after a change is heard.
 // - busy (FS-2): «Сохранить» shows its loading, «Отмена» waits, the form is
 //   aria-busy. After a save the state line says «Сохранено в 14:35» (FS-3)
@@ -48,7 +48,7 @@ function originLine(origin) {
   return html`<div class="sf-form-origin" data-level=${origin.level} role="status">
     <span class="sf-form-origin-text">${origin.lead}${origin.upper
       ? html` · ${origin.upper.above}: <b class="sf-form-origin-value">${origin.upper.value}</b>` : nothing}</span>
-    ${origin.reset ? html`<sf-button class="sf-form-origin-reset" appearance="link" size="1/3" text=${origin.reset.text}
+    ${origin.reset ? html`<sf-button class="sf-form-origin-reset" appearance="plain" size="1/3" text=${origin.reset.text}
       @click=${origin.reset.press}></sf-button>` : nothing}
   </div>`;
 }

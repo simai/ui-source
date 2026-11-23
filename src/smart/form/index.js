@@ -905,7 +905,6 @@ class SfForm extends FormElement {
   onNativeSubmit(event) {
     if (!event.target?.classList?.contains('sf-form')) return;
     event.preventDefault();
-    if (this.busy) return;
     this.submit();
   }
 
@@ -921,7 +920,6 @@ class SfForm extends FormElement {
     if (!root || !root.classList?.contains('sf-form') || root.closest('sf-form') !== this) return;
     if (button.disabled) return;
     event.preventDefault();
-    if (this.busy) return;
     this.submit();
   }
 

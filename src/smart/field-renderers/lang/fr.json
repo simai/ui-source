@@ -264,6 +264,7 @@
     "rangeFromWord": "de",
     "rangeToWord": "à",
     "filterTextPlaceholder": "Texte",
-    "filterRemoveCondition": "Retirer la condition"
+    "filterRemoveCondition": "Retirer la condition",
+    "template-email-input": "Champ d’e-mail"
   }
 }
