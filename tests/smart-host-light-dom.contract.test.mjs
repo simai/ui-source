@@ -28,7 +28,7 @@ test('a host data attribute ends up on the native control and on nothing else', 
   );
   assert.match(
     base,
-    /dataAttributes\.forEach\(\(value, name\) => \{\s*nextKeys\.add\(name\);\s*target\.setAttribute\(name, value\);\s*\}\);/u,
+    /dataAttributes\.forEach\(\(value, name\) => \{\s*nextKeys\.add\(name\);\s*next\.set\(name, value\);\s*\}\);/u,
     'the record is what the control is given',
   );
   assert.match(

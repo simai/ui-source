@@ -20759,6 +20759,26 @@
         }
       ],
       "source": "src/core/scss/_sf_css__placeholder.scss"
+    },
+    {
+      "id": "behaviour-host-forward-in-place",
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "core.runtime (group build 18, smart-base): forwardHostAttributes now sets the forwarded names on the control in place. It takes off only a name the host no longer gives, writes a value only when it differs and appends a new name at the end. Before, every forward removed all forwarded names and set them again, so each one moved behind what others had written on the control since (sf-tabs' id, role and aria-*, the tooltip's aria-describedby): the control's attribute order depended on which writer ran last, and a printed first paint could hold the other order. A forward that changes nothing now changes nothing on the control.",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "a forward removes every forwarded name from the control and sets it again (order changes)",
+          "to": "a forward sets values in place; only names the host no longer gives are removed (order stable)"
+        }
+      ],
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. Code that relied on a forwarded name standing after the control's own names re-reads the order it needs; values and the set of names on the control are unchanged.",
+      "owner": "ui-source",
+      "source": "src/core/js/smart-base.js forwardHostAttributes; tests/smart-base-forward-in-place-gb18.contract.test.mjs"
     }
   ]
 }

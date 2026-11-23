@@ -317,8 +317,13 @@ the next one.
   control with `closest('sf-button')`, the direction that always exists, and the
   host's own record of what the author wrote is public as
   `element.dataAttributes`, with `removeHostDataAttribute()` to clear one from
-  the record and the control together.
+  the record and the control together. The forward sets values **in place**: it
+  takes off only a name the host no longer gives, writes a value only when it
+  differs and appends a new name, so forwarding again with nothing new leaves
+  the control's attributes and their order as they were, whatever the
+  component or a tooltip wrote on the control in between (group build 18).
   `tests/smart-host-light-dom.contract.test.mjs`;
+  `tests/smart-base-forward-in-place-gb18.contract.test.mjs`;
   `tests/browser/host-data-attributes-focus.browser.mjs`.
 
 - **A component that renders a focusable control names it in
