@@ -65,7 +65,10 @@ an `id`, its `items`, a name and one `<div role="tabpanel" data-entry="<item
 id>">` per item with the panel's content; every panel but the selected one
 carries `hidden`. The example `panels` is that markup, and its first-paint
 snapshot `static/default/panels.html` is what the server prints inside the
-host so the row and the open panel hold their place before the code arrives.
+host so the row and the open panel hold their place before the code arrives:
+the drawn row and panel row (`data-sf-static`), then the page's own panels as
+held children (`data-sf-held`) that carry their content; the code adopts the
+drawing and moves the held panels into it.
 The ids are fixed by the host's `id`, so a server can write them and every
 reference holds:
 
