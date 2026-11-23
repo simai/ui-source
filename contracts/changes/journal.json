@@ -20659,6 +20659,26 @@
         }
       ],
       "source": "scripts/generate-component-files.mjs"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: sf-editor is served by the Editor set (editor-6912015a62bd, sf-editor 1.5.0) under the same rule cl-editor.",
+      "owner": "ui-source",
+      "id": "behaviour-pro-package-drops-editor",
+      "kind": "behaviour",
+      "summary": "pro.package.json and its larena alias (group build 18): smart.editor (cl-editor) is no longer among the elements the Pro package provides; the Editor set ships sf-editor (editor-6912015a62bd, sf-editor 1.5.0), so Pro can release without its frozen copy. smart.editor-content stays listed. The same step as behaviour-pro-package-drops-admin-menu (group build 17, G-PRO).",
+      "items": [
+        {
+          "component": "pro package",
+          "from": "provides smart.editor",
+          "to": "the Editor set provides it"
+        }
+      ],
+      "source": "src/core/contracts/packages/pro.package.json"
     }
   ]
 }
