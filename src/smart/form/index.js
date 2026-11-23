@@ -300,6 +300,18 @@ export function linkLeaves(anchor, doc = globalThis.document) {
   return !doc?.getElementById?.(id);
 }
 
+// The upper level's value in the origin line (FS-1): words in the line's text,
+// as the study draws it -- a choice is its option's label (the view would
+// draw a badge), any other type what the view draws.
+function originValueText(field, value, host) {
+  const options = field?.options || field?.filter?.options || field?.constraints?.options;
+  if (Array.isArray(options)) {
+    const option = options.find((item) => String(item?.value) === String(value));
+    if (option) return String(option.label ?? option.text ?? value);
+  }
+  return renderViewField(field, value, host, {size: '1/2'});
+}
+
 const FormElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: languageFiles,
@@ -1454,7 +1466,7 @@ class SfForm extends FormElement {
     if (level === 'own') {
       let upper = null;
       if (origin.hasValue) {
-        const shown = renderViewField(field, origin.value, host, {size: '1/2'});
+        const shown = originValueText(field, origin.value, host);
         upper = {
           above: origin.above || text(words.above) || this.sfWord('origin-above'),
           value: shown === null || shown === undefined || shown === nothing || shown === ''
