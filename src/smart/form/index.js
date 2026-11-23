@@ -23,7 +23,7 @@ import {noteDeprecated} from '../../core/js/deprecations';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {nothing, html} from 'lit';
-import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderCellField, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {holdFieldsReadOnly, windowFields} from '../../component/modal/js/_focus';
 import {pageLocale} from '../../core/js/page-language';
 import {validityWords} from '../helpers/form-field.js';
@@ -1454,7 +1454,7 @@ class SfForm extends FormElement {
     if (level === 'own') {
       let upper = null;
       if (origin.hasValue) {
-        const shown = renderCellField(field, origin.value, host);
+        const shown = renderViewField(field, origin.value, host, {size: '1/2'});
         upper = {
           above: origin.above || text(words.above) || this.sfWord('origin-above'),
           value: shown === null || shown === undefined || shown === nothing || shown === ''

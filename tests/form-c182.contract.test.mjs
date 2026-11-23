@@ -34,7 +34,7 @@ test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, foote
 });
 
 test('C182 (1), (3): the controls are the field renderers\' own, the frame is the form\'s', () => {
-  assert.match(source, /import \{OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderCellField, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u);
+  assert.match(source, /import \{OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u);
   // apply instant still reaches the renderers; the yes/no control is the field's template (C303 (4)):
   // a checkbox takes its label beside the box, a switch and the buttons a label row.
   assert.match(source, /\{apply: 'instant'\}/u);
