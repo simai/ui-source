@@ -58,6 +58,40 @@ attribute. A slotted panel (`<p slot="panel-0">`) keeps its slot name on the
 panel it becomes. Tab, panel and label ids are the host's path id and a local name
 (`<id>--tab-1`), never a counter.
 
+### Tabs a server prints (a Markdown renderer)
+
+A server that emits tabs from text (Docara's Markdown) writes the host with
+an `id`, its `items`, a name and one `<div role="tabpanel" data-entry="<item
+id>">` per item with the panel's content; every panel but the selected one
+carries `hidden`. The example `panels` is that markup, and its first-paint
+snapshot `static/default/panels.html` is what the server prints inside the
+host so the row and the open panel hold their place before the code arrives:
+the drawn row and panel row (`data-sf-static`), then the page's own panels as
+held children (`data-sf-held`) that carry their content; the code adopts the
+drawing and moves the held panels into it.
+The ids are fixed by the host's `id`, so a server can write them and every
+reference holds:
+
+| part | id | refers to |
+|---|---|---|
+| host path id | `page-<id>` (the host's `id` with `page-` in front; `\W` runs become `-`) | -- |
+| tab `n` (0-based, the item's place) | `page-<id>--tab-<n>` | `aria-controls` = its panel's id |
+| tab label | `page-<id>--label-<n>` | the tab's `aria-labelledby` |
+| page panel of item `n` | its own `id` if the page gave one, else `page-<id>--panel-<n>` | `aria-labelledby` = `page-<id>--tab-<n>`; `data-sf-tab-panel="<n>"` |
+
+Without an `id` the path is the document order (`sf-tabs-<k>`), which a
+server cannot know: give every printed host an `id`, unique in the page.
+A panel is linked to its item by `data-entry` (the item's `id`); panels
+without it are taken in order. The tablist is named by the host's
+`aria-label` (required). The code moves the page's panels into the panel row
+(the same nodes, never copied), so the panels' content -- links, code
+blocks, parts that start later -- is the server's own markup.
+
+A tab's button carries its attributes in one order on every drawing: what
+the tabs write (`id`, `role`, `aria-*`, `tabindex`) first, then the data
+attributes its button host forwards (`data-sf-tab-index`), so a printed
+snapshot matches the drawn one byte for byte (1.5.3, VO-1).
+
 `root-class`, author `style` and `root-style` apply to the visible root. Use
 Framework semantic tokens and utilities rather than fixed sizes or colors.
 The shared Tabs skin uses an inset keyboard focus indicator, a semantic gap

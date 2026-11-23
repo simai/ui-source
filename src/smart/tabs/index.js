@@ -79,6 +79,36 @@ function contentWidth(box) {
   return Math.max(0, width - sides);
 }
 
+// One attribute order on a tab's button, whichever ran last (VO-1). The
+// button host (sf-button, sf-button-icon) forwards its data-* -- the tab's
+// data-sf-tab-index among them -- by taking them off and appending them, so
+// a forward after the tabs set id, role and aria-* left them at the end, and
+// one before left them in front: a printed page read «stale» by chance. When
+// a forwarded name stands before one the tabs write, the tabs append the
+// forwarded names again, in the host's order -- the order a later forward
+// writes. Names others add later (a tooltip's aria-describedby) stay after.
+const TAB_OWN_ATTRIBUTES = new Set(['id', 'role', 'aria-controls', 'aria-selected', 'aria-disabled',
+  'aria-labelledby', 'aria-label', 'aria-current', 'tabindex']);
+
+function settleForwardedAttributes(tab) {
+  const host = tab?.parentElement;
+  const keys = host && host.__sfHostDataAttributeTarget === tab
+    ? tab[host.__sfHostDataAttributeTargetKeys]
+    : null;
+  if (!keys?.size) return;
+  const names = Array.from(keys).filter((name) => tab.hasAttribute(name) && !TAB_OWN_ATTRIBUTES.has(name));
+  if (!names.length) return;
+  const order = Array.from(tab.attributes).map((attribute) => attribute.name);
+  const lastOwn = order.reduce((at, name, index) => (TAB_OWN_ATTRIBUTES.has(name) ? index : at), -1);
+  const placed = names.map((name) => order.indexOf(name));
+  if (placed.every((at, index) => at > lastOwn && (index === 0 || at > placed[index - 1]))) return;
+  for (const name of names) {
+    const value = tab.getAttribute(name);
+    tab.removeAttribute(name);
+    tab.setAttribute(name, value);
+  }
+}
+
 function tabIndexOf(element) {
   const own = element?.dataset?.sfTabIndex ?? element?.querySelector?.(':scope > [data-sf-tab-index]')?.dataset?.sfTabIndex;
   const index = Number(own);
@@ -614,6 +644,7 @@ class SfTabs extends TabsElement {
         tab.setAttribute('aria-label', item.label);
       }
       tab.tabIndex = item === tabStop ? 0 : -1;
+      settleForwardedAttributes(tab);
     });
   }
 
