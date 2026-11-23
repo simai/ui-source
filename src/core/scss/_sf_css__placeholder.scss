@@ -106,10 +106,11 @@
    -inline still winning. Drawn, the host is display: contents over a
    button or a link that is block-level (flex), so the bare host is a block:
    as wide as the square, or for a link (href) as wide as its container, as
-   the drawn link is. Static markup printed inside (data-sf-static) is its
-   own box; a hidden button has none. sf-icon-button is the tag's alias.
-   Every selector is :where (no weight): sf-language's parts keep their own
-   box below (the trigger's), and any page or component rule wins. */
+   the drawn link is, never narrower than the square. Static markup printed
+   inside (data-sf-static) is its own box; a hidden button has none.
+   sf-icon-button is the tag's alias. Every selector is :where (no weight):
+   sf-language's parts keep their own box below (the trigger's), and any
+   page or component rule wins. */
 :where(:is(sf-button-icon, sf-icon-button)):where(:not(:defined)) {
   --sf-button-icon--box-line: var(--sf-text-height-1);
   --sf-button-icon--box-step: var(--sf-ui-1--space-y-tightness-default);
@@ -146,8 +147,15 @@
   block-size: calc(var(--sf-button-icon--box-line) + 2 * var(--sf-icon-button-padding-block, var(--sf-button-icon--box-step)));
   inline-size: calc(var(--sf-button-icon--box-line) + 2 * var(--sf-icon-button-padding-inline, var(--sf-button-icon--box-step)));
 }
+/* A link is as wide as its container, and never narrower than its square
+   (GB17B-1, 2026-11-23): in a shrink-to-fit place -- an auto-width table
+   cell, a flex row -- the empty block has no min-content, so inline-size
+   auto made it 0 wide until its code came; the drawn link is the square
+   there, and the neighbours moved 28-32 px sideways (a right-aligned sum
+   column's edge 183 px at 1440). */
 :where(:is(sf-button-icon, sf-icon-button)):where([href]:not(:defined):not([hidden]):not(:has(> [data-sf-static]))) {
   inline-size: auto;
+  min-inline-size: calc(var(--sf-button-icon--box-line) + 2 * var(--sf-icon-button-padding-inline, var(--sf-button-icon--box-step)));
 }
 }
 

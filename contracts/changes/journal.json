@@ -20739,6 +20739,26 @@
         }
       ],
       "source": "src/core/contracts/packages/pro.package.json"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A page that sized a bare sf-button-icon link itself keeps its own rule: core's is :where (no weight).",
+      "owner": "ui-source",
+      "id": "behaviour-button-icon-link-width-before-code",
+      "kind": "behaviour",
+      "summary": "core.styles (group build 18, GB17B-1, fingerprint only): a bare sf-button-icon link (href; alias sf-icon-button) is never narrower than its square before its code. In a shrink-to-fit place -- an auto-width table cell, a flex row -- it was 0 wide until its code came (inline-size auto on an empty block) and its neighbours moved 28-32 px sideways, a right-aligned sum column's edge 183 px at 1440 and 46 at 390. In a block it is still as wide as its container. tests/browser/button-icon-bare-box.browser.mjs holds the width and the height.",
+      "items": [
+        {
+          "component": "core.styles",
+          "from": "a bare icon button link: inline-size auto (0 in a shrink-to-fit place)",
+          "to": "inline-size auto, min-inline-size the square"
+        }
+      ],
+      "source": "src/core/scss/_sf_css__placeholder.scss"
     }
   ]
 }

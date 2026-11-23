@@ -6,7 +6,8 @@
   "summary": "Deterministic reference fixture for sf-reference-link.",
   "locale": "ru",
   "props": {
-    "text": "Документация",
+    "label": "Документация",
+    "text": "/docs/",
     "href": "#"
   },
   "children": [],

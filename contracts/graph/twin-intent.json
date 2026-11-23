@@ -450,6 +450,22 @@
       "reason": "recorded by group build 17 (merge of feat/form-defects-fs, FS-11): the shared name tooltip also serves a control marked data-sf-name-tip (the country code button); sf-button-icon keeps its own tooltip and is unchanged",
       "decision": "FS-11, DEV msg-3f4a9bb9543f4bb9a8be",
       "date": "2026-11-22"
+    },
+    {
+      "unit": "smart.tag",
+      "version": "1.13.1",
+      "twin": "component.tags",
+      "reason": "recorded by feat/gb18-layout (Docara Markdown admission 750b7247): the interface no longer names every tag a button (accessibility.role null, the kind decides; manifest and docs words); nothing drawn, the class tags are unchanged",
+      "decision": "GB18 layout, Docara admission 750b7247",
+      "date": "2026-11-23"
+    },
+    {
+      "unit": "smart.reference-link",
+      "version": "1.3.5",
+      "twin": "component.reference-link",
+      "reason": "recorded by feat/gb18-layout (Docara Markdown admission 750b7247): the main example gets a label so its card's link has a name; the element and the class reference are unchanged",
+      "decision": "GB18 layout, Docara admission 750b7247",
+      "date": "2026-11-23"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -354,14 +354,14 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "button",
+    "role": null,
     "accessible_name": "required",
     "keyboard": [
       "Tab",
       "Enter",
       "Space"
     ],
-    "focus": "Only native toggle and close actions enter Tab order. Focus is keyboard-visible, geometry-stable and forced-colors-safe."
+    "focus": "The kind decides the role, so the element declares none: a plain tag (no kind, kind default and the content kinds icon, color, avatar, info, success, error, warning) is a static label with no role and no Tab stop; kind checkbox is one native toggle button (aria-pressed); href makes one native link; interactive is one native button beside the remove action; closable adds the separately named native remove button. Only these native controls enter Tab order. Focus is keyboard-visible, geometry-stable and forced-colors-safe."
   },
   "presentation": {
     "themes": [
