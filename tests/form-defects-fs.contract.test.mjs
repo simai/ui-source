@@ -35,7 +35,7 @@ test('FS-6: a yes/no drawn as a checkbox keeps its help at the form\'s «?» siz
 
 test('FS-10 withdrawn in group build 17: no warm-up fetch; group build 18 keeps the link preload', () => {
   // The warm-up fetch brought 6 of 30 «sf-modal not defined in 10 s» when the server forbids caching and the page's
-  // CSP needs connect-src for it (dispatcher, GB17). Group build 18 keeps a link preload, once per page and only until
+  // CSP needs connect-src for it (dispatcher, GB17). Group build 18 keeps a link preload, once per page, before and after
   // the load event (tests/loader-preload-once.contract.test.mjs).
   const loader = read('src/core/js/loader.js');
   const body = loader.slice(loader.indexOf('function appendScriptPreload(href)'), loader.indexOf('// The page\'s language file while it is on its way'));

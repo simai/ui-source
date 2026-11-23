@@ -1,6 +1,7 @@
 // FS-10 (group build 18): a script the Loader preloads while it waits is preloaded once per page, never after it was
-// asked for; after the window's load event only when its relations are on their way and no check of Chrome's can come
-// first (Chrome checks link preloads about 3 s after that event and after each quiet network spell). No own request.
+// asked for, is in the page or was fetched, never for a rule that is not on its way. Before and after the window's
+// load event alike (dispatcher, group build 18 L1: holding it after the load event made later elements 0.2-0.6 s
+// slower; Chrome's unused-preload warning after the load event is accepted as harmless). No own request.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
@@ -63,62 +64,26 @@ test('never for a script already asked for, in the page or fetched', () => {
   assert.equal(fetched.links.length, 0, 'fetched before (resource timing)');
 });
 
-test('after the load event: only a waiting element, only when its relations are on their way and no check can come', () => {
-  for (const readyState of ['loading', 'interactive']) {
-    const p = page({readyState});
+test('after the load event a waiting script is preloaded at once, as before it (L1), still once per page', () => {
+  for (const readyState of ['loading', 'interactive', 'complete']) {
+    const p = page({readyState, now: 6000, loadEventEnd: 5000});
+    p.loader().preloadScript(MODAL);
     p.loader().preloadScript(MODAL);
     assert.equal(p.links.length, 1, readyState);
+    assert.equal(p.timers.length, 0, `${readyState}: nothing held for later`);
   }
-  const words = page({readyState: 'complete', now: 9000, loadEventEnd: 5000});
-  words.loader().preloadScript(MODAL);
-  assert.equal(words.links.length, 0, 'a script waiting for the page\'s words alone: its element fetches it');
-
-  const p = page({readyState: 'complete', now: 9000, loadEventEnd: 5000});
-  const loader = p.loader();
-  loader.relationPlugins = {'cl-modal': ['modal', 'cl-button-close', 'backdrop-filter-blur/default']};
-  loader.totalRelationsPlugins = {'cl-modal': {canLoad: false, completed: {modal: true}}};
-  loader.pluginScriptFiles = {modal: '/m.js', 'cl-button-close': 'https://example.test/ui/distr/smart/button-close/js/button-close.min.js', 'backdrop-filter-blur/default': null};
-  loader.loadedPlugins = {};
-  loader.pendingLoadPlugins = new Set(['backdrop-filter-blur/default']);
-  loader.preloadScript(MODAL, 'cl-modal');
-  assert.equal(p.links.length, 0, 'the close button is not asked for yet');
-  p.context.registry().scripts.set('https://example.test/ui/distr/smart/button-close/js/button-close.min.js', Promise.resolve());
-  loader.tryLatePreloads();
-  assert.deepEqual(p.links.map((l) => l.href), [MODAL], 'every relation on its way: preloaded');
-  loader.preloadScript(MODAL, 'cl-modal');
-  assert.equal(p.links.length, 1, 'once');
-
-  const chain = page({readyState: 'complete', now: 9000, loadEventEnd: 5000});
-  const l3 = chain.loader();
-  l3.relationPlugins = {'cl-wizard': ['cl-steps'], 'cl-steps': ['cl-spinner']};
-  l3.totalRelationsPlugins = {'cl-wizard': {canLoad: false, completed: {}}, 'cl-steps': {canLoad: false, completed: {}}};
-  l3.pluginScriptFiles = {'cl-steps': '/steps.js', 'cl-spinner': '/spinner.js'};
-  l3.loadedPlugins = {};
-  l3.pendingLoadPlugins = new Set(['cl-wizard', 'cl-steps', 'cl-spinner']);
-  l3.preloadScript('/wizard.js', 'cl-wizard');
-  assert.equal(chain.links.length, 0, 'the spinner, at the end of the chain, is not asked for yet');
-  chain.context.registry().scripts.set('https://example.test/spinner.js', Promise.resolve());
-  l3.tryLatePreloads();
-  assert.deepEqual(chain.links.map((l) => l.href), ['/wizard.js'], 'a chain in motion: the wizard is preloaded');
-
-  const early = page({readyState: 'complete', now: 6000, loadEventEnd: 5000});
-  const l2 = early.loader();
-  l2.relationPlugins = {'cl-modal': ['modal']};
-  l2.totalRelationsPlugins = {'cl-modal': {canLoad: false, completed: {modal: true}}};
-  l2.preloadScript(MODAL, 'cl-modal');
-  assert.equal(early.links.length, 0, 'inside the check after the load event');
-  assert.equal(early.timers[0].ms, 2270, 'tried again once it passed (load + 3250 - now + 20)');
-  early.context.clock = 8300;
-  early.timers[0].fn();
-  assert.equal(early.links.length, 1);
+  const after = page({readyState: 'complete', now: 9000, loadEventEnd: 5000, fetched: [MODAL]});
+  after.loader().preloadScript(MODAL);
+  assert.equal(after.links.length, 0, 'fetched before: no preload after the load event either');
+  assert.doesNotMatch(code, /latePreloads|tryLatePreloads|relationsUnderway|preloadCheckPending|readyState === 'complete'/u, 'no after-load hold');
 });
 
 test('a relation does not preload a rule that is not on its way', () => {
   const start = loader.indexOf('SFLoaderPlugin.prototype.isRelationPlugin = function');
   const body = loader.slice(start, loader.indexOf('SFLoaderPlugin.prototype.', start + 50));
-  assert.match(body, /this\.pendingLoadPlugins\.has\(relationMainPlugin\) &&\n\s+!this\.loadedPlugins\[relationMainPlugin\]\?\.js\n\s+\) \{\n\s+this\.preloadScript\(waiting\.jsFile, relationMainPlugin\);/u);
+  assert.match(body, /this\.pendingLoadPlugins\.has\(relationMainPlugin\) &&\n\s+!this\.loadedPlugins\[relationMainPlugin\]\?\.js\n\s+\) \{\n\s+this\.preloadScript\(waiting\.jsFile\);/u);
   const rel = loader.slice(loader.indexOf('SFLoaderPlugin.prototype.loadRelationPlugins = function'));
-  assert.match(rel.slice(0, 2400), /if \(!this\.totalRelationsPlugins\[name\]\.canLoad && !skipJs && jsFile\) this\.preloadScript\(jsFile, name\);/u);
+  assert.match(rel.slice(0, 2400), /if \(!this\.totalRelationsPlugins\[name\]\.canLoad && !skipJs && jsFile\) this\.preloadScript\(jsFile\);/u);
 });
 
 test('no request of the Loader\'s own (the GB17 warm-up fetch stays withdrawn)', () => {

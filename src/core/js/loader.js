@@ -3366,10 +3366,6 @@ SFLoaderPlugin.prototype.loadPlugin = function (
   const jsFile = skipJs
       ? null
       : this.pathPluginJs(pluginName, smart, point, module);
-  // Which script a rule runs (null: none), so a waiting element can tell
-  // whether its relations are on their way (preloadScript after the load event).
-  if (!this.pluginScriptFiles) this.pluginScriptFiles = {};
-  this.pluginScriptFiles[pluginName] = jsFile;
   if (
       (!skipJs && !this.notFoundFiles[missKey]) ||
       (this.notFoundFiles[missKey] && !this.notFoundFiles[missKey].js)
@@ -3476,7 +3472,7 @@ SFLoaderPlugin.prototype.loadRelationPlugins = function (
   // still runs after the relations, from the cache. Here the element is the
   // one being loaded: a relation that came first (isRelationPlugin) does not
   // preload it for it (FS-10).
-  if (!this.totalRelationsPlugins[name].canLoad && !skipJs && jsFile) this.preloadScript(jsFile, name);
+  if (!this.totalRelationsPlugins[name].canLoad && !skipJs && jsFile) this.preloadScript(jsFile);
   if (this.totalRelationsPlugins[name].canLoad) {
     if (this.totalRelationsPlugins[name].skipJs || !jsFile) {
       if (!this.loadedPlugins[name]) {
@@ -3870,7 +3866,7 @@ SFLoaderPlugin.prototype.isRelationPlugin = function (
           this.pendingLoadPlugins.has(relationMainPlugin) &&
           !this.loadedPlugins[relationMainPlugin]?.js
         ) {
-          this.preloadScript(waiting.jsFile, relationMainPlugin);
+          this.preloadScript(waiting.jsFile);
         }
       }
       if (skipJs || !jsFile) {
@@ -5076,9 +5072,6 @@ function onceByUrl(kind, src, insert) {
   if (known) return known;
   const load = insert();
   loads.set(key, load);
-  const flight = netWatch().inFlight;
-  flight.set(key, nowMs());
-  load.then(() => flight.delete(key), () => flight.delete(key));
   load.catch(() => {
     if (loads.get(key) === load) loads.delete(key);
   });
@@ -5086,92 +5079,18 @@ function onceByUrl(kind, src, insert) {
 }
 
 // A script that waits (for its relations, for the page's language words) is
-// preloaded meanwhile, so it is fetched beside what it waits for (2026-10-13).
-// Chrome checks the page's link preloads about 3 s after the window's load
-// event, and about 3 s after each moment the network goes quiet (a check once
-// started is not called off by new requests), and warns of every one no script
-// has used by then: "preloaded using link preload but not used within a few
-// seconds" (FS-10, group build 18; measured: every reported preload was added
-// after the load event, one of them 650 ms before a quiet check). So:
-//  - a script is preloaded once per URL on the page, by every Loader (the set
-//    is in the shared asset registry), and never once it has been asked for,
-//    is in the page or has been fetched: such a preload nothing will use;
-//  - before the load event it is preloaded at once;
-//  - after it only when every relation of the waiting element is loaded or
-//    on its way (its script asked for, a rule without a script asked for, or a
-//    rule waiting on relations that are all on their way), so
-//    the script runs as soon as they arrive, and only when no check of
-//    Chrome's can come before that: no quiet spell began in the last 3 s (the
-//    load event, or nothing in flight for about 500 ms). Otherwise it
-//    waits and is tried again whenever the Loader asks for a script, and once
-//    the pending check has passed; a script asked for meanwhile is fetched
-//    by its own element.
-// The browser fetches each script once: no request of our own.
-const PRELOAD_CHECK_MS = 3000;
-const PRELOAD_CHECK_MARGIN_MS = 250;
-const QUIET_SPELL_MS = 450;
-
-function nowMs() {
-  const now = globalThis.performance?.now?.();
-  return Number.isFinite(now) ? now : Date.now();
-}
-
-// The page's requests as start-end spans (a PerformanceObserver: the resource
-// timing buffer stops at 250 entries) and the Loader's own still on their way.
-function netWatch() {
-  const registry = assetRegistry();
-  if (registry.net) return registry.net;
-  const net = {spans: [], inFlight: new Map(), observing: false};
-  registry.net = net;
-  try {
-    const Observer = globalThis.PerformanceObserver;
-    if (typeof Observer === 'function') {
-      const observer = new Observer((list) => {
-        const keepFrom = nowMs() - 6000;
-        for (const entry of list.getEntries()) {
-          net.spans.push([entry.startTime, entry.responseEnd || entry.startTime + entry.duration]);
-        }
-        net.spans = net.spans.filter(([, end]) => end >= keepFrom);
-      });
-      observer.observe({type: 'resource', buffered: true});
-      net.observing = true;
-    }
-  } catch {
-    net.observing = false;
-  }
-  return net;
-}
-
-/** Milliseconds until a check of Chrome's may still come for a preload added now; 0 when none can. */
-function preloadCheckPending() {
-  const now = nowMs();
-  const window = PRELOAD_CHECK_MS + PRELOAD_CHECK_MARGIN_MS;
-  let loadAt = 0;
-  try {
-    const navigation = globalThis.performance?.getEntriesByType?.('navigation')?.[0];
-    loadAt = navigation?.loadEventEnd || navigation?.loadEventStart || 0;
-  } catch {
-    loadAt = 0;
-  }
-  if (!loadAt) loadAt = now;
-  let until = loadAt + window;
-  const net = netWatch();
-  if (!net.observing) return Math.max(0, until - now);
-  // A quiet spell is a moment nothing is in flight that lasts (Chrome waits
-  // for 500 ms of it, its network-quiet signal); shorter gaps between one
-  // file and the next are not one.
-  const flying = [...net.inFlight.values()];
-  const starts = net.spans.map(([s]) => s).concat(flying);
-  for (const [, end] of net.spans) {
-    if (end < now - window || end > now) continue;
-    const covered = net.spans.some(([s, e]) => s < end && e > end + 1) || flying.some((s) => s < end);
-    if (covered) continue;
-    const next = starts.filter((s) => s >= end).reduce((a, b) => Math.min(a, b), now);
-    if (next - end >= QUIET_SPELL_MS) until = Math.max(until, end + window);
-  }
-  return Math.max(0, until - now);
-}
-
+// preloaded meanwhile, so it is fetched beside what it waits for and runs from
+// the cache (2026-10-13). A script is preloaded once per URL on the page, by
+// every Loader (the set is in the shared asset registry), and never once it has
+// been asked for, is in the page or has been fetched: such a preload nothing
+// will use (FS-10, group build 18). Before and after the window's load event
+// alike (dispatcher, group build 18: holding a preload after the load event
+// made elements added later appear 0.2-0.6 s later). Chrome checks the page's
+// link preloads about 3 s after the load event and after each quiet network
+// spell, and may warn of one added shortly before ("preloaded using link
+// preload but not used within a few seconds"): accepted as harmless, the
+// script is fetched once. The browser fetches each script once: no request of
+// our own.
 function scriptAskedFor(key) {
   if (assetRegistry().scripts.has(key)) return true;
   const doc = globalThis.document;
@@ -5193,33 +5112,7 @@ function appendScriptPreload(href) {
   document.head.append(link);
 }
 
-/**
- * Every relation of the waiting rule is loaded or on its way: its script asked
- * for, a rule without a script asked for, or a rule that waits itself on
- * relations that are all on their way (a chain in motion: the wizard waits on
- * the steps, the steps on the spinner, the spinner is asked for).
- */
-SFLoaderPlugin.prototype.relationsUnderway = function (name, seen = new Set()) {
-  const relations = this.relationPlugins?.[name];
-  if (!Array.isArray(relations) || seen.has(name)) return false;
-  seen.add(name);
-  const completed = this.totalRelationsPlugins?.[name]?.completed || {};
-  const files = this.pluginScriptFiles || {};
-  return relations.every((relation) => {
-    if (completed[relation]) return true;
-    const state = this.loadedPlugins?.[relation];
-    if (state?.js || state?.ready) return true;
-    if (!(relation in files)) return false;
-    const file = files[relation];
-    if (!file) return Boolean(this.pendingLoadPlugins?.has(relation));
-    if (assetRegistry().scripts.has(assetKey(this.versionAssetUrl(file)))) return true;
-    const waits = this.totalRelationsPlugins?.[relation];
-    return Boolean(waits && !waits.canLoad && this.pendingLoadPlugins?.has(relation)
-      && this.relationsUnderway(relation, seen));
-  });
-};
-
-SFLoaderPlugin.prototype.preloadScript = function (pluginURL, waitingRule = null) {
+SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
   if (typeof document === 'undefined' || !pluginURL) return;
   const href = this.versionAssetUrl(pluginURL);
   const key = assetKey(href);
@@ -5227,46 +5120,8 @@ SFLoaderPlugin.prototype.preloadScript = function (pluginURL, waitingRule = null
   if (!registry.preloaded) registry.preloaded = new Set();
   this.preloadedScripts = registry.preloaded;
   if (registry.preloaded.has(key) || scriptAskedFor(key)) return;
-  // The load event is under way or past (readyState is complete before it).
-  if (document.readyState === 'complete') {
-    // A script waiting for the page's words alone (no rule): its element fetches it.
-    if (!waitingRule) return;
-    if (!this.latePreloads) this.latePreloads = new Map();
-    this.latePreloads.set(key, {href, waitingRule});
-    this.tryLatePreloads();
-    return;
-  }
   registry.preloaded.add(key);
   appendScriptPreload(href);
-};
-
-// The preloads held after the load event, tried again: whenever the Loader
-// asks for a script (a relation on its way) and when a pending check passed.
-SFLoaderPlugin.prototype.tryLatePreloads = function () {
-  if (!this.latePreloads?.size) return;
-  const registry = assetRegistry();
-  let wait = 0;
-  for (const [key, {href, waitingRule}] of [...this.latePreloads]) {
-    if (registry.preloaded.has(key) || scriptAskedFor(key) || this.totalRelationsPlugins?.[waitingRule]?.canLoad) {
-      this.latePreloads.delete(key);
-      continue;
-    }
-    if (!this.relationsUnderway(waitingRule)) continue;
-    const pending = preloadCheckPending();
-    if (pending) {
-      wait = Math.max(wait, pending);
-      continue;
-    }
-    this.latePreloads.delete(key);
-    registry.preloaded.add(key);
-    appendScriptPreload(href);
-  }
-  if (wait && !this.latePreloadTimer) {
-    this.latePreloadTimer = setTimeout(() => {
-      this.latePreloadTimer = null;
-      this.tryLatePreloads();
-    }, wait + 20);
-  }
 };
 
 // The page's language file while it is on its way (owner decision C282,
@@ -5318,15 +5173,12 @@ function languageHold() {
 
 SFLoaderPlugin.prototype.addScript = function (pluginURL, param = {}) {
   const src = this.versionAssetUrl(pluginURL);
-  const load = onceByUrl('scripts', src, () => {
+  return onceByUrl('scripts', src, () => {
     const hold = languageHold();
     if (!hold) return this.insertScript(src, pluginURL, param);
     this.preloadScript(pluginURL);
     return hold.then(() => this.insertScript(src, pluginURL, param));
   });
-  // A relation is on its way now: an element held after the load event may be preloaded.
-  if (this.latePreloads?.size) queueMicrotask(() => this.tryLatePreloads());
-  return load;
 };
 
 SFLoaderPlugin.prototype.insertScript = function (src, pluginURL, param = {}) {
