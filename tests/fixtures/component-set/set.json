@@ -15,7 +15,7 @@
   "families": ["effect"],
   "docs": "https://effects.simai.io/",
   "components": [
-    {"element": "sf-effect", "rule": "cl-effect", "folder": "effect", "status": "preview", "requires": ["cl-menu-context"]}
+    {"element": "sf-effect", "rule": "cl-effect", "folder": "effect", "status": "preview", "requires": ["cl-menu-context"], "requires_on_demand": ["cl-modal"]}
   ],
   "exports": [
     {"name": "mountEffect", "status": "public", "layer": "set", "audience": "public", "author": "Mounts an effect on a host element.", "doc": "functions/mount-effect", "kind": "function", "summary": "mountEffect(host, {manifest, module}) mounts an effect and resolves with its controller."},

@@ -20799,6 +20799,31 @@
         }
       ],
       "source": "src/core/js/loader.js"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "A set lists its rules' lazy relations under requires_on_demand and only the others under requires (its own gate holds both against its rule file); a consumer that builds a page's file set from a set's passport or lock (Larena) reads requires alone. A passport that keeps every relation under requires still validates; its consumer then fetches the lazy parts on the first paint, as before.",
+      "owner": "ui-source",
+      "id": "format-component-set-passport-1-3-0",
+      "kind": "format",
+      "summary": "The component set passport form (component-set.v1, x-simai-version 1.3.0, group build 18 L4, DEV msg-855ccc6e) adds a component's optional requires_on_demand: the rules it fetches only when used after the first paint (its rule's lazy relations); requires is its first paint. simai.component-set is issued as 1.4.0 with the requirement first-paint-requires over the frozen copy pinned/component-set-1.3.0.schema.json; 1.3.2 moves to history unchanged.",
+      "items": [
+        {
+          "component": "component-set.v1.schema.json",
+          "from": "1.2.0, requires lists every rule a component needs",
+          "to": "1.3.0, requires the first paint, requires_on_demand (optional) the rules loaded on demand"
+        },
+        {
+          "component": "simai.component-set",
+          "from": "1.3.2 pinning component-set 1.2.0",
+          "to": "1.4.0 pinning component-set 1.3.0, requirement first-paint-requires"
+        }
+      ],
+      "source": "contracts/schema/component-set.v1.schema.json"
     }
   ]
 }

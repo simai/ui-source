@@ -1,12 +1,14 @@
 # Component sets
 
-Status: draft standard `simai.component-set` 1.3.2
-(`contracts/standards/simai.component-set/1.3.2/standard.json`; 1.0.0, 1.1.0,
-1.1.1, 1.2.0, 1.3.0 and 1.3.1 are kept under `contracts/standards/history`; 1.1.1 changed no
+Status: draft standard `simai.component-set` 1.4.0
+(`contracts/standards/simai.component-set/1.4.0/standard.json`; 1.0.0, 1.1.0,
+1.1.1, 1.2.0, 1.3.0, 1.3.1 and 1.3.2 are kept under `contracts/standards/history`; 1.1.1 changed no
 requirement of 1.1.0; 1.2.0 adds pair ranges; 1.3.0 adds the exports list; 1.3.1
 lets `docs` be empty or absent while a set has no published documentation page; 1.3.2
 changes no requirement: it names the re-issued `simai.component-package` 1.1.3 and
-`simai.linkage` 1.0.2 by digest). The Loader
+`simai.linkage` 1.0.2 by digest); 1.4.0 splits a component's rules into
+`requires`, its first paint, and `requires_on_demand`, the rules it fetches only
+when used after it (see "What a component requires" below). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set
 release route; the package references do not follow it yet. See "What is not
 built yet" below.
@@ -87,13 +89,37 @@ The fields:
 - **`components`**: every element the set holds, with:
   - its rule (`cl-<folder>`);
   - its folder;
-  - the rules it needs;
+  - the rules its first paint needs (`requires`);
+  - the rules it fetches only when used after the first paint (`requires_on_demand`, since 1.4.0);
   - its dated former tags.
 
   This list is the only description of the set's components. **SIMAI Framework keeps no per-set
   reference**, so a new component in a set needs no Framework release.
 - **`release`**: added by the release route. It holds `<set>-<12 hex>`, the npm
   version and the source commit.
+
+### What a component requires (since 1.4.0)
+
+Standard 1.4.0 (passport form 1.3.0; DEV msg-855ccc6e, group build 18)
+splits a component's rules in two:
+
+- `requires`: the rules its first paint needs, the relations of its rule that
+  are not lazy;
+- `requires_on_demand`: the rules it fetches only when it is used after the
+  first paint, the lazy relations of its rule (a window, a menu, a viewer or an
+  editor a press opens). The Loader fetches each when it is first used.
+
+A rule is in one list, never in both, and the two together hold every relation
+of the rule. A consumer that builds a page's file set from a set's passport or
+lock takes `requires` alone: Larena builds a page's files from `requires`
+only, so a menu's lazy parts are no longer fetched on every page that shows the
+menu closed. A passport of an earlier form that lists lazy relations under
+`requires` still validates, but its consumer fetches them on the first paint.
+
+```json
+{"element": "sf-effect", "rule": "cl-effect", "folder": "effect",
+ "requires": ["cl-menu-context"], "requires_on_demand": ["cl-modal"]}
+```
 
 ### Exports (since 1.3.0)
 
