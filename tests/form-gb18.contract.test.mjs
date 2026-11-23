@@ -15,7 +15,7 @@ const source = () => read('src/smart/form/index.js');
 const template = () => read('src/smart/form/js/templates/default.js');
 
 test('GB18 versions: above every origin branch at the time of writing', () => {
-  assert.equal(form().version, '1.15.0');
+  assert.equal(form().version, '1.15.1'); // group build 18: moved on by the merged branches or a GB15 assembly item
   assert.equal(json('src/smart/checkbox/component.json').version, '1.6.1');
   assert.equal(json('src/smart/radio/component.json').version, '1.4.5');
   assert.equal(json('src/smart/switch/component.json').version, '1.10.1');
