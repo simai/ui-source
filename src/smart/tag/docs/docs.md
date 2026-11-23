@@ -120,6 +120,23 @@ Tags in a row stand `gap-1/4` (4 px) apart (C105 H5): write the row as
 (C145 (7)); the fill stays neutral, so `--sf-tag-background-color` is for a
 page's own look, never for data (C140 BG-7).
 
+## Accessibility
+
+The kind decides what a tag is to a screen reader, so the element declares no
+role of its own:
+
+- a plain tag (no `kind`, `kind="default"` and the content kinds `icon`,
+  `color`, `avatar`, `info`, `success`, `error`, `warning`) is a static label:
+  no role, no Tab stop; its text is its name;
+- `kind="checkbox"` is one native toggle button with `aria-pressed`;
+- `href` makes one native link, named by its text;
+- `interactive` is one native button beside the remove action;
+- `closable` adds the remove action, a separate native button named by
+  `close-label` (or «Удалить <name>»).
+
+Only these native controls enter the Tab order. A status tag says its meaning
+in its words too, never by colour alone.
+
 ## Slots
 
 The source-owned template accepts `leading`, `text`, `count`, `close` and

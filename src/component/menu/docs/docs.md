@@ -125,8 +125,10 @@ Add `sf-menu--navigation` to the root `sf-menu` for a site's sections as a
 header draws them, with or without `sf-menu--horizontal`: rows with no border
 and no fill at rest, `--sf-on-surface` words, and the ordinary row's size 1
 height, `space-1` side padding, text size 1, `--sf-radius--ui` and focus ring.
-A pointer lays the state family of the alpha scale over a row
-(`--sf-surface-state-hover`, `-active` on press); an open branch is not
+A pointer lays the state family of the alpha scale over a row: the select
+state `--sf-surface-state-select` (8), the one row hover of every list and
+menu (decision C42 (5)), and `--sf-surface-state-active` on press; an open
+branch is not
 filled, its open list shows it is open. The current page (`aria-current="page"`
 or `"true"` on the row or on the link inside it; decision C23) is a primary
 plate of the fill family, `--sf-primary-container-active` (primary at 20 in

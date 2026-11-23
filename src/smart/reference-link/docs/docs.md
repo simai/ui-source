@@ -17,7 +17,9 @@ when `disabled` is set. Use ordinary Link when no secondary reference is needed.
 
 - `icon` — the type icon before the name; absent is the arrow in a card, a
   size or on a line and no icon in text; `icon=""` is no icon
-- `label`
+- `label` — the link's name: an enabled reference needs it (the link has
+  no other name; `aria-label` on the host names it instead when the visible
+  words are not enough)
 - `text` — the route or number: at the far end of a card or a line, after the
   name in a quiet ink in text
 - `href`

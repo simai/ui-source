@@ -4,10 +4,12 @@
       "name": "reference",
       "title": "Документация",
       "settings": {
-        "text": "Документация",
+        "label": "Документация",
+        "text": "/docs/",
         "href": "#"
       },
       "expect": {
+        "label": "Документация",
         "href": "#",
         "appearance": "card"
       },
