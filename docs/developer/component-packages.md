@@ -225,6 +225,20 @@ loads a package of its own. The Loader drops what it derived from the rule map
 page again, so an element that was in the document before its rule arrived is
 loaded. `tests/browser/loader-packages.browser.mjs`.
 
+## A script that waits
+
+An element's script runs after its relations, and while the page's language
+words are on their way. The Loader tells the browser about such a script at
+once (`<link rel="preload" as="script">`), so it is fetched beside what it waits
+for and runs from the cache. The preload is added once per URL on the page, by
+every Loader on it, and never for a script that was already asked for, is in
+the page or was fetched. Chrome checks a page's preloads about 3 s after the
+window's load event and warns of each one no script has used yet ("preloaded
+using link preload but not used within a few seconds"); a script that would
+wait into that check is not preloaded until the check has passed, and not at
+all if it was asked for meanwhile. The Loader makes no request of its own for
+this. `tests/loader-preload-once.contract.test.mjs`.
+
 ## When a package cannot load
 
 Nothing is fetched from the Smart base in a package's place: that would load

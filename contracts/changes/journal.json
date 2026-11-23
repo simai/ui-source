@@ -20614,6 +20614,26 @@
         }
       ],
       "source": "src/core/scss/_sf_css__placeholder.scss"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-loader-preload-once-outside-check",
+      "kind": "behaviour",
+      "summary": "core.runtime (group build 18, FS-10): a script the Loader preloads while it waits for its relations or the page's language words is preloaded once per URL on the page (the set is in the shared asset registry, for every Loader), never once it was asked for, is in the page or was fetched, and a relation no longer preloads a rule that is not on its way. Chrome checks a page's link preloads about 3 s after the window's load event and warns of every one no script has used yet; a preload that would fall between the load event and that check now waits until the check has passed and is added then only if its script is still not asked for. No request of the Loader's own (the group build 17 warm-up fetch stays withdrawn).",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "a link preload per Loader instance, at once, also for a rule a relation names that is loaded by another path or not at all",
+          "to": "one link preload per page, only for a script still waiting, after Chrome's unused-preload check when the load event has just passed"
+        }
+      ],
+      "source": "src/core/js/loader.js"
     }
   ]
 }
