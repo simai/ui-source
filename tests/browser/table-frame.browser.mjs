@@ -131,7 +131,7 @@ try {
         const link = at('name').querySelector('a');
         const ink = (() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-link)'; document.body.append(probe); const value = getComputedStyle(probe).color; probe.remove(); return value; })();
         return {check: at('check').getBoundingClientRect().width, menu: at('menu').getBoundingClientRect().width, name: at('name').getBoundingClientRect().width,
-          checkPadding: getComputedStyle(at('check')).paddingLeft, checkPaddingEnd: getComputedStyle(at('check')).paddingRight, menuPadding: px(getComputedStyle(at('menu')).paddingLeft) + px(getComputedStyle(at('menu')).paddingRight), box: at('check').querySelector('input').getBoundingClientRect().width,
+          checkPadding: getComputedStyle(at('check')).paddingLeft, checkPaddingEnd: getComputedStyle(at('check')).paddingRight, menuPadding: px(getComputedStyle(at('menu')).paddingLeft) + px(getComputedStyle(at('menu')).paddingRight), menuControl: at('menu').querySelector('sf-button-icon').getBoundingClientRect().width, box: at('check').querySelector('input').getBoundingClientRect().width,
           linkColor: getComputedStyle(link).color, linkInk: ink, linkLine: getComputedStyle(link).textDecorationLine};
       })(),
       // A step is a token, so its value is a length the page resolves, not a
@@ -181,7 +181,8 @@ try {
   // a link in the link colour, not underlined at rest.
   const act = measured.actions;
   check('the check box cell is as narrow as its control', near(act.check, px(act.checkPadding) + act.box + px(act.checkPaddingEnd), 1), {actions: act});
-  check('the «≡» cell is as narrow as its control', near(act.menu, act.menuPadding, 1) && act.name > 200, {actions: act});
+  // The control's own box counts: a bare sf-button-icon holds its square before its code (GB17A-1).
+  check('the «≡» cell is as narrow as its control', near(act.menu, act.menuPadding + act.menuControl, 1) && act.name > 200, {actions: act});
   check('the name link keeps the link colour, no underline at rest', act.linkColor === act.linkInk && act.linkLine === 'none', {actions: act});
 
   await page.close();
@@ -213,7 +214,7 @@ try {
           head: shown(table.tHead.rows[0]), body: shown(table.tBodies[0].rows[0]), cells: table.tBodies[0].rows[0].cells.length,
           table: table.getBoundingClientRect().width, place: frame.getBoundingClientRect().width,
           row: table.tBodies[0].rows[0].getBoundingClientRect().height, line: line ? getComputedStyle(line).display : null,
-          check: at('check'), menu: at('menu')};
+          check: at('check'), menu: at('menu'), menuPadding: (() => { const cell = frame.querySelector('[data-c="menu"]'); const cs = getComputedStyle(cell); return Number.parseFloat(cs.paddingLeft) + Number.parseFloat(cs.paddingRight) + Number.parseFloat(cs.borderLeftWidth) + Number.parseFloat(cs.borderRightWidth); })(), menuControl: frame.querySelector('[data-c="menu"] sf-button-icon').getBoundingClientRect().width};
       };
       const probe = document.createElement('div');
       probe.style.cssText = 'position:absolute;visibility:hidden;block-size:var(--sf-ui-2--control-height)';
@@ -233,8 +234,9 @@ try {
     } else {
       check('C259: at 1440 the same table stands in its frame with every column', px(keyed.border) === 1 && keyed.body === keyed.cells && keyed.line === 'none', keyed);
     }
-    // In the frame the control columns drop the frame's least cell width (80).
-    check(`the check box and «≡» columns in the frame are narrower than a word column (${width})`, unkeyed.check < 60 && unkeyed.menu < 60, unkeyed);
+    // In the frame the control columns drop the frame's least cell width (80): the check box column is narrower than it,
+    // the «≡» column is its control and its padding (the bare icon button holds its square before its code, GB17A-1).
+    check(`the check box and «≡» columns in the frame are narrower than a word column (${width})`, unkeyed.check < 60 && near(unkeyed.menu, unkeyed.menuPadding + unkeyed.menuControl, 1) && unkeyed.menu < 80, unkeyed);
     await phone.close();
   }
 } finally {
