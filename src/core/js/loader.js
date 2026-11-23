@@ -5081,22 +5081,18 @@ function onceByUrl(kind, src, insert) {
 // A script that waits (for its relations, for the page's language words) is
 // preloaded meanwhile, so it is fetched beside what it waits for (2026-10-13).
 // Chrome checks the page's link preloads about 3 s after the window's load
-// event, and again after the network has been quiet that long, and warns of
-// every one no script has used yet: "preloaded using link preload but not used
-// within a few seconds" (FS-10, group build 18; measured: a preload added
-// after the load event and used after that check is reported, one added
-// earlier or used before it is not, and removing the link does not help). So:
+// event, and again about 3 s after the network has gone quiet, and warns of
+// every one no script has used by then: "preloaded using link preload but not
+// used within a few seconds" (FS-10, group build 18). Measured on a page with
+// every file delayed: every reported preload was added after the load event
+// (none of the ones added before it), also one added 650 ms before a quiet
+// check and used 40 ms after it; removing the link does not help. So:
 //  - a script is preloaded once per URL on the page, by every Loader (the set
 //    is in the shared asset registry), and never once it has been asked for,
 //    is in the page or has been fetched: such a preload nothing will use;
-//  - between the load event and that check a preload waits until the check
-//    has passed and is added then, only if the script is still not asked for;
-//    a script asked for meanwhile is fetched by its own element, as without
-//    a preload. Before the load event and after the check it is added at once.
-// The browser still fetches each script once: no request of our own.
-const PRELOAD_CHECK_MS = 3000;
-const PRELOAD_CHECK_MARGIN_MS = 250;
-
+//  - only until the load event: after it a check can come at any moment and a
+//    waiting script is fetched by its own element when its wait is over.
+// The browser fetches each script once: no request of our own.
 function scriptAskedFor(key) {
   if (assetRegistry().scripts.has(key)) return true;
   const doc = globalThis.document;
@@ -5110,25 +5106,6 @@ function scriptAskedFor(key) {
   }
 }
 
-/** Milliseconds until Chrome's check after the load event has passed; 0 before the load event and after the check. */
-function preloadCheckLeft() {
-  const doc = globalThis.document;
-  if (!doc || doc.readyState !== 'complete') return 0;
-  const perf = globalThis.performance;
-  const now = perf?.now?.();
-  if (!Number.isFinite(now)) return 0;
-  let loadAt = 0;
-  try {
-    const navigation = perf.getEntriesByType?.('navigation')?.[0];
-    loadAt = navigation?.loadEventEnd || navigation?.loadEventStart || 0;
-  } catch {
-    loadAt = 0;
-  }
-  // Complete, the load event under way: its time is not written yet.
-  if (!loadAt) loadAt = now;
-  return Math.max(0, loadAt + PRELOAD_CHECK_MS + PRELOAD_CHECK_MARGIN_MS - now);
-}
-
 function appendScriptPreload(href) {
   const link = document.createElement('link');
   link.rel = 'preload';
@@ -5139,6 +5116,8 @@ function appendScriptPreload(href) {
 
 SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
   if (typeof document === 'undefined' || !pluginURL) return;
+  // The load event is under way or past (readyState is complete before it).
+  if (document.readyState === 'complete') return;
   const href = this.versionAssetUrl(pluginURL);
   const key = assetKey(href);
   const registry = assetRegistry();
@@ -5146,14 +5125,7 @@ SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
   this.preloadedScripts = registry.preloaded;
   if (registry.preloaded.has(key) || scriptAskedFor(key)) return;
   registry.preloaded.add(key);
-  const left = preloadCheckLeft();
-  if (!left) {
-    appendScriptPreload(href);
-    return;
-  }
-  setTimeout(() => {
-    if (!scriptAskedFor(key)) appendScriptPreload(href);
-  }, left);
+  appendScriptPreload(href);
 };
 
 // The page's language file while it is on its way (owner decision C282,

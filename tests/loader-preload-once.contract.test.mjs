@@ -1,6 +1,6 @@
 // FS-10 (group build 18): a script the Loader preloads while it waits is preloaded once per page, never after it was
-// asked for, and never inside Chrome's unused-preload window after the load event (Chrome checks the page's link
-// preloads about 3 s after that event and warns of every one no script has used yet). No request of the Loader's own.
+// asked for, and only until the window's load event (Chrome checks the page's link preloads about 3 s after that
+// event and after each quiet network spell, and warns of every one no script has used yet). No request of our own.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
@@ -62,35 +62,16 @@ test('never for a script already asked for, in the page or fetched', () => {
   assert.equal(fetched.links.length, 0, 'fetched before (resource timing)');
 });
 
-test('before the load event and after Chrome\'s check the preload is added at once', () => {
-  const before = page({readyState: 'interactive'});
-  before.loader().preloadScript(MODAL);
-  assert.equal(before.links.length, 1);
-  const after = page({readyState: 'complete', now: 9000, loadEventEnd: 5000});
-  after.loader().preloadScript(MODAL);
-  assert.equal(after.links.length, 1);
-  assert.equal(after.timers.length, 0);
-});
-
-test('inside the window it waits for the check and is added only if the script is still not asked for', () => {
-  const p = page({readyState: 'complete', now: 6000, loadEventEnd: 5000});
-  p.loader().preloadScript(MODAL);
-  p.loader().preloadScript('https://example.test/ui/distr/smart/confirm/js/confirm.min.js');
-  assert.equal(p.links.length, 0, 'nothing inside the window');
-  assert.deepEqual(p.timers.map((t) => t.ms), [2250, 2250], 'load + 3000 + 250 margin - now');
-  p.context.registry().scripts.set(MODAL, Promise.resolve());
-  p.timers.forEach((t) => t.fn());
-  assert.deepEqual(p.links.map((l) => l.href), ['https://example.test/ui/distr/smart/confirm/js/confirm.min.js'],
-    'the modal was asked for meanwhile: its own element fetches it');
-  p.loader().preloadScript('https://example.test/ui/distr/smart/confirm/js/confirm.min.js');
-  assert.equal(p.links.length, 1, 'still once');
-});
-
-test('the load event under way (no time written yet) counts as now', () => {
-  const p = page({readyState: 'complete', now: 4000, loadEventEnd: 0});
-  p.loader().preloadScript(MODAL);
-  assert.equal(p.links.length, 0);
-  assert.equal(p.timers[0].ms, 3250);
+test('only until the load event: after it Chrome may check at any moment', () => {
+  for (const readyState of ['loading', 'interactive']) {
+    const p = page({readyState});
+    p.loader().preloadScript(MODAL);
+    assert.equal(p.links.length, 1, readyState);
+  }
+  const done = page({readyState: 'complete', now: 9000, loadEventEnd: 5000});
+  done.loader().preloadScript(MODAL);
+  assert.equal(done.links.length, 0, 'after the load event its element fetches it');
+  assert.equal(done.timers.length, 0, 'no preload later either');
 });
 
 test('a relation does not preload a rule that is not on its way', () => {

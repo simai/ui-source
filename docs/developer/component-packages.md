@@ -232,12 +232,12 @@ words are on their way. The Loader tells the browser about such a script at
 once (`<link rel="preload" as="script">`), so it is fetched beside what it waits
 for and runs from the cache. The preload is added once per URL on the page, by
 every Loader on it, and never for a script that was already asked for, is in
-the page or was fetched. Chrome checks a page's preloads about 3 s after the
-window's load event and warns of each one no script has used yet ("preloaded
-using link preload but not used within a few seconds"); a script that would
-wait into that check is not preloaded until the check has passed, and not at
-all if it was asked for meanwhile. The Loader makes no request of its own for
-this. `tests/loader-preload-once.contract.test.mjs`.
+the page or was fetched. It is added only until the window's load event:
+Chrome checks a page's preloads about 3 s after that event and about 3 s after
+the network has gone quiet, and warns of each one no script has used yet
+("preloaded using link preload but not used within a few seconds"). After the
+load event a waiting script is fetched by its own element when its wait is
+over. The Loader makes no request of its own for this. `tests/loader-preload-once.contract.test.mjs`.
 
 ## When a package cannot load
 
