@@ -20779,6 +20779,26 @@
       "manual": "Nothing to rewrite. Code that relied on a forwarded name standing after the control's own names re-reads the order it needs; values and the set of names on the control are unchanged.",
       "owner": "ui-source",
       "source": "src/core/js/smart-base.js forwardHostAttributes; tests/smart-base-forward-in-place-gb18.contract.test.mjs"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-loader-preload-once-relations-underway",
+      "kind": "behaviour",
+      "summary": "core.runtime (group build 18, FS-10): a script the Loader preloads while it waits for its relations or the page's language words is preloaded once per URL on the page (the set is in the shared asset registry, for every Loader), never once it was asked for, is in the page or was fetched; a relation no longer preloads a rule that is not on its way. Chrome checks a page's link preloads about 3 s after the load event and about 3 s after each moment the network goes quiet, and warns of every one no script has used yet; on a page with every file delayed each reported preload had been added after the load event. Before the load event the preload is added at once; after it only when every relation of the waiting element is loaded or on its way (asked for, or itself waiting on relations on their way) and no such check can come first (tried again when the Loader asks for a script and when the check has passed). No request of the Loader's own (the group build 17 warm-up fetch stays withdrawn).",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "a link preload per Loader instance, at once, also for a rule a relation names that is loaded by another path or not at all",
+          "to": "one link preload per page, only for a script still waiting; after the load event only once its relations are on their way and outside Chrome's check"
+        }
+      ],
+      "source": "src/core/js/loader.js"
     }
   ]
 }

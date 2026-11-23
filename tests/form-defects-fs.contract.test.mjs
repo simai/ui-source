@@ -33,12 +33,13 @@ test('FS-6: a yes/no drawn as a checkbox keeps its help at the form\'s «?» siz
   assert.match(read('src/smart/form/js/templates/default.js'), /<sf-help-mark class="sf-form-help" size="1\/2"/u, 'the label row draws the same size');
 });
 
-test('FS-10 withdrawn in group build 17: the Loader preloads a waiting script with a link preload, as on base', () => {
+test('FS-10 withdrawn in group build 17: no warm-up fetch; group build 18 keeps the link preload', () => {
   // The warm-up fetch brought 6 of 30 «sf-modal not defined in 10 s» when the server forbids caching and the page's
-  // CSP needs connect-src for it (dispatcher, GB17); the preload warning it removed is benign (no double request).
+  // CSP needs connect-src for it (dispatcher, GB17). Group build 18 keeps a link preload, once per page and only until
+  // the load event (tests/loader-preload-once.contract.test.mjs).
   const loader = read('src/core/js/loader.js');
-  const body = loader.slice(loader.indexOf('SFLoaderPlugin.prototype.preloadScript = function'), loader.indexOf('// The page\'s language file while it is on its way'));
-  assert.match(body, /link\.rel = 'preload';\n  link\.as = 'script';/u, 'a link preload, as on base');
+  const body = loader.slice(loader.indexOf('function appendScriptPreload(href)'), loader.indexOf('// The page\'s language file while it is on its way'));
+  assert.match(body, /link\.rel = 'preload';\n  link\.as = 'script';/u, 'a link preload');
   assert.doesNotMatch(body, /globalThis\.fetch\(/u, 'no warm-up fetch: it needs connect-src and is asked twice under no-store');
 });
 

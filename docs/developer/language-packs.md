@@ -222,7 +222,8 @@ definition (below), so the page does not flash English.
 
 When core has asked for the parts of the page's language, `SF.Loader` holds
 every component script it adds until those words are here. It preloads the
-script meanwhile, so nothing arrives later than it would without the wait. The
+script meanwhile (once per page, see «A script that waits» in
+`component-packages.md`), so nothing arrives later than it would without the wait. The
 wait is at most 800 ms. After that the component draws in English and draws
 again when its words arrive. This applies to every language with a pack, and to
 a pack of a product named in `SF_BOOT_CONFIG.languages` before core.
