@@ -58,7 +58,7 @@
     },
     {
       "id": "p4-dirty",
-      "title": "C182 (7): a change shows «Есть несохранённые изменения» under the buttons; «Сохранить» submits the value and the note goes",
+      "title": "C182 (7): a change shows «Есть несохранённые изменения» under the buttons; «Сохранить» submits the value and the note gives way to «Сохранено в HH:MM» (FS-3, 1.15.0)",
       "covers": "values.dirty, events.submit, events.input",
       "steps": [
         {
@@ -69,7 +69,7 @@
         {
           "script": "(document.querySelector('#f .sf-form-submit button').click(), true)",
           "wait": 250,
-          "check": "window.__sub && window.__sub.blank === false && window.__sub.text === 'Подробнее' && document.querySelector('#f').dirty === false && document.querySelector('#f .sf-form-state').textContent.trim() === ''"
+          "check": "window.__sub && window.__sub.blank === false && window.__sub.text === 'Подробнее' && document.querySelector('#f').dirty === false && /^Сохранено в \\d\\d:\\d\\d$/.test(document.querySelector('#f .sf-form-state').textContent.trim())"
         }
       ]
     },
