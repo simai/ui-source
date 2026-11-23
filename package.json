@@ -58,6 +58,8 @@
     "utility-hint-layout:check": "node scripts/generate-utility-hint-layout.mjs --check",
     "test:utility-hint-layout": "node --test tests/utility-hint-layout.contract.test.mjs",
     "strong-place-ink:check": "node scripts/check-strong-place-ink.mjs",
+    "ports:check": "node scripts/check-port-schemas.mjs",
+    "test:ports": "node --test tests/port-schema-pinned.contract.test.mjs",
     "linkage:check": "node scripts/linkage.mjs passports --check",
     "linkage:write": "node scripts/linkage.mjs passports --write",
     "test:linkage": "node --test tests/linkage.contract.test.mjs",
