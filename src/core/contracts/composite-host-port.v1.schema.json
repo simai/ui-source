@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/composite-host-port.v1.schema.json",
   "title": "SIMAI Composite Host Port v1",
-  "x-simai-version": "1.2.0",
+  "x-simai-version": "1.3.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -76,6 +76,17 @@
           "answer_data": {
             "type": "object",
             "description": "What an applied answer to this intent carries: a JSON schema of the part the port's answer names for the intent's data. Optional."
+          },
+          "answer": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Per outcome, what the host's answer carries for this intent: a short text, or a JSON schema of the answer's own part. Optional; declared in 1.3.0 of this schema for the ports that already carried it (the data view, the property view and the ports after them).",
+            "properties": {
+              "applied": {"$ref": "#/$defs/outcomeAnswer"},
+              "conflict": {"$ref": "#/$defs/outcomeAnswer"},
+              "refused": {"$ref": "#/$defs/outcomeAnswer"},
+              "unavailable": {"$ref": "#/$defs/outcomeAnswer"}
+            }
           }
         }
       }
@@ -92,6 +103,18 @@
           "description": "Resolution order, from the weakest to the strongest layer."
         },
         "shared_only_fields": {"$ref": "#/$defs/nameList"},
+        "fields": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["summary"],
+          "description": "What a settings layer may carry: a summary, the port version from which the fields are writable, and the fields each layer writes. Optional; declared in 1.3.0 of this schema for the ports that already carried it.",
+          "properties": {
+            "summary": {"type": "string", "minLength": 1},
+            "writable_in": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+            "personal": {"$ref": "#/$defs/nameList"},
+            "shared": {"$ref": "#/$defs/nameList"}
+          }
+        },
         "reset": {
           "type": "object",
           "additionalProperties": false,
@@ -139,11 +162,35 @@
       "properties": {
         "previous_major": {"type": ["string", "null"]},
         "supported_until": {"type": ["string", "null"]},
-        "recheck": {"$ref": "#/$defs/nameList"}
+        "recheck": {"$ref": "#/$defs/nameList"},
+        "deprecated": {
+          "type": "object",
+          "description": "What this port version still reads and until when, keyed by the old form: the date reading ends and what replaces it. Optional; declared in 1.3.0 of this schema for the ports that already carried it.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["read_until", "instead"],
+            "properties": {
+              "read_until": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+              "instead": {"type": "string", "minLength": 1}
+            }
+          }
+        }
       }
     }
   },
   "$defs": {
+    "outcomeAnswer": {
+      "anyOf": [
+        {"type": "string", "minLength": 1},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["schema"],
+          "properties": {"schema": {"type": "object"}}
+        }
+      ]
+    },
     "nameList": {
       "type": "array",
       "uniqueItems": true,

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
   "title": "SIMAI Smart Component Manifest v2",
-  "x-simai-version": "2.5.0",
+  "x-simai-version": "2.6.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -645,6 +645,7 @@
         },
         "runtime_pair": {
           "type": "object",
+          "description": "The release this manifest is checked in. Since 2.6.0 of this schema forty zeros in both fields are the release pair marker: the release that carries the manifest, whose identity is that release's lock (simai/ui contracts/releases/<pair>.lock.json) and whose inventory lists the component at the manifest's own version. A source manifest cannot name the release commit that will hold it; every Framework manifest carries the marker since group build 18 (before it, the 2026-10-11 pair 094f3d549aa7 stood in every release).",
           "additionalProperties": false,
           "required": [
             "ui_revision",

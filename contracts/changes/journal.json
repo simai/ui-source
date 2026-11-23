@@ -20674,6 +20674,71 @@
         }
       ],
       "source": "src/smart/segmented/index.js"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: every part 1.3.0 declares is optional, and every committed port already carried it. A host or a set that checks its ports against the pinned copy of the port schema reads composite-host-port-1.3.0.schema.json (standard simai.composite-host-port 1.0.5); node scripts/check-port-schemas.mjs --repo <checkout> runs that check over a set repository.",
+      "owner": "ui-source",
+      "id": "format-host-port-schema-1-3-0",
+      "kind": "format",
+      "summary": "The host port schema (composite-host-port.v1, x-simai-version 1.3.0, group build 18, GB17A-4) declares three optional parts 40 of the 51 committed ports already carried while the closed schema refused them: an intent's per-outcome answer (a text or a schema), settings.fields (summary, writable_in, personal, shared) and compatibility.deprecated (read_until, instead). simai.composite-host-port is re-issued as 1.0.5 over the frozen copy pinned/composite-host-port-1.3.0.schema.json (1.0.4 pinned the 1.0.0 copy titled Simai); the re-issue travels to simai.interface-fragment 1.0.3, simai.component-package 1.1.3, simai.linkage 1.0.2 and simai.component-set 1.3.2. tests/port-schema-pinned.contract.test.mjs checks every port.json against the pinned copy.",
+      "items": [
+        {
+          "component": "composite-host-port.v1.schema.json",
+          "from": "1.2.0, intent answer, settings.fields and compatibility.deprecated undeclared",
+          "to": "1.3.0, the three declared, optional"
+        },
+        {
+          "component": "simai.composite-host-port",
+          "from": "1.0.4 pinning composite-host-port.v1 1.0.0",
+          "to": "1.0.5 pinning composite-host-port 1.3.0"
+        }
+      ],
+      "source": "src/core/contracts/composite-host-port.v1.schema.json"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A reader that took compatibility.runtime_pair for the release reads the release lock instead (simai/ui contracts/releases/<pair>.lock.json, compatibility_id) and the component version from the manifest's version, listed in <pair>.inventory.json; forty zeros in runtime_pair mean the release that carries the manifest.",
+      "owner": "ui-source",
+      "id": "format-manifest-release-pair-marker",
+      "kind": "format",
+      "summary": "Smart manifests (schema 2.6.0, group build 18, queue msg-937644d4) name their release by the release pair marker: compatibility.runtime_pair is forty zeros in ui_revision and ui_smart_revision, the release that carries the manifest. Before, scripts/generate-component-files.mjs carried the committed value, so all 87 manifests of every release named the 2026-10-11 commit 094f3d549aa7 and Docara could not read the release from them. The committed registry carries the marker too.",
+      "items": [
+        {
+          "component": "smart.manifest.json",
+          "from": "compatibility.runtime_pair 094f3d549aa7 / 856fb5d751fa (2026-10-11)",
+          "to": "compatibility.runtime_pair forty zeros, the release that carries it"
+        }
+      ],
+      "source": "scripts/generate-component-files.mjs"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: sf-editor is served by the Editor set (editor-6912015a62bd, sf-editor 1.5.0) under the same rule cl-editor.",
+      "owner": "ui-source",
+      "id": "behaviour-pro-package-drops-editor",
+      "kind": "behaviour",
+      "summary": "pro.package.json and its larena alias (group build 18): smart.editor (cl-editor) is no longer among the elements the Pro package provides; the Editor set ships sf-editor (editor-6912015a62bd, sf-editor 1.5.0), so Pro can release without its frozen copy. smart.editor-content stays listed. The same step as behaviour-pro-package-drops-admin-menu (group build 17, G-PRO).",
+      "items": [
+        {
+          "component": "pro package",
+          "from": "provides smart.editor",
+          "to": "the Editor set provides it"
+        }
+      ],
+      "source": "src/core/contracts/packages/pro.package.json"
     }
   ]
 }

@@ -27,11 +27,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/accordion/smart.manifest.json",
-      "manifest_sha256": "4eace2a3675d908e3cd5dd24ca4ccc951e55840b870be4df7e12265577fa238b",
+      "manifest_sha256": "68a09f664d6686586f2ede9ea04b7a63784e5c8659871200e415c5ee3cb792e2",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ, catalogue filters -- or from <details> in the markup, drawn as the class accordion: lines by default, the same sizes on the control ladder, appearances, marker and single section. The marker at the end points down and turns up when open, the section moves to its height in 200 ms; closed text is found by the browser's find-in-page; link makes a section's id its address; expand-all adds «Развернуть все». single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
       "tags": [
@@ -68,11 +68,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert/smart.manifest.json",
-      "manifest_sha256": "4d6ddd3f9370ddf8ff109534bf422181d620e4477f140aab2b03e004ad55b689",
+      "manifest_sha256": "5e2b3849b1de5b6c8122569b0d40c5134934f104b08be3e4ad7963949881b4c3",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Persistent inline notice with semantic roles, optional actions and dismiss behavior.",
       "tags": [
@@ -107,11 +107,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/alert-bar/smart.manifest.json",
-      "manifest_sha256": "bd14408c0d0ab799e51acbbeea82cc833ca844e6699556a429c8eac52d00022b",
+      "manifest_sha256": "928a18dbf5b49a46e82a6c46ee329ff79efb17e1a995ca211c4844f3b731d12b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A full-width bar above a page or admin header for the conditions that need action now: error, warning, info. One bar for all of them, coloured by the most serious; it shows the most serious, and «N more» lists the others under the bar. Warning closes for a day, info for good, error only minimizes to a strip. It stores nothing: the host keeps what was closed.",
       "tags": [
@@ -151,11 +151,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar/smart.manifest.json",
-      "manifest_sha256": "636845ad3e8fbf3ed34a4733ec56271d3fe47ed503542158b613c3bc88057e0d",
+      "manifest_sha256": "d840521cfdddbb1e82dafd4c99cdb5dbc4c9e5d410b8f17fd6d29be5b0dd2bc7",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Shows a person or organisation as a photo or initials, with an optional presence point or verification mark. By default a picture (role img with the name); a link with href, a native button as a menu's trigger; the card template is static and adds a title, description and meta line.",
       "tags": [
@@ -190,11 +190,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar-group/smart.manifest.json",
-      "manifest_sha256": "01aca8e33a255225a561b827ec65cc5a4a3ce959f94305398ac50e66d0ae9f12",
+      "manifest_sha256": "c4902a803529226a29c77b895ac29deba91911b153ae46f115858f43b2acedee",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Ready combinations of avatars: a person with a source, a stacked group with a remainder, an avatar with two lines of label, and a profile avatar with a verified badge. Drawn from sf-avatar's parts; for a single avatar with a name or a card use sf-avatar.",
       "tags": [
@@ -225,11 +225,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/badge/smart.manifest.json",
-      "manifest_sha256": "3c076eec4597a7ed10f0a5e904eb0da30abf8a0a46c171150089ae2b9e2b5103",
+      "manifest_sha256": "ca98ac3b1730fc0b1e91e392ae9ba255665bf63da07fb8efe88b8a1462e267b8",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
       "tags": [
@@ -262,11 +262,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/breadcrumbs/smart.manifest.json",
-      "manifest_sha256": "4b4fde385b1692c5608c47a35d8ba4a5e4b71d9514c52ec28d5c0da7bb63c2f6",
+      "manifest_sha256": "1173809327512fa86bc93788296756cae93eeb53732eea9ac57aceb0817d0588",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Shows where the page is in a hierarchy as a list of native links built from items, the items attribute or sf-breadcrumbs-item children. The last crumb is the page unless the items say otherwise or current is none (a trail of parents). A trail that has no room for one line folds its middle into a «…» button whose menu lists the hidden crumbs; on the phone it reads «… › parent › page». Long ancestor names are cut with an ellipsis and a tooltip; a crumb can offer its siblings as a menu (siblings).",
       "tags": [
@@ -305,11 +305,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/bulk-actions/smart.manifest.json",
-      "manifest_sha256": "f5b8222bf35f8eeda9dc9a250086ad73e14ff843d3a72b2a788468a8796c779f",
+      "manifest_sha256": "ce1500d05886f6aa9ae435db8dc379549a0aa72492ba37fda92a45c19787360b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run, a fast action's result in place of the count and a long one's in a notice, failures written to «Уведомления». One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
       "tags": [
@@ -415,11 +415,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "cb92bd8e4f4a304d6cfee8bdba4bd4ccb17dfcc3cd5fd8b25a9e095d3dd63c1b",
+      "manifest_sha256": "d43e6985575b6e2691137c9609775d7e2f6602e3d1d83ecdcb62751ed14933fe",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation. Attributes it does not own go to the inner control; a `data-*` is moved there, not copied (the host is display: contents and has no box): select the inner button by it (`[data-action]`, `closest('sf-button')` for the host), and read what was written on the host with `element.dataAttributes`.",
       "tags": [
@@ -450,11 +450,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-close/smart.manifest.json",
-      "manifest_sha256": "eacb51e5e17d74abc0e97d4ba7c32d1421b37cbefd41a4e9516231c6d1eae41c",
+      "manifest_sha256": "fe4d61705321ec94ac75c1a07d16286a76f529db48357e731a38ee41cf93791a",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The close button of the SIMAI Framework: a real button (focus, Enter and Space, the name «Закрыть» by default) drawing the cross with a 2px line, in three looks -- ghost, plain and media. Inside a native button it stays the decorative cross it was before 1.2.0.",
       "tags": [
@@ -487,11 +487,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-copy/smart.manifest.json",
-      "manifest_sha256": "bbb59c69d74ec2b0d462845354e67f2f268001bc9177485868373766efa99de7",
+      "manifest_sha256": "dd67fdbd0ea688d80d8b6734fc8eb2969091623e41996c23006665fc9d9b40b2",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
       "tags": [
@@ -529,11 +529,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "a0a111331e6769fa051b02d4acad46d45cd11d500f8b1bda914fa4799db5e4d7",
+      "manifest_sha256": "6152d32229107bde052fba0318e2074a73d3da7f872067dcb4c15d0bff591b15",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics. Attributes it does not own go to the inner control; a `data-*` is moved there, not copied (the host is display: contents and has no box): select the inner button by it (`[data-action]`, `closest('sf-button-icon')` for the host), and read what was written on the host with `element.dataAttributes`.",
       "tags": [
@@ -565,11 +565,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/change/smart.manifest.json",
-      "manifest_sha256": "a01ec0c30b4f3e86dd46fd47e8b59f8eb2e9b208e86a5bd3d943901ef720db2a",
+      "manifest_sha256": "0f0e9cdacda1806db32f275c733be859ff85ffedbe936f4ceb060a295c79611d",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A field change as text: «Собран → Передан в доставку», the old value quiet, the new one in the text colour and medium weight, no badges and no strikethrough; inline in a sentence, as a list of several fields, or, for a long text, revealed in place as «Было» and «Стало».",
       "tags": [
@@ -607,11 +607,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/checkbox/smart.manifest.json",
-      "manifest_sha256": "f313b45fc6182163124e74162482d02b500e9061cde5b6b5ebf33bb91f7d76ea",
+      "manifest_sha256": "6827f2632727a9b98d1ed81ee5b556b45db4d2aa7c78a4b6ec1ff349345e4eb3",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A native checkbox with a label, Framework presentation and checked, indeterminate and disabled states kept in step between the host attributes and the inner input.",
       "tags": [
@@ -643,11 +643,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm/smart.manifest.json",
-      "manifest_sha256": "97c4ccf4e1295344101d0874a3ef3b0a782b044baeb423eb88dde673aa5ba77d",
+      "manifest_sha256": "c3ae41e98575beb07e2c55aec4a185cb811635b175851a3d92cf9fb9433759aa",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
       "tags": [
@@ -682,11 +682,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm-change/smart.manifest.json",
-      "manifest_sha256": "8514b5af4742a5e8b7d7ea8942013d0ebdd0aead7bd63a6535333dc456167d0c",
+      "manifest_sha256": "32b7d56cd8ba5bcc717dfe7615151850735222a54d7a1dd84df45abd5663cd60",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A change someone else proposes (an assistant, a colleague, an import), put to a person: each value as it was and as it will be, «Подтвердить» first and filled, «Отклонить» quiet, until when it can be answered under them, and then only the outcome. Applies nothing; a press is an event.",
       "tags": [
@@ -726,11 +726,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/contents/smart.manifest.json",
-      "manifest_sha256": "33fff23ea47fcbff75e2874697ff50d7e234ce8cea409a637c6363789aa4b3da",
+      "manifest_sha256": "86ea6955dd54ed5739706e9192e3c4b94940031ccd753f2efbb3b332ac2e7a99",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The page's table of contents («Оглавление»): the sections of the page as in-page links, the current one marked while the page scrolls. Four views from one list -- a side column, the sheet (a button with the reading progress), strokes at the edge, a sticky row of anchor tabs -- and auto, the column on a wide screen and the sheet on a narrow one. It collects the headings itself or takes the items a server printed, and works as plain links without the script.",
       "tags": [
@@ -766,11 +766,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/display-settings/smart.manifest.json",
-      "manifest_sha256": "6ccc278b04a4fa23dc41bf91d5ac8d41e303eefe90498d8e9b1d7923c69d007d",
+      "manifest_sha256": "ebef26e6f53c296fbec4e27643d362ecd4d1a90ed764abda8b8ad4131cf1117e",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "How a person wants the site shown -- text 100–200 %, a colour scheme, wider spacing, images in colour, grey or hidden with their text, motion stopped, «Обычная версия» -- kept in this browser only and applied by core on every page. Replaces the legacy low-vision version (.sf-special). Promises no conformance.",
       "tags": [
@@ -809,11 +809,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/drawer/smart.manifest.json",
-      "manifest_sha256": "90f0c8b77c3c3b45a146c4be724430dafa699b53b453242c682124775b68a321",
+      "manifest_sha256": "530011ef3f27be52e38503d334762872d2ce7648922ab0fa4bdc4cdf845ac99e",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
       "tags": [
@@ -852,11 +852,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "eecc5c968b7b64c229d8e8917c8cf597724b523a7f09dab5bdb0269b4d653e88",
+      "manifest_sha256": "8180a8f2933475ac97cd79becdb081a7f0bd8363aae2bdbead791457867561eb",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
       "tags": [
@@ -890,11 +890,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-inline/smart.manifest.json",
-      "manifest_sha256": "1430245c93cf745a039d4b7a16d6dadfb80de7f9fe4bb5ee471e5a8dd8b7181f",
+      "manifest_sha256": "dc03e75ac24b4ff8f89714467341381681dcf6782c96be9fd25e44c0e686f23b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
       "tags": [
@@ -931,11 +931,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-overlay/smart.manifest.json",
-      "manifest_sha256": "b266ab4be3eb49f0520447d04b9a000ed5c152cefefcd5b2fe7c1828bad874c5",
+      "manifest_sha256": "330e859f0fd76e0766420ff14d934cc346774c113de53b975110a84f27da5ee8",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The editor's layer over a rendered Composition Document: hover and selection frames, a toolbar of the node's actions, insertion places, moves by pointer and keyboard and a structure tree; the canvas is never changed and the host performs every change.",
       "tags": [
@@ -972,11 +972,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/empty-state/smart.manifest.json",
-      "manifest_sha256": "85c6dd7d8f723375ac7e930d13e082ea7de86ad5d4e815e931382702d3f9e570",
+      "manifest_sha256": "17031c3ed86802ca510813494db0beffe2e01ccc3c161b48e40ceeae1434735a",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "What a list, a panel or a page says when it has nothing to show: no data, the first time, nothing found, no access, an error, no connection or work being prepared, with an icon, a real heading, a sentence and actions.",
       "tags": [
@@ -1015,11 +1015,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-download/smart.manifest.json",
-      "manifest_sha256": "0fc0cdc0a7997ce0721e113fb4e341b3c9d91a98d7c90d23ee064c9b71fe27fd",
+      "manifest_sha256": "4aa7ce096823712405281ba3eee66f25d2449134c3303c626289de6eb7b212dd",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Native file download or application-owned file preparation action.",
       "tags": [
@@ -1057,11 +1057,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-preview/smart.manifest.json",
-      "manifest_sha256": "42eb98fdf6de6f53cc23c5112498ed6b32fda41b82d4b5aee26a53815051eeb4",
+      "manifest_sha256": "24768e5865e7f72480921bddc37bb05f14f106188c06652130d5a0d9d97f4c30",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Accessible Smart projection of the ordinary File Preview row.",
       "tags": [
@@ -1095,11 +1095,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-upload/smart.manifest.json",
-      "manifest_sha256": "6c1b28a8ab84793a9d6da12af7f6fe8fd5a7cee640c431195ac2f508e8e6f0d6",
+      "manifest_sha256": "36645ffe92ded8952a0d893dab56871df61b663bb59aa3c3f986022a93ec1c65",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A drop area that opens the platform file dialog or takes dropped files, filtered by accept, and lists each file with its upload progress, an error with a retry, and removal. The host uploads; the component shows the state the host sets.",
       "tags": [
@@ -1136,11 +1136,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/form/smart.manifest.json",
-      "manifest_sha256": "8a1309a03a0165b8a937451febaa53ad2cadff55ae87bb14f13ccabe2fe6b1bc",
+      "manifest_sha256": "0799dcd903261fb37fc3c1d8bf080c86126430bc7e2aa06b001d4b8df71a65e2",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
       "tags": [
@@ -1179,11 +1179,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/gallery/smart.manifest.json",
-      "manifest_sha256": "28d65b3342dd7fce40495223aa045cd68bd1a23f77d8565f96faa19a2ab950ea",
+      "manifest_sha256": "f61171e8ea94a599b5045be60b25610301e726be383a24e68393fb79337a58ec",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A set of pictures: a grid of picture tiles (or masonry, or the main picture with thumbnails) that opens the page's full-screen viewer, with an optional choice of tiles for a media library. The viewer is SF.Gallery.view(items, options), shared with sf-file-preview.",
       "tags": [
@@ -1217,11 +1217,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-page/smart.manifest.json",
-      "manifest_sha256": "ed08754be6b13d5bc6a0441ee105c1ed4c85c284ab0461ab22cccd0f196a1ab5",
+      "manifest_sha256": "84e7febd7baf6f81a57c45a9b2d1cfb6b0e0e524ae761844c491050d2491e534",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
       "tags": [
@@ -1259,11 +1259,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "eb749872da6ce0e4fa9ff8e5238704d19bc4bebf24b8225fe5496963ba5b6695",
+      "manifest_sha256": "425e39fac01c66108e8487a81385812b866edda45164ef7d8424825fa8b669c9",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
       "tags": [
@@ -1297,11 +1297,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/help-mark/smart.manifest.json",
-      "manifest_sha256": "23afca219923d1b6c77728707556fdd969f272c81e50e4c0ce185d043b2241b0",
+      "manifest_sha256": "6e08f205b748975473972e07c38883aeff5959553d82f0b80ffd4fa9a7032c38",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A «?» beside a label that opens a short explanation on a press -- a toggletip -- announced politely, closed by Escape, a second press or a click outside.",
       "tags": [
@@ -1339,11 +1339,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/icon/smart.manifest.json",
-      "manifest_sha256": "bfe4179620bf33b64056fc18c9d7e26094e491d2e6167d5971cd6ac0e0b5a9d8",
+      "manifest_sha256": "dee59ccf0628f0a7c9960bd58bf6b62c7d0a862da7d1ccd4c9c06b3670ac355e",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Semantic Material Symbol wrapper with exact Loader tracking, accessible decorative or informative modes and token-owned geometry.",
       "tags": [
@@ -1376,11 +1376,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/include/smart.manifest.json",
-      "manifest_sha256": "033304755d6038145e408a1770f87dcfdf7b9b805196cf806d79f827839e74d5",
+      "manifest_sha256": "294bb795fc1043cc26a776d82b90f3afe7de615faee81d2a71e93bffe5657867",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Loads a part of the page from an address: a skeleton while it loads, the server's HTML in its place when it arrives (the Loader starts the components in it), an error with Retry when it does not. load=\"view\" waits until the part nears the viewport.",
       "tags": [
@@ -1426,11 +1426,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "233c4803733626da83aa48a5fb23d513c5560fa81dfa18d064acbb13154fb01a",
+      "manifest_sha256": "9dc2eb7e6b6c624cb8ac3b96156a1958cca69de5fa2710523ca2cfd8ce0da9de",
       "reuse_mode": "both",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
       "tags": [
@@ -1473,11 +1473,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-choice/smart.manifest.json",
-      "manifest_sha256": "ecf1d4cc43e0ff11c5f1abc1c2e92391c750a639f2e4954af512b27165730341",
+      "manifest_sha256": "ea2f143cf3a1524a5736d1705e2a728a59115c482f9bdf73a634d900631c6ef0",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
       "tags": [
@@ -1517,11 +1517,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-code/smart.manifest.json",
-      "manifest_sha256": "2d6cdc272f9b9a961b4d340f379cabbdfda5a02c8e832ab2835445a6546c8f84",
+      "manifest_sha256": "e58daf0d4fde1c2e0be3db8bf2e32c6eca76422138b6520d598831337ede3576",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A one-time code -- from a message, an authenticator, an email -- as a form field with its own value, paste and errors, drawn as the class verification: one native input holds the code (autocomplete one-time-code, so autofill and WebOTP fill it whole) and the cells picture it. Typing fills the next cell, Backspace steps back and clears, a pasted code fills every cell, and each cell is announced by its place.",
       "tags": [
@@ -1580,11 +1580,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "bf5f4f0af7ccdd0b3387d8df436ec5f4d28a945e16ee9e2703d4493e9965d5bc",
+      "manifest_sha256": "c51f1e41b377c879f086fdc42225de7040e63736491273c033baa806149f7a0e",
       "reuse_mode": "both",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a hex code with «Применить») -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
       "tags": [
@@ -1617,11 +1617,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-country/smart.manifest.json",
-      "manifest_sha256": "14f28338975534c52a763acf043f6168bdf9a7aeb7603d499c5070de0c4b028e",
+      "manifest_sha256": "2065d5cd3f257ff461b62ce5d6736941de443a7f749a8a123377859a6ea60295",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A telephone field with a country picker: a button opens a searchable listbox of countries, and the chosen country sets the dial code, flag and, optionally, the input mask of the native tel input.",
       "tags": [
@@ -1661,11 +1661,11 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-date/smart.manifest.json",
-      "manifest_sha256": "94a923da16f6b8ca8f19bd27af080d957d93450568248f1bc21072a214267db1",
+      "manifest_sha256": "546bb5c54429c3f696c3076773e921a09cf75c771dd548873ca91df297cddf60",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
       "tags": [
@@ -1711,11 +1711,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-image/smart.manifest.json",
-      "manifest_sha256": "21c6e7611f1cdb3278a45f9570534021d0d1cffb77614d4d8139c4ec7b5fba62",
+      "manifest_sha256": "4e9d5cc4d1eb1972f526f0692fec3559720227dfdb883229984bec6788a2c1f8",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная» inside the field, the frame and the focal point in a window over the page; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
       "tags": [
@@ -1764,11 +1764,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-lookup/smart.manifest.json",
-      "manifest_sha256": "02bbddb95cdaa4df347521f3e47ff2c822f4bb102ad0dc39659bfd41d1d3442b",
+      "manifest_sha256": "120c5af2f8511bc280a571f6adf0709bb1703500dfe2214dc30401e902edd87a",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A form field that picks people or objects from a search the host answers: type, see rows with a picture, a name and a caption, choose one or several. Chosen items are removable chips; the list says when it waits for more letters, searches, finds nothing, is unavailable or failed, with a retry.",
       "tags": [
@@ -1811,11 +1811,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-quantity/smart.manifest.json",
-      "manifest_sha256": "ed1ffd3f8d8699cbef92d61904429912c398ec28bc80bc8da2f9344c3bee1ea9",
+      "manifest_sha256": "5bd91f737ecbbb5946f74ffd7bb1d84e15cc98d0fccdb9c4d90aec29f6c76904",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
       "tags": [
@@ -1861,11 +1861,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-rich/smart.manifest.json",
-      "manifest_sha256": "11dc223d84d6edd4aac1f826ea18b5020dde3ef242433bebe04500c31d7752a1",
+      "manifest_sha256": "e21191597917c76fa6da0eacb52dee1936480b804e641b780918f81014759d86",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
       "tags": [
@@ -1907,11 +1907,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-textarea/smart.manifest.json",
-      "manifest_sha256": "c85d07ea01047f199cf18b5bc9c7e2aac9b8b1245a3571726a9bb9920d9c363d",
+      "manifest_sha256": "df8fe42d55ea6569fffae479956846fcb7e3884f83963e9835d7f24a6553bbf2",
       "reuse_mode": "both",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
       "tags": [
@@ -1951,11 +1951,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/language/smart.manifest.json",
-      "manifest_sha256": "6661b51d41d09c10959601d20298784253d15a78dec4bfceda599ebcd98e138a",
+      "manifest_sha256": "4203ecba40c461064e5bf59add17e95cde1086e023dffb31f22d912aa3d0be9e",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
       "tags": [
@@ -2008,11 +2008,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "dbf32dbd0837750554be171bc01b4302b0f64718fe8d746e4d0f08286c6dd5ca",
+      "manifest_sha256": "841c6b8a9d0fb5bbb5b29c29ef50af00c12e43d3fb875c078e7108778b260636",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
       "tags": [
@@ -2052,11 +2052,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-attention/smart.manifest.json",
-      "manifest_sha256": "1753d8772dcab3020bfb3556195934a4245fd71ab6e77f3da4b4f7c5e76cb22d",
+      "manifest_sha256": "6ae3a54af9fa3577bba64a0d2d1474668b7e6a7b127048b273f99a3ec49527be",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The problems that need a person, in a card: a heading with a badge per severity, then each problem with a filled status icon, its title, what · how long · where, one quiet action and a «⋯» to snooze or dismiss it (undone from the notice), at most five and «Все проблемы (N)», when the checks ran and a recheck. With none, one quiet line «Всё в порядке · проверено …». group=\"severity\" is the full checks page with a closed «Пройдено».",
       "tags": [
@@ -2098,11 +2098,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-description/smart.manifest.json",
-      "manifest_sha256": "1a413ba927cbd25f1e560add2a3d3023a0063d79f855fc6debbbaddebb968c69",
+      "manifest_sha256": "196c85f0cdd6e27f40c9e071177b51e760f995a42da766ed34151f1d3d98ce3b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A description list: facts as label and value rows (a site summary, server facts, a record's card with sections, a record's header, a job's parameters, licence details). The labels stand in one column for the whole record and go over their values on a phone; a value can be monospace, figures, a link, copied with a button, a badge, carry a status, a hint and an action; a label a help mark; a section a title and an action; a long value wraps or is cut with the whole of it on demand; an empty one says «Не указан». layout grid is a summary in up to four columns.",
       "tags": [
@@ -2143,11 +2143,11 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-feed/smart.manifest.json",
-      "manifest_sha256": "4aabae254dfbc0e894b8483aa48bf6e7f3e17c272f2a59b384697454484e33e1",
+      "manifest_sha256": "cc4f45a92637079cb2fafbb514a6e1326605fba457fb352112582afabb05cd7b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
       "tags": [
@@ -2190,11 +2190,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-item/smart.manifest.json",
-      "manifest_sha256": "15eb801f525a34c9cc2afa583493e562424cbc6520b19249439de53c9f5497ea",
+      "manifest_sha256": "f78116e71b1a3900a7a156e7034ace6b46ccd8a34dfe1555f6d5ef2700e8b693",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
       "tags": [
@@ -2232,11 +2232,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-timeline/smart.manifest.json",
-      "manifest_sha256": "cc1eec22c42501e81b0b4c8509f3eb9967dd6d23b2504466e93baa39f2354b9e",
+      "manifest_sha256": "c31fd0f41f13b486830985d8c8c1ae4feece0c4f380695986debff5e99d7c8b7",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming drawn with sf-steps' line, sub-events folded under a disclosure row, host content under an event (slot), a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
       "tags": [
@@ -2282,11 +2282,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu/smart.manifest.json",
-      "manifest_sha256": "baac7d90d6ad08dc3ff38f1a5e73321a5e1c80500c36c6465be6d1eca77dc717",
+      "manifest_sha256": "45bcaa6b710c6f332b2cfc0077f94df022fdbd703c6f3fed2c156cf9541ccfdb",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
       "tags": [
@@ -2327,11 +2327,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "b479cf7078d8cd8bb8dfece7e7bb97879d3bd4024b6696196c121c43fecce3cb",
+      "manifest_sha256": "ad3c6ab0360d27ab4258e83d9bdece29c7a72a3a31b973bed961ac51bc12263d",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
       "tags": [
@@ -2364,11 +2364,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/modal/smart.manifest.json",
-      "manifest_sha256": "02710f7744c175e487dac449668cbfbd46bf3dd005c005a0a3c6e3f681163370",
+      "manifest_sha256": "a7e2371367e1d7079f186af99106261a6e81e13a5277359399f634b63bba96f8",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A dialog window over the page in the shared modal stack: centered or at a side, top or bottom edge, with header, content and footer slots, focus trap, scroll lock and focus return. It can also be minimized, load its content by Ajax or into an iframe, or render inline in the page flow.",
       "tags": [
@@ -2403,11 +2403,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pager/smart.manifest.json",
-      "manifest_sha256": "477db0939e95696d46f773dc8856e1b7ce3f18918d445cd752118fe1b029d2df",
+      "manifest_sha256": "2ec941908ef5631e5b683fea05ddf241e7e55574f6af3cfb4c4653a6e012448e",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Navigation to the neighbouring document by meaning (decision C97): the previous and the next documentation page as two cards, the previous and the next article as one row of titles, or a record's place in its list («‹ 3 из 240 ›»). Not list paging: sf-pagination keeps 1, 2, 3 ….",
       "tags": [
@@ -2457,11 +2457,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pagination/smart.manifest.json",
-      "manifest_sha256": "9c03aa14c49780aca2a01644f08be1e7afeb04032614211992d61a43cc63927a",
+      "manifest_sha256": "989a12a8e274b025bec8270bad36dd5cc861c6641843c0ed7d882576ead09d93",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
       "tags": [
@@ -2489,11 +2489,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/popover/smart.manifest.json",
-      "manifest_sha256": "619a46f2823e66749f2ebadb9570ec0bcf63a6070b5495b74d9d1088fe49732c",
+      "manifest_sha256": "90f0c3091d1ee293df2880666f058f90a276a2c3297cc834853738fb28b81233",
       "reuse_mode": "both",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
       "tags": [
@@ -2531,11 +2531,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/profile-picker/smart.manifest.json",
-      "manifest_sha256": "52765f5dcf0d3e3a9e41fd46ad23b1b00b96bae0976e0314f0b4718ea736bf77",
+      "manifest_sha256": "af5d448d27c8f7e8f8ceeb3d7d05a971adbce52eadf9652825fa2d5195341d90",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Settings profiles: one way to choose, make, rename, remove and reset a named set of settings -- an admin menu's rows, a record's view, a table's columns -- never an account or an organisation. The standard button names the profile in use, and a panel (a bottom sheet on a phone) is where every act happens. The profiles and the rights are the host's; the component says what was asked.",
       "tags": [
@@ -2570,11 +2570,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-bar/smart.manifest.json",
-      "manifest_sha256": "a0a5637e7942314f9f63158af5e2cfa131972e37342e2d9262b76add8b82fee1",
+      "manifest_sha256": "21c06fdfd0b91d00c112025c3bf847add6689454162db6fb51aaac09e96dca14",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Continuous determinate progress with normalized value, accessible range semantics and explicit semantic tone.",
       "tags": [
@@ -2609,11 +2609,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "05d182dc3865cccc6637e41f0c1e9071cb6ddb9be54c858e7a954272a39320d7",
+      "manifest_sha256": "92106bbb5c48d1467bcee7f4ff6e7a5e3c9e9345b8e29aeaafe42de8aeea217b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A value from 0 to 100, or an unknown one, drawn as a ring on the control ladder, with the percentage or a picture in the middle.",
       "tags": [
@@ -2652,11 +2652,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-run/smart.manifest.json",
-      "manifest_sha256": "c1d8feeebbc3e9ca3df7f5aee1c47b688304df787ed1500943844c0941a33095",
+      "manifest_sha256": "a186e25fb22849c45153d52662827cb096d767c44e28fa3228c62698b66c3a45",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; row -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
       "tags": [
@@ -2700,11 +2700,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-scale/smart.manifest.json",
-      "manifest_sha256": "2a74b082ecda19c917a8c61d0840cc994591712176291a18c8b44c60282a2b18",
+      "manifest_sha256": "e2c431d5164b7b8792a80aaeddd33f31d0a679daa9fe48c94eb0a96cd2fb7e7a",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Segmented determinate progress with exact accessible value, explicit semantic tone and ten visual steps.",
       "tags": [
@@ -2741,11 +2741,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/radio/smart.manifest.json",
-      "manifest_sha256": "7f799328f84f90f54e1a6225fb478d06d5920c7bfbb3bce3a2e267dfe5d71724",
+      "manifest_sha256": "cb7ca6169ffe772626415c6ce45a7a25006a31bb15d03e17e53ec7f0135ac0cc",
       "reuse_mode": "both",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "One radio option: a native radio input with a label, description and help text. Radios with the same name form a group in which checking one unchecks the others.",
       "tags": [
@@ -2777,11 +2777,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/reference-link/smart.manifest.json",
-      "manifest_sha256": "f5bfaec9eaeab4698c573e5f7250b286ef0d486c8c2bb501bec59ba7c7a9df19",
+      "manifest_sha256": "d94c60af4dad037ec6b25e863dd6faedb9760f304dac9e40ab77ce3f44e91804",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Navigation surface that pairs a real destination with a compact reference.",
       "tags": [
@@ -2809,11 +2809,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/resizer/smart.manifest.json",
-      "manifest_sha256": "d9d0cf80676dfb0a36e47b154067ae1ce4d475915eeb60fac5d33b8cc0d7ac54",
+      "manifest_sha256": "c61808073780bffbfa21e047c5f9af4dbd84c8bd4834c8bfbfe3d20d420f4610",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A handle on a panel's edge that changes the panel's width by a drag, the keyboard or a double click back to the default, within limits; optionally remembered in the browser.",
       "tags": [
@@ -2860,11 +2860,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/search/smart.manifest.json",
-      "manifest_sha256": "e833d8d0a8e031df1f16d8f23a43fd3007b5ee5cb4eb5c097a6ca914532c9830",
+      "manifest_sha256": "2dd453f5bf28947063aff81840004f7b63e7ff554476c3a5294f7ae077ec3385",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Site search in a window: a large rounded field and a separate results card under it over the shared scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
       "tags": [
@@ -2904,11 +2904,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/segmented/smart.manifest.json",
-      "manifest_sha256": "6ad214e62feb8e522e73d7f39da2e449eab763f7c88a15782bc5d91c89d1aea0",
+      "manifest_sha256": "e05b1bef75c32534f269ee33f73bfcc95a292a618c2f6fa1a3b5e136c350ea13",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A controlled single-selection group built from SF5 buttons.",
       "tags": [
@@ -2948,11 +2948,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/settings/smart.manifest.json",
-      "manifest_sha256": "5d078d7b5a05044fa8dcd0e41d8943ec53dd1cc0818b0e270bfebe5d7f598e8f",
+      "manifest_sha256": "39c735fec382421ea87198fd47a92281d63a27533f2fc9e34626027950ad0ae2",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of two looks -- drill (the value under the name, the options in the same panel) or rows (the control at the row's end; a choice that does not fit beside its name drills by itself). With a trigger it opens over the page (a bottom sheet on a phone); without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. Where a product has a sign-in, the person's theme, language and text size are rows of the person menu (sf-menu-context, owner decision C176 (1)); sf-settings is the gear of a screen's view and of a site without a sign-in. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
       "tags": [
@@ -2991,11 +2991,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/skeleton/smart.manifest.json",
-      "manifest_sha256": "9d3f35e6f15daa699d5d2547f56461f63c2c0d96fde65bb5e684e798bed557f6",
+      "manifest_sha256": "1b8b78983e5624eade236e74d56fa9fe358cf29901e1340bbd268521a77d6914",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Decorative loading placeholder that reserves source-backed content geometry with semantic tokens and reduced-motion support.",
       "tags": [
@@ -3026,11 +3026,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/slider/smart.manifest.json",
-      "manifest_sha256": "899ce4e1535f62eb6d4e869390a2b3f5ab17fecc6f3004b070a17d8e17eef0a3",
+      "manifest_sha256": "d43a18566d55e7148cf163468dbff2428e4d8d26f1bc5dd4e090b58ec7b62cce",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A row of slides moved by arrows, dots, swipe or keys, built on the shared Swiper adapter; with linked thumbnails a second slider picks the slide.",
       "tags": [
@@ -3060,11 +3060,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/slider-range/smart.manifest.json",
-      "manifest_sha256": "02823f132f63b65a8d04b6c5b29fca128d0c1dd2c178d6f85c5a2e6c72de4844",
+      "manifest_sha256": "dd557c71a557e399cb71205decb3a0258fee5effdffcbf720026389b3cb68324",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A slider for one number or a range of two on a track, as a form field: a visible name above, drag, click or keys move a handle by step (PageUp/PageDown by ten), the value shown at the end of the name line, in a bubble while dragging, or in a from/to field beside the track; ticks and a scale on request; sizes 1/2, 1, 2; read-only and disabled.",
       "tags": [
@@ -3096,11 +3096,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/sortable/smart.manifest.json",
-      "manifest_sha256": "b0e89b7a744627ac93628213478a7a2e2a0b585e49dedc9ad1e138ba8d3e0255",
+      "manifest_sha256": "2bc413942d6bf374cbb58d3c9e8916076b3138c404ae746a32084db4820ea258",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A list whose items move by pointer, touch and keyboard, between lists of a group and onto registered drop targets; it asks the host to move and never moves the host's DOM or data.",
       "tags": [
@@ -3135,11 +3135,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/spinner/smart.manifest.json",
-      "manifest_sha256": "43989631c5c2afa62e9060a9ec9501f6ddd1d38e131259b582974304550ab34c",
+      "manifest_sha256": "cc390547d32efde0cfffdeb6d4b7f1373578919bf1c0226b8b7583e355d0596b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Indeterminate waiting indicator, one look (the arc) on the size ladder, shown after a delay (1 s by default), in the place's quiet ink, with optional polite status announcement and Framework-owned motion.",
       "tags": [
@@ -3174,11 +3174,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/steps/smart.manifest.json",
-      "manifest_sha256": "eb1d42294c854adf72f9aa57090da77ce2332b99e3f78899965ea5524c51d3ea",
+      "manifest_sha256": "4d81981df3da8134df4c636dd569116cd231cf8825e56f8e1456ea5716d3d35e",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Where a person is in an ordered process of their own: a list of steps, each a marker (number or dot) and a label joined by a progress line, drawn as a row, a column or a «Step N of M» line by its own width. Passive by default; navigation makes the reachable steps buttons.",
       "tags": [
@@ -3217,11 +3217,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "61c1c49b15f070a5520192f3b1eab8255e1f2014b694c282691c5b08c27bc164",
+      "manifest_sha256": "98c51615538f3d60a38b0a0eed0eec48492972b9f80a4c0b22a9f156c5bfd062",
       "reuse_mode": "both",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
       "tags": [
@@ -3261,11 +3261,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "06399673083359981dddf5fbd4662327f5b70c9c4befa82b4b0b4fea648f3be6",
+      "manifest_sha256": "48169ba2ea39c8f9a734968a8d6d90ccc96735aaf60a29ac5bfaad1254c0c505",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
       "tags": [
@@ -3304,11 +3304,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag/smart.manifest.json",
-      "manifest_sha256": "2512a7359c82c308aba92f82eb1dad62181a9a7f11676d95ab93f5d10872378e",
+      "manifest_sha256": "921f78adf0bb2453f446f69d28ca2e3b91f2a29d3de1ee63bd0c33296cf1063b",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
       "tags": [
@@ -3342,11 +3342,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tag-group/smart.manifest.json",
-      "manifest_sha256": "d3fe5f58fdbf7d1124dcaa64248ba502c7b786a505f7b52acb8c010664ca9c8e",
+      "manifest_sha256": "e4408dc02f1b3fd7f3f8b7ea34a3af45d5372a8d6a08862ab9c78d58cc71bb2f",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A row of tags: 4 apart, a list to a screen reader, one Tab stop with arrows and Delete, one line with «+N» that opens the hidden tags in a popover, and single or multiple choice for filter tags.",
       "tags": [
@@ -3386,11 +3386,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "b8a6fdbfbb3a491ed39e1776d644a2e08c5acd7f253bd289ce9bbebe7fe0c40a",
+      "manifest_sha256": "cb5d3b1af909a95c038f1308e9d4b6246f5a815b25355f0cdec70e4be025558d",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Leaving until 2027-01-01 (C84): use sf-input-color variant=\"brand\". A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
       "tags": [
@@ -3427,11 +3427,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tile-metric/smart.manifest.json",
-      "manifest_sha256": "67c863d073525ae99239c4eb07c8043066ac6c8f9e794dfd81294d9a89123d9a",
+      "manifest_sha256": "efe6139b709d1503fd161f30b09730696099db7b714ea1f910317b515c3a084e",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A metric tile: a label, a value with its unit, the change against a previous period said in words and by an arrow, a limit as a meter with thresholds, a status with a short hint, a slot for a chart, a skeleton while it loads, and the whole tile as one link or button. Tiles stand in a row that wraps (sf-tile-metric-grid).",
       "tags": [
@@ -3469,11 +3469,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/time/smart.manifest.json",
-      "manifest_sha256": "5e46c4610b98550928d8e0d9aea7c890abd50ff5529eb6e72e6760c8366591b1",
+      "manifest_sha256": "b6a8ac4d4123d982b27c7e9ac0f6930c4983f9a16ad232b0d8ac49b901f74f54",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», tomorrow «завтра, 10:00», then the date, relative within the first hour («только что» under a minute), with the full date, time and zone in a tooltip on hover and keyboard focus, inside a time element; in a list or a feed no Tab stop, the moment in the row's text. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
       "tags": [
@@ -3511,11 +3511,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/toast/smart.manifest.json",
-      "manifest_sha256": "00cbb99c02fec13778ede9a8c03f8bf5ce7ba5cc2e129d31507b5b57d3a76ecf",
+      "manifest_sha256": "7af9a542e3e50384b50aa89a5fbe689564d9eac88a56036bf439a39a80e6c0f2",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
       "tags": [
@@ -3547,11 +3547,11 @@
       "kind": "smart",
       "lifecycle": "released",
       "manifest_path": "src/smart/tooltip/smart.manifest.json",
-      "manifest_sha256": "b37c55d5237cef1fc51c6cbf208d8ab7a96ac9fcd1bf326c35251b5ce89696ac",
+      "manifest_sha256": "e5c9723ed05681ba9acd7f40b80fb16282432431d750fcf7f84f88faddfa8ea3",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "Tooltip surface that can join the ordinary data-tooltip trigger composition.",
       "tags": [
@@ -3590,11 +3590,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tree/smart.manifest.json",
-      "manifest_sha256": "062673a06ff1f8e88f7b380bcc83fcad67033c1c1b01d45eb640a4c496217d34",
+      "manifest_sha256": "cee59b10b3cf6280618401801a9e0a4b096b2f29ee2c579ff2b2f29a08d10c90",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
       "tags": [
@@ -3628,11 +3628,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tree-item/smart.manifest.json",
-      "manifest_sha256": "ce8267aeb13d093ad70631a6b87e8cc33db95d268b43a95b74d461b6c01f25b7",
+      "manifest_sha256": "169a201a2df62acd89ac3644f4f41c16f26bea03616a142d82d3727207b7f8f7",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "A node of a tree: a folder that opens a group of nodes, or a file or link. Inside sf-tree it is read once as data and the tree draws its row; alone it draws itself.",
       "tags": [
@@ -3674,11 +3674,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/wizard/smart.manifest.json",
-      "manifest_sha256": "0eeaf258515aca37811bb6139ba2538086abee484504f57f09a1eb197f70abac",
+      "manifest_sha256": "5bc16e008887bf9985af5717863b7c0f3761d6c30a1e2b6730351886808ac9c7",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal (36rem, wide with the column), drawer (a side panel 30rem) and pages (the server's page per step, its form posting). The wizard's name is the page's or window's title (h4), the step's title one step under it (h5); on a phone a window takes the screen with the footer at its bottom. The draft is kept by the wizard itself, closing is continue later, and one value of all answers.",
       "tags": [
@@ -3711,11 +3711,11 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/wizard-step/smart.manifest.json",
-      "manifest_sha256": "716b0bcf4e82a0a3e83c5e4a7b052c65d91083b09f7bf0cc1ea65604c693446e",
+      "manifest_sha256": "66377e30a4552f8cd1713727e4c14b4e8ab44713f7843457b224febc4f65a0a1",
       "reuse_mode": "whole",
       "runtime_pair": {
-        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
-        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+        "ui_revision": "0000000000000000000000000000000000000000",
+        "ui_smart_revision": "0000000000000000000000000000000000000000"
       },
       "summary": "One step of sf-wizard: its key, label, title, «why», type, optional, address in place pages, primary label and result line as attributes, its state as a value, and its body -- a form, a picture, a plan of changes -- as its children, which stay where the page put them.",
       "tags": [
@@ -3727,5 +3727,5 @@
   "schema": "simai.smart-component-contract-registry.v2",
   "schema_id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
   "schema_path": "contracts/schema/smart-component-manifest.v2.schema.json",
-  "schema_sha256": "d5b0a5b299fa4b044d8125a315458c37de76f0bb5c6cb686962cdec7922b14ce"
+  "schema_sha256": "4c57207acf295e3ec7308af3d160d407f2fe572ea168da463ffd4aeeefb216f5"
 }

@@ -9,8 +9,8 @@
 //   studio.fixture.json  examples.json, the example marked "studio"
 //   studio.scenario.json examples.json, that example's studio.scenario
 //   probe.json           examples.json, the page example with "checks"
-//   smart.manifest.json  component.json (+ x-registry), lang/en.json, the aliases
-//                        and the build stamp (provenance, runtime pair)
+//   smart.manifest.json  component.json (+ x-registry), lang/en.json, the aliases,
+//                        the build stamp (provenance) and the release pair marker
 //
 // Phase 1 (this script): the folders are still standard 1.3.10 folders, so the
 // generator first reads a 1.4 view of the folder in memory. Where the five
@@ -23,7 +23,13 @@
 //   x-registry      <- smart.manifest.json (what only the registry says)
 //   studio          <- studio.fixture.json / studio.scenario.json (what differs from the derivation)
 //   pages           <- probe.json
-//   stamp           <- smart.manifest.json provenance and compatibility.runtime_pair (a build computes it)
+//   stamp           <- smart.manifest.json provenance (a build computes it)
+//
+// compatibility.runtime_pair is not carried: it is RELEASE_PAIR, the marker
+// for "the release that carries this manifest" (manifest schema 2.6.0, group
+// build 18). A source file cannot name the release commit that will hold it,
+// so the value the generator used to carry was the 2026-10-11 pair
+// 094f3d549aa7 in every manifest of every later release.
 //
 // Nothing in a component folder changes unless --write is given.
 //
@@ -630,6 +636,13 @@ export const MANIFEST_DEFAULTS = {
   readiness: {level: 'described', required_checks: ['manifest', 'fixture', 'runtime-upgrade', 'scenario-smoke']},
 };
 
+// The release pair marker (manifest schema 2.6.0): forty zeros in both fields
+// name the release that carries the manifest. Its identity is that release's
+// lock (simai/ui contracts/releases/<pair>.lock.json, compatibility_id) and the
+// component's version there is the manifest's own version, also listed in the
+// release inventory (<pair>.inventory.json).
+export const RELEASE_PAIR = Object.freeze({ui_revision: '0'.repeat(40), ui_smart_revision: '0'.repeat(40)});
+
 export function genManifest(component, lang, stamp = {}) {
   const reg = component['x-registry'] ?? {};
   const pick = (key) => (key in reg ? reg[key] : MANIFEST_DEFAULTS[key]);
@@ -674,7 +687,7 @@ export function genManifest(component, lang, stamp = {}) {
     readiness: pick('readiness'),
     compatibility: {
       contract_schema: {id: 'https://simai.io/contracts/smart-component-manifest.v2.schema.json', version: 2},
-      runtime_pair: stamp.runtime_pair ?? null,
+      runtime_pair: {...RELEASE_PAIR},
       // An old tag is written as markup names it, <sf-close>, beside the
       // setting=value aliases; its deprecation names the version the rename
       // came with and the new tag.
@@ -1017,8 +1030,8 @@ export async function viewOfToday(folder) {
     const other = Object.fromEntries(Object.entries(manifest).filter(([key]) => !known.has(key)));
     if (Object.keys(other).length) carry('other', other, `top-level fields schema v2 allows beyond the derived ones: ${Object.keys(other).join(', ')}`);
     if (Object.keys(registry).length) component['x-registry'] = registry;
-    stamp = {provenance: manifest.provenance, runtime_pair: manifest.compatibility?.runtime_pair};
-    log.bridge.push('stamp <- smart.manifest.json provenance, runtime_pair');
+    stamp = {provenance: manifest.provenance};
+    log.bridge.push('stamp <- smart.manifest.json provenance');
   }
 
   // ---------------------------------------------------------------- examples.json
@@ -1088,7 +1101,8 @@ export async function viewOfToday(folder) {
 
 // A folder in the 1.4 form (component.json has "relations"): its five files
 // are the whole source; only the build stamp still comes from the committed
-// registry (provenance, runtime pair: a build computes them, never a person).
+// registry (provenance: a build computes it, never a person; the runtime pair
+// is the release pair marker).
 export async function viewOf(folder) {
   const component = readJson(path.join(folder, 'component.json'));
   if (!Array.isArray(component.relations)) return viewOfToday(folder);
@@ -1102,8 +1116,8 @@ export async function viewOf(folder) {
   const manifestPath = path.join(folder, 'smart.manifest.json');
   if (existsSync(manifestPath)) {
     const manifest = readJson(manifestPath);
-    stamp = {provenance: manifest.provenance, runtime_pair: manifest.compatibility?.runtime_pair};
-    log.bridge.push('stamp <- smart.manifest.json provenance, runtime_pair');
+    stamp = {provenance: manifest.provenance};
+    log.bridge.push('stamp <- smart.manifest.json provenance');
   }
   return {component, examples, lang, files: listFiles(folder), folder: name, stamp, log, hasMeta: existsSync(path.join(folder, 'meta.mjs'))};
 }
