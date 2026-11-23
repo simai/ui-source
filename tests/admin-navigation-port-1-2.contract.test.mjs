@@ -146,5 +146,7 @@ test('ASR-2: the activity intents name no event; the menu intents keep sf-admin-
   const schema = JSON.parse(readFileSync(join(root, 'src/core/contracts/composite-host-port.v1.schema.json'), 'utf8'));
   const intent = schema.properties.intents.additionalProperties;
   assert.ok(!intent.required.includes('event'), 'an intent raised only through the port names no event');
-  assert.equal(schema['x-simai-version'], '1.2.0');
+  // 1.2.0 made the event optional; 1.3.0 (group build 18) only adds optional parts.
+  const [major, minor] = schema['x-simai-version'].split('.').map(Number);
+  assert.ok(major === 1 && minor >= 2, schema['x-simai-version']);
 });

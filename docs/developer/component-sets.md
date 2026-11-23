@@ -1,10 +1,12 @@
 # Component sets
 
-Status: draft standard `simai.component-set` 1.3.1
-(`contracts/standards/simai.component-set/1.3.1/standard.json`; 1.0.0, 1.1.0,
-1.1.1, 1.2.0 and 1.3.0 are kept under `contracts/standards/history`; 1.1.1 changed no
+Status: draft standard `simai.component-set` 1.3.2
+(`contracts/standards/simai.component-set/1.3.2/standard.json`; 1.0.0, 1.1.0,
+1.1.1, 1.2.0, 1.3.0 and 1.3.1 are kept under `contracts/standards/history`; 1.1.1 changed no
 requirement of 1.1.0; 1.2.0 adds pair ranges; 1.3.0 adds the exports list; 1.3.1
-lets `docs` be empty or absent while a set has no published documentation page). The Loader
+lets `docs` be empty or absent while a set has no published documentation page; 1.3.2
+changes no requirement: it names the re-issued `simai.component-package` 1.1.3 and
+`simai.linkage` 1.0.2 by digest). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set
 release route; the package references do not follow it yet. See "What is not
 built yet" below.
