@@ -5100,14 +5100,15 @@ function onceByUrl(kind, src, insert) {
 //  - after it only when every relation of the waiting element is loaded or
 //    on its way (its script asked for; a rule without a script asked for), so
 //    the script runs as soon as they arrive, and only when no check of
-//    Chrome's can come before that: none of the last 3 s ended a quiet spell
-//    start (the load event or a moment with nothing in flight). Otherwise it
+//    Chrome's can come before that: no quiet spell began in the last 3 s (the
+//    load event, or nothing in flight for about 500 ms). Otherwise it
 //    waits and is tried again whenever the Loader asks for a script, and once
 //    the pending check has passed; a script asked for meanwhile is fetched
 //    by its own element.
 // The browser fetches each script once: no request of our own.
 const PRELOAD_CHECK_MS = 3000;
 const PRELOAD_CHECK_MARGIN_MS = 250;
+const QUIET_SPELL_MS = 450;
 
 function nowMs() {
   const now = globalThis.performance?.now?.();
@@ -5155,11 +5156,17 @@ function preloadCheckPending() {
   let until = loadAt + window;
   const net = netWatch();
   if (!net.observing) return Math.max(0, until - now);
-  const starts = [...net.inFlight.values()];
+  // A quiet spell is a moment nothing is in flight that lasts (Chrome waits
+  // for 500 ms of it, its network-quiet signal); shorter gaps between one
+  // file and the next are not one.
+  const flying = [...net.inFlight.values()];
+  const starts = net.spans.map(([s]) => s).concat(flying);
   for (const [, end] of net.spans) {
     if (end < now - window || end > now) continue;
-    const covered = net.spans.some(([s, e]) => s < end && e > end + 1) || starts.some((s) => s < end);
-    if (!covered) until = Math.max(until, end + window);
+    const covered = net.spans.some(([s, e]) => s < end && e > end + 1) || flying.some((s) => s < end);
+    if (covered) continue;
+    const next = starts.filter((s) => s >= end).reduce((a, b) => Math.min(a, b), now);
+    if (next - end >= QUIET_SPELL_MS) until = Math.max(until, end + window);
   }
   return Math.max(0, until - now);
 }
