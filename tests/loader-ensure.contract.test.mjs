@@ -180,3 +180,77 @@ test('core places the standard menu in one place (TL-8)', () => {
     assert.doesNotMatch(text, /createElement\('sf-menu-context'\)/u, path);
   }
 });
+
+// GB18 L2 (DEV LM-R2, ui-control evidence 2026-11-23-admin-lazy-menu-accept): a module a person's press asks for
+// is not given up after 3 s while its request is in flight; ensure(tags, {press: true}) waits 30 s by default.
+function pressLoader(customElements, inFlight = null, rules = {'sf-menu-context': 'cl-menu-context'}) {
+  function SFLoaderPlugin() { this.fetched = []; }
+  SFLoaderPlugin.prototype.getCustomElementRules = () => rules;
+  SFLoaderPlugin.prototype.ensurePlugin = function (name) { this.fetched.push(name); return true; };
+  const context = vm.createContext({SFLoaderPlugin, customElements, setTimeout, clearTimeout, Promise, Number, Set, Map, Math, String, Array});
+  if (inFlight) context[Symbol.for('simai.sf.loader.assets')] = {scripts: new Map(), styles: new Map(), inFlight};
+  vm.runInContext(slice('// The tags of rules whose script failed to load on this page.', 'SFLoaderPlugin.prototype.getAssetVersion'), context);
+  vm.runInContext(slice('// The element a name in SF.Loader.ensure() stands for', 'async function createSmartElementAsync'), context);
+  return new SFLoaderPlugin();
+}
+
+test('press: the default wait is 30 s, a drawing path keeps 3 s', () => {
+  const body = slice('SFLoaderPlugin.prototype.ensure = function', 'async function createSmartElementAsync');
+  assert.match(body, /timeout = press \? PRESS_WAIT_MS : 3000/u);
+  assert.match(source, /const PRESS_WAIT_MS = 30000;/u);
+});
+
+test('press: the wait goes on past its timeout while a load is in flight, then reports', async () => {
+  const customElements = registry();
+  let finish;
+  const load = new Promise((done) => { finish = done; });
+  const inFlight = new Map([['https://example.test/menu-context.min.js', load]]);
+  const loader = pressLoader(customElements, inFlight);
+  const started = Date.now();
+  const pending = loader.ensure(['sf-menu-context'], {timeout: 20, press: true});
+  setTimeout(() => {
+    customElements.define('sf-menu-context');
+    inFlight.delete('https://example.test/menu-context.min.js');
+    finish();
+  }, 120);
+  const result = await pending;
+  assert.ok(Date.now() - started >= 100, 'not given up at the 20 ms timeout');
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: ['sf-menu-context'], missing: [], failed: []});
+});
+
+test('press: the load settles and the tag is still missing, the wait reports it', async () => {
+  const customElements = registry();
+  let fail;
+  const load = new Promise((done, reject) => { fail = reject; });
+  load.catch(() => {});
+  const inFlight = new Map([['https://example.test/menu-context.min.js', load]]);
+  const loader = pressLoader(customElements, inFlight);
+  const pending = loader.ensure(['sf-menu-context'], {timeout: 20, press: true});
+  setTimeout(() => { inFlight.clear(); fail(new Error('network')); }, 60);
+  const result = await pending;
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: [], missing: ['sf-menu-context'], failed: []});
+});
+
+test('press: nothing in flight, the timeout still reports what is missing', async () => {
+  const customElements = registry();
+  const loader = pressLoader(customElements, new Map());
+  const started = Date.now();
+  const result = await loader.ensure(['sf-menu-context'], {timeout: 20, press: true});
+  assert.ok(Date.now() - started < 1000);
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {ready: [], missing: ['sf-menu-context'], failed: []});
+});
+
+test('without press the timeout gives up as before, a load in flight or not', async () => {
+  const customElements = registry();
+  const loader = pressLoader(customElements, new Map([['x', new Promise(() => {})]]));
+  const started = Date.now();
+  const result = await loader.ensure(['sf-menu-context'], {timeout: 20});
+  assert.ok(Date.now() - started < 1000);
+  assert.deepEqual(JSON.parse(JSON.stringify(result.missing)), ['sf-menu-context']);
+});
+
+test('the Loader keeps its loads in flight in the shared asset registry until they settle', () => {
+  const body = slice('function onceByUrl(kind, src, insert) {', '\n}\n');
+  assert.match(body, /registry\.inFlight\.set\(key, load\);/u);
+  assert.match(body, /load\.then\(settle, settle\);/u);
+});

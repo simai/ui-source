@@ -171,6 +171,14 @@ SF.RuleLoader.registerPackage('pro', {
   lists the tags that are defined, `missing` those that are not, for the
   caller's fallback. A tag already defined costs nothing, and callers of one
   tag share one fetch and one wait.
+- A wait a person's press started -- a menu, a window or a viewer the press
+  opens -- passes `press: true`:
+  `await SF.Loader.ensure(['sf-menu-context'], {press: true})`. Its timeout is
+  30 s by default (a first press on DevTools «Slow 3G» took 18.8 s), a module
+  that failed still settles the wait at once, and when the timeout passes
+  while a load of the Loader's is still on its way, the wait goes on until
+  those loads settle: a press is not given up while its request is in flight.
+  A drawing path keeps the 3 s default and draws its fallback.
 - When an element's script cannot be loaded (the file fails, and its other
   form too, on this load or stored as missing by an earlier one), the Loader
   says so in public; a component that waits for another one's tag reads this
