@@ -5098,7 +5098,8 @@ function onceByUrl(kind, src, insert) {
 //    is in the page or has been fetched: such a preload nothing will use;
 //  - before the load event it is preloaded at once;
 //  - after it only when every relation of the waiting element is loaded or
-//    on its way (its script asked for; a rule without a script asked for), so
+//    on its way (its script asked for, a rule without a script asked for, or a
+//    rule waiting on relations that are all on their way), so
 //    the script runs as soon as they arrive, and only when no check of
 //    Chrome's can come before that: no quiet spell began in the last 3 s (the
 //    load event, or nothing in flight for about 500 ms). Otherwise it
@@ -5192,10 +5193,16 @@ function appendScriptPreload(href) {
   document.head.append(link);
 }
 
-/** Every relation of the waiting rule is loaded or on its way. */
-SFLoaderPlugin.prototype.relationsUnderway = function (name) {
+/**
+ * Every relation of the waiting rule is loaded or on its way: its script asked
+ * for, a rule without a script asked for, or a rule that waits itself on
+ * relations that are all on their way (a chain in motion: the wizard waits on
+ * the steps, the steps on the spinner, the spinner is asked for).
+ */
+SFLoaderPlugin.prototype.relationsUnderway = function (name, seen = new Set()) {
   const relations = this.relationPlugins?.[name];
-  if (!Array.isArray(relations)) return false;
+  if (!Array.isArray(relations) || seen.has(name)) return false;
+  seen.add(name);
   const completed = this.totalRelationsPlugins?.[name]?.completed || {};
   const files = this.pluginScriptFiles || {};
   return relations.every((relation) => {
@@ -5205,7 +5212,10 @@ SFLoaderPlugin.prototype.relationsUnderway = function (name) {
     if (!(relation in files)) return false;
     const file = files[relation];
     if (!file) return Boolean(this.pendingLoadPlugins?.has(relation));
-    return assetRegistry().scripts.has(assetKey(this.versionAssetUrl(file)));
+    if (assetRegistry().scripts.has(assetKey(this.versionAssetUrl(file)))) return true;
+    const waits = this.totalRelationsPlugins?.[relation];
+    return Boolean(waits && !waits.canLoad && this.pendingLoadPlugins?.has(relation)
+      && this.relationsUnderway(relation, seen));
   });
 };
 

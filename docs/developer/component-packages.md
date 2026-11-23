@@ -237,7 +237,7 @@ window's load event and about 3 s after each moment the network goes quiet, and
 warns of each one no script has used yet ("preloaded using link preload but not
 used within a few seconds"). Before the load event the preload is added at once.
 After it, only when every relation of the waiting element is loaded or on its
-way, so the script runs as soon as they arrive, and only when no such check can
+way (asked for, or itself waiting on relations that are on their way), so the script runs as soon as they arrive, and only when no such check can
 come first; otherwise the Loader tries again whenever it asks for a script and
 once the check has passed, and a script asked for meanwhile is fetched by its
 own element. The Loader makes no request of its own for this. `tests/loader-preload-once.contract.test.mjs`.

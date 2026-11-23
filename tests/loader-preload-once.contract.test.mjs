@@ -88,6 +88,19 @@ test('after the load event: only a waiting element, only when its relations are 
   loader.preloadScript(MODAL, 'cl-modal');
   assert.equal(p.links.length, 1, 'once');
 
+  const chain = page({readyState: 'complete', now: 9000, loadEventEnd: 5000});
+  const l3 = chain.loader();
+  l3.relationPlugins = {'cl-wizard': ['cl-steps'], 'cl-steps': ['cl-spinner']};
+  l3.totalRelationsPlugins = {'cl-wizard': {canLoad: false, completed: {}}, 'cl-steps': {canLoad: false, completed: {}}};
+  l3.pluginScriptFiles = {'cl-steps': '/steps.js', 'cl-spinner': '/spinner.js'};
+  l3.loadedPlugins = {};
+  l3.pendingLoadPlugins = new Set(['cl-wizard', 'cl-steps', 'cl-spinner']);
+  l3.preloadScript('/wizard.js', 'cl-wizard');
+  assert.equal(chain.links.length, 0, 'the spinner, at the end of the chain, is not asked for yet');
+  chain.context.registry().scripts.set('https://example.test/spinner.js', Promise.resolve());
+  l3.tryLatePreloads();
+  assert.deepEqual(chain.links.map((l) => l.href), ['/wizard.js'], 'a chain in motion: the wizard is preloaded');
+
   const early = page({readyState: 'complete', now: 6000, loadEventEnd: 5000});
   const l2 = early.loader();
   l2.relationPlugins = {'cl-modal': ['modal']};
