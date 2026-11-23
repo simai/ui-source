@@ -420,7 +420,7 @@
       "id": "admin",
       "kind": "set",
       "repository": "simai/ui-admin",
-      "status": "planned",
+      "status": "active",
       "families": [
         "admin"
       ],
@@ -442,7 +442,8 @@
           "status": "preview"
         }
       ],
-      "source": "ui-pro components/src/smart at 5c92812 (package pro)"
+      "source": "ui-pro components/src/smart at 5c92812 (package pro)",
+      "note": "Active: released under simai.component-set (npm @simai-studio/admin 1.0.0, the admin menu sf-admin-menu); sf-admin-activity, sf-admin-notifications and sf-admin-shell stay preview until an admin release carries them (DEV return AG-2, 2026-11-23)."
     },
     {
       "id": "view",
@@ -489,7 +490,7 @@
       "id": "chat",
       "kind": "set",
       "repository": "simai/ui-chat",
-      "status": "planned",
+      "status": "active",
       "families": [
         "chat"
       ],
@@ -516,7 +517,7 @@
         }
       ],
       "source": "ui-pro components/src/smart at 5c92812 (package pro); simai/ui-chat package/set.json at 9ad5cf5 (branch set/1.0): family message and sf-message-log left the set on 2026-11-08",
-      "note": "The set of the conversation components (sets split plan 2026-11-05, move 2): simai/ui-chat, Pro licence. sf-message-log is not a name of the set: it is the dated alias of SIMAI Framework's sf-list-feed until 2027-01-01 (duplication audit 2026-11-03 A-6, plan S2; journal record tag-sf-message-log-to-sf-list-feed), so family message has no owner (A-3). Planned until its first release under simai.component-set."
+      "note": "The set of the conversation components (sets split plan 2026-11-05, move 2): simai/ui-chat, Pro licence. sf-message-log is not a name of the set: it is the dated alias of SIMAI Framework's sf-list-feed until 2027-01-01 (duplication audit 2026-11-03 A-6, plan S2; journal record tag-sf-message-log-to-sf-list-feed), so family message has no owner (A-3). Active: released under simai.component-set (npm @simai-studio/chat 1.0.0; DEV return AG-2, 2026-11-23)."
     },
     {
       "id": "mail",
