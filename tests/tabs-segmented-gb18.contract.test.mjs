@@ -25,7 +25,7 @@ function fakeButton(names) {
 
 function settleFromSource() {
   const source = read('src/smart/tabs/index.js');
-  const match = source.match(/function settleForwardedAttributes\(tab\) \{[\s\S]*?\n\}\n/u);
+  const match = source.match(/const TAB_OWN_ATTRIBUTES = [\s\S]*?\nfunction settleForwardedAttributes\(tab\) \{[\s\S]*?\n\}\n/u);
   assert.ok(match, 'settleForwardedAttributes is in sf-tabs');
   return new Function(`${match[0]}; return settleForwardedAttributes;`)();
 }
@@ -58,6 +58,15 @@ test('VO-1: the forwarded names keep the host order (data-sf-tab-index, data-too
   button.setAttribute = (...args) => { writes += 1; set(...args); };
   settle(button);
   assert.equal(writes, 0, 'nothing moves when the order already holds');
+});
+
+test('VO-1: a name another part adds after the tabs (a tooltip aria-describedby) stays after the forwarded names', () => {
+  const settle = settleFromSource();
+  const button = fakeButton([['type', 'button'], ['id', 'x'], ['tabindex', '0'], ['data-sf-tab-index', '1'], ['data-tooltip', 'h'], ['aria-describedby', 'h']]);
+  button.parentElement = {__sfHostDataAttributeTarget: button, __sfHostDataAttributeTargetKeys: '__keys'};
+  button.__keys = new Set(['data-sf-tab-index', 'data-tooltip']);
+  settle(button);
+  assert.deepEqual(button.attributes.map((one) => one.name), ['type', 'id', 'tabindex', 'data-sf-tab-index', 'data-tooltip', 'aria-describedby']);
 });
 
 test('VO-1: a tab that is not a forwarded button (an icon link drawn by the tabs) is not touched', () => {

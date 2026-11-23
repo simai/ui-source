@@ -83,19 +83,25 @@ function contentWidth(box) {
 // button host (sf-button, sf-button-icon) forwards its data-* -- the tab's
 // data-sf-tab-index among them -- by taking them off and appending them, so
 // a forward after the tabs set id, role and aria-* left them at the end, and
-// one before left them in front: a printed page read «stale» by chance. The
-// tabs append the forwarded names last themselves, in the host's order, the
-// order a later forward writes again.
+// one before left them in front: a printed page read «stale» by chance. When
+// a forwarded name stands before one the tabs write, the tabs append the
+// forwarded names again, in the host's order -- the order a later forward
+// writes. Names others add later (a tooltip's aria-describedby) stay after.
+const TAB_OWN_ATTRIBUTES = new Set(['id', 'role', 'aria-controls', 'aria-selected', 'aria-disabled',
+  'aria-labelledby', 'aria-label', 'aria-current', 'tabindex']);
+
 function settleForwardedAttributes(tab) {
   const host = tab?.parentElement;
   const keys = host && host.__sfHostDataAttributeTarget === tab
     ? tab[host.__sfHostDataAttributeTargetKeys]
     : null;
   if (!keys?.size) return;
-  const names = Array.from(keys).filter((name) => tab.hasAttribute(name));
-  const tail = Array.from(tab.attributes).map((attribute) => attribute.name)
-    .filter((name) => name !== 'data-sf-static').slice(-names.length);
-  if (names.every((name, at) => tail[at] === name)) return;
+  const names = Array.from(keys).filter((name) => tab.hasAttribute(name) && !TAB_OWN_ATTRIBUTES.has(name));
+  if (!names.length) return;
+  const order = Array.from(tab.attributes).map((attribute) => attribute.name);
+  const lastOwn = order.reduce((at, name, index) => (TAB_OWN_ATTRIBUTES.has(name) ? index : at), -1);
+  const placed = names.map((name) => order.indexOf(name));
+  if (placed.every((at, index) => at > lastOwn && (index === 0 || at > placed[index - 1]))) return;
   for (const name of names) {
     const value = tab.getAttribute(name);
     tab.removeAttribute(name);
