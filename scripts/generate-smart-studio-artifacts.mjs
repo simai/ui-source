@@ -421,7 +421,7 @@ for (const {name} of directories) {
     adapter: {kind: 'generic', protocol: 'simai.smart-studio-adapter.v1', module: null},
     artifacts: {fixtures: ['studio.fixture.json'], scenarios: ['studio.scenario.json']},
     readiness: {level: 'described', required_checks: ['manifest', 'fixture', 'runtime-upgrade', 'scenario-smoke']},
-    compatibility: {contract_schema: {id: 'https://simai.io/contracts/smart-component-manifest.v2.schema.json', version: 2}, runtime_pair: {ui_revision: uiRevision, ui_smart_revision: smartRevision}, aliases: [], deprecations: [], replacement: null, migrations: []},
+    compatibility: {contract_schema: {id: 'https://simai.io/contracts/smart-component-manifest.v2.schema.json', version: 2}, runtime_pair: {ui_revision: '0'.repeat(40), ui_smart_revision: '0'.repeat(40)}, aliases: [], deprecations: [], replacement: null, migrations: []},
     provenance: {source_repository: 'simai/ui-source', source_revision: revision, source_artifacts: [{path: `src/smart/${name}/index.js`, sha256: hash(source)}], generated_runtime: await runtimeArtifact(name)},
     ai_guidance: {use_when: `Use ${customElement} when the interface needs the ${componentTitle.toLowerCase()} behavior.`, do_not: ['Do not copy generated ui-smart code', 'Do not move host data or access decisions into the component'], required_reads: ['inputs', 'methods', 'events', 'ownership', 'provenance'], minimal_example: `<${customElement}></${customElement}>`, owner_commands: ['npm run contract:verify', 'npm test']}
   };
