@@ -20614,6 +20614,46 @@
         }
       ],
       "source": "src/core/scss/_sf_css__placeholder.scss"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-tabs-button-attribute-order",
+      "manual": "Nothing to rewrite. A host that keeps a printed snapshot of a page with sf-tabs takes it again once (the snapshot script): data-sf-tab-index now always stands after tabindex.",
+      "summary": "smart.tabs 1.5.3 (VO-1, View round 16 acceptance): a tab's button carries its attributes in one order on every drawing. The button host (sf-button, sf-button-icon) forwards its data-* by taking them off and appending them, so a forward before the tabs wrote id, role, aria-* and tabindex left data-sf-tab-index in front, one after left it at the end, and the view-board phone snapshot read stale by chance. The tabs now append the forwarded names last themselves, in the host's order.",
+      "items": [
+        {
+          "component": "smart.tabs",
+          "from": "data-sf-tab-index before or after the tab's id/role/aria-*/tabindex, by drawing order",
+          "to": "always after them (then data-sf-static in a snapshot)"
+        }
+      ],
+      "source": "src/smart/tabs/index.js"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-segmented-fold-one-measure",
+      "manual": "Nothing to rewrite. A host that held the track at its width (flex-shrink: 0) to avoid the loop can keep it.",
+      "summary": "smart.segmented 1.8.4 (FL-1, View round 16 msg-987a9dd6): folded, the dropdown's place is read as the track's would be (the narrow laid out for a moment at the track's one-line width), so fold and unfold answer the same place; it was read at its own full width and in a one-line row beside a shrinking neighbour the element folded and unfolded about 25 times a frame (970-1040 px rows: 51 flips, ResizeObserver loop error, update loop limit warning). A resize is answered in the next frame, so no fold changes boxes the ResizeObserver already delivered.",
+      "items": [
+        {
+          "component": "smart.segmented",
+          "from": "fold flips in a one-line row beside a shrinking neighbour; a ResizeObserver loop error on a fold made inside the observer",
+          "to": "one fold per change of place, answered in the next frame"
+        }
+      ],
+      "source": "src/smart/segmented/index.js"
     }
   ]
 }

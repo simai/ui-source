@@ -169,6 +169,42 @@
       "expect": {
         "name": "Карточка"
       }
+    },
+    {
+      "name": "panels",
+      "title": "Со своими панелями",
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a server (a Markdown renderer) prints the tabs with the page's own panels (Docara admission): the tab row and the open panel print with their ids, so the row and the panel hold their place when the code arrives"
+      },
+      "attributes": {
+        "id": "order"
+      },
+      "settings": {
+        "aria-label": "Заказ",
+        "items": [
+          {
+            "id": "main",
+            "label": "Основное"
+          },
+          {
+            "id": "items",
+            "label": "Позиции",
+            "count": 3
+          },
+          {
+            "id": "history",
+            "label": "История"
+          }
+        ]
+      },
+      "children": "<div role=\"tabpanel\" data-entry=\"main\"><p>Заказ от 12 ноября, оплачен картой.</p></div><div role=\"tabpanel\" data-entry=\"items\" hidden><p>Три позиции на 8 400 ₽.</p></div><div role=\"tabpanel\" data-entry=\"history\" hidden><p>Создан, оплачен, передан в доставку.</p></div>",
+      "expect": {
+        "name": "Заказ",
+        "values": {
+          "selected": "main"
+        }
+      }
     }
   ],
   "pages": [

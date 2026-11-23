@@ -366,6 +366,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     this._plateObserver = null;
     this._fitObserver?.disconnect();
     this._fitObserver = null;
+    if (this._fitFrame) cancelAnimationFrame(this._fitFrame);
+    this._fitFrame = 0;
     this._plateFor = null;
     clearTimeout(this._plateTimer);
     cancelAnimationFrame(this._plateShow);
@@ -446,8 +448,23 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     const root = this.querySelector(':scope > .sf-button-group');
     if (!root) return null;
     if (this.folded) {
+      // The dropdown's place, read as a track would get it (1.8.4, FL-1):
+      // the narrow is laid out for a moment at the track's one-line width
+      // (its inline size, so its flex basis), so it shrinks beside its
+      // neighbours as the track would. Read at its own full width, it got
+      // the row's spare room (508 px where the track had 462 for 491): the
+      // element unfolded, the track was squeezed and folded again, 25
+      // flips in a frame.
       const narrow = this.querySelector(':scope > .sf-button-group-narrow');
-      return {need: layoutWidth(root), room: narrow ? layoutWidth(narrow) : 0};
+      const need = layoutWidth(root);
+      if (!narrow) return {need, room: 0};
+      const own = narrow.getAttribute('style');
+      narrow.style.inlineSize = `${need}px`;
+      narrow.style.maxInlineSize = '100%';
+      const room = layoutWidth(narrow);
+      if (own === null) narrow.removeAttribute('style');
+      else narrow.setAttribute('style', own);
+      return {need, room};
     }
     // Layout widths (1.8.1): inside rotate() a screen box is the rotated
     // bounding box, and need and room grew by different amounts.
@@ -487,10 +504,26 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     this.requestComponentUpdate?.('fit');
   }
 
+  scheduleFit() {
+    if (this._fitFrame) return;
+    if (typeof requestAnimationFrame !== 'function') {
+      this.checkFit();
+      return;
+    }
+    this._fitFrame = requestAnimationFrame(() => {
+      this._fitFrame = 0;
+      this.checkFit();
+    });
+  }
+
   observeFit() {
     if (typeof ResizeObserver === 'undefined') return;
     if (!this._fitObserver) {
-      this._fitObserver = new ResizeObserver(() => this.checkFit());
+      // A change of place is answered in the next frame (1.8.4, FL-1): a
+      // fold made inside the observer changes boxes the observer has
+      // already delivered, and the browser reports a ResizeObserver loop.
+      // The first drawing still folds at once (afterRender).
+      this._fitObserver = new ResizeObserver(() => this.scheduleFit());
       globalThis.document?.fonts?.ready?.then?.(() => this.checkFit());
     }
     this._fitObserver.disconnect();

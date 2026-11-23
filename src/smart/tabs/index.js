@@ -79,6 +79,30 @@ function contentWidth(box) {
   return Math.max(0, width - sides);
 }
 
+// One attribute order on a tab's button, whichever ran last (VO-1). The
+// button host (sf-button, sf-button-icon) forwards its data-* -- the tab's
+// data-sf-tab-index among them -- by taking them off and appending them, so
+// a forward after the tabs set id, role and aria-* left them at the end, and
+// one before left them in front: a printed page read «stale» by chance. The
+// tabs append the forwarded names last themselves, in the host's order, the
+// order a later forward writes again.
+function settleForwardedAttributes(tab) {
+  const host = tab?.parentElement;
+  const keys = host && host.__sfHostDataAttributeTarget === tab
+    ? tab[host.__sfHostDataAttributeTargetKeys]
+    : null;
+  if (!keys?.size) return;
+  const names = Array.from(keys).filter((name) => tab.hasAttribute(name));
+  const tail = Array.from(tab.attributes).map((attribute) => attribute.name)
+    .filter((name) => name !== 'data-sf-static').slice(-names.length);
+  if (names.every((name, at) => tail[at] === name)) return;
+  for (const name of names) {
+    const value = tab.getAttribute(name);
+    tab.removeAttribute(name);
+    tab.setAttribute(name, value);
+  }
+}
+
 function tabIndexOf(element) {
   const own = element?.dataset?.sfTabIndex ?? element?.querySelector?.(':scope > [data-sf-tab-index]')?.dataset?.sfTabIndex;
   const index = Number(own);
@@ -614,6 +638,7 @@ class SfTabs extends TabsElement {
         tab.setAttribute('aria-label', item.label);
       }
       tab.tabIndex = item === tabStop ? 0 : -1;
+      settleForwardedAttributes(tab);
     });
   }
 
