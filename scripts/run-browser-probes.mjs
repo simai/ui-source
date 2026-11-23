@@ -21,6 +21,10 @@ if (!out || !existsSync(out)) throw new Error('Build output root is required (th
 // every probe the same way, so it is one sentence here rather than a hundred there.
 const playwright = ensureLocalPlaywright(root);
 
+// What a probe may print before the runner stops it. Generous on purpose: a probe
+// that prints one line per check runs to megabytes (tabs-name-beside-glyph: 1.18 MB).
+const PROBE_OUTPUT_LIMIT = 256 * 1024 * 1024;
+
 const roots = {
   output: out,
   smart: join(out, 'smart', 'smart'),
@@ -96,10 +100,17 @@ for (const file of files) {
     continue;
   }
   try {
-    execFileSync(process.execPath, [path, ...args], {stdio: ['ignore', 'pipe', 'pipe']});
+    // maxBuffer: Node's default of 1 MiB killed tabs-name-beside-glyph, whose
+    // 13254 PASS lines are 1.18 MB, and the kill read as a red with nothing said
+    // (GB17A-2, 2026-11-23).
+    execFileSync(process.execPath, [path, ...args], {stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: PROBE_OUTPUT_LIMIT});
     results.passed.push(name);
   } catch (error) {
-    const said = String(error.stderr ?? '').trim().split('\n').slice(-3).join(' ');
+    // A child the runner stopped (output over the limit, a signal) is not a
+    // probe that failed: say so, so that it is never read as a silent red.
+    const killed = error.code === 'ENOBUFS' ? `killed by the runner: output over ${PROBE_OUTPUT_LIMIT} bytes (ENOBUFS)`
+      : error.signal ? `killed by signal ${error.signal}` : '';
+    const said = killed || String(error.stderr ?? '').trim().split('\n').slice(-3).join(' ');
     // The whole report too: the last three lines of a failure's JSON were all
     // brackets, and a probe that fails once in a long run could not be read
     // (context-menu-panel, 2026-10-18 and -19).
@@ -109,7 +120,7 @@ for (const file of files) {
     // «failures», 2026-10-31).
     const whole = `${String(error.stdout ?? '').trim()}\n${String(error.stderr ?? '').trim()}`.trim();
     const detail = whole.length > 6000 ? `…cut ${whole.length - 6000} characters…\n${whole.slice(-6000)}` : whole;
-    results.failed.push({name, args: args.map((value) => value.replace(out, '<out>')), said: said.slice(0, 300), detail});
+    results.failed.push({name, args: args.map((value) => value.replace(out, '<out>')), ...(killed ? {killed: true} : {}), said: said.slice(0, 300), detail});
   }
 }
 
@@ -184,11 +195,13 @@ finally { await browser.close(); }
       fixtureResults.ran += 1;
       try {
         execFileSync(process.execPath, [driver, join(root, 'tests', 'browser', name)], {
-          cwd: root, stdio: ['ignore', 'pipe', 'pipe'],
+          cwd: root, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: PROBE_OUTPUT_LIMIT,
         });
         fixtureResults.passed.push(name);
       } catch (error) {
-        fixtureResults.failed.push({name, said: String(error.stderr ?? '').trim().slice(0, 240)});
+        const killed = error.code === 'ENOBUFS' ? `killed by the runner: output over ${PROBE_OUTPUT_LIMIT} bytes (ENOBUFS)`
+          : error.signal ? `killed by signal ${error.signal}` : '';
+        fixtureResults.failed.push({name, ...(killed ? {killed: true} : {}), said: killed || String(error.stderr ?? '').trim().slice(0, 240)});
       }
     }
   } finally {
