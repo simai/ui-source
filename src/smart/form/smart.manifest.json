@@ -508,7 +508,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "897946306b09018de47128d4efad80652e59aa3d01597096a661332f114c1dd5"
+        "sha256": "0ba6c1d95e9e06540e913a80135465932767d602a4d223726ef5bd70ca5d2a62"
       },
       {
         "path": "src/smart/form/js/templates/default.js",

@@ -527,8 +527,9 @@ class SfForm extends FormElement {
         question.remove();
       });
       // The window is fetched when the question opens (lazy relations, GB18 L3):
-      // the press waits for it, and opens it as it is if the wait gives up.
-      const opened = globalThis.SF?.Loader?.ensure?.(['sf-modal', 'sf-button'], {press: true});
+      // the press waits for it, and opens it as it is if the wait gives up. Its
+      // two answers are sf-button, a relation the form draws with already.
+      const opened = globalThis.SF?.Loader?.ensure?.(['sf-modal'], {press: true});
       Promise.resolve(opened).catch(() => {}).then(() => {
         question.setAttribute('open', '');
         doc.body.append(question);
