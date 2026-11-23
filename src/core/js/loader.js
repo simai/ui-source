@@ -3464,13 +3464,15 @@ SFLoaderPlugin.prototype.loadRelationPlugins = function (
       skipJs,
       completed: {},
     };
-    // An element waits for its relations before its script runs, and it used
-    // to wait for them before its script was even asked for: the admin's
-    // table was fetched after its relations had run, and the data view after
-    // the table (2026-10-13). The browser is told about the script now; it
-    // still runs after the relations, from the cache.
-    if (!skipJs && jsFile) this.preloadScript(jsFile);
   }
+  // An element waits for its relations before its script runs, and it used
+  // to wait for them before its script was even asked for: the admin's
+  // table was fetched after its relations had run, and the data view after
+  // the table (2026-10-13). The browser is told about the script now; it
+  // still runs after the relations, from the cache. Here the element is the
+  // one being loaded: a relation that came first (isRelationPlugin) does not
+  // preload it for it (FS-10).
+  if (!this.totalRelationsPlugins[name].canLoad && !skipJs && jsFile) this.preloadScript(jsFile);
   if (this.totalRelationsPlugins[name].canLoad) {
     if (this.totalRelationsPlugins[name].skipJs || !jsFile) {
       if (!this.loadedPlugins[name]) {
@@ -3852,9 +3854,20 @@ SFLoaderPlugin.prototype.isRelationPlugin = function (
         };
         // The element that waits on this relation is fetched now too (the
         // same reason as in loadRelationPlugins: a data view waiting on its
-        // table was asked for only once the table had run).
+        // table was asked for only once the table had run) -- when it is on
+        // its way. Every rule naming this relation is listed here, also one
+        // whose element was loaded by another path (ensurePlugin, a lazy
+        // relation) or is not asked for at all: a preload for it was never
+        // used and Chrome warned of it (FS-10, modal.min.js).
         const waiting = this.totalRelationsPlugins[relationMainPlugin];
-        if (!waiting.skipJs && waiting.jsFile) this.preloadScript(waiting.jsFile);
+        if (
+          !waiting.skipJs &&
+          waiting.jsFile &&
+          this.pendingLoadPlugins.has(relationMainPlugin) &&
+          !this.loadedPlugins[relationMainPlugin]?.js
+        ) {
+          this.preloadScript(waiting.jsFile);
+        }
       }
       if (skipJs || !jsFile) {
         if (!this.loadedPlugins[pluginName]) {
@@ -5065,17 +5078,82 @@ function onceByUrl(kind, src, insert) {
   return load;
 }
 
-SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
-  if (typeof document === 'undefined' || !pluginURL) return;
-  const href = this.versionAssetUrl(pluginURL);
-  this.preloadedScripts = this.preloadedScripts || new Set();
-  if (this.preloadedScripts.has(href)) return;
-  this.preloadedScripts.add(href);
+// A script that waits (for its relations, for the page's language words) is
+// preloaded meanwhile, so it is fetched beside what it waits for (2026-10-13).
+// Chrome checks the page's link preloads about 3 s after the window's load
+// event, and again after the network has been quiet that long, and warns of
+// every one no script has used yet: "preloaded using link preload but not used
+// within a few seconds" (FS-10, group build 18; measured: a preload added
+// after the load event and used after that check is reported, one added
+// earlier or used before it is not, and removing the link does not help). So:
+//  - a script is preloaded once per URL on the page, by every Loader (the set
+//    is in the shared asset registry), and never once it has been asked for,
+//    is in the page or has been fetched: such a preload nothing will use;
+//  - between the load event and that check a preload waits until the check
+//    has passed and is added then, only if the script is still not asked for;
+//    a script asked for meanwhile is fetched by its own element, as without
+//    a preload. Before the load event and after the check it is added at once.
+// The browser still fetches each script once: no request of our own.
+const PRELOAD_CHECK_MS = 3000;
+const PRELOAD_CHECK_MARGIN_MS = 250;
+
+function scriptAskedFor(key) {
+  if (assetRegistry().scripts.has(key)) return true;
+  const doc = globalThis.document;
+  for (const script of doc?.scripts || []) {
+    if (script.src === key) return true;
+  }
+  try {
+    return (globalThis.performance?.getEntriesByName?.(key)?.length || 0) > 0;
+  } catch {
+    return false;
+  }
+}
+
+/** Milliseconds until Chrome's check after the load event has passed; 0 before the load event and after the check. */
+function preloadCheckLeft() {
+  const doc = globalThis.document;
+  if (!doc || doc.readyState !== 'complete') return 0;
+  const perf = globalThis.performance;
+  const now = perf?.now?.();
+  if (!Number.isFinite(now)) return 0;
+  let loadAt = 0;
+  try {
+    const navigation = perf.getEntriesByType?.('navigation')?.[0];
+    loadAt = navigation?.loadEventEnd || navigation?.loadEventStart || 0;
+  } catch {
+    loadAt = 0;
+  }
+  // Complete, the load event under way: its time is not written yet.
+  if (!loadAt) loadAt = now;
+  return Math.max(0, loadAt + PRELOAD_CHECK_MS + PRELOAD_CHECK_MARGIN_MS - now);
+}
+
+function appendScriptPreload(href) {
   const link = document.createElement('link');
   link.rel = 'preload';
   link.as = 'script';
   link.href = href;
   document.head.append(link);
+}
+
+SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
+  if (typeof document === 'undefined' || !pluginURL) return;
+  const href = this.versionAssetUrl(pluginURL);
+  const key = assetKey(href);
+  const registry = assetRegistry();
+  if (!registry.preloaded) registry.preloaded = new Set();
+  this.preloadedScripts = registry.preloaded;
+  if (registry.preloaded.has(key) || scriptAskedFor(key)) return;
+  registry.preloaded.add(key);
+  const left = preloadCheckLeft();
+  if (!left) {
+    appendScriptPreload(href);
+    return;
+  }
+  setTimeout(() => {
+    if (!scriptAskedFor(key)) appendScriptPreload(href);
+  }, left);
 };
 
 // The page's language file while it is on its way (owner decision C282,
