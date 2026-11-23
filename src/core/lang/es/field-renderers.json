@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 247,
-    "translated": 247,
+    "words": 250,
+    "translated": 250,
     "share": 100
   },
   "words": {
@@ -238,6 +238,7 @@
       "template-complex-parts": "Partes",
       "template-ru.requisites-requisites": "Bloque de datos fiscales",
       "type-url": "Dirección web",
+      "type-email": "Correo electrónico",
       "type-link": "Enlace con texto",
       "type-ru.inn": "INN (número fiscal ruso)",
       "template-url-input": "Entrada de dirección",
@@ -247,6 +248,7 @@
       "template-percent-scale": "Escala de niveles",
       "template-percent-meter": "Parte de un límite",
       "urlInvalid": "Introduzca una dirección completa: https://…",
+      "emailInvalid": "Introduzca un correo electrónico: name@example.com",
       "linkAddress": "Dirección",
       "linkText": "Texto del enlace",
       "linkNeedsAddress": "Introduzca la dirección",
@@ -277,7 +279,8 @@
       "rangeFromWord": "desde",
       "rangeToWord": "hasta",
       "filterTextPlaceholder": "Texto",
-      "filterRemoveCondition": "Quitar condición"
+      "filterRemoveCondition": "Quitar condición",
+      "template-email-input": "Campo de correo"
     }
   }
 }

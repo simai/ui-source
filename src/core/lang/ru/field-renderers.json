@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 247,
-    "translated": 247,
+    "words": 250,
+    "translated": 250,
     "share": 100
   },
   "words": {
@@ -242,6 +242,7 @@
       "template-complex-parts": "Части",
       "template-ru.requisites-requisites": "Блок реквизитов",
       "type-url": "Адрес в интернете",
+      "type-email": "Электронная почта",
       "type-link": "Ссылка с текстом",
       "type-ru.inn": "ИНН",
       "template-url-input": "Поле адреса",
@@ -251,6 +252,7 @@
       "template-percent-scale": "Шкала уровня",
       "template-percent-meter": "Доля от предела",
       "urlInvalid": "Нужен полный адрес: https://…",
+      "emailInvalid": "Нужен адрес почты: name@example.ru",
       "linkAddress": "Адрес",
       "linkText": "Текст ссылки",
       "linkNeedsAddress": "Нужен адрес",
@@ -281,7 +283,8 @@
       "rangeFromWord": "от",
       "rangeToWord": "до",
       "filterTextPlaceholder": "Текст",
-      "filterRemoveCondition": "Снять условие"
+      "filterRemoveCondition": "Снять условие",
+      "template-email-input": "Поле адреса почты"
     }
   }
 }

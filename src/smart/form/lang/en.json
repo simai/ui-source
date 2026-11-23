@@ -17,7 +17,17 @@
     },
     "value-missing": "Fill in the field “{label}”",
     "help-label": "More about {label}",
-    "empty-value": "Not set"
+    "empty-value": "Not set",
+    "origin-own": "Own value",
+    "origin-above": "shared",
+    "origin-reset": "Use shared",
+    "origin-locked": "Locked at a higher level",
+    "saved-at": "Saved at {time}",
+    "readonly-reason": "Read only",
+    "leave-heading": "Leave without saving?",
+    "leave-text": "The changes on this page will be lost.",
+    "leave-discard": "Don’t save",
+    "leave-keep": "Keep editing"
   },
   "events": {
     "submit": {

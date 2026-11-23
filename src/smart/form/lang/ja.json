@@ -15,6 +15,16 @@
     "answer-cancelling": "キャンセル中…",
     "answer-sent": "送信済み",
     "answer-expired": "回答期限が過ぎました",
-    "empty-value": "未設定"
+    "empty-value": "未設定",
+    "origin-own": "個別の値",
+    "origin-above": "共通",
+    "origin-reset": "共通の値に戻す",
+    "origin-locked": "上位レベルでロックされています",
+    "saved-at": "{time} に保存しました",
+    "readonly-reason": "閲覧のみ",
+    "leave-heading": "保存せずに移動しますか?",
+    "leave-text": "このページの変更は失われます。",
+    "leave-discard": "保存しない",
+    "leave-keep": "編集を続ける"
   }
 }

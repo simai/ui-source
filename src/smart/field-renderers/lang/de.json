@@ -219,6 +219,7 @@
     "template-complex-parts": "Teile",
     "template-ru.requisites-requisites": "Block mit Firmendaten",
     "type-url": "Webadresse",
+    "type-email": "E-Mail-Adresse",
     "type-link": "Link mit Text",
     "type-ru.inn": "INN (russische Steuernummer)",
     "template-url-input": "Adresseingabe",
@@ -228,6 +229,7 @@
     "template-percent-scale": "Stufenskala",
     "template-percent-meter": "Anteil an einem Limit",
     "urlInvalid": "Geben Sie eine vollständige Adresse ein: https://…",
+    "emailInvalid": "Geben Sie eine E-Mail-Adresse ein: name@example.com",
     "linkAddress": "Adresse",
     "linkText": "Linktext",
     "linkNeedsAddress": "Geben Sie die Adresse ein",
@@ -258,6 +260,7 @@
     "rangeFromWord": "von",
     "rangeToWord": "bis",
     "filterTextPlaceholder": "Text",
-    "filterRemoveCondition": "Bedingung entfernen"
+    "filterRemoveCondition": "Bedingung entfernen",
+    "template-email-input": "E-Mail-Feld"
   }
 }

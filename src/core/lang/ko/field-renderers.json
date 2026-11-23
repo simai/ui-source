@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 247,
-    "translated": 247,
+    "words": 250,
+    "translated": 250,
     "share": 100
   },
   "words": {
@@ -230,6 +230,7 @@
       "template-complex-parts": "부분",
       "template-ru.requisites-requisites": "법인 정보 블록",
       "type-url": "웹 주소",
+      "type-email": "이메일 주소",
       "type-link": "텍스트가 있는 링크",
       "type-ru.inn": "INN (러시아 납세자 번호)",
       "template-url-input": "주소 입력",
@@ -239,6 +240,7 @@
       "template-percent-scale": "단계 척도",
       "template-percent-meter": "한도 대비 비율",
       "urlInvalid": "전체 주소를 입력하세요: https://…",
+      "emailInvalid": "이메일 주소를 입력하세요: name@example.com",
       "linkAddress": "주소",
       "linkText": "링크 텍스트",
       "linkNeedsAddress": "주소를 입력하세요",
@@ -269,7 +271,8 @@
       "rangeFromWord": "부터",
       "rangeToWord": "까지",
       "filterTextPlaceholder": "텍스트",
-      "filterRemoveCondition": "조건 제거"
+      "filterRemoveCondition": "조건 제거",
+      "template-email-input": "이메일 입력란"
     }
   }
 }

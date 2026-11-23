@@ -223,6 +223,7 @@
     "template-complex-parts": "Partes",
     "template-ru.requisites-requisites": "Bloco de dados cadastrais",
     "type-url": "Endereço web",
+    "type-email": "Endereço de e-mail",
     "type-link": "Link com texto",
     "type-ru.inn": "INN (número fiscal russo)",
     "template-url-input": "Entrada de endereço",
@@ -232,6 +233,7 @@
     "template-percent-scale": "Escala de níveis",
     "template-percent-meter": "Parcela de um limite",
     "urlInvalid": "Digite um endereço completo: https://…",
+    "emailInvalid": "Digite um endereço de e-mail: name@example.com",
     "linkAddress": "Endereço",
     "linkText": "Texto do link",
     "linkNeedsAddress": "Digite o endereço",
@@ -262,6 +264,7 @@
     "rangeFromWord": "de",
     "rangeToWord": "até",
     "filterTextPlaceholder": "Texto",
-    "filterRemoveCondition": "Remover condição"
+    "filterRemoveCondition": "Remover condição",
+    "template-email-input": "Campo de e-mail"
   }
 }

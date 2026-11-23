@@ -619,7 +619,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.6.0"
+    "version": "1.6.1"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -1361,6 +1361,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.10.0"
+    "version": "1.10.1"
   }
 });

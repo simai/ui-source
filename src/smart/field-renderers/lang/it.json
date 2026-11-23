@@ -223,6 +223,7 @@
     "template-complex-parts": "Parti",
     "template-ru.requisites-requisites": "Blocco dei dati aziendali",
     "type-url": "Indirizzo web",
+    "type-email": "Indirizzo email",
     "type-link": "Link con testo",
     "type-ru.inn": "INN (codice fiscale russo)",
     "template-url-input": "Input indirizzo",
@@ -232,6 +233,7 @@
     "template-percent-scale": "Scala di livelli",
     "template-percent-meter": "Quota di un limite",
     "urlInvalid": "Inserisci un indirizzo completo: https://…",
+    "emailInvalid": "Inserisci un indirizzo email: name@example.com",
     "linkAddress": "Indirizzo",
     "linkText": "Testo del link",
     "linkNeedsAddress": "Inserisci l’indirizzo",
@@ -262,6 +264,7 @@
     "rangeFromWord": "da",
     "rangeToWord": "a",
     "filterTextPlaceholder": "Testo",
-    "filterRemoveCondition": "Rimuovi condizione"
+    "filterRemoveCondition": "Rimuovi condizione",
+    "template-email-input": "Campo email"
   }
 }

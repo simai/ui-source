@@ -20614,6 +20614,26 @@
         }
       ],
       "source": "src/core/scss/_sf_css__placeholder.scss"
+    },
+    {
+      "recorded_on": "2026-11-23",
+      "stage": "compat",
+      "deprecated_on": "2026-11-23",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: the help setting and the help slot are unchanged; a page that wants the smaller mark beside a size 1 control puts its own sf-help-mark size=\"1/3\" in the help slot.",
+      "owner": "ui-source",
+      "id": "behaviour-checkable-help-field-step",
+      "kind": "behaviour",
+      "summary": "module.smart-helpers 1.21.1, smart.checkbox 1.6.1, smart.radio 1.4.5, smart.switch 1.10.1 (group build 18, DEV msg-e73e6ee2, one help size per field): the «?» a checkbox, a radio or a switch of size 1 draws for its help setting is sf-help-mark size 1/2, the field family's step that sf-input and sf-form draw after a label; it was 1/3. Sizes 1/2 (1/3) and 2 (1/2) unchanged; the row keeps its height.",
+      "items": [
+        {
+          "component": "module.smart-helpers",
+          "from": "CHECKABLE_HELP_SIZE {1/2: 1/3, 1: 1/3, 2: 1/2}",
+          "to": "CHECKABLE_HELP_SIZE {1/2: 1/3, 1: 1/2, 2: 1/2}, as field-help.js"
+        }
+      ],
+      "source": "src/smart/helpers/checkable-row.js"
     }
   ]
 }

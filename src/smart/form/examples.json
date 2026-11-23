@@ -438,6 +438,152 @@
           "comment": "Нужна к пятнице"
         }
       }
+    },
+    {
+      "name": "origin",
+      "title": "Откуда значение: своё, «Вернуть общее», закрыто выше",
+      "settings": {
+        "label": "Основное",
+        "labels": "start",
+        "guard": true,
+        "origin": {
+          "own": "Своё для simai.ru",
+          "above": "у всех сайтов",
+          "inherited": "Как у всех сайтов",
+          "locked": "Закрыто на уровне «Все сайты»: менять может администратор установки."
+        },
+        "fields": [
+          {
+            "key": "name",
+            "label": "Название сайта",
+            "propertyType": "string",
+            "required": true,
+            "width": "medium"
+          },
+          {
+            "key": "from",
+            "label": "Адрес отправителя",
+            "propertyType": "email",
+            "required": true,
+            "width": "medium"
+          },
+          {
+            "key": "tz",
+            "label": "Часовой пояс",
+            "propertyType": "choice",
+            "template": "dropdown",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва, UTC+3"
+              },
+              {
+                "value": "ekb",
+                "label": "Екатеринбург, UTC+5"
+              },
+              {
+                "value": "nsk",
+                "label": "Новосибирск, UTC+7"
+              }
+            ],
+            "width": "medium",
+            "origin": {
+              "value": "msk"
+            }
+          },
+          {
+            "key": "size",
+            "label": "Наибольший файл",
+            "propertyType": "number",
+            "decimals": 0,
+            "unit": "МБ",
+            "width": "short",
+            "origin": {
+              "value": 20
+            }
+          },
+          {
+            "key": "lang",
+            "label": "Язык сайта",
+            "propertyType": "choice",
+            "template": "dropdown",
+            "options": [
+              {
+                "value": "ru",
+                "label": "Русский"
+              },
+              {
+                "value": "en",
+                "label": "English"
+              }
+            ],
+            "width": "medium",
+            "origin": {
+              "value": "ru",
+              "locked": true
+            }
+          }
+        ],
+        "value": {
+          "name": "SIMAI",
+          "from": "noreply@simai.ru",
+          "tz": "msk",
+          "size": 50,
+          "lang": "ru"
+        }
+      },
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "five fields open at rest with their origin lines (own value with the upper value and «Вернуть общее», closed above with its reason): the lines print before any code, so the fields do not move when the runtime arrives"
+      }
+    },
+    {
+      "name": "read-only",
+      "title": "readonly: значения текстом и причина вместо кнопок",
+      "settings": {
+        "label": "Основное",
+        "labels": "start",
+        "readonly": true,
+        "readonly-reason": "Менять настройки сайта может администратор сайта.",
+        "fields": [
+          {
+            "key": "name",
+            "label": "Название сайта",
+            "propertyType": "string",
+            "required": true
+          },
+          {
+            "key": "from",
+            "label": "Адрес отправителя",
+            "propertyType": "email"
+          },
+          {
+            "key": "tz",
+            "label": "Часовой пояс",
+            "propertyType": "choice",
+            "template": "dropdown",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва, UTC+3"
+              },
+              {
+                "value": "ekb",
+                "label": "Екатеринбург, UTC+5"
+              },
+              {
+                "value": "nsk",
+                "label": "Новосибирск, UTC+7"
+              }
+            ]
+          }
+        ],
+        "value": {
+          "name": "SIMAI",
+          "from": "noreply@simai.ru",
+          "tz": "msk"
+        }
+      }
     }
   ],
   "pages": [
@@ -500,7 +646,7 @@
         },
         {
           "id": "p4-dirty",
-          "title": "C182 (7): a change shows «Есть несохранённые изменения» under the buttons; «Сохранить» submits the value and the note goes",
+          "title": "C182 (7): a change shows «Есть несохранённые изменения» under the buttons; «Сохранить» submits the value and the note gives way to «Сохранено в HH:MM» (FS-3, 1.15.0)",
           "covers": "values.dirty, events.submit, events.input",
           "steps": [
             {
@@ -511,7 +657,7 @@
             {
               "script": "(document.querySelector('#f .sf-form-submit button').click(), true)",
               "wait": 250,
-              "check": "window.__sub && window.__sub.blank === false && window.__sub.text === 'Подробнее' && document.querySelector('#f').dirty === false && document.querySelector('#f .sf-form-state').textContent.trim() === ''"
+              "check": "window.__sub && window.__sub.blank === false && window.__sub.text === 'Подробнее' && document.querySelector('#f').dirty === false && /^Сохранено в \\d\\d:\\d\\d$/.test(document.querySelector('#f .sf-form-state').textContent.trim())"
             }
           ]
         },

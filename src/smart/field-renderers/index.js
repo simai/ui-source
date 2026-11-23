@@ -4,7 +4,7 @@ import {optionBadgeLook} from "../helpers/option-badge.js";
 import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
 import {formatDate} from "../../core/js/format-date.js";
 import {NUMBER_FILTER_OPERATORS, PLACES, PROPERTY_TYPES, TEMPLATE_ALIASES, TYPE_ALIASES, modesOf} from "./registry.js";
-import {completeWebAddress, composeLink, innError, innHolder, isLinkAddress, isWebAddress, readLink, shortAddress} from "./text-types.js";
+import {completeWebAddress, composeLink, innError, innHolder, isEmailAddress, isLinkAddress, isWebAddress, readLink, shortAddress} from "./text-types.js";
 import {resolveField, templateParam, typeEntry} from "./templates.js";
 import {fieldWidth, fieldWidthClass} from "../../component/field-size";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
@@ -763,6 +763,8 @@ export const FILTER_RENDERERS = {
     // url, link (its text and its address) and ru.inn are searched as text
     // (catalogue step 3).
     url: renderTextFilterControl,
+    // email (FS-7): searched as text, as a string is.
+    email: renderTextFilterControl,
     link: renderTextFilterControl,
     'ru.inn': renderTextFilterControl,
     user: renderMultiSelectFilterControl,
@@ -1050,6 +1052,7 @@ const CELL_RENDERERS = {
     phone: renderPhoneCell,
     password: renderPasswordCell,
     url: renderUrlCell,
+    email: renderEmailCell,
     link: renderLinkCell,
     'ru.inn': renderInnCell,
     // A date in a row used to be whatever the host had stored, printed --
@@ -1369,6 +1372,7 @@ const EDIT_RENDERERS = {
     phone: renderPhoneEdit,
     password: renderPasswordEdit,
     url: renderUrlEdit,
+    email: renderEmailEdit,
     link: renderLinkEdit,
     'ru.inn': renderInnEdit,
     text: renderTextAreaEdit,
@@ -1595,6 +1599,37 @@ function renderUrlCell(field, value, host) {
     const href = scalarValue(value);
     if (!isWebAddress(href)) return typeof formatted === 'string' ? formatted : null;
     return addressLink(href, typeof formatted === 'string' ? formatted : shortAddress(href));
+}
+
+// An email address (FS-7, C422): the edit is sf-input of type email with the
+// email keyboard and the browser's address book (autocomplete email, or the
+// field's own autocomplete: «username» for a sign-in, «off»), checked as one
+// mailbox (text-types.js isEmailAddress) the way a url is; the view and the row
+// a mailto: link, an address that is not one as text.
+function renderEmailEdit(field, value, host) {
+    return checkedTextEdit(field, value, host, {
+        check: (text) => (isEmailAddress(text) ? null : 'emailInvalid'),
+        inputType: 'email', inputmode: 'email',
+        autocomplete: typeof field.autocomplete === 'string' && field.autocomplete.trim() ? field.autocomplete.trim() : 'email',
+    });
+}
+
+function emailLink(address, text) {
+    return html`<a class="sf-link" href=${`mailto:${address}`}><bdi dir="ltr">${text}</bdi></a>`;
+}
+
+function renderEmailView(field, value, host) {
+    const text = viewText(field, value, host);
+    if (!text) return nothing;
+    const address = scalarValue(value);
+    return html`<span class="sf-field-view">${isEmailAddress(address) ? emailLink(address, text) : text}</span>`;
+}
+
+function renderEmailCell(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    const address = scalarValue(value);
+    if (!isEmailAddress(address)) return typeof formatted === 'string' ? formatted : (typeof address === 'string' && address ? address : null);
+    return emailLink(address, typeof formatted === 'string' ? formatted : address);
 }
 
 // A link with its text (link@1): {href, text?}. The view and the row are the
@@ -3889,6 +3924,7 @@ const VIEW_RENDERERS = {
     phone: renderPhoneView,
     password: renderPasswordView,
     url: renderUrlView,
+    email: renderEmailView,
     link: renderLinkView,
     'ru.inn': renderInnView,
     text: renderTextView,

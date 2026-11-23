@@ -235,6 +235,7 @@
     "template-complex-parts": "أجزاء",
     "template-ru.requisites-requisites": "كتلة البيانات المصرفية والضريبية",
     "type-url": "عنوان ويب",
+    "type-email": "عنوان البريد الإلكتروني",
     "type-link": "رابط بنص",
     "type-ru.inn": "INN (رقم دافع الضرائب الروسي)",
     "template-url-input": "حقل العنوان",
@@ -244,6 +245,7 @@
     "template-percent-scale": "مقياس المستوى",
     "template-percent-meter": "نسبة من الحد",
     "urlInvalid": "أدخل العنوان كاملًا: https://…",
+    "emailInvalid": "أدخل عنوان بريد إلكتروني: name@example.com",
     "linkAddress": "العنوان",
     "linkText": "نص الرابط",
     "linkNeedsAddress": "أدخل العنوان",
@@ -274,6 +276,7 @@
     "rangeFromWord": "من",
     "rangeToWord": "إلى",
     "filterTextPlaceholder": "نص",
-    "filterRemoveCondition": "إزالة الشرط"
+    "filterRemoveCondition": "إزالة الشرط",
+    "template-email-input": "حقل البريد الإلكتروني"
   }
 }

@@ -71,6 +71,31 @@ export function shortAddress(value, most = 40) {
     return text.length > most ? `${text.slice(0, most - 1)}…` : text;
 }
 
+// email (admin settings study FS-7, owner decision C422): an address of one
+// mailbox, «name@example.ru» -- a local part of at most 64 characters of the
+// letters, digits and .!#$%&'*+/=?^_`{|}~- that HTML's own email check takes
+// (no dot at either end, no two dots in a row), «@», and a domain of at least
+// two labels (letters of any script, digits and inner hyphens, each at most 63),
+// at most 254 characters in all, no spaces. Trimmed on the way in; stored as
+// typed otherwise (the domain is not lower-cased: the host may).
+export const EMAIL_MOST = 254;
+const EMAIL_LOCAL = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/u;
+const EMAIL_LABEL = /^[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?$/u;
+
+/** Whether a text is an email address this type stores. */
+export function isEmailAddress(value) {
+    if (typeof value !== 'string') return false;
+    const text = value.trim();
+    if (!text || text !== value || /\s/u.test(text) || [...text].length > EMAIL_MOST) return false;
+    const at = text.lastIndexOf('@');
+    if (at < 1 || at !== text.indexOf('@')) return false;
+    const local = text.slice(0, at);
+    const domain = text.slice(at + 1);
+    if (local.length > 64 || !EMAIL_LOCAL.test(local)) return false;
+    const labels = domain.split('.');
+    return labels.length >= 2 && labels.every((label) => EMAIL_LABEL.test(label)) && !/^\d+$/u.test(labels[labels.length - 1]);
+}
+
 // link: {href, text?}. href is an http(s) address, a path from the site's
 // root («/about», never «//host») or an anchor («#prices»); text is at most
 // 255 characters (Larena link@1).

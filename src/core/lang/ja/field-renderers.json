@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 247,
-    "translated": 247,
+    "words": 250,
+    "translated": 250,
     "share": 100
   },
   "words": {
@@ -230,6 +230,7 @@
       "template-complex-parts": "パーツ",
       "template-ru.requisites-requisites": "法人情報ブロック",
       "type-url": "ウェブアドレス",
+      "type-email": "メールアドレス",
       "type-link": "テキスト付きリンク",
       "type-ru.inn": "INN (ロシアの納税者番号)",
       "template-url-input": "アドレス入力",
@@ -239,6 +240,7 @@
       "template-percent-scale": "レベルスケール",
       "template-percent-meter": "上限に対する割合",
       "urlInvalid": "完全なアドレスを入力してください: https://…",
+      "emailInvalid": "メールアドレスを入力してください: name@example.com",
       "linkAddress": "アドレス",
       "linkText": "リンクテキスト",
       "linkNeedsAddress": "アドレスを入力してください",
@@ -269,7 +271,8 @@
       "rangeFromWord": "から",
       "rangeToWord": "まで",
       "filterTextPlaceholder": "テキスト",
-      "filterRemoveCondition": "条件を削除"
+      "filterRemoveCondition": "条件を削除",
+      "template-email-input": "メール入力欄"
     }
   }
 }

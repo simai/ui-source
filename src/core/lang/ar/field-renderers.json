@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 247,
-    "translated": 247,
+    "words": 250,
+    "translated": 250,
     "share": 100
   },
   "words": {
@@ -250,6 +250,7 @@
       "template-complex-parts": "أجزاء",
       "template-ru.requisites-requisites": "كتلة البيانات المصرفية والضريبية",
       "type-url": "عنوان ويب",
+      "type-email": "عنوان البريد الإلكتروني",
       "type-link": "رابط بنص",
       "type-ru.inn": "INN (رقم دافع الضرائب الروسي)",
       "template-url-input": "حقل العنوان",
@@ -259,6 +260,7 @@
       "template-percent-scale": "مقياس المستوى",
       "template-percent-meter": "نسبة من الحد",
       "urlInvalid": "أدخل العنوان كاملًا: https://…",
+      "emailInvalid": "أدخل عنوان بريد إلكتروني: name@example.com",
       "linkAddress": "العنوان",
       "linkText": "نص الرابط",
       "linkNeedsAddress": "أدخل العنوان",
@@ -289,7 +291,8 @@
       "rangeFromWord": "من",
       "rangeToWord": "إلى",
       "filterTextPlaceholder": "نص",
-      "filterRemoveCondition": "إزالة الشرط"
+      "filterRemoveCondition": "إزالة الشرط",
+      "template-email-input": "حقل البريد الإلكتروني"
     }
   }
 }

@@ -215,6 +215,7 @@
     "template-complex-parts": "パーツ",
     "template-ru.requisites-requisites": "法人情報ブロック",
     "type-url": "ウェブアドレス",
+    "type-email": "メールアドレス",
     "type-link": "テキスト付きリンク",
     "type-ru.inn": "INN (ロシアの納税者番号)",
     "template-url-input": "アドレス入力",
@@ -224,6 +225,7 @@
     "template-percent-scale": "レベルスケール",
     "template-percent-meter": "上限に対する割合",
     "urlInvalid": "完全なアドレスを入力してください: https://…",
+    "emailInvalid": "メールアドレスを入力してください: name@example.com",
     "linkAddress": "アドレス",
     "linkText": "リンクテキスト",
     "linkNeedsAddress": "アドレスを入力してください",
@@ -254,6 +256,7 @@
     "rangeFromWord": "から",
     "rangeToWord": "まで",
     "filterTextPlaceholder": "テキスト",
-    "filterRemoveCondition": "条件を削除"
+    "filterRemoveCondition": "条件を削除",
+    "template-email-input": "メール入力欄"
   }
 }

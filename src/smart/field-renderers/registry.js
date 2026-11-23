@@ -128,6 +128,13 @@ export const PROPERTY_TYPES = Object.freeze([
     entry({type: 'url', label: typeLabel('type-url'),
         templates: [byDefault('url', 'input', {params: ['width']})],
         params: ['placeholder', 'required', 'readonly']}),
+    // email (admin settings study FS-7, owner decision C422): one mailbox,
+    // «name@example.ru», checked by text-types.js isEmailAddress; the edit
+    // has the email keyboard and autocomplete (the field's own autocomplete,
+    // else «email»), the view a mailto: link; searched as text.
+    entry({type: 'email', label: typeLabel('type-email'),
+        templates: [byDefault('email', 'input', {params: ['width']})],
+        params: ['placeholder', 'autocomplete', 'required', 'readonly']}),
     entry({type: 'link', label: typeLabel('type-link'),
         templates: [byDefault('link', 'link', {params: ['width']})],
         params: ['required', 'readonly']}),

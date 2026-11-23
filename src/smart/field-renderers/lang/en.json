@@ -219,6 +219,7 @@
     "template-complex-parts": "Parts",
     "template-ru.requisites-requisites": "Requisites block",
     "type-url": "Web address",
+    "type-email": "Email address",
     "type-link": "Link with text",
     "type-ru.inn": "INN (Russian taxpayer number)",
     "template-url-input": "Address input",
@@ -228,6 +229,7 @@
     "template-percent-scale": "Level scale",
     "template-percent-meter": "Share of a limit",
     "urlInvalid": "Enter a full address: https://…",
+    "emailInvalid": "Enter an email address: name@example.com",
     "linkAddress": "Address",
     "linkText": "Link text",
     "linkNeedsAddress": "Enter the address",
@@ -258,6 +260,7 @@
     "rangeFromWord": "from",
     "rangeToWord": "to",
     "filterTextPlaceholder": "Text",
-    "filterRemoveCondition": "Remove condition"
+    "filterRemoveCondition": "Remove condition",
+    "template-email-input": "Email field"
   }
 }

@@ -17,6 +17,16 @@
     "answer-cancelling": "Cancelando…",
     "answer-sent": "Enviado",
     "answer-expired": "Ha pasado el plazo para responder",
-    "empty-value": "Sin definir"
+    "empty-value": "Sin definir",
+    "origin-own": "Valor propio",
+    "origin-above": "común",
+    "origin-reset": "Usar el común",
+    "origin-locked": "Bloqueado en un nivel superior",
+    "saved-at": "Guardado a las {time}",
+    "readonly-reason": "Solo lectura",
+    "leave-heading": "¿Salir sin guardar?",
+    "leave-text": "Los cambios de esta página se perderán.",
+    "leave-discard": "No guardar",
+    "leave-keep": "Seguir editando"
   }
 }

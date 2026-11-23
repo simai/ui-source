@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 247,
-    "translated": 247,
+    "words": 250,
+    "translated": 250,
     "share": 100
   },
   "words": {
@@ -230,6 +230,7 @@
       "template-complex-parts": "组成部分",
       "template-ru.requisites-requisites": "企业信息块",
       "type-url": "网址",
+      "type-email": "电子邮件地址",
       "type-link": "带文本的链接",
       "type-ru.inn": "INN（俄罗斯纳税人识别号）",
       "template-url-input": "地址输入",
@@ -239,6 +240,7 @@
       "template-percent-scale": "等级刻度",
       "template-percent-meter": "占上限的比例",
       "urlInvalid": "请输入完整地址：https://…",
+      "emailInvalid": "请输入电子邮件地址：name@example.com",
       "linkAddress": "地址",
       "linkText": "链接文本",
       "linkNeedsAddress": "请输入地址",
@@ -269,7 +271,8 @@
       "rangeFromWord": "从",
       "rangeToWord": "到",
       "filterTextPlaceholder": "文本",
-      "filterRemoveCondition": "移除条件"
+      "filterRemoveCondition": "移除条件",
+      "template-email-input": "邮箱输入框"
     }
   }
 }

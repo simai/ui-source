@@ -15,7 +15,7 @@ test('PH-7: the filter window has one step, set once, for every part', () => {
   assert.match(shell, /const footSize = FILTER_WINDOW_STEP;/u);
   const source = read('src/smart/field-renderers/index.js');
   assert.match(source, /function windowStep\(\) \{\s*return FILTER_WINDOW_STEP;\s*\}/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.29.1'); // FS-9 (feat/form-defects-fs, merged in GB17); // group build 17 F4: option badge hue // group build 16 returns GB16-3: the phone sheet fills
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.0'); // FS-9 (feat/form-defects-fs, merged in GB17); // group build 17 F4: option badge hue // group build 16 returns GB16-3: the phone sheet fills
 });
 
 test('Variant B: a panel list gives the scrollbar its rows\' end padding; its search does not move', () => {
