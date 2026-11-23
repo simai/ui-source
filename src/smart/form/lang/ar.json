@@ -20,6 +20,16 @@
     "answer-cancelling": "جارٍ الإلغاء…",
     "answer-sent": "تم الإرسال",
     "answer-expired": "انتهى وقت الرد",
-    "empty-value": "غير محدد"
+    "empty-value": "غير محدد",
+    "origin-own": "قيمة خاصة",
+    "origin-above": "المشتركة",
+    "origin-reset": "استخدام القيمة المشتركة",
+    "origin-locked": "مقفل في مستوى أعلى",
+    "saved-at": "تم الحفظ في {time}",
+    "readonly-reason": "للقراءة فقط",
+    "leave-heading": "المغادرة دون حفظ؟",
+    "leave-text": "ستفقد التغييرات في هذه الصفحة.",
+    "leave-discard": "عدم الحفظ",
+    "leave-keep": "متابعة التحرير"
   }
 }

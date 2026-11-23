@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 14,
-    "translated": 14,
+    "words": 24,
+    "translated": 24,
     "share": 100
   },
   "words": {
@@ -32,7 +32,17 @@
       },
       "value-missing": "Compila il campo «{label}»",
       "help-label": "Maggiori informazioni su {label}",
-      "empty-value": "Non impostato"
+      "empty-value": "Non impostato",
+      "origin-own": "Valore proprio",
+      "origin-above": "comune",
+      "origin-reset": "Usa il valore comune",
+      "origin-locked": "Bloccato a un livello superiore",
+      "saved-at": "Salvato alle {time}",
+      "readonly-reason": "Sola lettura",
+      "leave-heading": "Uscire senza salvare?",
+      "leave-text": "Le modifiche in questa pagina andranno perse.",
+      "leave-discard": "Non salvare",
+      "leave-keep": "Continua a modificare"
     }
   }
 }

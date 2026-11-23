@@ -26,6 +26,14 @@ import {html, nothing} from 'lit';
 //   when the buttons go. pending locks the fields and the pressed button
 //   waits; accepted is the read view with the line «Отправлено» and its glyph,
 //   no «Изменить»; expired is the line alone; declined draws nothing.
+// - Under a field whose descriptor says where its value comes from (FS-1,
+//   C422), the origin line: an own value with the upper level's value and
+//   «Вернуть общее» (a link button, 1/3), or the reason a field is closed
+//   above; a polite status, so the line that appears after a change is heard.
+// - busy (FS-2): «Сохранить» shows its loading, «Отмена» waits, the form is
+//   aria-busy. After a save the state line says «Сохранено в 14:35» (FS-3)
+//   until the next change. readonly (FS-5): no buttons, the reason line in
+//   their place.
 
 function labelRow(field) {
   if (!field.labelRow) return nothing;
@@ -35,13 +43,24 @@ function labelRow(field) {
   </div>`;
 }
 
+function originLine(origin) {
+  if (!origin) return nothing;
+  return html`<div class="sf-form-origin" data-level=${origin.level} role="status">
+    <span class="sf-form-origin-text">${origin.lead}${origin.upper
+      ? html` · ${origin.upper.above}: <b class="sf-form-origin-value">${origin.upper.value}</b>` : nothing}</span>
+    ${origin.reset ? html`<sf-button class="sf-form-origin-reset" appearance="link" size="1/3" text=${origin.reset.text}
+      @click=${origin.reset.press}></sf-button>` : nothing}
+  </div>`;
+}
+
 function fieldBlock(field) {
-  return html`<div class="sf-form-field" id=${field.id} data-key=${field.key} data-width=${field.width || nothing}>
+  return html`<div class="sf-form-field" id=${field.id} data-key=${field.key} data-width=${field.width || nothing} data-origin=${field.origin?.level || nothing}>
     ${labelRow(field)}
     <div class="sf-form-control">${field.control}</div>
     ${field.error
       ? html`<p class="sf-form-error" id=${field.errorId}>${field.error}</p>`
       : field.hint ? html`<p class="sf-form-hint" id=${field.hintId}>${field.hint}</p>` : nothing}
+    ${originLine(field.origin)}
   </div>`;
 }
 
@@ -89,6 +108,11 @@ function answerFooter(context) {
 function footerBlock(context) {
   if (context.instant) return nothing;
   if (context.answer) return answerFooter(context);
+  if (context.readonly) {
+    return html`<div class="sf-form-footer">
+      <p class="sf-form-state sf-form-reason">${context.readonly}</p>
+    </div>`;
+  }
   if (!context.editing) {
     return html`<div class="sf-form-footer">
       <sf-button class="sf-form-edit" appearance="outline" scheme="primary" text=${context.words.edit}
@@ -97,11 +121,12 @@ function footerBlock(context) {
   }
   return html`<div class="sf-form-footer" data-sticky=${context.footer === 'sticky' ? '' : nothing}>
     <div class="sf-form-actions">
-      <sf-button class="sf-form-submit" scheme="primary" size=${context.size === '1/2' ? '1/2' : nothing} native-type="submit" text=${context.words.submit}></sf-button>
+      <sf-button class="sf-form-submit" scheme="primary" size=${context.size === '1/2' ? '1/2' : nothing} native-type="submit" text=${context.words.submit}
+        ?loading=${context.busy}></sf-button>
       <sf-button class="sf-form-cancel" appearance="ghost" scheme="on-surface" size=${context.size === '1/2' ? '1/2' : nothing} text=${context.words.cancel}
-        @click=${() => context.component.cancel()}></sf-button>
+        ?disabled=${context.busy} @click=${() => context.component.cancel()}></sf-button>
     </div>
-    <p class="sf-form-state" role="status">${context.dirty ? context.words.unsaved : nothing}</p>
+    <p class="sf-form-state" role="status">${context.dirty ? context.words.unsaved : context.saved || nothing}</p>
   </div>`;
 }
 
@@ -111,7 +136,8 @@ export function renderFormTemplate(context) {
     aria-label=${context.label || nothing}
     data-labels=${context.labels}
     data-apply=${context.answer ? 'answer' : context.instant ? 'instant' : 'submit'}
-    data-size=${context.size === '1/2' ? '1/2' : nothing}>
+    data-size=${context.size === '1/2' ? '1/2' : nothing}
+    aria-busy=${context.busy ? 'true' : nothing}>
     ${context.editing && context.requiredNote ? html`<p class="sf-form-note">${context.words.requiredNote}</p>` : nothing}
     ${summaryBlock(context)}
     ${context.answer && !context.groups.length ? nothing

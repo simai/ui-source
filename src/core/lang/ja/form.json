@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 14,
-    "translated": 14,
+    "words": 24,
+    "translated": 24,
     "share": 100
   },
   "words": {
@@ -30,7 +30,17 @@
       },
       "value-missing": "「{label}」を入力してください",
       "help-label": "{label} の詳細",
-      "empty-value": "未設定"
+      "empty-value": "未設定",
+      "origin-own": "個別の値",
+      "origin-above": "共通",
+      "origin-reset": "共通の値に戻す",
+      "origin-locked": "上位レベルでロックされています",
+      "saved-at": "{time} に保存しました",
+      "readonly-reason": "閲覧のみ",
+      "leave-heading": "保存せずに移動しますか?",
+      "leave-text": "このページの変更は失われます。",
+      "leave-discard": "保存しない",
+      "leave-keep": "編集を続ける"
     }
   }
 }

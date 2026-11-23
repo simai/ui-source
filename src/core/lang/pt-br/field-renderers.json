@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 247,
-    "translated": 247,
+    "words": 249,
+    "translated": 249,
     "share": 100
   },
   "words": {
@@ -238,6 +238,7 @@
       "template-complex-parts": "Partes",
       "template-ru.requisites-requisites": "Bloco de dados cadastrais",
       "type-url": "Endereço web",
+      "type-email": "Endereço de e-mail",
       "type-link": "Link com texto",
       "type-ru.inn": "INN (número fiscal russo)",
       "template-url-input": "Entrada de endereço",
@@ -247,6 +248,7 @@
       "template-percent-scale": "Escala de níveis",
       "template-percent-meter": "Parcela de um limite",
       "urlInvalid": "Digite um endereço completo: https://…",
+      "emailInvalid": "Digite um endereço de e-mail: name@example.com",
       "linkAddress": "Endereço",
       "linkText": "Texto do link",
       "linkNeedsAddress": "Digite o endereço",

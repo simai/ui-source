@@ -438,6 +438,148 @@
           "comment": "Нужна к пятнице"
         }
       }
+    },
+    {
+      "name": "origin",
+      "title": "Откуда значение: своё, «Вернуть общее», закрыто выше",
+      "settings": {
+        "label": "Основное",
+        "labels": "start",
+        "guard": true,
+        "origin": {
+          "own": "Своё для simai.ru",
+          "above": "у всех сайтов",
+          "inherited": "Как у всех сайтов",
+          "locked": "Закрыто на уровне «Все сайты»: менять может администратор установки."
+        },
+        "fields": [
+          {
+            "key": "name",
+            "label": "Название сайта",
+            "propertyType": "string",
+            "required": true,
+            "width": "medium"
+          },
+          {
+            "key": "from",
+            "label": "Адрес отправителя",
+            "propertyType": "email",
+            "required": true,
+            "width": "medium"
+          },
+          {
+            "key": "tz",
+            "label": "Часовой пояс",
+            "propertyType": "choice",
+            "template": "dropdown",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва, UTC+3"
+              },
+              {
+                "value": "ekb",
+                "label": "Екатеринбург, UTC+5"
+              },
+              {
+                "value": "nsk",
+                "label": "Новосибирск, UTC+7"
+              }
+            ],
+            "width": "medium",
+            "origin": {
+              "value": "msk"
+            }
+          },
+          {
+            "key": "size",
+            "label": "Наибольший файл",
+            "propertyType": "number",
+            "decimals": 0,
+            "unit": "МБ",
+            "width": "short",
+            "origin": {
+              "value": 20
+            }
+          },
+          {
+            "key": "lang",
+            "label": "Язык сайта",
+            "propertyType": "choice",
+            "template": "dropdown",
+            "options": [
+              {
+                "value": "ru",
+                "label": "Русский"
+              },
+              {
+                "value": "en",
+                "label": "English"
+              }
+            ],
+            "width": "medium",
+            "origin": {
+              "value": "ru",
+              "locked": true
+            }
+          }
+        ],
+        "value": {
+          "name": "SIMAI",
+          "from": "noreply@simai.ru",
+          "tz": "msk",
+          "size": 50,
+          "lang": "ru"
+        }
+      }
+    },
+    {
+      "name": "read-only",
+      "title": "readonly: значения текстом и причина вместо кнопок",
+      "settings": {
+        "label": "Основное",
+        "labels": "start",
+        "readonly": true,
+        "readonly-reason": "Менять настройки сайта может администратор сайта.",
+        "fields": [
+          {
+            "key": "name",
+            "label": "Название сайта",
+            "propertyType": "string",
+            "required": true
+          },
+          {
+            "key": "from",
+            "label": "Адрес отправителя",
+            "propertyType": "email"
+          },
+          {
+            "key": "tz",
+            "label": "Часовой пояс",
+            "propertyType": "choice",
+            "template": "dropdown",
+            "options": [
+              {
+                "value": "msk",
+                "label": "Москва, UTC+3"
+              },
+              {
+                "value": "ekb",
+                "label": "Екатеринбург, UTC+5"
+              },
+              {
+                "value": "nsk",
+                "label": "Новосибирск, UTC+7"
+              }
+            ]
+          }
+        ],
+        "value": {
+          "name": "SIMAI",
+          "from": "noreply@simai.ru",
+          "tz": "msk"
+        }
+      }
     }
   ],
   "pages": [

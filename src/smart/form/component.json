@@ -2,7 +2,7 @@
   "$comment": "The source of sf-form's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C182 (2026-11-14; study control/research/2026-11-14-form.md, prototype prototypes/form-study.html), a form drawn from field descriptions over the Framework's field renderers.",
   "id": "smart.form",
   "tag": "sf-form",
-  "version": "1.14.2",
+  "version": "1.15.0",
   "kind": "leaf",
   "family": "form",
   "settings": {
@@ -101,6 +101,38 @@
             "defaultCountry": {
               "type": "string",
               "pattern": "^[A-Za-z]{2}$"
+            },
+            "autocomplete": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "object",
+              "properties": {
+                "value": {},
+                "level": {
+                  "type": "string",
+                  "enum": [
+                    "own",
+                    "inherited",
+                    "locked"
+                  ]
+                },
+                "locked": {
+                  "type": "boolean"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "own": {
+                  "type": "string"
+                },
+                "above": {
+                  "type": "string"
+                },
+                "inherited": {
+                  "type": "string"
+                }
+              }
             }
           },
           "required": [
@@ -192,6 +224,26 @@
       "type": "string",
       "default": "",
       "summary": "The form's accessible name (the native form's aria-label), so a screen reader announces it as a form landmark; best the heading the form stands under. Working name (name to confirm)"
+    },
+    "origin": {
+      "type": "object",
+      "default": {},
+      "summary": "Where the fields' values come from, the words every field with an origin says (FS-1, owner decision C422): own (the lead of an own value, «Своё для simai.ru»; «Своё значение» by default), above (the upper level before its value, «у всех сайтов»; «общее»), inherited (the quiet line of an inherited value, «Как у всех сайтов»; none by default, C422 marks only an own value and a locked one) and locked (the reason a field is closed above; «Закрыто на уровне выше»). A field's own origin words win. Working name (name to confirm)"
+    },
+    "guard": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The leave guard (FS-4, C166 (6), C422): while the form holds unsaved changes, closing or reloading the tab asks the browser's question, and a press on a link that leaves the page -- another page, or a route the page draws in place (an address in the page that names no element) -- is held: the cancelable leave event goes out, and the form asks «Уйти без сохранения?» in a question window with C159 (6)'s answers, «Не сохранять» (red, first; the fields go back and the link is pressed again) and «Продолжить правку» (quiet, with the focus; the page and the menu stay). A link inside the form, one that opens another tab or downloads, or a press with a modifier key passes. Working name (name to confirm)"
+    },
+    "readonly": {
+      "type": "boolean",
+      "default": false,
+      "summary": "A form the person may read but not change (FS-5, C348, C422): the values as text, as mode view draws them, with no «Изменить» and no «Сохранить»; the reason line (readonly-reason) stands where the buttons would. Not read under apply answer"
+    },
+    "readonly-reason": {
+      "type": "string",
+      "default": "",
+      "summary": "readonly: why the form cannot be changed, said where the buttons would stand («Менять настройки сайта может администратор сайта»); «Только чтение» by default. Working name (name to confirm)"
     }
   },
   "values": {
@@ -216,6 +268,16 @@
     "dirty": {
       "type": "boolean",
       "summary": "True when a value differs from the saved state (the last value set from code, or the last submit). Read-only; a host that closes a window asks «Закрыть без сохранения?» on it (C159 (6)). Working name (name to confirm)"
+    },
+    "busy": {
+      "type": "boolean",
+      "default": false,
+      "summary": "While the host saves (FS-2, C159 (9)): «Сохранить» shows its loading in its own colour, «Отмена» waits, every field is read-only and a second press or Enter does nothing; the form is aria-busy. The host that cancels submit to save sets it and answers with the saved action, set-errors, a new value or busy false, each of which ends it"
+    },
+    "saved-at": {
+      "type": "string",
+      "default": "",
+      "summary": "When the values were last saved, an ISO date and time (FS-3): the state line under the buttons says «Сохранено в 14:35» in the reader's clock until the next change, which empties it and says «Есть несохранённые изменения». Written by a submit not cancelled and by the saved action; a host may set it from code. Working name (name to confirm)"
     }
   },
   "events": {
@@ -237,10 +299,14 @@
     },
     "submit": {
       "carries": {
-        "value": "object"
+        "value": "object",
+        "inherited": {
+          "type": "list",
+          "summary": "FS-1: the keys whose value is the upper level's again (a field with origin.value equal to it), for a host that stores them as inherited rather than as an own value"
+        }
       },
       "cancelable": true,
-      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every shown field's value by key (a field its conditions hide is not sent, FO3-1). Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)"
+      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every shown field's value by key (a field its conditions hide is not sent, FO3-1). Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value). Not cancelled, the state line says «Сохранено в HH:MM» (saved-at); a host that cancels it to save sets busy and answers with the saved action (FS-2, FS-3)"
     },
     "answer": {
       "carries": {
@@ -265,6 +331,21 @@
         "value": "object"
       },
       "summary": "«Отмена»: the fields went back to the saved state (value), the errors are gone; a form opened from view returns to view"
+    },
+    "reset-field": {
+      "carries": {
+        "key": "string",
+        "value": "any"
+      },
+      "cancelable": true,
+      "summary": "«Вернуть общее» under a field with an own value (FS-1): the field's key and the upper level's value it takes. Not cancelled, the field takes it as the person's change -- dirty until «Сохранить», applied at once (change) in an instant form -- and the focus goes to the field; cancelled, nothing changes. Working name (name to confirm)"
+    },
+    "leave": {
+      "carries": {
+        "href": "string"
+      },
+      "cancelable": true,
+      "summary": "guard: a press on a link that leaves the page while the form holds unsaved changes (FS-4); href is where it goes. The press is held before anything else hears it. Not cancelled, the form asks «Уйти без сохранения?» and, after «Не сохранять», presses the link again; cancelled, the host takes it over (its own question, or the reset action and its own route). Working name (name to confirm)"
     }
   },
   "actions": {
@@ -308,6 +389,34 @@
         "refused"
       ],
       "summary": "The host's answer to a submit: {key: message} -- each named field shows the message as its error until the person changes it, from two a summary takes the focus as after «Сохранить»; an empty object clears them. A form in view opens edit. refused {reason: missing} when no key names a field it shows. Working name (name to confirm)",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "saved": {
+      "with": {
+        "at": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "The host's answer to a save it took over (it cancelled submit, FS-2, FS-3): the values the fields hold are the saved state -- dirty false, busy false, saved-at the given ISO time or now, «Сохранено в HH:MM» in the state line; a form opened from view returns to view. refused {reason: mode} in view, under apply instant or answer",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "confirm-leave": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "A host's own route asks before it leaves (FS-4): applied at once when the form has no unsaved changes, else after «Уйти без сохранения?» -- applied with «Не сохранять» (the fields are back to the saved state), refused {reason: stayed} with «Продолжить правку». Working name (name to confirm)",
       "x-returns": {
         "type": "object",
         "description": "The outcome."
@@ -430,7 +539,8 @@
     "version 1.13.1 (2026-11-22, docs gap pages DEV msg-ee572eff: FO-1..FO-4; numbered above every origin branch, 1.13.0 the highest): a patch. FO-1: apply instant sends one sf-form-change per commit -- a value written while an input event is on its way through the form is typed and applied when the control commits it (its change writes it again) or the field is left; a value written otherwise is applied at once; a value equal to the one last applied (the saved state first) is not sent again (it was sent on every keystroke and again on leaving). FO-2: the form's own submit button pressed (a click, or Enter in a one-line field, which the browser turns into that click) submits without the browser's form submission, so submit and invalid come in a sandboxed frame without allow-forms too (it was blocked there: «Blocked form submission»); a submit event the page sends (requestSubmit) is still taken. FO-3: the generated manifest types the input and change value as any JSON value (no type), as component.json says any (scripts/generate-component-files.mjs mapped any to string). FO-4: a field left by a press on the form (pointer or touch) keeps its check until the press is over, so its error line does not move «Сохранить» from under the pointer before the click lands (at 390 it moved 20 px and the save was lost); the press on «Сохранить» checks every field itself. Keyboard leaves check at once as before.",
     "version 1.14.0 (2026-11-22, group build 17 fields F1, F2; numbered above every origin branch, 1.13.1 the highest): a minor. F1, owner decision C401 (DEV r13 answer «да»): labels=\"start\" stands each label beside its field from a form wider than 20rem (it was 40rem) and over it below md, as sf-list-description's layout auto (C180 (3)), so a record's group edited in a narrow side panel keeps its labels where reading had them; the labels of a group share one column, as wide as the longest label up to 40 % of the row (fit-content, as sf-list-description), the rows a subgrid of it, the label-to-field gap the rung's --sf-ui-1--space-x (1/2 at size 1/2). F2 (DEV msg-f27d2e7a): a required yes/no whose own template is the checkbox is a consent, answered only when ticked: unticked it is value-missing on leaving it after a change and on submit, in invalid's list, and its box says aria-required; the switch, the switch drawn as a checkbox in a form saved by a button, and the buttons keep their rule. Settings, values, events and keys unchanged.",
     "version 1.14.1 (2026-11-22, group build 17 F1b, the dispatcher's decision under C401; above 1.14.0, the highest on every origin branch): a patch, a look. labels=\"start\" takes the read list's label type at every width (sf-list-description's, the rung below's: 12 below 60rem, 14 from it) instead of the field label's 14 below 60rem (C153 (1)), so at 768 the control starts where the read value does (141 -> 125). Other label placements keep C153 (1). Settings, values, events and keys unchanged.",
-    "version 1.14.2 (2026-11-22, admin settings study FS-6 and FS-9, feat/form-defects-fs; numbered above 1.14.1, the highest on any origin branch): a patch. FS-9: a whole-number field (number with decimals 0, an integer field) has one value type: a number, or null when empty -- value, the submit, answer and cancel events and the input event carry 30 whether it was typed or set from code as \"30\" (module.smart-field-renderers 1.29.1 numberValue); dirty compares the values in those types, so \"8\" set from code and 8 typed are the same value. A number with digits after the point keeps the decimal string of the property-view port. FS-6: a yes/no drawn as a checkbox keeps its help: the form gives the checkbox the «?» it draws after a text field's label (sf-help-mark size 1/2, «Подробнее: <label>») through the checkbox's help slot, after the name beside the box (C59); it was dropped with the label row. Markup of other fields, settings, events and keys unchanged."
+    "version 1.14.2 (2026-11-22, admin settings study FS-6 and FS-9, feat/form-defects-fs; numbered above 1.14.1, the highest on any origin branch): a patch. FS-9: a whole-number field (number with decimals 0, an integer field) has one value type: a number, or null when empty -- value, the submit, answer and cancel events and the input event carry 30 whether it was typed or set from code as \"30\" (module.smart-field-renderers 1.29.1 numberValue); dirty compares the values in those types, so \"8\" set from code and 8 typed are the same value. A number with digits after the point keeps the decimal string of the property-view port. FS-6: a yes/no drawn as a checkbox keeps its help: the form gives the checkbox the «?» it draws after a text field's label (sf-help-mark size 1/2, «Подробнее: <label>») through the checkbox's help slot, after the name beside the box (C59); it was dropped with the label row. Markup of other fields, settings, events and keys unchanged.",
+    "version 1.15.0 (2026-11-23, group build 18, owner decision C422 (DEV msg-dafef266), admin settings study FS-1..FS-5 and FS-7; numbered above 1.14.2, the highest on any origin branch): a minor, settings, values, events and actions added; a form without them draws as 1.14.2 did. FS-1: the field descriptor's origin {value, level, locked, reason, own, above, inherited} and the form's origin words: an own value says under its field «Своё для simai.ru · у всех сайтов: Москва» with «Вернуть общее» (sf-button link 1/3, the cancelable reset-field event, then the upper value as the person's change), a field closed above is read-only with its reason, an inherited value says the host's words only (C422 marks only own and locked); submit carries inherited, the keys equal to their upper value again. FS-2: the value busy -- «Сохранить» loading in its colour, «Отмена» waits, the fields read-only by the window's own hold (C159 (9)), aria-busy; set-errors, a new value and the action saved end it. FS-3: saved-at and «Сохранено в HH:MM» in the state line after a submit not cancelled or the action saved, emptied by the next change. FS-4: guard -- the browser's question on closing the tab and, for a press on a link that leaves the page, the cancelable leave event and the question «Уйти без сохранения?» with C159 (6)'s answers in sf-modal size question; the action confirm-leave for a host's own route. FS-5: readonly and readonly-reason -- the values as text with no «Изменить» and no «Сохранить», the reason where the buttons stand (C348). FS-7: the field type email (module.smart-field-renderers 1.30.0) is drawn like any other; the descriptor declares autocomplete."
   ],
   "x-registry": {
     "capabilities": [

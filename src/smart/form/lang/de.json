@@ -16,6 +16,16 @@
     "answer-cancelling": "Wird abgebrochen…",
     "answer-sent": "Gesendet",
     "answer-expired": "Die Zeit für eine Antwort ist abgelaufen",
-    "empty-value": "Nicht festgelegt"
+    "empty-value": "Nicht festgelegt",
+    "origin-own": "Eigener Wert",
+    "origin-above": "gemeinsam",
+    "origin-reset": "Gemeinsamen Wert nutzen",
+    "origin-locked": "Auf einer höheren Ebene gesperrt",
+    "saved-at": "Gespeichert um {time}",
+    "readonly-reason": "Nur Lesen",
+    "leave-heading": "Ohne Speichern verlassen?",
+    "leave-text": "Die Änderungen auf dieser Seite gehen verloren.",
+    "leave-discard": "Nicht speichern",
+    "leave-keep": "Weiter bearbeiten"
   }
 }

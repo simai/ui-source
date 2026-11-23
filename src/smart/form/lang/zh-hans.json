@@ -15,6 +15,16 @@
     "answer-cancelling": "正在取消…",
     "answer-sent": "已发送",
     "answer-expired": "回答时间已过",
-    "empty-value": "未设置"
+    "empty-value": "未设置",
+    "origin-own": "自有值",
+    "origin-above": "通用",
+    "origin-reset": "使用通用值",
+    "origin-locked": "已在上级锁定",
+    "saved-at": "已于 {time} 保存",
+    "readonly-reason": "只读",
+    "leave-heading": "不保存就离开?",
+    "leave-text": "此页面上的更改将丢失。",
+    "leave-discard": "不保存",
+    "leave-keep": "继续编辑"
   }
 }

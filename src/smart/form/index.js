@@ -23,7 +23,9 @@ import {noteDeprecated} from '../../core/js/deprecations';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {nothing, html} from 'lit';
-import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, numberValue, propertyModes, renderCellField, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {holdFieldsReadOnly, windowFields} from '../../component/modal/js/_focus';
+import {pageLocale} from '../../core/js/page-language';
 import {validityWords} from '../helpers/form-field.js';
 import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
 import {renderFormTemplate} from './js/templates/default';
@@ -198,6 +200,45 @@ export function ticksToAnswer(field) {
   return drawn.type === 'boolean' && drawn.template === 'checkbox';
 }
 
+// Where a field's value comes from (admin settings study FS-1, owner decision
+// C422): the descriptor's `origin` -- {value, level, locked, reason} and the
+// words own, above, inherited, over the form's `origin` words. With `value`,
+// the upper level's value, the level follows the field: equal to it the value
+// is inherited, any other is the site's own. `locked` (or level locked) closes
+// the field above: read-only, the reason under it.
+export const ORIGIN_LEVELS = Object.freeze(['own', 'inherited', 'locked']);
+
+/** A field's origin as given, or null: {level?, value?, hasValue, locked, reason, own, above, inherited}. */
+export function readOrigin(field) {
+  const origin = field?.origin;
+  if (!isObject(origin)) return null;
+  const level = ORIGIN_LEVELS.includes(origin.level) ? origin.level : '';
+  return {
+    level,
+    hasValue: Object.prototype.hasOwnProperty.call(origin, 'value'),
+    value: origin.value,
+    locked: origin.locked === true || level === 'locked',
+    reason: text(origin.reason),
+    own: text(origin.own),
+    above: text(origin.above),
+    inherited: text(origin.inherited),
+  };
+}
+
+/**
+ * The level of a field's value now: locked when closed above; with the upper
+ * level's value, inherited while the value equals it (in the field's own
+ * type: a whole number typed as «20» is 20) and own otherwise; else the level
+ * given; '' without an origin.
+ */
+export function originLevel(field, value) {
+  const origin = readOrigin(field);
+  if (!origin) return '';
+  if (origin.locked) return 'locked';
+  if (origin.hasValue) return same(numberValue(field, value), numberValue(field, origin.value)) ? 'inherited' : 'own';
+  return origin.level;
+}
+
 /** The fields as given, made safe: objects with a key and a type, each key once, width one of short, medium, full or none (s, m read as short, medium). */
 export function normalizeFields(list, noteWidth = null) {
   const seen = new Set();
@@ -230,6 +271,35 @@ export function groupFields(fields, groups) {
   return out;
 }
 
+// The leave guard (FS-4, C422, C166 (6), C159 (6)). Every guarded form of
+// the page, on a global so that the forms of two bundles share it; one
+// question at a time for all of them.
+const GUARDED = Symbol.for('sf.form.guarded');
+const LEAVE_ASKED = Symbol.for('sf.form.leave-asked');
+const LEAVE_SEEN = Symbol.for('sf.form.leave-seen');
+const guardedForms = () => (globalThis[GUARDED] ??= new Set());
+
+/** Whether a press on a link leaves the page: another document, or an address in it that names no element (a route). */
+export function linkLeaves(anchor, doc = globalThis.document) {
+  let url;
+  try {
+    url = new URL(anchor.href, doc?.baseURI);
+  } catch {
+    return false;
+  }
+  if (!/^https?:$|^file:$/u.test(url.protocol)) return false;
+  const here = new URL(doc?.location?.href ?? url.href);
+  if (url.origin !== here.origin || url.pathname !== here.pathname || url.search !== here.search) return true;
+  if (!url.hash || url.hash === '#') return url.href !== here.href;
+  let id = url.hash.slice(1);
+  try {
+    id = decodeURIComponent(id);
+  } catch {
+    /* kept as written */
+  }
+  return !doc?.getElementById?.(id);
+}
+
 const FormElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: languageFiles,
@@ -251,6 +321,19 @@ const FormElement = elementFromManifest(manifest, {
     'set-errors'(args = {}) {
       const errors = isObject(args?.errors) ? args.errors : (isObject(args) && !('errors' in args) ? args : {});
       return this.applyHostErrors(errors);
+    },
+    // FS-2, FS-3: the host's answer to a save it took over (it cancelled
+    // submit): the values are saved -- clean, not busy, «Сохранено в HH:MM».
+    saved(args = {}) {
+      if (!this.isEditing || this.isAnswer || this.isInstant) return refused('mode');
+      this.markSaved(text(args?.at));
+      return applied();
+    },
+    // FS-4: a host's own route asks before it leaves: applied when the form
+    // has no unsaved changes or the person chose «Не сохранять» (the fields
+    // are back to the saved state), refused {reason: stayed} otherwise.
+    async 'confirm-leave'() {
+      return (await this.askLeave()) ? applied() : refused('stayed');
     },
   },
 });
@@ -286,6 +369,14 @@ class SfForm extends FormElement {
     this._pressing = false;
     this._held = new Set();
     this._onSubmit = (event) => this.onNativeSubmit(event);
+    // FS-4: the browser's own question on closing the tab, and a press on a
+    // link that leaves the page while there are unsaved changes.
+    this._onBeforeUnload = (event) => {
+      if (!this.guards()) return;
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    this._onLeavePress = (event) => this.onLeavePress(event);
     this._onPress = (event) => this.onSubmitPress(event);
     this._onTyping = (event) => {
       if (!this.isInstant) return;
@@ -315,6 +406,10 @@ class SfForm extends FormElement {
     this.addEventListener('pointerdown', this._onPressStart, true);
     this.addEventListener('mousedown', this._onPressStart, true);
     this.addEventListener('sf-after-render', this._onControlDrawn);
+    guardedForms().add(this);
+    globalThis.addEventListener?.('beforeunload', this._onBeforeUnload);
+    // On the window in capture, before a menu or a page's router hears it.
+    globalThis.addEventListener?.('click', this._onLeavePress, true);
   }
 
   onDisconnected() {
@@ -327,7 +422,103 @@ class SfForm extends FormElement {
     this.removeEventListener('pointerdown', this._onPressStart, true);
     this.removeEventListener('mousedown', this._onPressStart, true);
     this.removeEventListener('sf-after-render', this._onControlDrawn);
+    guardedForms().delete(this);
+    globalThis.removeEventListener?.('beforeunload', this._onBeforeUnload);
+    globalThis.removeEventListener?.('click', this._onLeavePress, true);
+    this._releaseBusy?.();
+    this._releaseBusy = null;
     this.releaseChecks();
+  }
+
+  // ---------------------------------------------------------------- leaving (FS-4)
+
+  // Whether leaving now would lose changes this form guards: guard on, edited,
+  // changed and not saved.
+  guards() {
+    return this.guard === true && this.isConnected && this._dirty && this.isEditing && !this.isInstant && !this.isAnswer;
+  }
+
+  // A press on a link that leaves the page (another page, or a route the page
+  // draws in place) while a guarded form holds changes: the press is held --
+  // neither the menu nor the page's router hears it -- the cancelable leave
+  // event goes out, and unless a host took it the form asks «Уйти без
+  // сохранения?». «Не сохранять» puts the fields back and presses the link
+  // again; «Продолжить правку» stays. A link inside the form, one opening in
+  // another tab or downloading, or a press with a modifier key passes.
+  onLeavePress(event) {
+    if (event[LEAVE_SEEN] || !this.guards()) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const anchor = event.composedPath?.().find((node) => node?.localName === 'a' && node.hasAttribute?.('href'));
+    if (!anchor || this.contains(anchor) || anchor.hasAttribute('download')) return;
+    const target = anchor.getAttribute('target');
+    if (target && target !== '_self') return;
+    if (!linkLeaves(anchor, this.ownerDocument)) return;
+    event[LEAVE_SEEN] = true;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const href = anchor.href;
+    if (!this.sfEmit('leave', {href}, {cancelable: true})) return;
+    this.askLeave().then((left) => {
+      if (left && anchor.isConnected) anchor.click();
+    });
+  }
+
+  // The question of C159 (6) in a question window: «Не сохранять», red,
+  // first; «Продолжить правку», quiet, with the focus. One at a time for the
+  // page; true when nothing is lost or the person chose not to save, and then
+  // every guarded form's changes are dropped.
+  askLeave() {
+    const dirty = [...guardedForms()].filter((form) => form.isConnected && form._dirty && form.isEditing && !form.isInstant && !form.isAnswer);
+    if (!dirty.includes(this) && this._dirty && this.isEditing && !this.isInstant && !this.isAnswer) dirty.push(this);
+    if (!dirty.length) return Promise.resolve(true);
+    if (globalThis[LEAVE_ASKED]) return globalThis[LEAVE_ASKED];
+    const doc = this.ownerDocument;
+    const asked = new Promise((resolve) => {
+      const question = doc.createElement('sf-modal');
+      question.setAttribute('size', 'question');
+      question.setAttribute('initial-focus', 'safe');
+      question.setAttribute('data-sf-form-leave', '');
+      question.setAttribute('heading', this.sfWord('leave-heading'));
+      const body = doc.createElement('p');
+      body.setAttribute('slot', 'content');
+      body.className = 'sf-form-leave-text';
+      body.textContent = this.sfWord('leave-text');
+      const footer = doc.createElement('div');
+      footer.setAttribute('slot', 'footer');
+      const discard = doc.createElement('sf-button');
+      discard.setAttribute('status', 'danger');
+      discard.setAttribute('text', this.sfWord('leave-discard'));
+      discard.setAttribute('data-sf-form-leave-answer', 'discard');
+      const keep = doc.createElement('sf-button');
+      keep.setAttribute('appearance', 'ghost');
+      keep.setAttribute('scheme', 'on-surface');
+      keep.setAttribute('text', this.sfWord('leave-keep'));
+      keep.setAttribute('data-sf-modal-close', '');
+      keep.setAttribute('data-sf-form-leave-answer', 'keep');
+      footer.append(discard, keep);
+      question.append(body, footer);
+      let answer = null;
+      const settle = (left) => {
+        if (answer !== null) return;
+        answer = left;
+        globalThis[LEAVE_ASKED] = null;
+        if (left) for (const form of dirty) form.restore();
+        resolve(left);
+      };
+      discard.addEventListener('click', () => {
+        settle(true);
+        question.close?.({reason: 'api'});
+      });
+      question.addEventListener('sf-modal-close', () => settle(false));
+      question.addEventListener('sf-modal-closed', () => {
+        settle(false);
+        question.remove();
+      });
+      question.setAttribute('open', '');
+      doc.body.append(question);
+    });
+    globalThis[LEAVE_ASKED] = asked;
+    return asked;
   }
 
   // The ids the template writes come from the instance path (§7.1.1), never
@@ -382,6 +573,8 @@ class SfForm extends FormElement {
     this._values = clone(next);
     this._applied.clear();
     this.forget();
+    // The host's answer to a save it took over (FS-2): the form is not busy.
+    if (this.busy) this.busy = false;
     this.requestComponentUpdate('value');
   }
 
@@ -421,9 +614,11 @@ class SfForm extends FormElement {
   // makes it required, when.enabled false draws it read-only. A field with no
   // when is as declared. A hidden field keeps its value and is not checked.
   conditioned(field) {
-    if (!field?.when) return field;
+    // A field closed above (FS-1) is read-only whatever its conditions say.
+    const locked = readOrigin(field)?.locked === true;
+    if (!field?.when) return locked && field.readonly !== true ? {...field, readonly: true} : field;
     const {visible, required, enabled} = fieldConditions(field, this._values);
-    return {...field, visible, required, readonly: field.readonly === true || !enabled};
+    return {...field, visible, required, readonly: field.readonly === true || !enabled || locked};
   }
 
   // The field of a key as it stands now (its conditions applied).
@@ -452,7 +647,15 @@ class SfForm extends FormElement {
 
   get isEditing() {
     if (this.isAnswer) return ANSWERING.has(this.answerState);
+    // A form without the right to change it (FS-5, C348) is read, never edited.
+    if (this.isReadOnly) return false;
     return this.mode !== 'view';
+  }
+
+  // readonly (FS-5): the values as text, no «Изменить», no «Сохранить», the
+  // reason where the buttons stand. Not for apply answer (its own states).
+  get isReadOnly() {
+    return this.readonly === true && !this.isAnswer;
   }
 
   // apply answer: a form a person answers once (C291 (3)); mode is not read.
@@ -549,6 +752,8 @@ class SfForm extends FormElement {
     this._touched.add(key);
     this._hostErrors.delete(key);
     this.setDirty(!same(this.typed(this._values), this.typed(this._saved)));
+    // «Сохранено в HH:MM» gives way to the next change (FS-3).
+    if (this.savedAt) this.savedAt = '';
     this.sfEmit('input', {key, value});
     // apply instant: one sf-form-change per commit of the field (FO-1). A
     // value typed (written while an input event is on its way) is applied
@@ -670,6 +875,9 @@ class SfForm extends FormElement {
   }
 
   applyHostErrors(errors) {
+    if (this.isReadOnly) return refused('readonly');
+    // The host's answer to a save it took over (FS-2): the form is not busy.
+    if (this.busy) this.busy = false;
     const shown = new Set(this.list.map((field) => field.key));
     const entries = Object.entries(errors).map(([key, message]) => [text(key), text(message)]).filter(([key, message]) => key && message);
     if (entries.length && !entries.some(([key]) => shown.has(key))) return refused('missing');
@@ -697,6 +905,7 @@ class SfForm extends FormElement {
   onNativeSubmit(event) {
     if (!event.target?.classList?.contains('sf-form')) return;
     event.preventDefault();
+    if (this.busy) return;
     this.submit();
   }
 
@@ -712,6 +921,7 @@ class SfForm extends FormElement {
     if (!root || !root.classList?.contains('sf-form') || root.closest('sf-form') !== this) return;
     if (button.disabled) return;
     event.preventDefault();
+    if (this.busy) return;
     this.submit();
   }
 
@@ -755,18 +965,48 @@ class SfForm extends FormElement {
   submit() {
     if (this.isAnswer) return this.answer(true);
     if (!this.isEditing || this.isInstant) return refused('mode');
+    if (this.busy) return refused('busy');
     if (!this.checkFields({focus: true})) return refused('invalid');
     const value = this.value;
-    if (!this.sfEmit('submit', {value}, {cancelable: true})) return refused('prevented');
+    // The keys whose value is the upper level's again (FS-1): the host may
+    // store them as inherited rather than as an own value equal to it.
+    const inherited = this.list.filter((field) => field.key in value && originLevel(field, value[field.key]) === 'inherited').map((field) => field.key);
+    if (!this.sfEmit('submit', {value, inherited}, {cancelable: true})) return refused('prevented');
+    this.markSaved();
+    return applied();
+  }
+
+  // The values are the saved state now (a submit not cancelled, or the host's
+  // `saved` after a save it took over): clean, not busy, «Сохранено в HH:MM»
+  // in the state line (FS-2, FS-3); a form opened from view returns to view.
+  markSaved(at = '') {
     this._saved = clone(this._values);
+    this._applied.clear();
     this.forget();
+    if (this.busy) this.busy = false;
+    const when = at ? new Date(at) : new Date();
+    this.savedAt = Number.isNaN(when.getTime()) ? new Date().toISOString() : when.toISOString();
     if (this._fromView) this.toView();
     else this.requestComponentUpdate('saved');
+  }
+
+  // «Вернуть общее» (FS-1): the field takes the upper level's value as the
+  // person's change -- dirty until «Сохранить», applied at once in an instant
+  // form -- after the cancelable reset-field event; the focus goes to the field.
+  inheritField(key) {
+    const field = this.fieldOf(key);
+    const origin = readOrigin(field);
+    if (!field || !origin?.hasValue || origin.locked || !this.isEditing || field.readonly === true || this.busy) return refused('mode');
+    const value = clone({v: origin.value}).v;
+    if (!this.sfEmit('reset-field', {key, value}, {cancelable: true})) return refused('prevented');
+    this.writeValue(key, value);
+    this.whenDrawn(() => this.focusField(key));
     return applied();
   }
 
   cancel() {
     if (this.isAnswer) return this.answer(false);
+    if (this.busy) return;
     this.restore();
     this.sfEmit('cancel', {value: this.value});
     if (this._fromView) this.toView();
@@ -810,6 +1050,7 @@ class SfForm extends FormElement {
   }
 
   toEdit() {
+    if (this.isReadOnly) return;
     this._fromView = true;
     this.mode = 'edit';
     this.sfHostState('data-mode', 'edit');
@@ -922,7 +1163,23 @@ class SfForm extends FormElement {
   renderTemplateResult(templateResult) {
     const result = super.renderTemplateResult(templateResult);
     this.syncControls();
+    this.syncBusy();
     return result;
+  }
+
+  // busy (FS-2, C159 (9)): while the host saves, «Сохранить» shows its
+  // loading (its colour kept), «Отмена» waits, and every field is read-only --
+  // the same hold as a window that saves; it all comes back with the answer.
+  syncBusy() {
+    const busy = this.busy === true && this.isEditing;
+    if (busy && !this._releaseBusy) {
+      const body = this.querySelector('.sf-form-body');
+      this._releaseBusy = holdFieldsReadOnly(windowFields(body));
+    } else if (!busy && this._releaseBusy) {
+      const release = this._releaseBusy;
+      this._releaseBusy = null;
+      release();
+    }
   }
 
   // A yes/no drawn as a checkbox has no label row (C165 (4)), and its «?»
@@ -1058,6 +1315,10 @@ class SfForm extends FormElement {
       // From two errors, or one a hidden field holds (FO3-1), the summary.
       errorList: editing && ((this._submitted && errors.length + hiddenErrors.length > 1) || hiddenErrors.length) ? [...errors, ...hiddenErrors] : null,
       dirty: answer ? false : this._dirty,
+      // FS-2, FS-3, FS-5.
+      busy: this.busy === true && editing && !answer,
+      saved: !answer && !this._dirty && editing ? this.savedText() : '',
+      readonly: this.isReadOnly ? (text(this.readonlyReason) || this.sfWord('readonly-reason')) : '',
       words: {
         send: word('send'),
         requiredNote: word('required-note'),
@@ -1070,6 +1331,20 @@ class SfForm extends FormElement {
       },
       rootClass: this.getRootClass(),
     });
+  }
+
+  // «Сохранено в 14:35» (FS-3): the time of the last save in the page's
+  // language, the hours and minutes of the reader's clock; '' without one.
+  savedText() {
+    const at = this.savedAt ? new Date(this.savedAt) : null;
+    if (!at || Number.isNaN(at.getTime())) return '';
+    let time;
+    try {
+      time = new Intl.DateTimeFormat(pageLocale(this), {hour: '2-digit', minute: '2-digit'}).format(at);
+    } catch {
+      time = `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`;
+    }
+    return this.sfWord('saved-at', {vars: {time}});
   }
 
   // apply answer: the state, the line under the fields and its glyph (the
@@ -1159,8 +1434,46 @@ class SfForm extends FormElement {
       errorId: `${id}--error-${field.key}`,
       width: field.width,
       control,
+      origin: this.originContext(field, value, host, editing),
       focus: () => this.focusField(field.key),
     };
+  }
+
+  // The line under a field that says where its value comes from (FS-1,
+  // C422): only an own value -- «Своё для simai.ru · у всех сайтов: Москва»
+  // and «Вернуть общее» while editing -- and a field closed above, with its
+  // reason. An inherited value says the host's words when it gives them («Как
+  // у всех сайтов»), nothing by default. None in a read-only form (FS-5: the
+  // reason line says why for the whole form).
+  originContext(field, value, host, editing) {
+    const origin = readOrigin(field);
+    if (!origin || this.isReadOnly || this.isAnswer) return null;
+    const words = isObject(this.origin) ? this.origin : {};
+    const level = originLevel(field, value);
+    if (level === 'locked') {
+      return {level, lead: origin.reason || text(words.locked) || this.sfWord('origin-locked'), upper: null, reset: null};
+    }
+    if (level === 'own') {
+      let upper = null;
+      if (origin.hasValue) {
+        const shown = renderCellField(field, origin.value, host);
+        upper = {
+          above: origin.above || text(words.above) || this.sfWord('origin-above'),
+          value: shown === null || shown === undefined || shown === nothing || shown === ''
+            ? this.sfWord('empty-value') : shown,
+        };
+      }
+      const reset = editing && origin.hasValue && field.readonly !== true ? {
+        text: this.sfWord('origin-reset'),
+        press: () => this.inheritField(field.key),
+      } : null;
+      return {level, lead: origin.own || text(words.own) || this.sfWord('origin-own'), upper, reset};
+    }
+    if (level === 'inherited') {
+      const quiet = origin.inherited || text(words.inherited);
+      return quiet ? {level, lead: quiet, upper: null, reset: null} : null;
+    }
+    return null;
   }
 
   template() {

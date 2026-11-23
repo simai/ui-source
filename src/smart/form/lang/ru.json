@@ -19,7 +19,17 @@
     },
     "value-missing": "Заполните поле «{label}»",
     "help-label": "Подробнее: {label}",
-    "empty-value": "Не указан"
+    "empty-value": "Не указан",
+    "origin-own": "Своё значение",
+    "origin-above": "общее",
+    "origin-reset": "Вернуть общее",
+    "origin-locked": "Закрыто на уровне выше",
+    "saved-at": "Сохранено в {time}",
+    "readonly-reason": "Только чтение",
+    "leave-heading": "Уйти без сохранения?",
+    "leave-text": "Изменения на этой странице пропадут.",
+    "leave-discard": "Не сохранять",
+    "leave-keep": "Продолжить правку"
   },
   "events": {
     "submit": {

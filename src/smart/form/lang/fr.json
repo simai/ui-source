@@ -17,6 +17,16 @@
     "answer-cancelling": "Annulation…",
     "answer-sent": "Envoyé",
     "answer-expired": "Le délai de réponse est dépassé",
-    "empty-value": "Non défini"
+    "empty-value": "Non défini",
+    "origin-own": "Valeur propre",
+    "origin-above": "commune",
+    "origin-reset": "Reprendre la valeur commune",
+    "origin-locked": "Verrouillé à un niveau supérieur",
+    "saved-at": "Enregistré à {time}",
+    "readonly-reason": "Lecture seule",
+    "leave-heading": "Quitter sans enregistrer ?",
+    "leave-text": "Les modifications de cette page seront perdues.",
+    "leave-discard": "Ne pas enregistrer",
+    "leave-keep": "Continuer la modification"
   }
 }

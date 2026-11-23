@@ -17,6 +17,16 @@
     "answer-cancelling": "Annullamento…",
     "answer-sent": "Inviato",
     "answer-expired": "Il tempo per rispondere è scaduto",
-    "empty-value": "Non impostato"
+    "empty-value": "Non impostato",
+    "origin-own": "Valore proprio",
+    "origin-above": "comune",
+    "origin-reset": "Usa il valore comune",
+    "origin-locked": "Bloccato a un livello superiore",
+    "saved-at": "Salvato alle {time}",
+    "readonly-reason": "Sola lettura",
+    "leave-heading": "Uscire senza salvare?",
+    "leave-text": "Le modifiche in questa pagina andranno perse.",
+    "leave-discard": "Non salvare",
+    "leave-keep": "Continua a modificare"
   }
 }
