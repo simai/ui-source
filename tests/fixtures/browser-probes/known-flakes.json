@@ -5,9 +5,9 @@
       "gate": "tests/browser/first-paint-gate.browser.mjs",
       "owner": "smart.drawer",
       "says": "drawer «bare tag: no frame before the code», a different example each run, mostly @390",
-      "condition": "load average above about 11 (seen at 11-72) with FIRST_PAINT_CONCURRENCY=1; not seen at load 13-16 on the pair or below 12",
-      "rate": "drawer alone, pair and candidate alternating at load 11-27: pair 1 of 216, candidate 2 of 216; full gate b1 at load 15-27: 3 of 3920; b2 and b6 at load 41-58: 0 of 3920",
-      "evidence": "ui-control control/evidence/2026-11-23-gb18-contracts (tools/fp-drawer-ab2.sh), 2026-11-23-group-build-18"
+      "condition": "load average above about 11 (seen at 11-72 with FIRST_PAINT_CONCURRENCY=1, and at 75-168 with concurrency 2 in the DEV acceptance full gate); not seen at load 13-16 on the pair or below 12",
+      "rate": "drawer alone, pair and candidate alternating at load 11-27: pair 1 of 216, candidate 2 of 216; full gate b1 at load 15-27: 3 of 3920; b2 and b6 at load 41-58: 0 of 3920; DEV acceptance of 320580562: full gate at load 75-168 (concurrency 2) 4 of 3920 (drawer docked @1440 loads 2 and 3, sheet @390 load 3, toggled @390), drawer alone at load 9-22 (concurrency 1) candidate 1 of 324, pair 0 of 324",
+      "evidence": "ui-control control/evidence/2026-11-23-gb18-contracts (tools/fp-drawer-ab2.sh), 2026-11-23-group-build-18, 2026-11-24-gb18-acceptance (tools/fp-drawer.sh, data/fp-drawer-runs.txt)"
     },
     "icon subset font fallback": {
       "gate": "any page under timing-hostile delays (FS-10 runs: probe/fs10.mjs)",
