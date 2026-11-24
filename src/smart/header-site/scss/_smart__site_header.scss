@@ -470,6 +470,13 @@
   margin-inline-start: calc(var(--sf-site-header-brand-gap, var(--sf-site-header-gap, var(--sf-space-1))) - var(--sf-site-header-gap, var(--sf-space-1)));
 }
 
+/* navigation-align center ignores it (DEV, group build 18 pre-cut): the nav
+   stands at the bar's centre, so a margin at its start would only shift the
+   centre it is drawn at; the brand gap belongs to the start layout alone. */
+.sf-site-header--navigation-center .sf-site-header-brand ~ .sf-site-header-panel > .sf-site-header-nav {
+  margin-inline-start: 0;
+}
+
 /* A nav menu whose code has not come yet is its plain list -- one section
    under another -- and the bar grew to that column for the frames until the
    menu drew its row (the page under it went down 116 px and back at 1440,

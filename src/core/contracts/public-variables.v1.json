@@ -3199,7 +3199,7 @@
         {
           "name": "--sf-site-header-brand-gap",
           "role": "gap",
-          "summary": "The space between the brand and the navigation alone, in the wide bar (a space-system step); collapsed it does nothing.",
+          "summary": "The space between the brand and the navigation alone, in the wide bar with the navigation at the start (a space-system step); collapsed, or with navigation-align center, it does nothing.",
           "default": "var(--sf-site-header-gap, var(--sf-space-1))",
           "since": "2026-11-24"
         },

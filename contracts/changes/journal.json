@@ -20830,7 +20830,7 @@
       "recorded_on": "2026-11-24",
       "stage": "compat",
       "kind": "token",
-      "summary": "sf-header-site 1.16.0 (group build 18 L7; Docara request with an owner decision, msg-4c6c5fb0): the public variable --sf-site-header-brand-gap sets the space between the brand and the navigation alone in the wide bar, a space-system step. Before, that space was the row's gap and only --sf-site-header-gap moved it, which moved every group of the row. Its default is the row's gap, so nothing draws differently; collapsed it does nothing.",
+      "summary": "sf-header-site 1.16.0 (group build 18 L7; Docara request with an owner decision, msg-4c6c5fb0): the public variable --sf-site-header-brand-gap sets the space between the brand and the navigation alone in the wide bar, a space-system step. Before, that space was the row's gap and only --sf-site-header-gap moved it, which moved every group of the row. Its default is the row's gap, so nothing draws differently; collapsed, and with navigation-align center (the nav stays at the bar's centre, DEV answer 13 at the pre-cut), it does nothing.",
       "items": [
         {
           "component": "sf-header-site",
