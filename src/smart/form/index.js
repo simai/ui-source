@@ -1334,7 +1334,8 @@ class SfForm extends FormElement {
       // FS-2, FS-3, FS-5.
       busy: this.busy === true && editing && !answer,
       saved: !answer && !this._dirty && editing ? this.savedText() : '',
-      readonly: this.isReadOnly ? (text(this.readonlyReason) || this.sfWord('readonly-reason')) : '',
+      // The reason line, not readonly: the template's context key readonly would read the getter's name (template-context).
+      readonlyLine: this.isReadOnly ? (text(this.readonlyReason) || this.sfWord('readonly-reason')) : '',
       words: {
         send: word('send'),
         requiredNote: word('required-note'),

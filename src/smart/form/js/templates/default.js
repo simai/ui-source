@@ -108,9 +108,9 @@ function answerFooter(context) {
 function footerBlock(context) {
   if (context.instant) return nothing;
   if (context.answer) return answerFooter(context);
-  if (context.readonly) {
+  if (context.readonlyLine) {
     return html`<div class="sf-form-footer">
-      <p class="sf-form-state sf-form-reason">${context.readonly}</p>
+      <p class="sf-form-state sf-form-reason">${context.readonlyLine}</p>
     </div>`;
   }
   if (!context.editing) {
