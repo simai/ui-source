@@ -301,7 +301,10 @@
                 124.5
               ],
               "bare": {
-                "held": null,
+                "held": [
+                  0,
+                  0
+                ],
                 "drawn": [
                   390,
                   124.5
@@ -357,10 +360,7 @@
                 58
               ],
               "bare": {
-                "held": [
-                  0,
-                  0
-                ],
+                "held": null,
                 "drawn": [
                   1440,
                   58
@@ -483,7 +483,10 @@
                 105.1
               ],
               "bare": {
-                "held": null,
+                "held": [
+                  0,
+                  0
+                ],
                 "drawn": [
                   1440,
                   105.1
@@ -6898,7 +6901,10 @@
                 36
               ],
               "bare": {
-                "held": null,
+                "held": [
+                  0,
+                  0
+                ],
                 "drawn": [
                   1440,
                   36
@@ -7432,12 +7438,15 @@
                 0
               ],
               "bare": {
-                "held": null,
+                "held": [
+                  0,
+                  0
+                ],
                 "drawn": [
                   0,
                   0
                 ],
-                "holds": false
+                "holds": true
               }
             }
           }
@@ -9322,9 +9331,9 @@
                 ],
                 "drawn": [
                   390,
-                  52
+                  44
                 ],
-                "holds": false
+                "holds": true
               }
             },
             "1440": {
@@ -9721,14 +9730,14 @@
     "form": {
       "id": "smart.form",
       "tag": "sf-form",
-      "version": "1.15.1",
+      "version": "1.15.2",
       "skeleton": {
         "needed": true,
         "late": [
           "fields",
           "groups"
         ],
-        "snapshots": 9
+        "snapshots": 11
       },
       "before_code": {
         "held_by": "host",
@@ -9844,11 +9853,11 @@
             "390": {
               "skeleton": [
                 390,
-                265.2
+                264
               ],
               "printed": [
                 390,
-                265.2
+                264
               ],
               "bare": {
                 "held": [
@@ -9857,7 +9866,7 @@
                 ],
                 "drawn": [
                   390,
-                  265.2
+                  264
                 ],
                 "holds": false
               }
@@ -9865,11 +9874,11 @@
             "1440": {
               "skeleton": [
                 1440,
-                241.6
+                240
               ],
               "printed": [
                 1440,
-                241.6
+                240
               ],
               "bare": {
                 "held": [
@@ -9878,7 +9887,7 @@
                 ],
                 "drawn": [
                   1440,
-                  241.6
+                  240
                 ],
                 "holds": false
               }
@@ -10094,11 +10103,11 @@
             "390": {
               "skeleton": [
                 390,
-                549.2
+                548
               ],
               "printed": [
                 390,
-                549.2
+                548
               ],
               "bare": {
                 "held": [
@@ -10107,7 +10116,7 @@
                 ],
                 "drawn": [
                   390,
-                  549.2
+                  548
                 ],
                 "holds": false
               }
@@ -10115,11 +10124,11 @@
             "1440": {
               "skeleton": [
                 1440,
-                537.6
+                536
               ],
               "printed": [
                 1440,
-                537.6
+                536
               ],
               "bare": {
                 "held": [
@@ -10128,7 +10137,7 @@
                 ],
                 "drawn": [
                   1440,
-                  537.6
+                  418
                 ],
                 "holds": false
               }
@@ -10144,11 +10153,11 @@
             "390": {
               "skeleton": [
                 390,
-                177.2
+                176
               ],
               "printed": [
                 390,
-                177.2
+                176
               ],
               "bare": {
                 "held": [
@@ -10157,7 +10166,7 @@
                 ],
                 "drawn": [
                   390,
-                  177.2
+                  176
                 ],
                 "holds": false
               }
@@ -10165,11 +10174,11 @@
             "1440": {
               "skeleton": [
                 1440,
-                173.6
+                172
               ],
               "printed": [
                 1440,
-                173.6
+                172
               ],
               "bare": {
                 "held": [
@@ -10178,7 +10187,107 @@
                 ],
                 "drawn": [
                   1440,
-                  173.6
+                  172
+                ],
+                "holds": false
+              }
+            }
+          }
+        },
+        {
+          "name": "record-edit",
+          "title": "Правка задачи: метки, сумма в валюте и исполнитель",
+          "snapshot": "default/record-edit.html",
+          "skeleton": "default/record-edit.skeleton.html",
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                240
+              ],
+              "printed": [
+                390,
+                240
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  204
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                272
+              ],
+              "printed": [
+                1440,
+                272
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  232
+                ],
+                "holds": false
+              }
+            }
+          }
+        },
+        {
+          "name": "record-view",
+          "title": "Просмотр задачи: метки, исполнитель и связанные записи",
+          "snapshot": "default/record-view.html",
+          "skeleton": "default/record-view.skeleton.html",
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                264
+              ],
+              "printed": [
+                390,
+                264
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  264
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                176
+              ],
+              "printed": [
+                1440,
+                176
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  176
                 ],
                 "holds": false
               }
@@ -11021,7 +11130,7 @@
     "header-site": {
       "id": "smart.header-site",
       "tag": "sf-header-site",
-      "version": "1.15.0",
+      "version": "1.16.0",
       "skeleton": {
         "needed": false,
         "late": [],
@@ -11813,7 +11922,7 @@
                 ],
                 "drawn": [
                   390,
-                  68
+                  72
                 ],
                 "holds": false
               }
@@ -20655,8 +20764,8 @@
                   17
                 ],
                 "drawn": [
-                  0,
-                  0
+                  113.8,
+                  36
                 ],
                 "holds": false
               }
@@ -20672,8 +20781,8 @@
                   20
                 ],
                 "drawn": [
-                  0,
-                  0
+                  132.3,
+                  40
                 ],
                 "holds": false
               }
@@ -20697,8 +20806,8 @@
                   17
                 ],
                 "drawn": [
-                  91.5,
-                  36
+                  0,
+                  0
                 ],
                 "holds": false
               }
@@ -20739,8 +20848,8 @@
                   17
                 ],
                 "drawn": [
-                  68.4,
-                  36
+                  0,
+                  0
                 ],
                 "holds": false
               }
@@ -20756,8 +20865,8 @@
                   20
                 ],
                 "drawn": [
-                  0,
-                  0
+                  80.5,
+                  40
                 ],
                 "holds": false
               }
