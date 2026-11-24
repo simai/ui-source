@@ -16,6 +16,10 @@ three serializations that agree) and the same serializer. For a Smart element
 written as one of the Framework's examples, the print is byte for byte the
 committed snapshot (`tests/browser/first-paint-print.browser.mjs`).
 
+A server that has a component's settings rather than markup (Docara printing
+a component it describes) uses [`first-paint-render`](first-paint-render.md):
+settings JSON in, the same first paint out. The pair ships that tool.
+
 Nothing is guessed. Each element is drawn by the build in a headless browser.
 If the build does not define a tag, the element is reported as `unknown` and
 left in the page as written.

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simai.io/schema/framework/first-paint-render.v1.json",
+  "x-simai-version": "1.0.0",
+  "title": "SIMAI Framework first-paint render: request and answer",
+  "description": "The first paint of a Smart component from its settings (docs/developer/first-paint-render.md): a server sends a request, the render tool the pair ships (distr/core/js/composition/first-paint-render.mjs; tools/first-paint/render.mjs in ui-source) answers the host as a server prints it and the sheets its markup needs. The tool draws the component with the real Loader exactly as the committed snapshots are drawn, so a request with an example's settings answers that example's snapshot byte for byte. One request per JSON object; in session mode one per line, one answer per line, in order.",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag"],
+      "properties": {
+        "schema": {"const": "simai.first-paint-render.v1", "description": "Optional; when given it must be this."},
+        "id": {"type": ["string", "null"], "description": "The caller's name for the instance, echoed in the answer; not part of the key."},
+        "tag": {"type": "string", "pattern": "^sf-[a-z0-9-]+$", "description": "The element: a Smart component the build serves."},
+        "template": {"type": "string", "default": "default", "description": "One of the component's templates (component.json templates); another than default is written as the host's template attribute."},
+        "settings": {"type": "object", "default": {}, "description": "Setting and value names of component.json with their values: scalars become attributes, lists and objects one JSON island (script type=application/json data-sf-settings). A late setting (presentation.skeleton.late, or a port component's lists) is refused: it arrives after the first paint."},
+        "attributes": {"type": "object", "default": {}, "additionalProperties": {"type": ["string", "boolean", "null"]}, "propertyNames": {"pattern": "^(?:aria-[a-z-]+|role|id|title|lang|dir|class|data-(?!sf-)[a-z0-9-]+)$"}, "description": "Attributes a page writes on a host that are not settings: aria-*, role, id, title, lang, dir, class, data-* (not data-sf-*). true writes the bare name; false and null leave it out."},
+        "children": {"oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}], "description": "Markup the page gives inside the host (a label as text, page panels)."},
+        "slots": {"type": "object", "additionalProperties": {"type": "string"}, "description": "Slot name -> markup; each top element gets slot=<name>."},
+        "markup": {"type": "string", "description": "The page around the element (the code a copy button copies); when it holds the element, the element is the one in it."},
+        "lang": {"type": "string", "default": "ru", "description": "The page language: a language file the build ships (core/lang/<lang>.js). The words a component prints come from it."},
+        "now": {"type": "string", "description": "The page's frozen clock, an ISO date-time with its offset (default 2026-10-27T12:00:00+03:00, the snapshots' instant). The page's time zone is Europe/Moscow."},
+        "prefix": {"type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9-]*$", "description": "The ids a component makes up are <prefix>-<n>; default sf-<folder>. Give each instance on a page its own."}
+      }
+    },
+    "answer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "id", "build", "status", "tag"],
+      "properties": {
+        "schema": {"const": "simai.first-paint-render.v1"},
+        "id": {"type": ["string", "null"]},
+        "key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "The cache key: the sha256 of the build identity, the tag, the template, the settings, the attributes, children, slots, markup, lang, now and prefix, as canonical JSON (keys sorted). Same key, same answer."},
+        "build": {"type": "string", "description": "The build's identity: the caller's --build (a pair id), else the sha256 of every file the build serves (gzip copies left out)."},
+        "status": {"enum": ["printed", "refused", "unknown", "failed"], "description": "printed: html and sheets are the first paint. refused: the request is not something the component prints (reason, detail). unknown: the build defines no such tag. failed: the component did not draw or its page threw."},
+        "tag": {"type": ["string", "null"]},
+        "template": {"type": "string"},
+        "html": {"type": "string", "description": "The host as a server prints it: its attributes, its JSON island, its static markup marked data-sf-static, and the page's own children. Print it as is."},
+        "sheets": {"type": "array", "items": {"type": "string"}, "description": "Every sheet the markup needs, relative to distr/, sorted; link each before the markup. core/css/core.css is always among them."},
+        "theme": {"type": "array", "items": {"enum": ["theme-light", "theme-dark"]}, "description": "The markup also needs one of these classes on <html>."},
+        "snapshot": {"type": ["string", "null"], "description": "The committed snapshot this markup is (smart/<folder>/static/<template>/<example>.html), or null."},
+        "notes": {"type": "array", "items": {"enum": ["overlay-closed"]}, "description": "overlay-closed: an overlay is printed closed; its open setting was left out."},
+        "reason": {"enum": ["not-a-request", "not-json", "unknown-field", "schema", "tag", "unknown-tag", "template", "settings", "unknown-setting", "late-setting", "value", "attributes", "children", "markup", "slots", "lang", "now", "prefix", "page-error", "not-drawn"]},
+        "detail": {"type": "string"}
+      }
+    }
+  },
+  "oneOf": [{"$ref": "#/$defs/request"}, {"$ref": "#/$defs/answer"}]
+}

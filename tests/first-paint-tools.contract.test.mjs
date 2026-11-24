@@ -230,7 +230,11 @@ test('6. the text faces: optional on a page, block on the snapshot server only',
   const lib = readFileSync(join(root, 'scripts/first-paint-lib.mjs'), 'utf8');
   const settled = lib.slice(lib.indexOf('export async function serializeSettled'));
   assert.match(settled.slice(0, settled.indexOf('\n}\n')), /await page\.evaluate\(fontsReady\)/u, 'serializeSettled waits for Inter');
-  assert.equal((snapshot.match(/await serializeSettled\(/gu) ?? []).length, 1, 'a component\'s page settles there');
+  // group build 19: a component's page is drawn by drawExample, shared with
+  // tools/first-paint/render.mjs, and settles there.
+  const draw = lib.slice(lib.indexOf('export async function drawExample('), lib.indexOf('/** The assemblies, each with'));
+  assert.equal((draw.match(/await serializeSettled\(/gu) ?? []).length, 1, 'a component\'s page settles there');
+  assert.equal((snapshot.match(/await drawExample\(/gu) ?? []).length, 1, 'the snapshot draws a component through drawExample');
   assert.equal((snapshot.match(/await page\.evaluate\(fontsReady\)/gu) ?? []).length, 1, 'an assembly\'s page waits for Inter');
 });
 

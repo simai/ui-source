@@ -133,6 +133,11 @@ const NOT_A_MANIFEST = [
   // sf-header-page's own setting `description` (1.10.0, the line under a conversation's heading).
   {file: 'src/smart/header-page/index.js', read: 'this.description'},
   {file: 'src/smart/header-page/js/templates/default.js', read: 'context.description'},
+  // The first-paint render tool the pair ships (group build 19,
+  // scripts/build-first-paint-kit.mjs): Node at a server's build time reading
+  // the component.json file of the distribution, never the embedded manifest.
+  {file: 'src/core/js/composition/first-paint/lib.mjs', read: 'manifest.examples'},
+  {file: 'src/core/js/composition/first-paint/lib.mjs', read: 'examplesFile).examples'},
   // A fragment descriptor's ports (simai.composition fragments), not a component.json.
   {file: 'src/core/js/composition/fragments.mjs', read: 'port.summary'},
   // A component's smart.manifest.json with `composition.declarative` (the

@@ -497,20 +497,82 @@ export const BOOT_CONFIG = {
   ...(Object.keys(config.packages).length
     ? {packages: Object.fromEntries(Object.entries(config.packages).map(([name, {base}]) => [name, {base}]))} : {}),
 };
-export const head = ({sheets = ['/distr/core/css/core.css'], scripts = true, title = 'first paint', extra = ''} = {}) => `<!doctype html>
-<html lang="ru" class="theme-light"><head><meta charset="utf-8">
+export const head = ({sheets = ['/distr/core/css/core.css'], scripts = true, title = 'first paint', extra = '', lang = 'ru'} = {}) => `<!doctype html>
+<html lang="${esc(lang)}" class="theme-light"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title><link rel="icon" href="data:,">
 ${sheets.map((href) => `<link rel="stylesheet" href="${href}">`).join('\n')}
 ${scripts ? `<script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG=${JSON.stringify(BOOT_CONFIG)};</script>` : ''}
-${scripts ? languageScript : ''}
+${scripts ? languageScriptOf(lang) : ''}
 ${extra}</head>`;
 // The page is Russian: its words come from the ru language file, included
 // before core as a site does (owner decision C282). Without it the Loader
 // would hold the components for the parts' fetch and the picture would wait
 // on the network; with it the words are in the registry before core runs.
 export const languageScript = '<script src="/distr/core/lang/ru.js"></script>';
+// Another page language (a site's English page): its own language file, the
+// same way. A language the build has no file for is refused by the caller
+// (tools/first-paint/render.mjs), never drawn in the wrong words.
+export const languageScriptOf = (lang = 'ru') => (lang === 'ru' ? languageScript : `<script src="/distr/core/lang/${esc(lang)}.js"></script>`);
 export const coreScript = '<script src="/distr/core/js/core.js"></script>';
+
+// ---------- drawing one example ----------
+// Shared by scripts/snapshot-first-paint.mjs (the committed snapshots) and
+// tools/first-paint/render.mjs (a component from settings): one page, one
+// wait, one settling, so a render from an example's settings is its snapshot.
+
+// Every snapshot is taken on one clock: sf-time prints the zone it writes in
+// (owner decision C183 (3): «…, Москва (UTC+3)»), so a snapshot taken on a
+// machine elsewhere would differ by its zone. Moscow, as the manifest probes
+// (fix/time-probes-tz).
+export const SNAPSHOT_TIME_ZONE = 'Europe/Moscow';
+
+/** The page spec of an example: its host (hostSpec) and its late data. */
+export function exampleSpec(component, example) {
+  return {...hostSpec(component, example), late: component.late, lateHeld: lateHeld(component, lateGiven(component, example))};
+}
+
+/**
+ * Draws one example on a page of its own and serializes its first paint: the
+ * stage, first-paint-page.js marking what the page gave, the Loader, then
+ * the element drawn (a closed overlay: started) and settled. `site` serves
+ * `pages`, which must hold /first-paint-page.js; `after(page, html)` runs on
+ * the drawn page before it closes (the skeleton). Answers {html, sheets,
+ * errors, after}: sheets are request paths (/distr/...), in request order.
+ */
+export async function drawExample({browser, site, pages, path, title = path, component, example, spec = exampleSpec(component, example), prefix, lang = 'ru', timezoneId = SNAPSHOT_TIME_ZONE, timeout = 20000, run = config, after = null}) {
+  pages.set(path, `${head({title, lang, extra: '<script src="/first-paint-page.js"></script>'})}<body>
+<main id="stage"></main>
+<script>window.__sfFirstPaintBuild(${JSON.stringify(spec).replace(/</g, '\\u003c')});</script>
+${coreScript}
+</body></html>`);
+  const context = await browser.newContext({...PAGE_CONTEXT, timezoneId});
+  const page = await context.newPage();
+  await freezeClock(page, example, run);
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  // The sheets this page asks for: the first paint needs every one.
+  const net = watchRequests(page);
+  try {
+    await page.goto(`${site.origin}${path}`, {waitUntil: 'load'});
+    // Drawn; a closed overlay draws nothing until it opens (its first paint
+    // is what it has then, often nothing).
+    await page.waitForFunction((overlay) => {
+      const host = window.__sfFirstPaintHost;
+      if (!host || !customElements.get(host.localName)) return false;
+      if (window.__sfFirstPaintHosts.some((one) => 'isRendered' in one && !overlay && one.isRendered !== true)) return false;
+      if (overlay) return host.hasAttribute('data-sf-started') || !host.constructor.manifest;
+      return 'isRendered' in host ? host.isRendered === true : true;
+    }, component.overlay, {timeout});
+    const html = await serializeSettled(page, net, prefix);
+    const later = after ? await after(page, html) : null;
+    await settleSheets(page, net);
+    return {html, sheets: [...new Set(net.sheets)], errors, after: later};
+  } finally {
+    await context.close();
+    pages.delete(path);
+  }
+}
 
 /** The assemblies, each with its layouts' HTML and the folders of its parts. */
 export function assemblies(only = []) {
@@ -563,6 +625,30 @@ export function sortedAttributes(html) {
     list.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
     return `<${tag}${list.map(([name, value]) => ` ${name}${value}`).join('')}${end}>`;
   });
+}
+
+/**
+ * The committed snapshots of a distribution's Smart components, by their
+ * markup: body -> "smart/<folder>/static/<template>/<example>.html". A printed
+ * element that is byte for byte one of them names it (`snapshot`).
+ */
+export function snapshotIndex(distr) {
+  const index = new Map();
+  const smart = isDistribution(distr) ? join(distr, 'smart') : join(distr, 'smart', 'smart');
+  if (!existsSync(smart)) return index;
+  for (const folder of readdirSync(smart).sort()) {
+    const dir = join(smart, folder, 'static');
+    if (!existsSync(dir)) continue;
+    for (const template of readdirSync(dir, {withFileTypes: true}).filter((one) => one.isDirectory()).map((one) => one.name).sort()) {
+      for (const file of readdirSync(join(dir, template)).filter((one) => one.endsWith('.html') && !one.endsWith('.skeleton.html')).sort()) {
+        const text = readFileSync(join(dir, template, file), 'utf8');
+        // The generated header line, then the markup and one line end.
+        const body = text.replace(/^<!--[^\n]*-->\n/u, '').replace(/\n$/u, '');
+        if (!index.has(body)) index.set(body, `smart/${folder}/static/${template}/${file}`);
+      }
+    }
+  }
+  return index;
 }
 
 /** Two snapshot bodies are the same markup when they are equal with every start tag's attributes in name order. */

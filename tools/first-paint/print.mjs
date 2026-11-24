@@ -12,11 +12,11 @@
 //        node tools/first-paint/print.mjs --distr=<root> [options] -        (the page on stdin)
 //
 // Documented in docs/developer/first-paint-print.md (CLI, module API, output).
-import {existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync} from 'node:fs';
+import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {dirname, join, relative, resolve} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {ensureLocalPlaywright} from '../../scripts/playwright-local.mjs';
-import {BOOT_CONFIG, PAGE_CONTEXT, coreScript, esc, freezeClock, head, isDistribution, readConfig, serializeSettled, serveOutput, settleSheets, watchRequests} from '../../scripts/first-paint-lib.mjs';
+import {BOOT_CONFIG, PAGE_CONTEXT, coreScript, esc, freezeClock, head, readConfig, serializeSettled, serveOutput, settleSheets, snapshotIndex, watchRequests} from '../../scripts/first-paint-lib.mjs';
 
 export const SCHEMA = 'simai.first-paint-print.v1';
 const here = dirname(fileURLToPath(import.meta.url));
@@ -95,29 +95,8 @@ const NOTES = ({source, html}) => {
 const sheetPath = (path) => path.replace(/^\/distr\//u, '');
 const sortedUnique = (list) => [...new Set(list)].sort();
 
-/**
- * The committed snapshots of a distribution's Smart components, by their
- * markup: body -> "smart/<folder>/static/<template>/<example>.html". A printed
- * element that is byte for byte one of them names it (`snapshot`).
- */
-export function snapshotIndex(distr) {
-  const index = new Map();
-  const smart = isDistribution(distr) ? join(distr, 'smart') : join(distr, 'smart', 'smart');
-  if (!existsSync(smart)) return index;
-  for (const folder of readdirSync(smart).sort()) {
-    const dir = join(smart, folder, 'static');
-    if (!existsSync(dir)) continue;
-    for (const template of readdirSync(dir, {withFileTypes: true}).filter((one) => one.isDirectory()).map((one) => one.name).sort()) {
-      for (const file of readdirSync(join(dir, template)).filter((one) => one.endsWith('.html') && !one.endsWith('.skeleton.html')).sort()) {
-        const text = readFileSync(join(dir, template, file), 'utf8');
-        // The generated header line, then the markup and one line end.
-        const body = text.replace(/^<!--[^\n]*-->\n/u, '').replace(/\n$/u, '');
-        if (!index.has(body)) index.set(body, `smart/${folder}/static/${template}/${file}`);
-      }
-    }
-  }
-  return index;
-}
+// The committed snapshots by their markup (first-paint-lib.mjs snapshotIndex).
+export {snapshotIndex};
 
 /**
  * A printer over one Framework build: one server and one browser for every

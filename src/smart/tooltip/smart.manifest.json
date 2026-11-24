@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tooltip",
-  "version": "1.5.3",
+  "version": "1.5.5",
   "title": "Tooltip",
   "summary": "Tooltip surface that can join the ordinary data-tooltip trigger composition.",
   "kind": "smart",
