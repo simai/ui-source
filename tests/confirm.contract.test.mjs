@@ -100,7 +100,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.5.6'); // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch // 1.4.0: require-text says {name} (C177 follow-up #86) // C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // group build 13: 1.5.5 moved on by the merged branches or a GB11 merge
+  assert.equal(contract.version, '1.5.7'); // group build 19: the window form says its question on a page of its own // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch // 1.4.0: require-text says {name} (C177 follow-up #86) // C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // group build 13: 1.5.5 moved on by the merged branches or a GB11 merge
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
@@ -162,4 +162,19 @@ test('sf-confirm-change 1.9.1 (RG-DP-1): expires-at names the event the card fir
   const events = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'event');
   assert.ok(events.some((row) => row.from === 'sf-change-confirm-expired'));
   assert.ok(events.some((row) => row.to === 'sf-change-confirm-expired'));
+});
+
+test('sf-confirm 1.5.7: the window form says its question on a page of its own and leaves it to a window header', () => {
+  const template = read('src/smart/confirm/js/templates/default.js');
+  const windowForm = template.slice(template.indexOf('function renderConfirmWindow'));
+  // The question's line comes first and names the group.
+  assert.match(windowForm, /aria-labelledby=\$\{context\.question \? context\.headingId : nothing\}/u);
+  assert.match(windowForm, /<p class="sf-confirm__question" id=\$\{context\.headingId\}>\$\{context\.question\}<\/p>/u);
+  assert.ok(windowForm.indexOf('sf-confirm__question') < windowForm.indexOf('sf-confirm__consequences'));
+  const css = read('src/smart/confirm/js/templates/default.css');
+  assert.match(css, /\.sf-confirm--window > \.sf-confirm__question \{\s*font-size: var\(--sf-heading-4--size\);\s*line-height: var\(--sf-heading-4--height\);\s*font-weight: var\(--sf-weight--bold\);/u);
+  assert.match(css, /\.sf-confirm--window > \.sf-confirm__question \+ \* \{\s*margin-block-start: var\(--sf-space-1\);/u);
+  // A window whose header is the question draws no second one and takes no step for it.
+  assert.match(css, /:is\(\[data-sf-modal-panel\]:has\(\.sf-modal-header\), sf-modal\[heading\]\) \.sf-confirm--window > \.sf-confirm__question \{\s*display: none;/u);
+  assert.match(css, /:is\(\[data-sf-modal-panel\]:has\(\.sf-modal-header\), sf-modal\[heading\]\) \.sf-confirm--window > \.sf-confirm__question \+ \* \{\s*margin-block-start: 0;/u);
 });

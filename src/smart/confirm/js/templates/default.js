@@ -37,9 +37,14 @@ export function renderConfirmTemplate(context) {
     `;
 }
 
-// The window form (appearance="window", decision C39): the question is the
-// window's title (sf-modal size="question"), so here it only names the group.
-// Under it the consequences on a quiet plate -- the description, then the
+// The window form (appearance="window", decision C39): in a window the
+// question is the window's title (sf-modal size="question"); the question's
+// own line is drawn too and the window's header hides it (default.css), so
+// the same form standing on a page of its own -- the host's address for the
+// action, no window around it -- still says what it asks (sf-confirm 1.5.7,
+// Larena audit 2026-11-24: on such a page the question was nowhere and the
+// decisive sentence read as the question). The line names the group. Under
+// it the consequences on a quiet plate -- the description, then the
 // decisive sentence (consequence) on its own line in medium weight; the
 // page's options (a checkbox); the name to type (require) with its label
 // «Чтобы подтвердить, введите <code>name</code>» and a field; then the two
@@ -52,10 +57,14 @@ function renderConfirmWindow(context) {
         <section
                 class="sf-confirm sf-confirm--window sf-confirm--${context.state}"
                 role="group"
-                aria-label=${context.question || context.questionLabel}
+                aria-labelledby=${context.question ? context.headingId : nothing}
+                aria-label=${context.question ? nothing : context.questionLabel}
                 data-state=${context.state}
                 ?hidden=${context.collapsed}
         >
+            ${context.question
+                ? html`<p class="sf-confirm__question" id=${context.headingId}>${context.question}</p>`
+                : nothing}
             ${plate
                 ? html`<div class="sf-confirm__consequences">
                     ${context.hasDescription

@@ -20614,6 +20614,26 @@
         }
       ],
       "source": "src/core/scss/_sf_css__placeholder.scss"
+    },
+    {
+      "recorded_on": "2026-11-24",
+      "stage": "compat",
+      "deprecated_on": "2026-11-24",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A host that put the question in the description slot or above the element to have it said on a page of its own can drop that copy: the element says it now. A window around it (sf-modal with its header) keeps showing the question as its title only.",
+      "owner": "ui-source",
+      "id": "behaviour-confirm-window-question-on-page",
+      "kind": "behaviour",
+      "summary": "sf-confirm 1.5.7 (group build 19, Larena audit): appearance=\"window\" standing on a page of its own, with no window around it, draws its question first (.sf-confirm__question, heading 4 bold, --sf-space-1 above the consequences' plate) and is named by it (aria-labelledby). It drew no question at all, relying on the window's title, so on such a page the decisive sentence read as the question. Inside a window panel with a header, or an sf-modal with heading, the line is not drawn and takes no step.",
+      "items": [
+        {
+          "component": "smart.confirm",
+          "from": "the window form never draws its question",
+          "to": "the window form draws its question unless a window header says it"
+        }
+      ],
+      "source": "src/smart/confirm/js/templates/default.js"
     }
   ]
 }

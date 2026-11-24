@@ -114,6 +114,33 @@
     gap: 0;
   }
 
+  /* The question's own line (sf-confirm 1.5.7): on a page of its own the
+     window form says its question as the question window's title would -- the
+     same heading step and weight (sf-modal's .sf-modal-title, C39), the
+     window's header-to-body step (--sf-space-1) before the plate. In a window
+     with a header the title is the question, so the line is not drawn; it
+     still names the group (aria-labelledby). */
+  .sf-confirm--window > .sf-confirm__question {
+    font-size: var(--sf-heading-4--size);
+    line-height: var(--sf-heading-4--height);
+    font-weight: var(--sf-weight--bold);
+  }
+
+  .sf-confirm--window > .sf-confirm__question + * {
+    margin-block-start: var(--sf-space-1);
+  }
+
+  /* Not drawn, the line takes no step either: the part after it starts the
+     window's body as it did before 1.5.7 (the options' and the answers' own
+     steps count from a drawn part only). */
+  :is([data-sf-modal-panel]:has(.sf-modal-header), sf-modal[heading]) .sf-confirm--window > .sf-confirm__question {
+    display: none;
+  }
+
+  :is([data-sf-modal-panel]:has(.sf-modal-header), sf-modal[heading]) .sf-confirm--window > .sf-confirm__question + * {
+    margin-block-start: 0;
+  }
+
   .sf-confirm__consequences {
     display: flex;
     flex-direction: column;
