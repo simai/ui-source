@@ -20824,6 +20824,26 @@
         }
       ],
       "source": "contracts/schema/component-set.v1.schema.json"
+    },
+    {
+      "id": "token-header-site-brand-gap",
+      "recorded_on": "2026-11-24",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "sf-header-site 1.16.0 (group build 18 L7; Docara request with an owner decision, msg-4c6c5fb0): the public variable --sf-site-header-brand-gap sets the space between the brand and the navigation alone in the wide bar, a space-system step. Before, that space was the row's gap and only --sf-site-header-gap moved it, which moved every group of the row. Its default is the row's gap, so nothing draws differently; collapsed it does nothing.",
+      "items": [
+        {
+          "component": "sf-header-site",
+          "from": "the brand to navigation space is the row's --sf-site-header-gap",
+          "to": "--sf-site-header-brand-gap (default: the row's gap)"
+        }
+      ],
+      "deprecated_on": "2026-11-24",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A page that moved the nav with --sf-site-header-gap and wants the other groups kept sets --sf-site-header-brand-gap instead.",
+      "owner": "ui-source",
+      "source": "src/smart/header-site/scss/_smart__site_header.scss; src/core/contracts/public-variables.v1.json"
     }
   ]
 }

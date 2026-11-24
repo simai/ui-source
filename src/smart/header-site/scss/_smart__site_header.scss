@@ -17,6 +17,14 @@
     }
   }
 
+  /* The brand's own space before the nav is the wide bar's: in the panel the
+     nav stands where it always did (--sf-site-header-brand-gap, GB18 L7). */
+  .sf-site-header-brand ~ .sf-site-header-panel > .sf-site-header-nav {
+    @if paint.writes-shape() {
+      margin-inline-start: 0;
+    }
+  }
+
   /* flex, as the icon button's own utility draws it. */
   .sf-site-header-menu-button > button {
     @if paint.writes-shape() {
@@ -450,6 +458,16 @@
   align-self: stretch;
   align-items: center;
   min-inline-size: 0;
+}
+
+/* The space between the brand and the nav, and only that one (Docara,
+   owner decision msg-4c6c5fb0): the panel is display: contents, so the two
+   stand the row's gap apart; --sf-site-header-brand-gap sets that one
+   boundary, a space-system step, its default the row's gap (16, a phone 12),
+   so nothing moves unless a page sets it. Written as the nav's start margin
+   on top of the row's gap; every other gap of the row stays the row's. */
+.sf-site-header-brand ~ .sf-site-header-panel > .sf-site-header-nav {
+  margin-inline-start: calc(var(--sf-site-header-brand-gap, var(--sf-site-header-gap, var(--sf-space-1))) - var(--sf-site-header-gap, var(--sf-space-1)));
 }
 
 /* A nav menu whose code has not come yet is its plain list -- one section
