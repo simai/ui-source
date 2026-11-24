@@ -3614,6 +3614,12 @@ function inDensity(content, density) {
 // The line a viewed value is drawn on: 1, or 1/2 with {size: '1/2'}, as above.
 let VIEW_LINE = '1';
 
+// A value's tag or badge is the value's text (owner remark 13, View list
+// register VL-73: record tags 14 beside a value of 16): a badge takes the line
+// of the text beside it (line="text"), a tag sits inline on the field's own
+// size (sf-tag's line is one size down, the table's step); secondary by ink only.
+const VALUE_BADGE_LINE = 'text';
+
 // A scalar may arrive as the value itself or as {value, text}: the data and the
 // host's own formatting of it. The consumer asked for the second and they are
 // right -- the Framework has no locale and should not acquire one through a field
@@ -3785,12 +3791,14 @@ function renderChoiceView(field, value) {
     if (!option) return nothing;
     const badge = optionBadgeLook(option);
 
-    // A table cell is a dense place: the badge keeps the tight side room
-    // (sf-badge tight), as it had before sf-badge 1.3.0 widened the default.
+    // On the value's own text (owner remark 13, View list register VL-73): the
+    // badge takes the text it stands beside, its size and line (line="text"),
+    // as the table's cell does since VL-54; it was a size down (14 beside a
+    // value of 16). Secondary by its ink only. A word keeps the cell's room.
     return html`
         <sf-badge
-                line=${VIEW_LINE}
-                tight
+                line=${VALUE_BADGE_LINE}
+                root-style=${CELL_BADGE_ROOM}
                 appearance=${badgeAppearanceOf(field)}
                 scheme=${badge.scheme}
                 hue=${badge.hue || nothing}
@@ -3825,10 +3833,10 @@ function renderChoicesView(field, value) {
     return html`
         <span class="sf-field-view flex flex-wrap items-cross-center gap-1/4 min-w-0">
             ${value.map((item) => {
-                if (!badges) return html`<sf-tag root-class="flex-none" line=${VIEW_LINE} kind="default" text=${label(item)}></sf-tag>`;
+                if (!badges) return html`<sf-tag root-class="flex-none" inline size=${VIEW_LINE} kind="default" text=${label(item)}></sf-tag>`;
                 const option = optionOf(item);
                 const badge = option ? optionBadgeLook(option) : null;
-                return html`<sf-badge line=${VIEW_LINE} tight appearance=${badgeAppearanceOf(field)}
+                return html`<sf-badge line=${VALUE_BADGE_LINE} root-style=${CELL_BADGE_ROOM} appearance=${badgeAppearanceOf(field)}
                         scheme=${badge?.scheme || nothing} hue=${badge?.hue || nothing} text=${label(item)}></sf-badge>`;
             })}
         </span>
@@ -3880,7 +3888,7 @@ function renderLookupView(field, value) {
 
     return html`
         <span class="sf-field-view flex flex-wrap items-cross-center gap-1/3 min-w-0">
-            ${items.map((item) => html`<sf-tag root-class="flex-none" line=${VIEW_LINE} kind="default" text=${item.label}></sf-tag>`)}
+            ${items.map((item) => html`<sf-tag root-class="flex-none" inline size=${VIEW_LINE} kind="default" text=${item.label}></sf-tag>`)}
         </span>
     `;
 }

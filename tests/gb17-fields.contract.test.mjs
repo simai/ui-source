@@ -105,5 +105,5 @@ test('F1-F5 versions: above every origin branch at the time of writing', () => {
   assert.equal(version('src/smart/segmented/component.json'), '1.8.4'); // GB18 FL-1: one measure for the fold
   assert.equal(version('src/smart/list-timeline/component.json'), '1.6.0');
   assert.equal(version('src/core/passports/module.smart-helpers.json'), '1.21.1');
-  assert.equal(version('src/core/passports/module.smart-field-renderers.json'), '1.30.0'); // FS-9 merged
+  assert.equal(version('src/core/passports/module.smart-field-renderers.json'), '1.30.1') // GB18 L6; // FS-9 merged
 });
