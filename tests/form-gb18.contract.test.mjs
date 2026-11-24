@@ -15,7 +15,7 @@ const source = () => read('src/smart/form/index.js');
 const template = () => read('src/smart/form/js/templates/default.js');
 
 test('GB18 versions: above every origin branch at the time of writing', () => {
-  assert.equal(form().version, '1.15.1'); // group build 18: moved on by the merged branches or a GB15 assembly item
+  assert.equal(form().version, '1.15.2'); // group build 18: moved on by the merged branches or a GB15 assembly item
   assert.equal(json('src/smart/checkbox/component.json').version, '1.6.1');
   assert.equal(json('src/smart/radio/component.json').version, '1.4.5');
   assert.equal(json('src/smart/switch/component.json').version, '1.10.1');
@@ -96,3 +96,34 @@ function findWord(lang, key) {
   };
   return walk(json(`src/smart/form/lang/${lang}.json`));
 }
+
+// GB18 DEV return D1: the form's field renderers draw sf-dropdown (money's
+// currency, choices), sf-avatar (user) and sf-tag (choices and lookup read)
+// themselves, so a host printing a form with such a field needs their sheets in
+// the first paint. The list follows the examples (snapshot-first-paint.mjs);
+// record-edit and record-view are the examples that carry those fields, and
+// the first-paint gate's 24d counts the printed parts' sheets (it read a fake
+// performance under the frozen clock before and saw none).
+test('D1: sf-form examples draw the parts its field renderers draw, and its sheet list holds their sheets', () => {
+  const renderers = read('src/smart/field-renderers/index.js');
+  const {examples} = json('src/smart/form/examples.json');
+  const names = examples.map((example) => example.name);
+  assert.ok(names.includes('record-edit') && names.includes('record-view'), 'the examples with money, user, choices and lookup');
+  const types = new Set(examples.flatMap((example) => example.settings.fields.map((field) => field.propertyType)));
+  for (const type of ['money', 'user', 'choices', 'lookup']) assert.ok(types.has(type), `an example has a ${type} field`);
+  const {sheets, examples: byExample} = json('src/smart/form/static/sheets.json');
+  const parts = {
+    'sf-dropdown': ['component/dropdown/css/dropdown.min.css', 'smart/dropdown/css/dropdown.min.css'],
+    'sf-avatar': ['component/avatars/css/avatars.min.css'],
+    'sf-tag': ['component/tags/css/tags.min.css', 'smart/tag/css/tag.min.css'],
+  };
+  for (const [tag, wanted] of Object.entries(parts)) {
+    assert.ok(renderers.includes(`<${tag} `), `the field renderers draw ${tag}`);
+    for (const sheet of wanted) assert.ok(sheets.includes(sheet), `${tag}: ${sheet} in sf-form's sheets.json`);
+  }
+  assert.ok(byExample['record-edit'].includes('component/dropdown/css/dropdown.min.css'), 'money draws the currency dropdown');
+  assert.ok(byExample['record-view'].includes('component/tags/css/tags.min.css'), 'choices read as tags');
+  const gate = read('tests/browser/first-paint-gate.browser.mjs');
+  assert.match(gate, /window\.__fpPerf = window\.performance/u, '24d reads the native performance, not the frozen clock\'s');
+  assert.match(gate, /for the printed parts after the element drew/u, '24d counts the printed parts\' sheets');
+});

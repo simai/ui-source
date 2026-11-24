@@ -584,6 +584,146 @@
           "tz": "msk"
         }
       }
+    },
+    {
+      "name": "record-edit",
+      "title": "Правка задачи: метки, сумма в валюте и исполнитель",
+      "settings": {
+        "label": "Задача",
+        "fields": [
+          {
+            "key": "tags",
+            "label": "Метки",
+            "propertyType": "choices",
+            "options": [
+              {
+                "value": "design",
+                "label": "Дизайн"
+              },
+              {
+                "value": "site",
+                "label": "Сайт"
+              },
+              {
+                "value": "urgent",
+                "label": "Срочно"
+              }
+            ]
+          },
+          {
+            "key": "budget",
+            "label": "Бюджет",
+            "propertyType": "money",
+            "currencies": [
+              "RUB",
+              "USD",
+              "EUR"
+            ],
+            "width": "medium"
+          },
+          {
+            "key": "owner",
+            "label": "Исполнитель",
+            "propertyType": "user"
+          }
+        ],
+        "value": {
+          "tags": [
+            "design",
+            "site"
+          ],
+          "budget": {
+            "amount": 120000,
+            "currency": "RUB"
+          },
+          "owner": {
+            "value": 1,
+            "label": "Анна Смирнова",
+            "avatarText": "АС"
+          }
+        }
+      }
+    },
+    {
+      "name": "record-view",
+      "title": "Просмотр задачи: метки, исполнитель и связанные записи",
+      "settings": {
+        "label": "Задача",
+        "mode": "view",
+        "fields": [
+          {
+            "key": "tags",
+            "label": "Метки",
+            "propertyType": "choices",
+            "options": [
+              {
+                "value": "design",
+                "label": "Дизайн"
+              },
+              {
+                "value": "site",
+                "label": "Сайт"
+              },
+              {
+                "value": "urgent",
+                "label": "Срочно"
+              }
+            ]
+          },
+          {
+            "key": "state",
+            "label": "Состояние",
+            "propertyType": "choices",
+            "template": "badges",
+            "options": [
+              {
+                "value": "open",
+                "label": "В работе",
+                "color": "success"
+              },
+              {
+                "value": "late",
+                "label": "Срок прошёл"
+              }
+            ]
+          },
+          {
+            "key": "owner",
+            "label": "Исполнитель",
+            "propertyType": "user"
+          },
+          {
+            "key": "links",
+            "label": "Связанные задачи",
+            "propertyType": "lookup",
+            "multiple": true
+          }
+        ],
+        "value": {
+          "tags": [
+            "design",
+            "urgent"
+          ],
+          "state": [
+            "open"
+          ],
+          "owner": {
+            "value": 1,
+            "label": "Анна Смирнова",
+            "avatarText": "АС"
+          },
+          "links": [
+            {
+              "value": 12,
+              "label": "Новая шапка сайта"
+            },
+            {
+              "value": 14,
+              "label": "Подбор фотографий"
+            }
+          ]
+        }
+      }
     }
   ],
   "pages": [
