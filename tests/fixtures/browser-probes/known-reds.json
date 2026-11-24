@@ -1,0 +1,258 @@
+{
+  "$comment": "Browser probes (tests/browser/*.browser.mjs) red on the released pair as well as on the candidate: pre-existing, each with its owning unit and what it says. scripts/run-browser-probes.mjs reads this file: a failure named here is reported under failed with known: true and counted apart (knownRed), not as a new red; a named probe that passes again is listed under knownNowPassing, to be taken out. The run still exits 1 while any probe fails, known or new: the list says which reds are not the candidate's, it does not make them green. Taken by the group build 18 pre-cut (DEV msg-5ee6d5bacd684276a776, answer 8); triage of each entry belongs to its owner.",
+  "pair": "ui-b4f79e1c58b7",
+  "known": {
+    "alert-notice-geometry": {
+      "owner": "smart.alert",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the probe page never draws its alerts at any width or theme",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "alpha-appearances": {
+      "owner": "component.tags",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "surface and ghost tag fills read 0.12 neutral alpha where the probe asks a fainter fill and a boundary one step stronger",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "assembly-runtime": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the assembly page waits 30 s for a ready state that never comes",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "avatars-templates-styled": {
+      "owner": "smart.avatar-group",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the default template prints sf-dot classes no release sheet answers",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "c32-addendum": {
+      "owner": "smart.menu-context",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "popup widths of the C32 addendum: profile picker, drilling settings and the phone form sheet off the expected steps",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "c32-dropdown-widths": {
+      "owner": "smart.menu-context",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "popup widths (C32): menu, list, panel, tabs and form popups one step under the expected width (1620/1812)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "c40-timeline-parts-lab": {
+      "owner": "smart.change",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the C40 timeline parts lab (sf-change rows) off its measures",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "choice-native-smart-geometry": {
+      "owner": "smart.checkbox",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "native and Smart checkbox/radio geometry (ui-source#49, #50) differ",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "code-input-smart": {
+      "owner": "smart.input-code",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "sf-input-code checks fail",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "component-first-pass": {
+      "owner": "smart.breadcrumbs",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "components the first docs pass found broken (breadcrumbs, segmented, slider) still fail a check",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "composition-content-types": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "structured-content types on the built bytes (composition)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "composition-parity": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the block editor parity pass (composition) off its measures",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "count-on-request": {
+      "owner": "smart.pagination",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "what the view shows when the host does not count: a number is drawn where nothing should be",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "documentation-trial": {
+      "owner": "smart.list-item",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the five defects of the documentation trial (list item, dropdown, tag) still fail a check",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "dropping-panel-sizes": {
+      "owner": "smart.menu-context",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "dropping panel sizes (sf-menu-context rows) off the two sizes",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "field-decimal": {
+      "owner": "module.smart-field-renderers",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "decimal fields in the field renderers",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "field-names-and-panels": {
+      "owner": "smart.switch",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "field names, descriptions and panels (switch, textarea, quantity)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "field-password": {
+      "owner": "module.smart-field-renderers",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the password variant of a string",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "field-renderers-edit": {
+      "owner": "module.smart-field-renderers",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the edit template: one of the two choices is not chosen after the press",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "field-renderers-file": {
+      "owner": "module.smart-field-renderers",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the file edit control: the two items the host recorded are not shown",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "field-renderers-view": {
+      "owner": "module.smart-field-renderers",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the view template",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "filter-window-one-step": {
+      "owner": "module.smart-field-renderers",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the filter window (sf-filter-window, field-renderers/filter-window.js) one-step checks",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "focus-ring-contrast": {
+      "owner": "core.styles",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "a keyboard ring under 3:1 against its surface",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "icons-warm-first-frame": {
+      "owner": "smart.button-icon",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "icon buttons on a warm origin do not draw their glyphs from the first frame",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "inherited-description": {
+      "owner": "smart.input",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the inherited sentence in the accessibility tree (input family)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "inherited-value": {
+      "owner": "smart.input",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the inherited-value state of the input family (ui-source#28)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "inline-code": {
+      "owner": "component.doc",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "code in running text: geometry and copy (C10)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "instance-scope": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "gate 36, instance scope",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "manifest-defaults": {
+      "owner": "smart.*",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "a manifest default differs from what a Smart component does when the attribute is absent",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "notice-action-icons": {
+      "owner": "component.alerts",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "a notice action icon button warns in the console (sf-icon-button link)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "overlay-selection": {
+      "owner": "smart.editor-overlay",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "selecting, moving and adding a block (2026-10-31 behaviour)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "popup-containing-block": {
+      "owner": "smart.dropdown",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "anchored popups open off their anchor inside a containing block (DP-01)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "popup-head-parts": {
+      "owner": "smart.settings",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the heads of the popups",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "popup-head-round2": {
+      "owner": "smart.dropdown",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "popup heads, DEV round 2",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "public-api-axes": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "an old name of a renamed axis does not work on the built bytes",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "public-js-api": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "public-js-api.json against the runtime",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "public-js-api-components": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the component layer of public-js-api.json against the runtime",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "public-variable-defaults": {
+      "owner": "core.runtime",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "a public variable default (public-variables.v1.json) is not what the component draws (toast, icon, spinner)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "rich-text-link-sheet": {
+      "owner": "smart.input-rich",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "sf-input-rich link editor sheet",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "svg-utilities": {
+      "owner": "utility.svg-size",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "utilities on inline SVG",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "theme-button-glyph": {
+      "owner": "component.theme",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "the theme toggle glyph on a light page",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    },
+    "touch-field-text": {
+      "owner": "smart.input",
+      "red_since": "ui-b4f79e1c58b7",
+      "why": "a field text below 16 px on a touch phone (ui-source#25)",
+      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
+    }
+  }
+}

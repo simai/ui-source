@@ -73,6 +73,19 @@ const cliFiles = everything.filter((name) => name.endsWith('.cli.js'));
 const unaccounted = everything.filter((name) => !name.endsWith('.browser.mjs') && !name.endsWith('.cli.js'));
 const results = {passed: [], failed: [], skipped: [], unknown: []};
 
+// The known reds (tests/fixtures/browser-probes/known-reds.json): probes red on the
+// released pair as on the candidate, each with its owner. A failure named there is
+// marked known and counted apart, so a new red stands out; a named probe that passes
+// again is listed to be taken out. The known flakes (known-flakes.json) are printed
+// beside the run with their load conditions. Neither makes a red green: the run
+// still exits 1 while any probe fails.
+const readList = (file, key) => {
+  const path = join(root, 'tests', 'fixtures', 'browser-probes', file);
+  return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8'))[key] ?? {} : {};
+};
+const knownReds = readList('known-reds.json', 'known');
+const knownFlakes = readList('known-flakes.json', 'flakes');
+
 // `--only a,b`: the probes the dependency graph's impact list names for the units
 // a pair changed (scripts/dependency-graph.mjs impact, C250). A name the
 // directory does not hold is an error, not a quiet skip.
@@ -120,7 +133,8 @@ for (const file of files) {
     // «failures», 2026-10-31).
     const whole = `${String(error.stdout ?? '').trim()}\n${String(error.stderr ?? '').trim()}`.trim();
     const detail = whole.length > 6000 ? `…cut ${whole.length - 6000} characters…\n${whole.slice(-6000)}` : whole;
-    results.failed.push({name, args: args.map((value) => value.replace(out, '<out>')), ...(killed ? {killed: true} : {}), said: said.slice(0, 300), detail});
+    const known = knownReds[name] ? {known: true, owner: knownReds[name].owner, red_since: knownReds[name].red_since} : {};
+    results.failed.push({name, ...known, args: args.map((value) => value.replace(out, '<out>')), ...(killed ? {killed: true} : {}), said: said.slice(0, 300), detail});
   }
 }
 
@@ -214,6 +228,10 @@ console.log(JSON.stringify({
   playwright: {version: playwright.version, path: playwright.path},
   passed: results.passed.length,
   failed: results.failed,
+  newRed: {count: results.failed.filter((one) => !one.known).length, names: results.failed.filter((one) => !one.known).map((one) => one.name)},
+  knownRed: {count: results.failed.filter((one) => one.known).length, why: 'red on the released pair too (tests/fixtures/browser-probes/known-reds.json)', names: results.failed.filter((one) => one.known).map((one) => one.name)},
+  knownNowPassing: results.passed.filter((name) => knownReds[name]),
+  knownFlakes: Object.entries(knownFlakes).map(([id, flake]) => ({id, gate: flake.gate, condition: flake.condition})),
   skipped: {count: results.skipped.length, why: 'these drive a served lab and take URLs', names: results.skipped},
   unknown: {count: results.unknown.length, why: 'this runner could not establish what roots they want', names: results.unknown},
   cli: {

@@ -1,0 +1,37 @@
+{
+  "$comment": "Known flakes: checks that fail now and then on the released pair as on a candidate, each with the condition it shows under (load average, CPU throttle, concurrency) and how often. A flake seen outside its condition, or more often than recorded, is a red. Read by scripts/run-browser-probes.mjs (reported beside the run); the gates named here (first-paint gate 24, FS-10 runs, the owner remarks register) are run by hand and read this list in their evidence. Taken by the group build 18 pre-cut (DEV msg-5ee6d5bacd684276a776, answer 9).",
+  "flakes": {
+    "first-paint-gate drawer bare tag": {
+      "gate": "tests/browser/first-paint-gate.browser.mjs",
+      "owner": "smart.drawer",
+      "says": "drawer «bare tag: no frame before the code», a different example each run, mostly @390",
+      "condition": "load average above about 11 (seen at 11-72) with FIRST_PAINT_CONCURRENCY=1; not seen at load 13-16 on the pair or below 12",
+      "rate": "drawer alone, pair and candidate alternating at load 11-27: pair 1 of 216, candidate 2 of 216; full gate b1 at load 15-27: 3 of 3920; b2 and b6 at load 41-58: 0 of 3920",
+      "evidence": "ui-control control/evidence/2026-11-23-gb18-contracts (tools/fp-drawer-ab2.sh), 2026-11-23-group-build-18"
+    },
+    "icon subset font fallback": {
+      "gate": "any page under timing-hostile delays (FS-10 runs: probe/fs10.mjs)",
+      "owner": "core.runtime (iconSubsetRuntime.js iconSubsetDeadlineMs 3000)",
+      "says": "console warning «icon subset font fallback applied»; the full icon font draws, no glyph is missing",
+      "condition": "CPU throttled x4 with every script and sheet delayed 0-600 ms, or a smoke run at load above about 40",
+      "rate": "1 of 240 FS-10 loads (CPU x4); once in a b1 smoke under load",
+      "evidence": "ui-control control/evidence/2026-11-23-group-build-18 (L3 icons)"
+    },
+    "preloaded but not used": {
+      "gate": "FS-10 runs (probe/fs10.mjs)",
+      "owner": "core.runtime (loader preloads, L1)",
+      "says": "Chrome «The resource ... was preloaded using link preload but not used within a few seconds»",
+      "condition": "after the load event, scripts and sheets delayed 0-600 ms (1200 ms with 6 pages at once); accepted by the dispatcher decision of group build 18",
+      "rate": "pair 26-51 warnings in 6-8 of 30 loads, candidate 0-50 in 0-8 of 30 (at or below the pair in every run)",
+      "evidence": "ui-control control/evidence/2026-11-23-group-build-18 (L1 table)"
+    },
+    "register VL-06 VL-41 filter apply": {
+      "gate": "ui-control control/tools/view-list-register/check.mjs",
+      "owner": "the register probe (DEV), not View or the Framework",
+      "says": "VL-06 / VL-41 filter apply fails: the probe presses where «Применить» stood before a scroll moved the anchored window",
+      "condition": "any load; more often under load (7 of 10) and with CPU x4 (0 of 30); the probe fix proposed to DEV gives 30/30",
+      "rate": "28 of 30 passes unloaded",
+      "evidence": "ui-control control/evidence/2026-11-23-filter-flake"
+    }
+  }
+}
