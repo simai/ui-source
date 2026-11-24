@@ -6,6 +6,21 @@
     --sf-icon-button--border-inline-start-width: 0;
   }
 
+  /* Ghost segments (--link, the former name) draw the group's perimeter in
+     --sf-outline, as ghost buttons do (VL-77, 2026-11-25): the icon one drew
+     only the white join over no fill, 1.0:1 on the light page, so an icon
+     ghost before a ghost button stood without a frame or a line. */
+  .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link)[class*="segment-"] {
+    border-color: var(--sf-outline);
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+  }
+
+  .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).segment-start {
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+
   /* Any other segment beside an outline one keeps the block edges of the
      frame, so the control stands in one height. */
   :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> :is(.sf-button--outline, .sf-icon-button--outline)[class*="segment-"])

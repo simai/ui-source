@@ -450,6 +450,22 @@
       "reason": "recorded by group build 17 (merge of feat/form-defects-fs, FS-11): the shared name tooltip also serves a control marked data-sf-name-tip (the country code button); sf-button-icon keeps its own tooltip and is unchanged",
       "decision": "FS-11, DEV msg-3f4a9bb9543f4bb9a8be",
       "date": "2026-11-22"
+    },
+    {
+      "unit": "component.buttons",
+      "version": "1.22.5",
+      "twin": "smart.button",
+      "reason": "recorded by group build 19 (VL-77): the join line of filled segments is the look's label ink at 24 and an icon ghost segment is framed; the Smart host renders the class markup with segment-* and takes it as it is",
+      "decision": "VL-77, DEV msg-78ac7465af444d738daa",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "component.icon-buttons",
+      "version": "1.20.3",
+      "twin": "smart.button-icon",
+      "reason": "recorded by group build 19 (VL-77): the join line of filled segments is the look's label ink at 24 and an icon ghost segment is framed; the Smart host renders the class markup with segment-* and takes it as it is",
+      "decision": "VL-77, DEV msg-78ac7465af444d738daa",
+      "date": "2026-11-25"
     }
   ]
 }

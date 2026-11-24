@@ -118,7 +118,9 @@ class of that name and the `--sf-radius-default` token were removed on
 2026-11-02 (journal `token-radius-default`). Joined positions
 `segment-start`, `segment-middle`, and `segment-end` belong to Button Group
 composition and use an inset keyboard focus ring. A join is one line, the end
-edge of the segment before it, as on the button.
+edge of the segment before it, as on the button: between filled segments the
+label ink of the look at 24 % (1.20.3, owner remark VL-77), and ghost segments
+draw the group's outline (`--sf-outline`) as ghost buttons do.
 
 A link drawn as an icon button, `<a class="sf-icon-button" href>` (what
 `sf-button-icon` draws for its `href`, decision C51), takes no link underline,
