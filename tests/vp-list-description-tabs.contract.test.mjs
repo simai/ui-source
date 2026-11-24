@@ -87,7 +87,7 @@ function method(source, name) {
 
 test('VP-26: a tab list alone folds by the first box around it wider than its column', () => {
   const source = read('src/smart/tabs/index.js');
-  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.5.2'); // GB16-5/6: the label beside the glyph, name tooltips; // GB16 returns: the tightest row; // group build 16: G9 fold; // group build 13: 1.4.4 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.5.4'); // GB19 D2: the slots in component.json (1.5.4 above 1.5.3 of feat/gb18-tabs); // GB16-5/6: the label beside the glyph, name tooltips; // GB16 returns: the tightest row; // group build 16: G9 fold; // group build 13: 1.4.4 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
   const contentWidth = (box) => box.width;
   const layoutWidth = (box) => box.width; // group build 14: the layout widths of fix/segmented-transform (1.4.7)
   const placeBox = new Function('contentWidth', 'layoutWidth', `return function () {${method(source, 'placeBox')}}`)(contentWidth, layoutWidth);
