@@ -279,7 +279,14 @@ the next one.
   `src/core/scss/_sf_css__placeholder.scss`); every other component's bare
   jump is reported, not failed. **24d**: a printed snapshot with the sheets
   of its `static/sheets.json` gets no other sheet from the Loader before the
-  element draws.
+  element draws, and no component or Smart sheet for a part the printed
+  markup holds (sf-form's field renderers draw sf-dropdown, sf-avatar and
+  sf-tag) after it draws, before any late data or port; a utility sheet
+  then is the Loader's idle scan and is not counted. The list follows the
+  examples, so a component whose own code draws other parts carries an
+  example with each of them (GB18 D1: sf-form record-edit, record-view).
+  The gate reads the page's native `performance`: the frozen clock's
+  replacement has no resource entries.
 
 - **A Smart element in a closed container loads when it opens** (§7.2.1,
   simai/ui-source#47). Inside `[hidden]`, `[inert]`, a closed `<details>` (past

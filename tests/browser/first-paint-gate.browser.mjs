@@ -66,6 +66,13 @@
 //        in <head> gets no other sheet from the Loader before the element has
 //        drawn: a sheet the list lacks is a sheet a host printing the list
 //        would fetch late, and the first paint would move when it lands.
+//        The elements the printed markup holds count too (GB18 D1): a
+//        component or Smart sheet fetched after the element drew and before
+//        any late data or port arrived, for a part it draws itself (sf-form's
+//        field renderers draw sf-dropdown, sf-avatar and sf-tag), is a sheet
+//        the host printing the list lacks as well. A utility sheet fetched
+//        then is the Loader's idle scan (the snapshot script's sheetDrift) and
+//        is not counted.
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
@@ -95,6 +102,10 @@ const concurrency = Number(process.env.FIRST_PAINT_CONCURRENCY || 6);
 // box and of the text below it, the layout shifts, the moment the sheets and
 // the fonts were in, and when the element was defined and drew.
 const WATCH = `(() => {
+  // The page's own performance: the frozen clock (freezeClock) puts a fake
+  // in its place whose resource list is always empty, so 24d read nothing
+  // (GB18 D1); measure() keeps the native one as window.__fpPerf.
+  const perf = window.__fpPerf || performance;
   const fp = window.__fp = {frames: [], shifts: [], sheetsAt: null, definedAt: null, drawnAt: null, dataAt: null};
   try {
     new PerformanceObserver((list) => {
@@ -232,15 +243,15 @@ const WATCH = `(() => {
         // document.fonts.load(font, text) loads only the faces whose ranges
         // the text has.
         Promise.allSettled([...faces, ...[...fonts].map((font) => document.fonts.load(font, text))])
-          .then(() => requestAnimationFrame(() => { fp.sheetsAt = performance.now(); }));
+          .then(() => requestAnimationFrame(() => { fp.sheetsAt = perf.now(); }));
       }
-      if (fp.definedAt === null && host.matches(':defined')) fp.definedAt = performance.now();
+      if (fp.definedAt === null && host.matches(':defined')) fp.definedAt = perf.now();
       // Drawn: defined and drawn, or keeping its printed skeleton for its data;
       // an assembly when every part is.
       // A closed overlay draws nothing until it opens: started is drawn.
       const drawn = (el) => el.matches(':defined') && ((window.__fpOverlay && el.hasAttribute('data-sf-started')) || !('isRendered' in el) || el.isRendered || el.sfAwaitingData?.() === true);
       const parts = window.__fpRoles ? [...host.querySelectorAll('[data-sf-role]')] : [];
-      if (fp.drawnAt === null && drawn(host) && parts.every(drawn) && (!window.__fpRoles || parts.length)) fp.drawnAt = performance.now();
+      if (fp.drawnAt === null && drawn(host) && parts.every(drawn) && (!window.__fpRoles || parts.length)) fp.drawnAt = perf.now();
       // 24c: the text bars as the first paint shows them (the last frame
       // before the code) and as the drawn element shows them before its data.
       if (fp.sheetsAt !== null && !host.matches(':defined')) fp.barsBefore = window.__fpBars();
@@ -248,7 +259,7 @@ const WATCH = `(() => {
       if (fp.sheetsAt !== null) {
         const box = window.__fpBox();
         const after = document.getElementById('after');
-        fp.frames.push({t: Math.round(performance.now()), defined: host.matches(':defined'),
+        fp.frames.push({t: Math.round(perf.now()), defined: host.matches(':defined'),
           box: box && [box.left, box.top, box.width, box.height].map(round),
           after: after ? round(after.getBoundingClientRect().top) : null,
           statics: host.querySelectorAll(':scope > [data-sf-static]').length,
@@ -256,7 +267,7 @@ const WATCH = `(() => {
           drawn: fp.drawnAt !== null});
       }
     }
-    if (performance.now() < 15000) requestAnimationFrame(tick);
+    if (perf.now() < 15000) requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
 })();`;
@@ -316,6 +327,9 @@ ${assembly ? assemblyModule(component) : ''}
 </body></html>`);
   const context = await browser.newContext({viewport: {width, height: 900}, reducedMotion: 'reduce'});
   const page = await context.newPage();
+  // The native performance, kept before the frozen clock replaces it (its
+  // fake has no resource entries): 24d and the frame times read this one.
+  await page.addInitScript(() => { window.__fpPerf = window.performance; window.performance.setResourceTimingBufferSize(2000); });
   // The instant the snapshot was printed at (first-paint-lib.mjs clockOf).
   await freezeClock(page, example);
   const errors = [];
@@ -326,6 +340,16 @@ ${assembly ? assemblyModule(component) : ''}
     await page.waitForFunction(() => window.__fp?.drawnAt !== null, null, {timeout: 20000}).catch(() => problems.push('the element never drew'));
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(400);
+    // 24d, the printed parts: taken before phase 3, so a sheet the late data
+    // or the port asks for is not counted.
+    const unlistedParts = bare ? [] : await page.evaluate(({linked}) => {
+      const drawnAt = window.__fp?.drawnAt ?? null;
+      return [...new Set((window.__fpPerf || performance).getEntriesByType('resource')
+        .filter((entry) => /\.css(\?|$)/u.test(entry.name) && drawnAt !== null && entry.startTime >= drawnAt)
+        .map((entry) => new URL(entry.name).pathname)
+        .filter((path) => !linked.includes(path) && !path.startsWith('/distr/utility/')))];
+    }, {linked: headSheets});
+    if (unlistedParts.length) problems.push(`sheet(s) fetched by the Loader for the printed parts after the element drew, not in sheets.json: ${unlistedParts.map((one) => one.replace(/^\/distr\//u, '')).join(', ')}`);
     const port = assembly ? null : portOf(component, example);
     if (kind === 'skeleton' || (assembly && example.late) || port) {
       // Phase 3: the data arrives -- the late settings, as the host sets them,
@@ -334,7 +358,7 @@ ${assembly ? assemblyModule(component) : ''}
         ? Object.fromEntries(component.late.filter((name) => name in (example.settings ?? {})).map((name) => [name, example.settings[name]])) : {};
       const outcome = await page.evaluate(({tag, late, port, fake}) => {
         const host = document.querySelector(`#stage ${tag}`);
-        window.__fp.dataAt = performance.now();
+        window.__fp.dataAt = (window.__fpPerf || performance).now();
         const camel = (name) => name.replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase());
         for (const [name, value] of Object.entries(late)) host[camel(name)] = value;
         if (!port) return null;
@@ -351,7 +375,7 @@ ${assembly ? assemblyModule(component) : ''}
     // 24d: the sheets the Loader fetched before the element drew that the
     // page did not link (a printed snapshot only; the bare kind links core.css
     // alone on purpose).
-    const unlisted = bare ? [] : await page.evaluate(({linked, drawnAt}) => [...new Set(performance.getEntriesByType('resource')
+    const unlisted = bare ? [] : await page.evaluate(({linked, drawnAt}) => [...new Set((window.__fpPerf || performance).getEntriesByType('resource')
       .filter((entry) => /\.css(\?|$)/u.test(entry.name) && (drawnAt === null || entry.startTime < drawnAt))
       .map((entry) => new URL(entry.name).pathname)
       .filter((path) => !linked.includes(path)))], {linked: headSheets, drawnAt: fp.drawnAt});
