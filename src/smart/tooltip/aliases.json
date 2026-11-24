@@ -12,6 +12,17 @@
       "since": "2026-10-27",
       "remove_after": "2026-12-01",
       "section": "the axis's old name (contracts/public-api-axes.json)"
+    },
+    {
+      "from": "size",
+      "to": null,
+      "kind": "setting",
+      "component": "sf-tooltip",
+      "since": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "mode": "retired",
+      "section": "owner decision C160 (3)",
+      "note": "every tooltip is one size; read and noted in SF.deprecations when it is not 1/3, it draws nothing: the root keeps the class sf-tooltip--size-<value> in the static markup and in the drawing alike, and no sheet reads it"
     }
   ]
 }

@@ -15,7 +15,6 @@
           "text": "Полезная подсказка",
           "supporting-text": "Дополнительная информация",
           "type": "dark",
-          "size": "1",
           "arrow": "none"
         },
         "scenario": {}
@@ -49,8 +48,7 @@
       "title": "С пояснением",
       "settings": {
         "text": "Доступ",
-        "supporting-text": "Только чтение",
-        "size": "2"
+        "supporting-text": "Только чтение"
       },
       "expect": {
         "name": "Доступ"
