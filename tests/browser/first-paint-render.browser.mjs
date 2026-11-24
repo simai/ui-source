@@ -124,12 +124,18 @@ await check(`1. server == runtime: ${exampleRequests.length} examples of ${compo
     row.exact = answer.html === body;
     row.same = sameSnapshot(answer.html, body);
     row.snapshot = answer.snapshot;
-    const listed = JSON.parse(readFileSync(join(smartSource, component.folder, 'static', 'sheets.json'), 'utf8')).examples[example.name] ?? [];
-    const fixed = (list) => list.filter((sheet) => !sheet.startsWith('utility/'));
-    row.sheets = JSON.stringify(fixed(answer.sheets)) === JSON.stringify(fixed(listed));
+    // The answer names every sheet the committed snapshot of this example
+    // needs, and none the component's committed first paint does not name
+    // (the answer adds the component-wide list: never too few).
+    const kept = JSON.parse(readFileSync(join(smartSource, component.folder, 'static', 'sheets.json'), 'utf8'));
+    const listed = kept.examples[example.name] ?? [];
+    const allowed = new Set([...(kept.sheets ?? []), ...listed]);
+    const missing = listed.filter((sheet) => !answer.sheets.includes(sheet));
+    const extra = answer.sheets.filter((sheet) => !allowed.has(sheet));
+    row.sheets = !missing.length && !extra.length;
     if (!row.exact) bad.push(`${id}: not byte for byte the snapshot${row.same ? ' (the same with attributes in name order)' : ''}`);
     if (row.snapshot !== `smart/${component.folder}/static/default/${example.name}.html`) bad.push(`${id}: names ${row.snapshot}`);
-    if (!row.sheets) bad.push(`${id}: sheets ${fixed(answer.sheets).join(', ')} != ${fixed(listed).join(', ')}`);
+    if (!row.sheets) bad.push(`${id}: sheets missing ${missing.join(', ') || 'none'}, not in the committed list ${extra.join(', ') || 'none'}`);
     report.examples[id] = row;
   });
   assert.deepEqual(bad, []);
