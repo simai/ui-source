@@ -32,7 +32,8 @@ const modules = [
   'smart/smart/field-renderers/js/field-renderers.js',
 ].map((p) => join(out, p));
 
-const absent = [...styles, ...modules].filter((path) => !existsSync(path));
+const ruLang = join(out, 'core/core/lang/ru.js');
+const absent = [...styles, ruLang, ...modules].filter((path) => !existsSync(path));
 if (absent.length) {
   console.error(JSON.stringify({missingAssets: absent, root: out}, null, 2));
   throw new Error(`${absent.length} build asset(s) not found under ${out}`);
@@ -42,11 +43,19 @@ const failures = [];
 const note = (detail) => failures.push(detail);
 const browser = await chromium.launch();
 
+// L6 (owner remark 13, View list register VL-73; field renderers 1.30.1): a
+// viewed value's tag or badge is the value's own text size -- the tag inline
+// on the field's size, the badge on the text beside it (line="text") -- 16/24
+// at 1440 and 14/20 at 390, so the whole check runs at both widths.
+const WIDTHS = [1440, 390];
+const VALUE_TEXT = {1440: [16, 24], 390: [14, 20]};
+for (const width of WIDTHS) {
+const fail = (detail) => note({width, ...detail});
 try {
-  const page = await browser.newPage({viewport: {width: 1000, height: 1000}});
+  const page = await browser.newPage({viewport: {width, height: 1000}});
   await page.setContent(
     '<!doctype html><html class="theme-light" lang="ru"><body style="margin:0">'
-    + '<div id="host" style="width:700px"></div>'
+    + '<div id="host" style="width:min(700px, 100%)"></div>'
     // A size-1 control and a bare line of text, to measure the two heights the
     // view template sits between.
     + '<div id="ruler" style="width:300px"><sf-input size="1" value="x"></sf-input>'
@@ -54,6 +63,10 @@ try {
     + '</body></html>',
   );
   for (const path of styles) await page.addStyleTag({path}).catch(() => {});
+  // Russian is a language file (owner decision C282): the bundles carry the
+  // English words only, so the page includes core/lang/ru.js before core, as
+  // a Russian page does; without it a boolean read «Yes» for «Да».
+  await page.addScriptTag({path: ruLang});
   for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
   await page.waitForTimeout(1400);
 
@@ -180,10 +193,27 @@ try {
       text: Object.fromEntries(fields.map((field) => [field.key,
         document.querySelector(`[data-field="${field.key}"]`)?.textContent.replace(/\s+/gu, ' ').trim() ?? '']),
       ),
+      // The font of the element that holds a value's words: the value text of
+      // a plain field, a tag's, the badge's.
+      typo: (() => {
+        const fontOf = (root) => {
+          if (!root) return null;
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode: (node) => (node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP)});
+          const text = walker.nextNode();
+          const style = text ? getComputedStyle(text.parentElement) : null;
+          return style ? [Math.round(parseFloat(style.fontSize)), Math.round(parseFloat(style.lineHeight))] : null;
+        };
+        return {
+          value: fontOf(document.querySelector('[data-field="title"]')),
+          tags: [...document.querySelectorAll('[data-field="modules"] sf-tag .sf-tag')].map(fontOf),
+          badge: fontOf(document.querySelector('[data-field="status"] sf-badge .sf-badge')),
+        };
+      })(),
       badge: inline('status', 'sf-badge', '.sf-badge'),
       tags: [...document.querySelectorAll('[data-field="modules"] sf-tag')].map((node) => ({
         height: Math.round(node.querySelector('.sf-tag')?.getBoundingClientRect().height ?? 0),
-        line: node.getAttribute('line'), kind: node.getAttribute('kind'),
+        line: node.getAttribute('line'), size: node.getAttribute('size'), inline: node.hasAttribute('inline'),
+        kind: node.getAttribute('kind'),
       })),
       avatar: inline('author', 'sf-avatar', '.sf-avatar'),
       reference: inline('section', 'sf-reference-link', '.sf-reference-link'),
@@ -198,18 +228,18 @@ try {
   });
 
   if (measured.missing) {
-    note({case: 'the view template is reachable from the page', got: measured,
+    fail({case: 'the view template is reachable from the page', got: measured,
       expected: 'renderViewField on window.SF.fieldRenderers'});
   } else {
     // Every type in the consumer's request has a view, and a type the set does
     // not carry returns null rather than an empty box.
     if (measured.rendered?.unknown !== 'null') {
-      note({case: 'a type the set has no view for returns null', got: measured.rendered?.unknown,
+      fail({case: 'a type the set has no view for returns null', got: measured.rendered?.unknown,
         expected: 'null'});
     }
     for (const key of ['title', 'count', 'when', 'live', 'status', 'modules', 'author', 'section', 'docs']) {
       if (measured.rendered?.[key] === 'null') {
-        note({case: `the view template renders ${key}`, got: 'null', expected: 'a template'});
+        fail({case: `the view template renders ${key}`, got: 'null', expected: 'a template'});
       }
     }
     // Formatted text: the subset is drawn, nothing outside it is, and nothing ran.
@@ -218,87 +248,99 @@ try {
     if (measured.rendered?.body === 'null' || htmlView.strong !== 'важный'
       || htmlView.tags?.some((tag) => !allowed.has(tag)) || htmlView.onAttributes?.length
       || JSON.stringify(htmlView.hrefs) !== JSON.stringify(['https://simai.io/']) || htmlView.pwned !== null) {
-      note({case: 'an html value is drawn cleaned: no script, style, image, on* attribute or javascript: link', got: htmlView,
+      fail({case: 'an html value is drawn cleaned: no script, style, image, on* attribute or javascript: link', got: htmlView,
         expected: {tags: [...allowed], onAttributes: [], hrefs: ['https://simai.io/'], strong: 'важный', pwned: null}});
     }
     if (htmlView.cell !== 'Текст важный плохая хорошая пункт') {
-      note({case: 'an html cell is its text on one line', got: htmlView.cell, expected: 'Текст важный плохая хорошая пункт'});
+      fail({case: 'an html cell is its text on one line', got: htmlView.cell, expected: 'Текст важный плохая хорошая пункт'});
     }
     // The unit is the field's, and a field without one gets no invented unit.
     if (measured.text?.count !== '42 шт' || measured.text?.bare !== '7') {
-      note({case: 'a number carries the field unit and no other',
+      fail({case: 'a number carries the field unit and no other',
         got: {withUnit: measured.text?.count, without: measured.text?.bare},
         expected: {withUnit: '42 шт', without: '7'}});
     }
     // The date is the host's formatting, not the stored string.
     if (measured.text?.when !== '6 октября 2026') {
-      note({case: 'a date is formatted by the host', got: measured.text?.when,
+      fail({case: 'a date is formatted by the host', got: measured.text?.when,
         expected: '6 октября 2026'});
     }
     // The boolean's words, here as in the other two templates.
     if (measured.text?.live !== 'Да' || measured.text?.english !== 'No') {
-      note({case: "a boolean shows the field's words", got: {fallback: measured.text?.live,
+      fail({case: "a boolean shows the field's words", got: {fallback: measured.text?.live,
         asked: measured.text?.english}, expected: {fallback: 'Да', asked: 'No'}});
     }
     // The claim this template is built on, measured: the inline elements stand
     // on the text line and not on the control height.
     const {control, textLine} = measured;
     if (!control || !textLine || control <= textLine) {
-      note({case: 'the two rulers differ', got: {control, textLine},
+      fail({case: 'the two rulers differ', got: {control, textLine},
         expected: 'a size-1 control taller than a bare text line'});
     }
-    for (const [name, element] of [['badge', measured.badge], ['avatar', measured.avatar],
-      ['reference link', measured.reference]]) {
+    for (const [name, element, line] of [['badge', measured.badge, 'text'], ['avatar', measured.avatar, '1'],
+      ['reference link', measured.reference, '1']]) {
       if (!element) {
-        note({case: `the ${name} is present`, got: null, expected: 'an element to measure'});
+        fail({case: `the ${name} is present`, got: null, expected: 'an element to measure'});
         continue;
       }
       if (!element.height || element.innerDisplay === 'contents') {
-        note({case: `the ${name} has a painted box to measure`,
+        fail({case: `the ${name} has a painted box to measure`,
           got: {host: element.hostDisplay, inner: element.innerDisplay, height: element.height},
           expected: 'an inner element with a box -- the host itself has none'});
         continue;
       }
-      if (element.line !== '1') {
-        note({case: `the ${name} takes the row's text line`, got: element,
-          expected: 'line="1"'});
+      // The badge stands on the text beside it (L6, line="text"); the avatar
+      // and the reference link keep the row's line.
+      if (element.line !== line) {
+        fail({case: `the ${name} takes the row's text line`, got: element,
+          expected: `line="${line}"`});
       }
       if (element.height >= control) {
-        note({case: `the ${name} is not as tall as a control`, got: element.height,
+        fail({case: `the ${name} is not as tall as a control`, got: element.height,
           expected: `below the size-1 control height of ${control}`});
       }
     }
     if (measured.wrap?.count !== 140 || measured.wrap.rows < 10 || measured.wrap.squeezed || measured.wrap.overflow > 0) {
-      note({case: 'many values wrap and no tag shrinks below its text', got: measured.wrap});
+      fail({case: 'many values wrap and no tag shrinks below its text', got: measured.wrap});
     }
-    if (measured.tags?.length !== 2 || measured.tags.some((tag) => tag.line !== '1' || tag.kind !== 'default')) {
-      note({case: 'several values render as default tags on the line', got: measured.tags,
-        expected: 'two tags, line 1, kind default'});
+    if (measured.tags?.length !== 2 || measured.tags.some((tag) => tag.line !== null || tag.size !== '1' || !tag.inline || tag.kind !== 'default')) {
+      fail({case: 'several values render as default tags inline on the field\'s size', got: measured.tags,
+        expected: 'two tags, inline, size 1, no line, kind default'});
+    }
+    // L6, measured: the tags' and the badge's words are the value's text size.
+    const [fontSize, lineHeight] = VALUE_TEXT[width];
+    const typo = measured.typo || {};
+    const atText = (font) => Array.isArray(font) && font[0] === fontSize && font[1] === lineHeight;
+    if (!atText(typo.value) || typo.tags?.length !== 2 || !typo.tags.every(atText) || !atText(typo.badge)) {
+      fail({case: 'a viewed value\'s tags and badge are the value\'s text size (L6)', got: typo,
+        expected: {value: [fontSize, lineHeight], tags: [[fontSize, lineHeight], [fontSize, lineHeight]], badge: [fontSize, lineHeight]}});
     }
     // And the two that are not inline keep their own scale rather than a line.
     if (measured.scale?.size !== '1' || measured.scale?.line) {
-      note({case: 'a scale is a control and keeps its size', got: measured.scale,
+      fail({case: 'a scale is a control and keeps its size', got: measured.scale,
         expected: 'size 1 and no line'});
     }
     // file-preview has no visual size: its `size` is the file's size as text,
     // so the view passes file-size and never size.
     if (measured.preview?.size !== null || measured.preview?.fileSize !== '240 KB'
       || measured.preview?.icon !== 'picture_as_pdf') {
-      note({case: 'a file is previewed with its size as text and no visual size',
+      fail({case: 'a file is previewed with its size as text and no visual size',
         got: measured.preview, expected: {size: null, fileSize: '240 KB', icon: 'picture_as_pdf'}});
     }
     // A view offers the download and not the remove, which is the edit's.
     if (measured.preview?.remove !== 'false' || measured.preview?.download !== 'true') {
-      note({case: 'a viewed file can be downloaded and not removed', got: measured.preview,
+      fail({case: 'a viewed file can be downloaded and not removed', got: measured.preview,
         expected: {remove: 'false', download: 'true'}});
     }
   }
 
-  console.error(JSON.stringify(measured, null, 1));
+  console.error(JSON.stringify({width, measured}, null, 1));
   await page.close();
-} finally {
-  await browser.close();
+} catch (error) {
+  note({width, case: 'the page ran', got: String(error?.message ?? error)});
 }
+}
+await browser.close();
 
 if (failures.length) {
   console.error(JSON.stringify(failures, null, 2));

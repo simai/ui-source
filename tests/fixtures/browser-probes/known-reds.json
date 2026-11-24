@@ -122,12 +122,6 @@
       "why": "the file edit control: the two items the host recorded are not shown",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
     },
-    "field-renderers-view": {
-      "owner": "module.smart-field-renderers",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "the view template",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)"
-    },
     "filter-window-one-step": {
       "owner": "module.smart-field-renderers",
       "red_since": "ui-b4f79e1c58b7",
