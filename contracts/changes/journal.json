@@ -20844,6 +20844,31 @@
       "manual": "Nothing to rewrite. A page that moved the nav with --sf-site-header-gap and wants the other groups kept sets --sf-site-header-brand-gap instead.",
       "owner": "ui-source",
       "source": "src/smart/header-site/scss/_smart__site_header.scss; src/core/contracts/public-variables.v1.json"
+    },
+    {
+      "recorded_on": "2026-11-24",
+      "stage": "compat",
+      "deprecated_on": "2026-11-24",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A consumer that compares two inventories of SIMAI Framework runs scripts/linkage.mjs compare (or passports --check --previous) from a ui-source clone that holds both source revisions; a clone without the older revision compares the recorded hashes and says so on stderr. Usage records made against ui-b4f79e1c58b7 or earlier see a Smart component's hash move once, at the next pair, because its manifest's bytes did change (094f3d549aa7 to the marker).",
+      "owner": "ui-source",
+      "id": "format-linkage-hash-release-pair-marker",
+      "kind": "format",
+      "summary": "simai.linkage 1.1.0 (group build 18 pre-cut, DEV msg-5ee6d5bacd684276a776 answer 1): the content hash reads a Smart manifest's compatibility.runtime_pair as forty zeros, the release pair marker (format-manifest-release-pair-marker), and a previous inventory is read under today's hash rule, its hashes taken anew from its source revision. Against ui-b4f79e1c58b7 the compare went from 79 hash-moved-without-version and 28 one-sided twin changes to core.runtime and core.styles (their numbers move at the pair cut) and five Smart-only changes marked in contracts/graph/twin-intent.json. Every hash of a tree that holds the marker is unchanged.",
+      "items": [
+        {
+          "component": "scripts/linkage.mjs contentHash",
+          "from": "every byte of a Smart manifest, compatibility.runtime_pair included",
+          "to": "compatibility.runtime_pair read as forty zeros"
+        },
+        {
+          "component": "scripts/linkage.mjs rehashInventory",
+          "from": "a previous inventory's recorded hashes",
+          "to": "hashes taken anew from its source revision under today's rule"
+        }
+      ],
+      "source": "scripts/linkage.mjs"
     }
   ]
 }

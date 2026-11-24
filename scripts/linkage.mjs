@@ -126,11 +126,31 @@ export function readWorkingTree(root = repositoryRoot) {
 
 const byBytes = (a, b) => Buffer.compare(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8'));
 
+// The release pair marker (smart manifest schema 2.6.0, group build 18): a
+// Smart manifest's compatibility.runtime_pair names the release that carries
+// it, so its value is not the component's content. Until 2.6.0 the generator
+// carried a pair revision there (094f3d549aa7 in every manifest since
+// 2026-10-11); since 2.6.0 it writes forty zeros in both fields. The hash reads
+// both fields as forty zeros, so the marker moves no unit's hash: a manifest
+// that already holds the marker hashes to its own bytes, and an older one
+// hashes as if it held it.
+const SMART_MANIFEST = /^src\/smart\/[^/]+\/smart\.manifest\.json$/u;
+const RUNTIME_PAIR = /("runtime_pair"\s*:\s*\{\s*"ui_revision"\s*:\s*")[0-9a-f]{40}("\s*,\s*"ui_smart_revision"\s*:\s*")[0-9a-f]{40}(")/u;
+export const RELEASE_PAIR_MARKER = '0'.repeat(40);
+
+export function hashedBytes(file, bytes) {
+  if (!SMART_MANIFEST.test(file)) return bytes;
+  const text = bytes.toString('utf8');
+  const normal = text.replace(RUNTIME_PAIR, `$1${RELEASE_PAIR_MARKER}$2${RELEASE_PAIR_MARKER}$3`);
+  return normal === text ? bytes : Buffer.from(normal, 'utf8');
+}
+
 export function contentHash(files, tree) {
   const hash = createHash('sha256');
   for (const file of [...files].sort(byBytes)) {
-    const bytes = tree.get(file);
-    if (!bytes) throw new Error(`linkage: ${file} is not in the tree`);
+    const raw = tree.get(file);
+    if (!raw) throw new Error(`linkage: ${file} is not in the tree`);
+    const bytes = hashedBytes(file, raw);
     hash.update(Buffer.from(file, 'utf8'));
     hash.update(Buffer.from([0]));
     hash.update(Buffer.from(String(bytes.length), 'ascii'));
@@ -594,6 +614,44 @@ export function inventoryOf(collected, {revision, release = null, files = false}
   };
 }
 
+// An inventory written before the hash read the release pair marker as zeros
+// (every released inventory up to ui-b4f79e1c58b7) holds hashes of the bytes
+// as they were. Compared with today's hashes, every Smart manifest would show
+// a move its files did not make. So a previous inventory is read under
+// today's hash rule: when its source revision is in this repository, every
+// unit's hash is taken anew from that revision's committed tree (the same
+// files, read the way today's units are read); versions and dependencies stay
+// as the inventory recorded them. A revision this clone does not hold leaves
+// the recorded hashes and says so. Nothing is allowed through: a unit whose
+// files changed still moves its hash.
+const REHASHED = Symbol('linkage.rehashed');
+
+export function rehashInventory(inventory, root = repositoryRoot) {
+  if (!inventory || inventory[REHASHED]) return inventory;
+  let tree;
+  try {
+    ({tree} = readCommittedTree(root, inventory.revision));
+  } catch {
+    console.error(`linkage: ${inventory.release ?? inventory.revision}: its source revision ${String(inventory.revision).slice(0, 12)} is not in this clone; its recorded hashes are compared as they are`);
+    return inventory;
+  }
+  const {units} = collectUnits(tree);
+  const hashes = new Map(units.map((unit) => [unit.id, unit.content_sha256]));
+  let moved = 0;
+  const rehashed = {
+    ...inventory,
+    units: inventory.units.map((unit) => {
+      const hash = hashes.get(unit.id);
+      if (!hash || hash === unit.content_sha256) return unit;
+      moved += 1;
+      return {...unit, content_sha256: hash};
+    }),
+  };
+  Object.defineProperty(rehashed, REHASHED, {value: {moved}});
+  if (moved) console.error(`linkage: ${inventory.release ?? inventory.revision.slice(0, 12)}: ${moved} recorded hash(es) taken anew from ${inventory.revision.slice(0, 12)} under today's hash rule (the release pair marker reads as zeros)`);
+  return rehashed;
+}
+
 /** The change report between two inventories of one source. */
 export function compareInventories(from, to) {
   const before = new Map(from.units.map((unit) => [unit.id, unit]));
@@ -660,7 +718,7 @@ async function main(argv) {
     let report = null;
     let previous = null;
     if (option('--previous')) {
-      previous = JSON.parse(readFileSync(option('--previous'), 'utf8'));
+      previous = rehashInventory(JSON.parse(readFileSync(option('--previous'), 'utf8')));
       report = compareInventories(previous, inventoryOf(collected, {revision}));
       for (const violation of report.violations) problems.push(violation);
     }
@@ -713,7 +771,7 @@ async function main(argv) {
   }
   if (command === 'compare' && rest.filter((arg) => !arg.startsWith('--')).length >= 2) {
     const [from, to] = rest.filter((arg, index) => !arg.startsWith('--') && rest[index - 1] !== '--out');
-    const report = compareInventories(JSON.parse(readFileSync(from, 'utf8')), JSON.parse(readFileSync(to, 'utf8')));
+    const report = compareInventories(rehashInventory(JSON.parse(readFileSync(from, 'utf8'))), rehashInventory(JSON.parse(readFileSync(to, 'utf8'))));
     const text = `${JSON.stringify(report, null, 2)}\n`;
     if (option('--out')) writeFileSync(option('--out'), text); else process.stdout.write(text);
     if (report.violations.length) {

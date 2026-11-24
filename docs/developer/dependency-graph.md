@@ -146,6 +146,18 @@ A mark covers that unit's version alone, so the next change asks again. Any
 file change counts as a change: the unit hash covers look and behaviour alike,
 and a change that is neither is marked like any other.
 
+**The previous inventory under today's hash rule** (`simai.linkage` 1.1.0,
+2026-11-24). A Smart manifest's `compatibility.runtime_pair` is the release
+pair marker (forty zeros, manifest schema 2.6.0) and the content hash reads it
+as zeros, so the marker moves no unit. An inventory written before that rule
+(every released pair up to ui-b4f79e1c58b7) recorded hashes of manifests that
+still named 094f3d549aa7. `passports --check --previous`, `compare` and the
+graph gate therefore take the previous inventory's hashes anew from its own
+source revision (`revision`) under today's rule and read only its versions and
+dependencies as recorded; stderr says how many hashes were taken anew. A clone
+without that revision compares the recorded hashes and says so. Nothing is
+let through: a unit whose files changed still moves its hash.
+
 ## The impact list
 
 For every unit changed since the previous pair (or the ids given to `impact`):

@@ -466,6 +466,46 @@
       "reason": "recorded by feat/gb18-layout (Docara Markdown admission 750b7247): the main example gets a label so its card's link has a name; the element and the class reference are unchanged",
       "decision": "GB18 layout, Docara admission 750b7247",
       "date": "2026-11-23"
+    },
+    {
+      "unit": "smart.checkbox",
+      "version": "1.6.1",
+      "twin": "component.checkbox",
+      "reason": "recorded by the group build 18 pre-cut (merge of feat/gb18-form 02371dcbd, queue msg-fc99b09e): the help mark («?», sf-help-mark, module.smart-helpers 1.21.1 CHECKABLE_HELP_SIZE) draws at the field family's step, 1/2 beside size 1; the mark is drawn by the Smart element alone, the class markup has none",
+      "decision": "GB18 form area, DEV msg-e73e6ee2",
+      "date": "2026-11-24"
+    },
+    {
+      "unit": "smart.radio",
+      "version": "1.4.5",
+      "twin": "component.radio",
+      "reason": "recorded by the group build 18 pre-cut (merge of feat/gb18-form 02371dcbd, queue msg-fc99b09e): the help mark («?», sf-help-mark, module.smart-helpers 1.21.1 CHECKABLE_HELP_SIZE) draws at the field family's step, 1/2 beside size 1; the mark is drawn by the Smart element alone, the class markup has none",
+      "decision": "GB18 form area, DEV msg-e73e6ee2",
+      "date": "2026-11-24"
+    },
+    {
+      "unit": "smart.switch",
+      "version": "1.10.1",
+      "twin": "component.switch",
+      "reason": "recorded by the group build 18 pre-cut (merge of feat/gb18-form 02371dcbd, queue msg-fc99b09e): the help mark («?», sf-help-mark, module.smart-helpers 1.21.1 CHECKABLE_HELP_SIZE) draws at the field family's step, 1/2 beside size 1; the mark is drawn by the Smart element alone, the class markup has none",
+      "decision": "GB18 form area, DEV msg-e73e6ee2",
+      "date": "2026-11-24"
+    },
+    {
+      "unit": "smart.segmented",
+      "version": "1.8.4",
+      "twin": "component.button-group",
+      "reason": "recorded by the group build 18 pre-cut (merge of feat/gb18-tabs d69bcc8bd, FL-1): folded, sf-segmented measures the fold at the track's one-line width and answers a resize in the next frame; a script measure of the Smart element, the class markup does not fold",
+      "decision": "GB18 tabs FL-1, View round 16 msg-987a9dd6",
+      "date": "2026-11-24"
+    },
+    {
+      "unit": "smart.tabs",
+      "version": "1.5.3",
+      "twin": "component.tabs",
+      "reason": "recorded by the group build 18 pre-cut (merge of feat/gb18-tabs d69bcc8bd, f977c8a70, VO-1): sf-tabs appends a tab button's forwarded data-* names last in the host's order, and settles them only when one stands before its own; attribute order the script writes, the class markup is unchanged",
+      "decision": "GB18 tabs VO-1, View round 16 acceptance",
+      "date": "2026-11-24"
     }
   ]
 }

@@ -50,7 +50,7 @@ import {existsSync, readFileSync, readdirSync, statSync, writeFileSync} from 'no
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {collectUnits, compareInventories, inventoryOf, readCommittedTree} from './linkage.mjs';
+import {collectUnits, compareInventories, inventoryOf, readCommittedTree, rehashInventory} from './linkage.mjs';
 
 export const GRAPH_SCHEMA = 'simai.framework.dependency-graph';
 export const GRAPH_SCHEMA_VERSION = 1;
@@ -633,7 +633,7 @@ export function graphGate({tree, revision, collected, release = null, previous =
   const contracts = readContracts(root);
   const twins = (contracts.twins.pairs ?? []).filter((p) => p.smart);
   const graph = buildGraph(tree, {revision, release, units: collected.units, twins: twins.length ? twins : null});
-  const before = previous ?? (releasesDir === false ? null : findPreviousInventory(releasesDir ?? defaultReleasesDir(root), revision, root));
+  const before = rehashInventory(previous ?? (releasesDir === false ? null : findPreviousInventory(releasesDir ?? defaultReleasesDir(root), revision, root)), root);
   const changes = before ? compareInventories(before, inventoryOf(collected, {revision})) : null;
   const {problems, notes} = checkGraph(graph, contracts, {changes});
   const changedIds = changes ? [...changes.changed.map((c) => c.id), ...changes.added.map((a) => a.id)] : [];

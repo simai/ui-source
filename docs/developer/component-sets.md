@@ -6,7 +6,7 @@ Status: draft standard `simai.component-set` 1.4.0
 requirement of 1.1.0; 1.2.0 adds pair ranges; 1.3.0 adds the exports list; 1.3.1
 lets `docs` be empty or absent while a set has no published documentation page; 1.3.2
 changes no requirement: it names the re-issued `simai.component-package` 1.1.3 and
-`simai.linkage` 1.0.2 by digest); 1.4.0 splits a component's rules into
+`simai.linkage` 1.0.2 by digest); 1.4.0 names `simai.linkage` 1.1.0 and splits a component's rules into
 `requires`, its first paint, and `requires_on_demand`, the rules it fetches only
 when used after it (see "What a component requires" below). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set

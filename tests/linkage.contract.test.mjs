@@ -5,7 +5,7 @@ import {resolve} from 'node:path';
 import test from 'node:test';
 
 import {
-  OWNER, checkPassports, collectUnits, compareInventories, contentHash, inventoryOf, packageOwners, passportFor, readCommittedTree, satisfies,
+  OWNER, RELEASE_PAIR_MARKER, checkPassports, collectUnits, compareInventories, contentHash, hashedBytes, inventoryOf, packageOwners, passportFor, readCommittedTree, rehashInventory, satisfies,
 } from '../scripts/linkage.mjs';
 
 // Standard simai.linkage 1.0.0: every unit SIMAI Framework publishes has a
@@ -116,6 +116,37 @@ test('the hash is one SHA-256 over sorted paths and bytes', () => {
   assert.notEqual(contentHash(['src/a', 'src/b'], tree), contentHash(['src/a', 'src/b'], moved), 'bytes cannot slide between files');
 });
 
+// simai.linkage 1.1.0 (group build 18 pre-cut, DEV answer 1): the release pair
+// marker of a Smart manifest is not content.
+const manifestText = (ui, smart) => `{\n  "version": "1.0.0",\n  "compatibility": {\n    "runtime_pair": {\n      "ui_revision": "${ui}",\n      "ui_smart_revision": "${smart}"\n    },\n    "aliases": []\n  }\n}\n`;
+
+test('the hash reads a Smart manifest\'s release pair marker as zeros', () => {
+  const file = 'src/smart/alpha/smart.manifest.json';
+  const marker = new Map([[file, Buffer.from(manifestText(RELEASE_PAIR_MARKER, RELEASE_PAIR_MARKER))]]);
+  const old = new Map([[file, Buffer.from(manifestText('094f3d549aa7921d2d7f8773972c73711dd6a72e', '856fb5d751fad1c76104c32515f4c1869dd75b6c'))]]);
+  assert.equal(contentHash([file], old), contentHash([file], marker), 'a pair revision in the marker fields moves no hash');
+  assert.equal(hashedBytes(file, marker.get(file)), marker.get(file), 'a manifest that holds the marker hashes to its own bytes');
+  const edited = new Map([[file, Buffer.from(manifestText(RELEASE_PAIR_MARKER, RELEASE_PAIR_MARKER).replace('1.0.0', '1.0.1'))]]);
+  assert.notEqual(contentHash([file], edited), contentHash([file], marker), 'any other byte still counts');
+  const elsewhere = 'src/smart/alpha/component.json';
+  const other = new Map([[elsewhere, old.get(file)]]);
+  const otherMarker = new Map([[elsewhere, marker.get(file)]]);
+  assert.notEqual(contentHash([elsewhere], other), contentHash([elsewhere], otherMarker), 'only smart.manifest.json is read this way');
+});
+
+test('a previous inventory is read under today\'s hash rule, from its own revision', () => {
+  const recorded = inventoryOf(collected, {revision: head.revision, release: 'ui-000000000000'});
+  const smart = recorded.units.find((unit) => unit.kind === 'smart');
+  const stale = {...recorded, units: recorded.units.map((unit) => (unit.id === smart.id ? {...unit, content_sha256: 'f'.repeat(64)} : unit))};
+  assert.deepEqual(compareInventories(stale, recorded).violations.map(({id, code}) => `${id} ${code}`), [`${smart.id} hash-moved-without-version`]);
+  const rehashed = rehashInventory(stale, root);
+  assert.equal(rehashed.units.find((unit) => unit.id === smart.id).content_sha256, smart.content_sha256);
+  assert.deepEqual(compareInventories(rehashed, recorded).violations, []);
+  assert.equal(rehashInventory(rehashed, root), rehashed, 'once is enough');
+  const away = {...stale, revision: 'e'.repeat(40)};
+  assert.equal(rehashInventory(away, root), away, 'a revision this clone does not hold keeps the recorded hashes');
+});
+
 test('a dependency the code uses but the passport omits is refused', () => {
   const tree = fixtureTree(SOURCES);
   const passport = JSON.parse(tree.get('src/component/alpha/passport.json'));
@@ -169,7 +200,7 @@ test('the command line compares two inventories and fails on a violation', () =>
 const previousRelease = process.env.SF_LINKAGE_PREVIOUS;
 test('(c) against the previous release: every moved hash moved its version', {skip: previousRelease ? false : 'no previous inventory given (SF_LINKAGE_PREVIOUS); no released pair carries one yet'}, () => {
   assert.ok(existsSync(previousRelease), previousRelease);
-  const report = compareInventories(JSON.parse(readFileSync(previousRelease, 'utf8')), inventoryOf(collected, {revision: head.revision}));
+  const report = compareInventories(rehashInventory(JSON.parse(readFileSync(previousRelease, 'utf8')), root), inventoryOf(collected, {revision: head.revision}));
   assert.deepEqual(report.violations.map(({message}) => message), []);
 });
 
