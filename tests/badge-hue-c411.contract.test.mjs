@@ -51,7 +51,7 @@ test('C411: the constructor and sf-badge draw the class from hue', () => {
   const constructor = read('src/component/badges/js/_badges.js');
   assert.match(constructor, /const hue = canonicalBadgeHue\(params\.hue\);\n\s+if \(hue\) \{\n\s+this\.badge\.classList\.add\(`sf-badge--\$\{hue\}`\);/u);
   const component = json('src/smart/badge/component.json');
-  assert.equal(component.version, '1.8.0');
+  assert.equal(component.version, '1.8.1');
   assert.deepEqual(component.settings.hue.values, ['', ...PALETTE]);
   assert.equal(component.settings.hue.default, '');
   const manifest = json('src/smart/badge/smart.manifest.json');

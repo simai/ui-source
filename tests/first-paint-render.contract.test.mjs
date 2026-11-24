@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {dirname, join} from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
-import {SCHEMA, USAGE, canonicalJson, createRenderer} from '../tools/first-paint/render.mjs';
+import {SCHEMA, SCHEMA_VERSION, USAGE, canonicalJson, createRenderer} from '../tools/first-paint/render.mjs';
 import {kitFiles} from '../scripts/build-first-paint-kit.mjs';
 import {checkShippedPaths, declaredPaths} from '../scripts/check-shipped-paths.mjs';
 
@@ -19,7 +19,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(join(root, path), 'utf8');
 const json = (path) => JSON.parse(read(path));
 const doc = read('docs/developer/first-paint-render.md');
-const schema = json('contracts/schema/first-paint-render.v1.schema.json');
+const schema = json('contracts/schema/first-paint-render.schema.json');
 
 test('1. the pair\'s copy is the tools, byte for byte (scripts/build-first-paint-kit.mjs --check)', () => {
   for (const [name, body] of kitFiles()) assert.equal(read(`src/core/js/composition/${name}`), body, `${name} is stale: node scripts/build-first-paint-kit.mjs`);
@@ -38,9 +38,12 @@ test('1. the pair\'s copy is the tools, byte for byte (scripts/build-first-paint
 
 test('2. the schema names every request field and reason the renderer has', () => {
   const tool = read('tools/first-paint/render.mjs');
-  assert.equal(SCHEMA, 'simai.first-paint-render.v1');
+  assert.equal(SCHEMA, 'simai.first-paint-render');
+  assert.equal(SCHEMA_VERSION, 1);
+  assert.equal(schema.$defs.request.properties.schema_version.const, SCHEMA_VERSION);
+  assert.equal(schema.$defs.answer.properties.schema_version.const, SCHEMA_VERSION);
   assert.equal(schema.$defs.request.properties.schema.const, SCHEMA);
-  const fields = tool.match(/const REQUEST_FIELDS = new Set\(\[([^\]]+)\]\)/u)[1].match(/'([a-z]+)'/gu).map((one) => one.slice(1, -1));
+  const fields = tool.match(/const REQUEST_FIELDS = new Set\(\[([^\]]+)\]\)/u)[1].match(/'([a-z_]+)'/gu).map((one) => one.slice(1, -1));
   assert.deepEqual(Object.keys(schema.$defs.request.properties).sort(), [...fields].sort());
   const reasons = new Set([...tool.matchAll(/(?:refuse\('|reason: ')([a-z-]+)'/gu)].map((match) => match[1]));
   for (const reason of reasons) assert.ok(schema.$defs.answer.properties.reason.enum.includes(reason), `schema: reason ${reason}`);
@@ -50,7 +53,7 @@ test('2. the schema names every request field and reason the renderer has', () =
 
 test('3. the docs page documents the command line, the module and the answer', () => {
   for (const flag of [...USAGE.matchAll(/--([a-z-]+)/gu)].map((match) => match[1])) assert.ok(doc.includes(`--${flag}`), `docs: --${flag}`);
-  for (const name of ['createRenderer', 'renderFirstPaint', 'renderMany', 'canonicalJson', 'buildIdentity', SCHEMA, 'first-paint-render.v1.schema.json']) assert.ok(doc.includes(name), `docs: ${name}`);
+  for (const name of ['createRenderer', 'renderFirstPaint', 'renderMany', 'canonicalJson', 'buildIdentity', SCHEMA, 'first-paint-render.schema.json']) assert.ok(doc.includes(name), `docs: ${name}`);
   for (const field of Object.keys(schema.$defs.request.properties).filter((one) => one !== 'schema')) assert.ok(doc.includes(`\`${field}\``), `docs: request ${field}`);
   for (const field of Object.keys(schema.$defs.answer.properties).filter((one) => !['schema', 'id', 'tag', 'reason', 'detail'].includes(one))) assert.ok(doc.includes(`\`${field}\``), `docs: answer ${field}`);
   assert.ok(read('docs/developer/first-paint-print.md').includes('(first-paint-render.md)'), 'the print page sends a settings caller here');
@@ -83,6 +86,7 @@ test('5. what a component does not print is refused before any browser starts', 
     const ask = async (request) => {
       const answer = await renderer.render(request);
       assert.equal(answer.schema, SCHEMA);
+      assert.equal(answer.schema_version, SCHEMA_VERSION);
       return [answer.status, answer.reason];
     };
     assert.deepEqual(await ask({tag: 'sf-no-such-thing'}), ['unknown', 'unknown-tag']);
@@ -159,8 +163,9 @@ test('7. the template paths: the seven Docara prints and sf-switch name what the
   }
   const result = checkShippedPaths();
   assert.deepEqual(result.failures, [], 'scripts/check-shipped-paths.mjs');
-  const debt = json('contracts/shipped-template-paths.v1.json');
-  assert.equal(debt.schema, 'simai.shipped-template-paths.v1');
+  const debt = json('contracts/shipped-template-paths.json');
+  assert.equal(debt.schema, 'simai.shipped-template-paths');
+  assert.equal(debt.schema_version, 1);
   for (const folder of Object.keys(fixed)) assert.ok(!(`smart.${folder}` in debt.debt), `${folder} is not debt`);
   // A path a manifest names that is not shipped and not listed fails; so
   // does a listed one that ships.

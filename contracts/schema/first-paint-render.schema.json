@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://simai.io/schema/framework/first-paint-render.v1.json",
+  "$id": "https://simai.io/schema/framework/first-paint-render.json",
   "x-simai-version": "1.0.0",
   "title": "SIMAI Framework first-paint render: request and answer",
   "description": "The first paint of a Smart component from its settings (docs/developer/first-paint-render.md): a server sends a request, the render tool the pair ships (distr/core/js/composition/first-paint-render.mjs; tools/first-paint/render.mjs in ui-source) answers the host as a server prints it and the sheets its markup needs. The tool draws the component with the real Loader exactly as the committed snapshots are drawn, so a request with an example's settings answers that example's snapshot byte for byte. One request per JSON object; in session mode one per line, one answer per line, in order.",
@@ -10,7 +10,8 @@
       "additionalProperties": false,
       "required": ["tag"],
       "properties": {
-        "schema": {"const": "simai.first-paint-render.v1", "description": "Optional; when given it must be this."},
+        "schema": {"const": "simai.first-paint-render", "description": "Optional; when given it must be this."},
+        "schema_version": {"const": 1, "description": "Optional; when given it must be 1, the format's major."},
         "id": {"type": ["string", "null"], "description": "The caller's name for the instance, echoed in the answer; not part of the key."},
         "tag": {"type": "string", "pattern": "^sf-[a-z0-9-]+$", "description": "The element: a Smart component the build serves."},
         "template": {"type": "string", "default": "default", "description": "One of the component's templates (component.json templates); another than default is written as the host's template attribute."},
@@ -21,17 +22,19 @@
         "markup": {"type": "string", "description": "The page around the element (the code a copy button copies); when it holds the element, the element is the one in it."},
         "lang": {"type": "string", "default": "ru", "description": "The page language: a language file the build ships (core/lang/<lang>.js). The words a component prints come from it."},
         "now": {"type": "string", "description": "The page's frozen clock, an ISO date-time with its offset (default 2026-10-27T12:00:00+03:00, the snapshots' instant). The page's time zone is Europe/Moscow."},
-        "prefix": {"type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9-]*$", "description": "The ids a component makes up are <prefix>-<n>; default sf-<folder>. Give each instance on a page its own."}
+        "prefix": {"type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9-]*$", "description": "The ids a component makes up are <prefix>-<n>; default sf-<folder>. Give each instance on a page its own."},
+        "url": {"type": "string", "pattern": "^https?://[^/?#\\s]+/[^#\\s]*$", "description": "The page's address, which what a component resolves against the page (a copy link's full URL) is printed from; never fetched. Default https://first-paint.invalid/page, the same on every run."}
       }
     },
     "answer": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema", "id", "build", "status", "tag"],
+      "required": ["schema", "schema_version", "id", "build", "status", "tag"],
       "properties": {
-        "schema": {"const": "simai.first-paint-render.v1"},
+        "schema": {"const": "simai.first-paint-render"},
+        "schema_version": {"const": 1},
         "id": {"type": ["string", "null"]},
-        "key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "The cache key: the sha256 of the build identity, the tag, the template, the settings, the attributes, children, slots, markup, lang, now and prefix, as canonical JSON (keys sorted). Same key, same answer."},
+        "key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$", "description": "The cache key: the sha256 of the build identity, the tag, the template, the settings, the attributes, children, slots, markup, lang, now, prefix and url, as canonical JSON (keys sorted). Same key, same answer."},
         "build": {"type": "string", "description": "The build's identity: the caller's --build (a pair id), else the sha256 of every file the build serves (gzip copies left out)."},
         "status": {"enum": ["printed", "refused", "unknown", "failed"], "description": "printed: html and sheets are the first paint. refused: the request is not something the component prints (reason, detail). unknown: the build defines no such tag. failed: the component did not draw or its page threw."},
         "tag": {"type": ["string", "null"]},
@@ -41,7 +44,7 @@
         "theme": {"type": "array", "items": {"enum": ["theme-light", "theme-dark"]}, "description": "The markup also needs one of these classes on <html>."},
         "snapshot": {"type": ["string", "null"], "description": "The committed snapshot this markup is (smart/<folder>/static/<template>/<example>.html), or null."},
         "notes": {"type": "array", "items": {"enum": ["overlay-closed"]}, "description": "overlay-closed: an overlay is printed closed; its open setting was left out."},
-        "reason": {"enum": ["not-a-request", "not-json", "unknown-field", "schema", "tag", "unknown-tag", "template", "settings", "unknown-setting", "late-setting", "value", "attributes", "children", "markup", "slots", "lang", "now", "prefix", "page-error", "not-drawn"]},
+        "reason": {"enum": ["not-a-request", "not-json", "unknown-field", "schema", "tag", "unknown-tag", "template", "settings", "unknown-setting", "late-setting", "value", "attributes", "children", "markup", "slots", "lang", "now", "url", "prefix", "page-error", "not-drawn"]},
         "detail": {"type": "string"}
       }
     }

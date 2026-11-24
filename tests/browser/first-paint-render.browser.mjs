@@ -271,4 +271,4 @@ await browser.close();
 report.load.push(loadavg()[0]);
 if (reportFile) writeFileSync(reportFile, `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify({examples: exampleRequests.length, exact: Object.values(report.examples).filter((one) => one.exact).length, matrix: matrixRequests.length, examplesMs: report.examplesMs, matrixMs: report.matrixMs, cache: report.cache, determinism: report.determinism && {requests: report.determinism.requests, differ: report.determinism.differ.length}, shiftLoads: report.shift.length, load: report.load, failures}));
-if (failures.length) process.exitCode = 1;
+process.exit(failures.length ? 1 : 0);

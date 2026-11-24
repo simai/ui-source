@@ -16,7 +16,7 @@
 // The pair ships it as distr/core/js/composition/first-paint-render.mjs
 // (scripts/build-first-paint-kit.mjs). Documented in
 // docs/developer/first-paint-render.md; request and answer:
-// contracts/schema/first-paint-render.v1.schema.json.
+// contracts/schema/first-paint-render.schema.json.
 import {createHash} from 'node:crypto';
 import {existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync} from 'node:fs';
 import {createInterface} from 'node:readline';
@@ -24,9 +24,16 @@ import {join, relative, resolve, sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {PAGE_SCRIPT, PROPERTY_ONLY, describe, drawExample, isDistribution, isInstant, launchChromium, memberOf, outputMounts, readConfig, serveOutput, snapshotIndex, sortedAttributes} from './engine.mjs';
 
-export const SCHEMA = 'simai.first-paint-render.v1';
+// The format's name carries no version (journal record
+// format-names-without-version): its major is schema_version.
+export const SCHEMA = 'simai.first-paint-render';
+export const SCHEMA_VERSION = 1;
 const THEMES = ['theme-light', 'theme-dark'];
-const REQUEST_FIELDS = new Set(['schema', 'id', 'tag', 'template', 'settings', 'attributes', 'children', 'slots', 'markup', 'lang', 'now', 'prefix']);
+const REQUEST_FIELDS = new Set(['schema', 'schema_version', 'id', 'tag', 'template', 'settings', 'attributes', 'children', 'slots', 'markup', 'lang', 'now', 'prefix', 'url']);
+// The page's address when the request gives none: a fixed one, so what a
+// component resolves against the page (a copy link's full URL) is the same
+// on every run and every machine. Never fetched: the renderer answers it.
+export const PAGE_URL = 'https://first-paint.invalid/page';
 // Attributes a page writes on a host that are not settings: its name for
 // people, its id, its own data-*. A setting goes in `settings`.
 const PAGE_ATTRIBUTE = /^(?:aria-[a-z-]+|role|id|title|lang|dir|class|data-(?!sf-)[a-z0-9-]+)$/u;
@@ -91,16 +98,23 @@ function admit(request, index, languages) {
   const extra = Object.keys(request).filter((key) => !REQUEST_FIELDS.has(key));
   if (extra.length) return refuse('unknown-field', `not a request field: ${extra.join(', ')}`);
   if (request.schema !== undefined && request.schema !== SCHEMA) return refuse('schema', `this renderer answers ${SCHEMA}`);
+  if (request.schema_version !== undefined && request.schema_version !== SCHEMA_VERSION) return refuse('schema', `this renderer answers ${SCHEMA} schema_version ${SCHEMA_VERSION}`);
   if (typeof request.tag !== 'string' || !/^sf-[a-z0-9-]+$/u.test(request.tag)) return refuse('tag', 'tag is an sf-* element name');
   const found = index.get(request.tag);
   if (!found) return {status: 'unknown', reason: 'unknown-tag', detail: `this build defines no <${request.tag}>`};
   const component = describe(found.root, found.folder);
-  const template = request.template ?? 'default';
   const templates = Object.keys(component.manifest.templates ?? {default: {}});
-  if (typeof template !== 'string' || !templates.includes(template)) return refuse('template', `<${request.tag}> declares the templates ${templates.join(', ')}`);
   const settings = request.settings ?? {};
   if (!settings || typeof settings !== 'object' || Array.isArray(settings)) return refuse('settings', 'settings is an object of setting names');
+  // A template may come in settings, as the documented examples give it
+  // (sf-avatar's "label" and "card"); it stays there, so the host is written
+  // as the runtime writes it.
+  const named = Object.hasOwn(settings, 'template') && !memberOf(component.manifest, 'template') ? settings.template : undefined;
+  if (named !== undefined && request.template !== undefined && request.template !== named) return refuse('template', 'template is given twice with two values');
+  const template = request.template ?? named ?? 'default';
+  if (typeof template !== 'string' || !templates.includes(template)) return refuse('template', `<${request.tag}> declares the templates ${templates.join(', ')}`);
   for (const [name, value] of Object.entries(settings)) {
+    if (name === 'template' && named !== undefined) continue;
     const member = memberOf(component.manifest, name);
     if (!member) return refuse('unknown-setting', `<${request.tag}> declares no setting or value ${name}`);
     if (component.late.includes(name) && value !== null && value !== undefined && !(Array.isArray(value) && !value.length)) {
@@ -131,18 +145,29 @@ function admit(request, index, languages) {
   const lang = request.lang ?? 'ru';
   if (typeof lang !== 'string' || !languages.has(lang)) return refuse('lang', `this build has the language files ${[...languages].sort().join(', ')}`);
   if (request.now !== undefined && !isInstant(request.now)) return refuse('now', 'now is an ISO date-time with its offset');
+  if (request.url !== undefined && (typeof request.url !== 'string' || !/^https?:\/\/[^/?#\s]+\/[^#\s]*$/u.test(request.url))) return refuse('url', 'url is the page\'s absolute http(s) address with a path');
   const prefix = request.prefix ?? `sf-${found.folder}`;
   if (typeof prefix !== 'string' || !/^[a-z][a-z0-9-]*$/iu.test(prefix)) return refuse('prefix', 'prefix is a name: letters, digits and hyphens');
   const example = {
     name: String(request.id ?? 'render'),
     settings,
-    attributes: template === 'default' ? attributes : {...attributes, template},
+    attributes: template === 'default' || named !== undefined ? attributes : {...attributes, template},
     ...(request.children !== undefined ? {children: request.children} : {}),
     ...(request.slots !== undefined ? {slots: request.slots} : {}),
     ...(request.markup !== undefined ? {markup: request.markup} : {}),
     ...(request.now !== undefined ? {'first-paint': {now: request.now}} : {}),
   };
-  return {component, example, template, prefix, lang};
+  return {component, example, template, prefix, lang, url: request.url ?? PAGE_URL};
+}
+
+/** The component's committed first-paint sheets (static/sheets.json), or none. */
+function committedSheets(component) {
+  try {
+    const kept = JSON.parse(readFileSync(join(component.dir, 'static', 'sheets.json'), 'utf8'));
+    return Array.isArray(kept.sheets) ? kept.sheets.filter((one) => typeof one === 'string') : [];
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -186,6 +211,7 @@ export async function createRenderer({distr, config = null, build = null, cache 
 
   const keyOf = (request, admitted) => `sha256:${sha256(canonicalJson({
     schema: SCHEMA,
+    schema_version: SCHEMA_VERSION,
     build: identity,
     tag: request.tag,
     template: admitted.template,
@@ -197,27 +223,32 @@ export async function createRenderer({distr, config = null, build = null, cache 
     lang: admitted.lang,
     now: request.now,
     prefix: admitted.prefix,
+    url: admitted.url,
   }))}`;
 
   async function draw(admitted) {
     serial += 1;
     try {
-      const got = await drawExample({browser, site, pages, path: `/render/${serial}`, title: admitted.component.tag, component: admitted.component, example: admitted.example, prefix: admitted.prefix, lang: admitted.lang, timeout, run});
+      const got = await drawExample({browser, site, pages, path: `/render/${serial}`, address: admitted.url, title: admitted.component.tag, component: admitted.component, example: admitted.example, prefix: admitted.prefix, lang: admitted.lang, timeout, run});
       if (got.errors.length) return {status: 'failed', reason: 'page-error', detail: got.errors.join('; ').slice(0, 400)};
-      return {status: 'printed', html: got.html, sheets: [...new Set(got.sheets.map((path) => path.replace(/^\/distr\//u, '')))].sort()};
+      // What this page asked for, with every sheet the component's committed
+      // first paint names: a sheet the Loader asks for on one run and not on
+      // another (a utility already in flight) is in every answer.
+      const drawn = got.sheets.map((path) => path.replace(/^\/distr\//u, ''));
+      return {status: 'printed', html: got.html, sheets: [...new Set([...drawn, ...committedSheets(admitted.component)])].sort()};
     } catch (error) {
       return {status: 'failed', reason: 'not-drawn', detail: String(error?.message ?? error).split('\n')[0].slice(0, 400)};
     }
   }
 
-  /** The answer to one request (simai.first-paint-render.v1). */
+  /** The answer to one request (simai.first-paint-render, schema_version 1). */
   async function render(request) {
     stats.requests += 1;
     const id = request && typeof request === 'object' && !Array.isArray(request) ? request.id ?? null : null;
     const admitted = admit(request, index, languages);
     if (admitted.status) {
       stats[admitted.status === 'unknown' ? 'unknown' : 'refused'] += 1;
-      return {schema: SCHEMA, id, build: identity, status: admitted.status, tag: typeof request?.tag === 'string' ? request.tag : null, reason: admitted.reason, detail: admitted.detail};
+      return {schema: SCHEMA, schema_version: SCHEMA_VERSION, id, build: identity, status: admitted.status, tag: typeof request?.tag === 'string' ? request.tag : null, reason: admitted.reason, detail: admitted.detail};
     }
     const key = keyOf(request, admitted);
     const file = cache ? join(resolve(cache), `${key.slice('sha256:'.length)}.json`) : null;
@@ -237,9 +268,9 @@ export async function createRenderer({distr, config = null, build = null, cache 
     const notes = [];
     if (admitted.component.overlay && 'open' in (request.settings ?? {})) notes.push('overlay-closed');
     const answer = got.status === 'printed'
-      ? {schema: SCHEMA, id, key, build: identity, status: 'printed', tag: request.tag, template: admitted.template, html: got.html, sheets: got.sheets, theme: THEMES,
+      ? {schema: SCHEMA, schema_version: SCHEMA_VERSION, id, key, build: identity, status: 'printed', tag: request.tag, template: admitted.template, html: got.html, sheets: got.sheets, theme: THEMES,
         snapshot: snapshots.get(got.html) ?? sorted.get(sortedAttributes(got.html)) ?? null, notes}
-      : {schema: SCHEMA, id, key, build: identity, status: 'failed', tag: request.tag, reason: got.reason, detail: got.detail};
+      : {schema: SCHEMA, schema_version: SCHEMA_VERSION, id, key, build: identity, status: 'failed', tag: request.tag, reason: got.reason, detail: got.detail};
     if (answer.status === 'printed') stats.drawn += 1;
     else stats.failed += 1;
     if (file && answer.status === 'printed') {
@@ -343,7 +374,7 @@ export async function main(argv, {defaults = {}, stdin = process.stdin, stdout =
         let request;
         try { request = JSON.parse(line); } catch { request = Symbol.for('not-json'); }
         const job = (request === Symbol.for('not-json')
-          ? Promise.resolve({schema: SCHEMA, id: null, build: renderer.build, status: 'refused', tag: null, reason: 'not-json', detail: 'a line is one JSON request'})
+          ? Promise.resolve({schema: SCHEMA, schema_version: SCHEMA_VERSION, id: null, build: renderer.build, status: 'refused', tag: null, reason: 'not-json', detail: 'a line is one JSON request'})
           : renderer.render(request)).then((answer) => { one.answer = count(answer); one.done = true; flush(); });
         slots.push(job);
         // At most `concurrency` drawn at once: wait for the oldest beyond it.
@@ -372,5 +403,7 @@ export async function main(argv, {defaults = {}, stdin = process.stdin, stdout =
 }
 
 if (import.meta.url === pathToFileURL(resolve(process.argv[1] ?? '')).href) {
-  process.exitCode = await main(process.argv.slice(2));
+  // Exit when answered: a closed Playwright browser can leave a handle that
+  // holds the process open after the last answer.
+  process.exit(await main(process.argv.slice(2)));
 }

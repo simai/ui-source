@@ -15,7 +15,7 @@
 //
 // Without a root the check reads ui-source alone and applies that rule; with
 // one it reads the built files. Paths not shipped yet are migration debt,
-// listed by component in contracts/shipped-template-paths.v1.json: the check
+// listed by component in contracts/shipped-template-paths.json: the check
 // fails on a path that is not shipped and not listed, and on a listed path
 // that ships now (take it off the list). It also reports, without failing,
 // each shipped template's relative imports that the distribution does not
@@ -26,7 +26,7 @@ import {dirname, join, posix, resolve} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
-export const DEBT_FILE = join(repo, 'contracts', 'shipped-template-paths.v1.json');
+export const DEBT_FILE = join(repo, 'contracts', 'shipped-template-paths.json');
 const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
 const isFile = (file) => existsSync(file) && statSync(file).isFile();
 const IMPORT = /(?:^|[;\s])(?:import|export)\s+(?:[^'";]*?\sfrom\s+)?["'](\.{1,2}\/[^"']+)["']|import\(\s*["'](\.{1,2}\/[^"']+)["']\s*\)/gu;

@@ -25,8 +25,9 @@ byte. The answer's `snapshot` names it. If a request is not something the
 component prints, the tool refuses it and says why. It never prints wrong
 markup.
 
-The request and the answer are `simai.first-paint-render.v1`:
-`contracts/schema/first-paint-render.v1.schema.json`.
+The request and the answer are the format `simai.first-paint-render` with
+`schema_version` 1 (a format's name carries no version; its major is
+`schema_version`): `contracts/schema/first-paint-render.schema.json`.
 
 ## Where it is
 
@@ -98,7 +99,7 @@ One request per line:
 One answer per line (wrapped here):
 
 ```json
-{"schema": "simai.first-paint-render.v1", "id": "badges/status-1",
+{"schema": "simai.first-paint-render", "schema_version": 1, "id": "badges/status-1",
  "key": "sha256:…", "build": "ui-b4f79e1c58b7", "status": "printed",
  "tag": "sf-badge", "template": "default",
  "html": "<sf-badge text=\"Оплачен\" status=\"success\" style=\"display: contents;\">\n<span class=\"sf-badge sf-badge--tonal sf-badge--success sf-badge--size-1/3 inline-flex flex-row flex-nowrap content-main-center items-center\" data-sf-static>…</span>\n</sf-badge>",
@@ -140,7 +141,7 @@ try {
 - `renderFirstPaint(request, options)` answers one request with a renderer of
   its own.
 - `canonicalJson(value)`, `buildIdentity(roots)`, `SCHEMA`
-  (`simai.first-paint-render.v1`), `USAGE` and `main(argv)` (the command
+  (`simai.first-paint-render`), `SCHEMA_VERSION` (1), `USAGE` and `main(argv)` (the command
   line) are exported too.
 - Component packages for the module: set `FIRST_PAINT_CONFIG`, as for the
   snapshot tool. `config` alone gives the server the packages, but not the
@@ -151,7 +152,7 @@ try {
 | field | |
 |---|---|
 | `tag` | required: an `sf-*` Smart component the build serves |
-| `template` | one of the component's templates (default `default`). Another is written as the host's `template` attribute. |
+| `template` | one of the component's templates (default `default`). Another is written as the host's `template` attribute. A template given in `settings` instead (as the documented examples of `sf-avatar` give it) stays there and is written where the runtime writes it; given in both places, the two must agree. |
 | `settings` | setting and value names of its `component.json`. Scalars become attributes, and lists and objects become one JSON island. Each name and each enum value is checked against the manifest. |
 | `attributes` | what a page writes on a host that is not a setting: `aria-*`, `role`, `id`, `title`, `lang`, `dir`, `class`, `data-*` (not `data-sf-*`) |
 | `children` | markup the page gives inside the host |
@@ -160,6 +161,7 @@ try {
 | `lang` | the page language, a language file of the build (`core/lang/<lang>.js`). Default `ru`. The component's words come from it. |
 | `now` | the page's frozen clock (ISO date-time with its offset). The default is the snapshots' instant, `2026-10-27T12:00:00+03:00`. The time zone is Europe/Moscow. |
 | `prefix` | ids a component makes up are named `<prefix>-<n>`. The default is `sf-<folder>`. Give every instance on one page its own prefix. |
+| `url` | the page's address (absolute `http(s)` with a path). What a component resolves against the page, such as a copy link's full URL, is printed from it. It is never fetched. The default is `https://first-paint.invalid/page`, the same on every run, so give the real page address when the markup should hold it. |
 | `id` | the caller's name for the instance. It is echoed in the answer and is not part of the key. |
 
 ## Answer
@@ -172,17 +174,19 @@ try {
     `late-setting` (the setting arrives after the first paint; give it to
     the element on the page instead), `value` (an enum value or a type the
     manifest does not allow), `attributes`, `children`, `markup`, `slots`,
-    `lang`, `now`, `prefix`, `schema`, `not-a-request` and `not-json`.
+    `lang`, `now`, `url`, `prefix`, `schema`, `not-a-request` and `not-json`.
   - `unknown`: the build defines no such tag (`unknown-tag`).
   - `failed`: the component did not draw (`not-drawn`), or its page threw an
     error (`page-error`).
-- `key`: `sha256:` of the canonical JSON (keys sorted) of the schema, `build`,
-  tag, template, settings, attributes, children, slots, markup, lang, now and
-  prefix. The same key always gives the same answer. Cache by it.
+- `key`: `sha256:` of the canonical JSON (keys sorted) of the schema and its version, `build`,
+  tag, template, settings, attributes, children, slots, markup, lang, now,
+  prefix and url. The same key always gives the same answer. Cache by it.
 - `build`: the build identity in the key.
 - `html`: print it as is.
-- `sheets`: paths relative to `distr/`, sorted. `core/css/core.css` is always
-  among them.
+- `sheets`: paths relative to `distr/`, sorted: the sheets this page asked
+  for, together with every sheet the component's committed first paint names
+  (`smart/<folder>/static/sheets.json`). `core/css/core.css` is always among
+  them.
 - `theme`: one of these classes goes on `<html>`.
 - `snapshot`: the committed snapshot this markup is
   (`smart/<folder>/static/<template>/<example>.html`), or `null`.
@@ -192,9 +196,10 @@ try {
 The output is deterministic. The same request and the same build give the
 same bytes. The ids are renamed from `prefix`, the clock is frozen, px sizes
 the code measured are left out of inline styles, and text is set in Inter.
-One exception is shared with the snapshots: a utility sheet that only the
-Loader's idle scan asks for can come or not on a heavily loaded machine
-(`sheetDrift` in `snapshot-first-paint.mjs`).
+A utility sheet that only the Loader's idle scan asks for can come or not on
+a heavily loaded machine (`sheetDrift` in `snapshot-first-paint.mjs`); the
+committed list in `sheets` keeps such a sheet in every answer of a documented
+setting.
 
 ## Limits
 
@@ -218,7 +223,7 @@ build ships a component's template folder (`js/templates/` or `template/` in
 ui-source) as `template/`, so a manifest names `template/<file>`.
 `scripts/check-shipped-paths.mjs [<build>]` fails when a path that a manifest
 names is not in the distribution. Paths that are not shipped yet are migration
-debt, listed by component in `contracts/shipped-template-paths.v1.json`. The
+debt, listed by component in `contracts/shipped-template-paths.json`. The
 check also fails on a listed path that ships now. The file is the template's
 Lit source: it imports `lit` and Framework helpers by their ui-source paths, so
 a server reads it but does not run it. Use this tool to print the component

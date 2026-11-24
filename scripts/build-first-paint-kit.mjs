@@ -32,7 +32,7 @@ export function kitFiles() {
   return new Map([
     ['first-paint-render.mjs', `#!/usr/bin/env node
 ${header('scripts/build-first-paint-kit.mjs')}// The first paint of a Smart component from its settings
-// (simai.first-paint-render.v1, docs/developer/first-paint-render.md):
+// (simai.first-paint-render, schema_version 1; docs/developer/first-paint-render.md):
 //
 //   node <distr>/core/js/composition/first-paint-render.mjs --session < requests.jsonl
 //
@@ -46,7 +46,9 @@ export * from './first-paint/render.mjs';
 const distr = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 
 if (import.meta.url === pathToFileURL(resolve(process.argv[1] ?? '')).href) {
-  process.exitCode = await main(process.argv.slice(2), {defaults: {distr}});
+  // Exit when answered: a closed Playwright browser can leave a handle that
+  // holds the process open after the last answer.
+  process.exit(await main(process.argv.slice(2), {defaults: {distr}}));
 }
 `],
     ['first-paint/render.mjs', asIs('tools/first-paint/render.mjs')],

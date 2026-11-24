@@ -540,21 +540,37 @@ export function exampleSpec(component, example) {
  * the drawn page before it closes (the skeleton). Answers {html, sheets,
  * errors, after}: sheets are request paths (/distr/...), in request order.
  */
-export async function drawExample({browser, site, pages, path, title = path, component, example, spec = exampleSpec(component, example), prefix, lang = 'ru', timezoneId = SNAPSHOT_TIME_ZONE, timeout = 20000, run = config, after = null}) {
-  pages.set(path, `${head({title, lang, extra: '<script src="/first-paint-page.js"></script>'})}<body>
+export async function drawExample({browser, site, pages, path, title = path, component, example, spec = exampleSpec(component, example), prefix, lang = 'ru', timezoneId = SNAPSHOT_TIME_ZONE, timeout = 20000, run = config, after = null, address = null}) {
+  const html = `${head({title, lang, extra: '<script src="/first-paint-page.js"></script>'})}<body>
 <main id="stage"></main>
 <script>window.__sfFirstPaintBuild(${JSON.stringify(spec).replace(/</g, '\\u003c')});</script>
 ${coreScript}
-</body></html>`);
+</body></html>`;
+  if (!address) pages.set(path, html);
   const context = await browser.newContext({...PAGE_CONTEXT, timezoneId});
   const page = await context.newPage();
+  // A page with an address of its own (tools/first-paint/render.mjs `url`):
+  // the page is answered at that address and every request under its origin
+  // is served by `site`, so what a component resolves against the page's
+  // address (a link's full URL) is the same on every run, whatever port the
+  // server took.
+  let target = `${site.origin}${path}`;
+  if (address) {
+    const at = new URL(address);
+    target = at.href;
+    await page.route((url) => url.origin === at.origin, (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname === at.pathname && url.search === at.search) return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: html});
+      return route.fetch({url: `${site.origin}${url.pathname}${url.search}`}).then((response) => route.fulfill({response}), () => route.abort());
+    });
+  }
   await freezeClock(page, example, run);
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   // The sheets this page asks for: the first paint needs every one.
   const net = watchRequests(page);
   try {
-    await page.goto(`${site.origin}${path}`, {waitUntil: 'load'});
+    await page.goto(target, {waitUntil: 'load'});
     // Drawn; a closed overlay draws nothing until it opens (its first paint
     // is what it has then, often nothing).
     await page.waitForFunction((overlay) => {
@@ -564,13 +580,13 @@ ${coreScript}
       if (overlay) return host.hasAttribute('data-sf-started') || !host.constructor.manifest;
       return 'isRendered' in host ? host.isRendered === true : true;
     }, component.overlay, {timeout});
-    const html = await serializeSettled(page, net, prefix);
-    const later = after ? await after(page, html) : null;
+    const drawn = await serializeSettled(page, net, prefix);
+    const later = after ? await after(page, drawn) : null;
     await settleSheets(page, net);
-    return {html, sheets: [...new Set(net.sheets)], errors, after: later};
+    return {html: drawn, sheets: [...new Set(net.sheets)], errors, after: later};
   } finally {
     await context.close();
-    pages.delete(path);
+    if (!address) pages.delete(path);
   }
 }
 

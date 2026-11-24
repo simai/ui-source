@@ -372,6 +372,14 @@
       "reason": "First-paint snapshots record what a template rendered (an attribute it was given, an inline transform of a slider track); the value is reviewed at its template or example."
     },
     {
+      "id": "first-paint-kit-copies",
+      "category": "script-data-template-review",
+      "filePattern": "^core/js/composition/first-paint/(?:page|lib)\\.mjs$",
+      "contextPattern": ".*",
+      "status": "accepted-non-executable",
+      "reason": "The first-paint render kit's copy of scripts/first-paint-page.js as one string (scripts/build-first-paint-kit.mjs, group build 19): a length in it is a comment of that script. And its copy of scripts/first-paint-lib.mjs: the 16px there is the font shorthand document.fonts.load() is asked with to load Inter, no size of the page. Both are generated and checked against their sources (--check), which sit outside src/."
+    },
+    {
       "id": "content-column-steps",
       "category": "script-data-template-review",
       "filePattern": "^smart/(?:input-rich/js/templates/default\\.js|wizard/js/templates/default\\.js|field-renderers/index\\.js|resizer/index\\.js|resizer/component\\.json|resizer/smart\\.manifest\\.json)$",

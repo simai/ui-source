@@ -113,6 +113,11 @@
     "src/core/js/composition/elements.mjs",
     "src/core/js/composition/fields.mjs",
     "src/core/js/composition/file-size.mjs",
+    "src/core/js/composition/first-paint-render.mjs",
+    "src/core/js/composition/first-paint/engine.mjs",
+    "src/core/js/composition/first-paint/lib.mjs",
+    "src/core/js/composition/first-paint/page.mjs",
+    "src/core/js/composition/first-paint/render.mjs",
     "src/core/js/composition/foreign.mjs",
     "src/core/js/composition/fragments.mjs",
     "src/core/js/composition/history.mjs",
@@ -1055,7 +1060,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "20a7f74956956b87077f83cdf49bad533a435aa01c6de6316c0fe7e3f3092c23",
+  "content_sha256": "2e65899a95d793a4dc52ab595c238f28b6a1fe6b43540daa4b604e128513e0c3",
   "dependencies": [
     {
       "id": "core.styles",

@@ -1,6 +1,7 @@
 {
   "$comment": "Paths Smart component manifests name for a server that the distribution does not hold yet (scripts/check-shipped-paths.mjs; group build 19). Each is migration debt: the build ships a component template folder (template/ or js/templates/ in ui-source) as template/, so a manifest names template/<file>. The check fails on a path not shipped and not listed here, and on a listed path that ships now: when a component steps for another reason, point its manifest at what ships and take its row off. The seven components Docara prints from settings and sf-switch were fixed in group build 19.",
-  "schema": "simai.shipped-template-paths.v1",
+  "schema": "simai.shipped-template-paths",
+  "schema_version": 1,
   "debt": {
     "smart.accordion": [
       "js/templates/default.js"
