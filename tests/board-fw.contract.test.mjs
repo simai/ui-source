@@ -108,5 +108,5 @@ test('tabs with no panel content keep their panel row hidden; words written late
   assert.equal(row.hidden, false, 'a host wrote into a panel: the row shows');
   sync.call(tabs([panel([]), panel([])]));
   assert.equal(row.hidden, true, 'emptied again');
-  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.5.3'); // GB18: VO-1 attribute order, panels example; // GB16-5/6: the label beside the glyph, name tooltips; // group build 16 returns GB16-1/2: the tightest row; // group build 16: G9 fold; // group build 13: 1.4.5 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.5.4'); // GB19 D2: the slots in component.json (1.5.4 above 1.5.3 of feat/gb18-tabs); // GB16-5/6: the label beside the glyph, name tooltips; // group build 16 returns GB16-1/2: the tightest row; // group build 16: G9 fold; // group build 13: 1.4.5 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
 });

@@ -20869,6 +20869,31 @@
         }
       ],
       "source": "scripts/linkage.mjs"
+    },
+    {
+      "recorded_on": "2026-11-24",
+      "stage": "compat",
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove size from sf-tooltip (and the sf-tooltip--size-<value> class from a printed tooltip if you like): every tooltip is one size and nothing else changes. A server printing a tooltip leaves size out.",
+      "owner": "ui-source",
+      "id": "attribute-tooltip-size-retired",
+      "kind": "attribute",
+      "summary": "sf-tooltip's size is retired (owner decision C160 (3), since sf-tooltip 1.3.0 on 2026-11-14; recorded with sf-tooltip 1.5.4, group build 19 D3, Docara msg-991e765ceb3d4b02ace3): every tooltip is one size, the text 12/16, padding 4 x 8. The drawing and the static markup print the same root class sf-tooltip--size-<value>, which no sheet reads, so size draws nothing in either; a size other than 1/3 is noted in SF.deprecations. The manifest now says it: a dated alias row from size to nothing, mode retired, and the examples no longer set it.",
+      "items": [
+        {
+          "component": "sf-tooltip",
+          "from": "size",
+          "to": null,
+          "match": "<sf-tooltip[^>]*\\ssize="
+        }
+      ],
+      "examples": {
+        "before": "<sf-tooltip text=\"Доступ\" supporting-text=\"Только чтение\" size=\"2\"></sf-tooltip>",
+        "after": "<sf-tooltip text=\"Доступ\" supporting-text=\"Только чтение\"></sf-tooltip>"
+      },
+      "source": "src/smart/tooltip/index.js templateContext, src/smart/tooltip/component.json aliases"
     }
   ]
 }
