@@ -73,10 +73,14 @@
 //        the host printing the list lacks as well. A utility sheet fetched
 //        then is the Loader's idle scan (the snapshot script's sheetDrift) and
 //        is not counted.
+//        The snapshot script reads a skeleton's sheets at this same moment, on
+//        the same printed page (first-paint-lib.mjs printedSheets, printedBody,
+//        DRAWN, PRINTED_SETTLE_MS), so a list it writes is one this accepts
+//        (GB19: the object menu's skeleton rows of Admin 1.2.1).
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
-import {components, assemblies, serveOutput, head, coreScript, staticDir, assemblyModule, givesLateData, portOf, FAKE_PORT, freezeClock, hostSpec} from '../../scripts/first-paint-lib.mjs';
+import {components, assemblies, serveOutput, head, coreScript, staticDir, givesLateData, portOf, FAKE_PORT, freezeClock, hostSpec, DRAWN, PRINTED_SETTLE_MS, stripHeader, printedBody} from '../../scripts/first-paint-lib.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
@@ -249,7 +253,9 @@ const WATCH = `(() => {
       // Drawn: defined and drawn, or keeping its printed skeleton for its data;
       // an assembly when every part is.
       // A closed overlay draws nothing until it opens: started is drawn.
-      const drawn = (el) => el.matches(':defined') && ((window.__fpOverlay && el.hasAttribute('data-sf-started')) || !('isRendered' in el) || el.isRendered || el.sfAwaitingData?.() === true);
+      // first-paint-lib.mjs DRAWN: the snapshot script reads the printed
+      // parts' sheets at this same moment (printedSheets).
+      const drawn = (el) => (${DRAWN})(el, window.__fpOverlay);
       const parts = window.__fpRoles ? [...host.querySelectorAll('[data-sf-role]')] : [];
       if (fp.drawnAt === null && drawn(host) && parts.every(drawn) && (!window.__fpRoles || parts.length)) fp.drawnAt = perf.now();
       // 24c: the text bars as the first paint shows them (the last frame
@@ -278,33 +284,10 @@ const pages = new Map([['/first-paint-watch.js', WATCH], ['/first-paint-page.js'
 const site = await serveOutput(out, {pages, delay: (path) => (/\.m?js$/u.test(path) && path.startsWith('/distr/') && !path.startsWith('/distr/core/') ? SCRIPT_DELAY : 0)});
 const browser = await chromium.launch();
 
-const strip = (html) => html.replace(/<!--[\s\S]*?-->\n?/gu, '').trim();
-// The example's own surroundings (markup around the element, a parent), with
-// the printed host in the element's place.
-function placed(example, tag, host) {
-  if (example.markup && new RegExp(`<${tag}[\\s>]`, 'u').test(example.markup)) {
-    // Each element of the markup in turn takes its printed host (the file
-    // holds them in order, one per line).
-    const printed = host.split(new RegExp(`\\n(?=<${tag}[\\s>])`, 'u'));
-    let markup = example.markup;
-    let from = 0;
-    for (const one of printed) {
-      const start = markup.indexOf(`<${tag}`, from);
-      const end = markup.indexOf(`</${tag}>`, start);
-      if (start < 0 || end < 0) break;
-      markup = `${markup.slice(0, start)}${one}${markup.slice(end + tag.length + 3)}`;
-      from = start + one.length;
-    }
-    return markup;
-  }
-  // The page around the element: the element comes after it, in its parent.
-  const before = example.markup ?? '';
-  if (example.parent) {
-    const at = example.parent.lastIndexOf('</');
-    return `${before}${example.parent.slice(0, at)}${host}${example.parent.slice(at)}`;
-  }
-  return `${before}${host}`;
-}
+// The printed snapshot without its header, in the example's surroundings
+// (first-paint-lib.mjs stripHeader, placed, printedBody: shared with the
+// snapshot script's printed pass).
+const strip = stripHeader;
 
 const box4 = (box) => (box ? box.map((n) => n.toFixed(1)).join(' ') : 'none');
 const same = (a, b) => Boolean(a && b) && a.every((n, i) => Math.abs(n - b[i]) <= TOLERANCE);
@@ -320,10 +303,7 @@ async function measure({component, example, file, kind, width, sheets, layout = 
   const headSheets = bare ? ['/distr/core/css/core.css'] : ['/distr/core/css/core.css', ...sheets.map((one) => `/distr/${one}`)];
   const written = bare ? `<script src="/first-paint-page.js"></script><script>window.__sfFirstPaintBuild(${JSON.stringify(hostSpec(component, example)).replace(/</g, '\\u003c')});</script>` : '';
   pages.set(path, `${head({title: id, sheets: headSheets, extra: `<script>window.__fpTag=${JSON.stringify(component.tag)};window.__fpRoles=${assembly};window.__fpOverlay=${Boolean(component.overlay)};</script><script src="/first-paint-watch.js"></script>${coreScript}`})}<body>
-<main id="stage">${bare ? '' : assembly ? html : placed(example, component.tag, html)}</main>${written}
-${assembly ? `<script>window.__fpPrinted = [...document.querySelectorAll('#stage [data-sf-role]')];</script>` : ''}
-<p id="after">Текст под элементом</p>
-${assembly ? assemblyModule(component) : ''}
+${printedBody({component, example, html, assembly, bare, written})}
 </body></html>`);
   const context = await browser.newContext({viewport: {width, height: 900}, reducedMotion: 'reduce'});
   const page = await context.newPage();
@@ -339,7 +319,7 @@ ${assembly ? assemblyModule(component) : ''}
     await page.goto(`${site.origin}${path}`, {waitUntil: 'load'});
     await page.waitForFunction(() => window.__fp?.drawnAt !== null, null, {timeout: 20000}).catch(() => problems.push('the element never drew'));
     await page.evaluate(() => document.fonts.ready);
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(PRINTED_SETTLE_MS);
     // 24d, the printed parts: taken before phase 3, so a sheet the late data
     // or the port asks for is not counted.
     const unlistedParts = bare ? [] : await page.evaluate(({linked}) => {
