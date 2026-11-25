@@ -149,7 +149,7 @@ test('6. the command line: a session answers line by line, in order, and says wh
 });
 
 test('7. the template paths: the seven Docara prints and sf-switch name what the distribution holds', () => {
-  const fixed = {badge: '1.8.1', tag: '1.13.2', tooltip: '1.5.5', avatar: '1.8.7', 'progress-bar': '1.5.7', 'reference-link': '1.3.6', 'button-copy': '1.7.8', switch: '1.10.2'};
+  const fixed = {badge: '1.8.1', tag: '1.13.2', tooltip: '1.5.5', avatar: '1.8.7', 'progress-bar': '1.5.7', 'reference-link': '1.3.6', 'button-copy': '1.7.8', switch: '1.10.3'}; // GB19 integration: switch 1.10.2 moved on by touch size (1.10.3)
   for (const [folder, version] of Object.entries(fixed)) {
     const manifest = json(`src/smart/${folder}/component.json`);
     assert.equal(manifest.version, version, `${folder}: group build 19, the template path as shipped`);
