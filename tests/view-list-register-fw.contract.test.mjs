@@ -78,5 +78,5 @@ test('VL-54: a cell\'s badge stands on the line of the row\'s text and keeps a w
   assert.match(choice, /rootStyle: CELL_BADGE_ROOM,/u); // GB17: the hue is the badge's setting (C411), the cell keeps only the word's room
   const badges = source.slice(source.indexOf('function renderChoicesBadgesCell('), source.indexOf('function renderChoicesBadgesCell(') + 1600);
   assert.match(badges, /line: CELL_BADGE_LINE,/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.1') // GB18 L6; // GB17: FS-9 joined; gb17-fields F4 joined
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.2') // GB19 B: include view owns no lit DOM // GB18 L6; // GB17: FS-9 joined; gb17-fields F4 joined
 });

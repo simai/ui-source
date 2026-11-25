@@ -188,30 +188,35 @@ for (const {width, theme} of CASES) {
     ok(`${key}: money at rest reads its groups and minor units (9 800,00)`, typeof money === 'string' && money.replace(/[\s  ]/gu, ' ') === '9 800,00', money);
 
     // 2. Drawers: open each, read the bar, scroll by the wheel.
+    // sf-drawer moves its panel out of the host (display: contents), so the
+    // panel is found from the row it holds.
     const drawer = async (id, barSelector) => {
-      await tab.evaluate((one) => { document.getElementById(one).open = true; }, id);
-      await tab.waitForFunction((one) => document.querySelector(`#${one} .sf-drawer-panel`)?.getBoundingClientRect().width > 0, id, {timeout: 10_000});
+      await tab.evaluate((one) => document.getElementById(one).open(), id);
+      await tab.waitForFunction((bar) => (() => { const r = document.querySelector(bar)?.closest('.sf-drawer-panel')?.getBoundingClientRect(); return r && r.width > 0 && r.right <= innerWidth + 1 && r.left >= -1; })(), barSelector, {timeout: 10_000});
       await tab.waitForTimeout(450);
-      const read = () => tab.evaluate(([one, bar]) => {
-        const panel = document.querySelector(`#${one} .sf-drawer-panel`);
-        const body = document.querySelector(`#${one} .sf-drawer-body`);
-        const row = document.querySelector(`#${one} ${bar}`);
-        const scroller = [panel, body].find((node) => node && node.scrollHeight > node.clientHeight + 1 && /(auto|scroll)/u.test(getComputedStyle(node).overflowY));
+      const read = () => tab.evaluate(([, bar]) => {
+        const row = document.querySelector(bar);
+        const panel = row.closest('.sf-drawer-panel');
+                // Whatever box scrolls the panel's content: the largest scroll of the row's ancestors.
+        let scroller = null;
+        for (let node = row.parentElement; node && node !== document.documentElement; node = node.parentElement) {
+          if (node.scrollHeight > node.clientHeight + 1 && /(auto|scroll)/u.test(getComputedStyle(node).overflowY)) { scroller = node; break; }
+        }
         const box = row.getBoundingClientRect();
         return {position: getComputedStyle(row).position, marginEnd: getComputedStyle(row).marginBlockEnd,
           scrollTop: scroller ? Math.round(scroller.scrollTop) : null, bottom: Math.round(box.bottom),
           panelBottom: Math.round(panel.getBoundingClientRect().bottom), viewport: innerHeight};
       }, [id, barSelector]);
       const opened = await read();
-      const panelBox = await tab.evaluate((one) => {
-        const r = document.querySelector(`#${one} .sf-drawer-panel`).getBoundingClientRect();
+      const panelBox = await tab.evaluate((bar) => {
+        const r = document.querySelector(bar).closest('.sf-drawer-panel').getBoundingClientRect();
         return {x: r.left + r.width / 2, y: r.top + r.height / 2};
-      }, id);
+      }, barSelector);
       await tab.mouse.move(panelBox.x, panelBox.y);
       await tab.mouse.wheel(0, 600);
       await tab.waitForTimeout(400);
       const scrolled = await read();
-      await tab.evaluate((one) => { document.getElementById(one).open = false; }, id);
+      await tab.evaluate((one) => { document.getElementById(one).close(); }, id);
       await tab.waitForTimeout(400);
       return {opened, scrolled};
     };

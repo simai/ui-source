@@ -21,7 +21,7 @@ test('F1 (C401): labels="start" switches as sf-list-description layout auto, one
   assert.doesNotMatch(block, /container-step\(h0\)/u, 'the 40rem switch is gone');
   // One label column, as wide as the longest label up to 40 %, the rows a subgrid.
   assert.match(block, /--sf-form--label-width: 40%;/u);
-  assert.match(block, /grid-template-columns: fit-content\(var\(--sf-form--label-width\)\) minmax\(0, 1fr\);/u);
+  assert.match(block, /--sf-form--label-column: var\(--sf-form-label-width, fit-content\(var\(--sf-form--label-width\)\)\);[\s\S]*grid-template-columns: var\(--sf-form--label-column\) minmax\(0, 1fr\);/u);
   assert.match(block, /grid-template-columns: subgrid;[\s\S]*?column-gap: var\(--sf-form--label-gap\);/u);
   assert.match(block, /--sf-form--label-gap: var\(--sf-ui-1--space-x\);/u);
   assert.match(block, /\[data-size="1\/2"\] \{\s*--sf-form--label-gap: var\(--sf-ui-1\\\/2--space-x\);/u);
@@ -99,11 +99,11 @@ test('F5: sf-list-timeline takes time-zone for its times, day runs and midnight'
 
 test('F1-F5 versions: above every origin branch at the time of writing', () => {
   const version = (path) => json(path).version;
-  assert.equal(version('src/smart/form/component.json'), '1.15.2'); // GB17 F1b, then FS-6/FS-9 // group build 18: moved on by the merged branches or a GB15 assembly item
+  assert.equal(version('src/smart/form/component.json'), '1.16.0'); // GB17 F1b, then FS-6/FS-9 // group build 18: moved on by the merged branches or a GB15 assembly item
   assert.equal(version('src/smart/input-choice/component.json'), '1.12.0');
   assert.equal(version('src/smart/dropdown/component.json'), '1.25.3'); // GB17: joined with VL-43 and DSA-2
   assert.equal(version('src/smart/segmented/component.json'), '1.8.4'); // GB18 FL-1: one measure for the fold
   assert.equal(version('src/smart/list-timeline/component.json'), '1.6.0');
   assert.equal(version('src/core/passports/module.smart-helpers.json'), '1.21.1');
-  assert.equal(version('src/core/passports/module.smart-field-renderers.json'), '1.30.1') // GB18 L6; // FS-9 merged
+  assert.equal(version('src/core/passports/module.smart-field-renderers.json'), '1.30.2') // GB19 B: include view owns no lit DOM // GB18 L6; // FS-9 merged
 });
