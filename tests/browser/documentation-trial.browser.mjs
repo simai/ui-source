@@ -43,7 +43,8 @@ const page = `<!doctype html><html lang="ru" class="theme-light"><head>
   <sf-list-item value="b" text="B"></sf-list-item>
   <sf-list-item value="c" text="C"></sf-list-item>
 </sf-dropdown>
-<sf-tag id="tag" text="Фильтр" closable></sf-tag>
+<!-- The checkbox tag is written explicitly since C280 (kind default is the plain tag); GB19 triage. -->
+<sf-tag id="tag" kind="checkbox" text="Фильтр" closable></sf-tag>
 <sf-modal id="modal" title="Окно"><div>Текст</div></sf-modal>
 <script src="/distr/core/js/core.js"></script></body></html>`;
 

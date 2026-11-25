@@ -237,7 +237,10 @@ for (const theme of THEMES) {
   // The plate is the neutral fill, --sf-surface-container (C10, GF-17), which
   // C41 (owner 2026-11-10) made 8 % and keeps translucent: a step darker than
   // whatever place it is on.
-  check(`${theme}: the plate is a real colour`, expected.background !== TRANSPARENT && /rgba\(.+, 0\.08\)/u.test(expected.background), expected);
+  // The plate is a fill of the alpha scale's fill family, 12-32 % (owner
+  // decision on the alpha scale: state 4/8/12, fill 12-32, ink 48/64/80); the
+  // probe still asked the 8 % it had before the scale (GB19 triage).
+  check(`${theme}: the plate is a real colour`, expected.background !== TRANSPARENT && /rgba\(.+, 0\.(1[2-9]|2\d|3[0-2])\)/u.test(expected.background), expected);
   check(`${theme}: the radius resolves to 6px`, expected.radius === '6px', expected);
   check(`${theme}: the code in sf-button stays in its button`, buttonHasCode);
 

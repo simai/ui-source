@@ -38,7 +38,9 @@ const sourceRoot = process.env.ASSEMBLY_SOURCE_ROOT;
 if (!process.argv[2] && !sourceRoot) throw new Error('Build output root is required');
 // The page imports /core/js/assembly/index.mjs: <output>/core holds core/js/, as src/ does.
 const root = resolve(process.argv[2] ? join(process.argv[2], 'core') : sourceRoot);
-const TYPES = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8'};
+// .json: the runtime imports JSON modules (with {type: 'json'}); a browser
+// refuses one served as application/octet-stream (GB19 triage).
+const TYPES = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8'};
 
 const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>assembly runtime</title></head><body><div id="stage"></div>
 <script type="module">

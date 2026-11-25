@@ -59,14 +59,18 @@ try {
     const root = document.querySelector('#crumbs');
     const expand = root.querySelector('button');
     const label = expand?.getAttribute('aria-label') ?? null;
+    // Since C93 item 1 «…» opens its hidden crumbs as a menu beside it (sf-
+    // menu-context); the trail keeps «…». The first pass read the trail
+    // expanding in place (GB19 triage: the probe, not the component).
+    const shownBefore = [...root.querySelectorAll('a, [aria-current]')].filter((item) => item.getBoundingClientRect().width > 0).length;
     expand?.click();
-    await new Promise((settle) => setTimeout(settle, 400));
-    const visible = [...root.querySelectorAll('a, [aria-current]')].filter((item) => item.getBoundingClientRect().width > 0).length;
-    const ellipsis = [...root.querySelectorAll('button')].filter((button) => button.getBoundingClientRect().width > 0).length;
-    return {label, visible, ellipsis};
+    const menu = root.querySelector('.sf-breadcrumbs-menu');
+    for (let i = 0; i < 40 && !menu?.isOpen; i += 1) await new Promise((settle) => setTimeout(settle, 100));
+    const hidden = menu?.entries?.length ?? 0;
+    return {label, open: Boolean(menu?.isOpen), hidden, shownBefore};
   });
   if (crumbs.label !== 'Показать скрытые крошки') failures.push(`breadcrumbs «…» named ${JSON.stringify(crumbs.label)}`);
-  if (crumbs.visible < 6 || crumbs.ellipsis) failures.push(`breadcrumbs did not stay expanded: ${JSON.stringify(crumbs)}`);
+  if (!crumbs.open || crumbs.hidden < 1 || crumbs.shownBefore + crumbs.hidden < 6) failures.push(`breadcrumbs «…» did not open its hidden crumbs as a menu (C93 item 1): ${JSON.stringify(crumbs)}`);
   // A selected segment at scheme=secondary: appearance default + secondary had
   // no styles -- no fill, the browser's 13.33px text. Since sf-segmented 1.4.0
   // (owner decision D11c) the track is the default look and its fill is one

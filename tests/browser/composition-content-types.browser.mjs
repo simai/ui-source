@@ -96,7 +96,7 @@ try {
         return ready('.sf-highlight', (node) => node.classList.contains('init'))
           && ready('.sf-tabs-top', (node) => node.getAttribute('role') === 'tablist')
           && ready('.sf-card', (node) => getComputedStyle(node).borderTopWidth !== '0px')
-          && ready('.sf-procedure-step', (node) => getComputedStyle(node, '::before').content.includes('counter'))
+          && ready('.sf-procedure-step:not(.sf-procedure-step--complete)', (node) => getComputedStyle(node, '::before').content.includes('counter'))
           && ready('.sf-alert', (node) => getComputedStyle(node).backgroundColor !== 'rgba(0, 0, 0, 0)' || getComputedStyle(node).borderTopWidth !== '0px')
           && ready('.table-frame', (node) => getComputedStyle(node).borderTopWidth !== '0px')
           && ready('.sf-download-file', (node) => getComputedStyle(node).borderTopWidth !== '0px')
@@ -115,7 +115,7 @@ try {
         const markers = [...document.querySelectorAll('.sf-procedure-step')].map((step) => {
           const before = getComputedStyle(step, '::before');
           const after = getComputedStyle(step, '::after');
-          return {content: before.content, width: before.width, line: after.content !== 'none' && after.content !== 'normal' ? after.height : null};
+          return {complete: step.classList.contains('sf-procedure-step--complete'), content: before.content, check: before.backgroundImage.includes('gradient'), width: before.width, line: after.content !== 'none' && after.content !== 'normal' ? after.height : null};
         });
         const figureMedia = box('[data-sf-composition-id="figure"] .sf-figure-media');
         const mediaFigure = box('[data-sf-composition-id="media"] .sf-figure-media');
@@ -146,6 +146,8 @@ try {
               tag: link?.tagName.toLowerCase(), download: link?.hasAttribute('download'), border: link ? getComputedStyle(link).borderTopWidth : null,
               icon: part('.sf-icon')?.textContent, name: part('.sf-download-file__name')?.textContent, size: part('.sf-download-file__size')?.textContent,
               oneLine: Boolean(name && size && Math.abs((name.top + name.bottom) / 2 - (size.top + size.bottom) / 2) < 2),
+              // On a phone the size takes the line under the name, from its start (C51).
+              under: Boolean(name && size && size.top >= name.bottom - 0.5 && Math.abs(size.left - name.left) < 1),
             };
           })(),
           html: {pwned: window.__pwned === true, scripts: document.querySelectorAll('[data-sf-composition-id="html"] script, [data-sf-composition-id="html"] img').length},
@@ -170,13 +172,13 @@ try {
       if (!state.figure.ratio || Math.abs(state.figure.ratio - 16 / 9) > 0.02 || state.figure.fit !== 'contain') fail(where, 'the figure keeps 16/9 and contains its image', state.figure);
       if (!state.media.ratio || Math.abs(state.media.ratio - 4 / 3) > 0.02) fail(where, 'the media picture keeps 4/3', state.media);
       if (state.media.side !== (width >= 1280 ? 'left' : 'above')) fail(where, 'the media picture stands on the left, and above the text on a phone', state.media);
-      if (state.markers.length !== 3 || state.markers.some((marker) => !marker.content.includes('counter'))) fail(where, 'the procedure numbers its three steps', state.markers);
+      if (state.markers.length !== 3 || state.markers.some((marker) => (marker.complete ? !(marker.content === '""' && marker.check) : !marker.content.includes('counter')))) fail(where, 'the procedure numbers its three steps; a done one draws its check instead (Pr1)', state.markers);
       if (state.markers[0]?.line === null || state.markers[1]?.line === null || state.markers[2]?.line !== null) fail(where, 'a line runs from each marker to the next, none after the last', state.markers);
       if (state.current !== 'step') fail(where, 'the current step says so', state.current);
       if (state.highlighted === 0) fail(where, 'the code is highlighted');
       if (state.tabs.role !== 'tablist' || JSON.stringify(state.tabs.hidden) !== '[false,true]') fail(where, 'the tabs are bound with the first panel shown', state.tabs);
       if (state.details) fail(where, 'the details start closed');
-      if (state.file.tag !== 'a' || !state.file.download || state.file.border !== '1px' || state.file.icon !== 'picture_as_pdf' || state.file.name !== 'Annual report.pdf' || state.file.size !== '1.4 MB' || !state.file.oneLine) fail(where, 'the file is a framed download row with its icon, name and size', state.file);
+      if (state.file.tag !== 'a' || !state.file.download || state.file.border !== '1px' || state.file.icon !== 'picture_as_pdf' || state.file.name !== 'Annual report.pdf' || state.file.size !== '1.4 MB' || !(width > 512 ? state.file.oneLine : state.file.under)) fail(where, 'the file is a framed download row with its icon, name and size (on a phone the size under the name, C51)', state.file);
       if (state.html.pwned || state.html.scripts) fail(where, 'content.html ran or kept something', state.html);
       // Behaviour: the second tab, then the details.
       await tab.click('.sf-tabs-top button:nth-child(2)');

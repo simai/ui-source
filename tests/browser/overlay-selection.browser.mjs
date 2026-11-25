@@ -189,7 +189,8 @@ try {
   check(tools.length === 5 && tools.every((tool) => tool.height === 32 && tool.width === 32), 'an action with an icon is an icon button of 32 px', tools);
   check(tools[1].name === 'Выше' && tools[4].name === 'Удалить', 'the label is the accessible name', tools);
   await page.hover('button[data-action="up"]');
-  await page.waitForTimeout(400);
+  // A resting pointer shows the tooltip after its open delay (500 ms, _tooltip.js OPEN_DELAY).
+  await page.waitForFunction(() => document.querySelector('button[data-action="up"]').closest('.sf-tooltip-anchor').querySelector('sf-tooltip').hidden === false, null, {timeout: 3000}).catch(() => {});
   const tip = await page.evaluate(() => {
     const surface = document.querySelector('button[data-action="up"]').closest('.sf-tooltip-anchor').querySelector('sf-tooltip');
     const keys = surface.querySelector('.sf-tooltip-shortcut');

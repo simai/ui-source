@@ -12,7 +12,10 @@ const out = resolve(process.argv[2]);
 const cases = [
   // The legacy *attribute* (type) carries a current value: ghost itself is now a
   // legacy value of sf-button, drawn as link (journal value-button-ghost-to-link).
-  {tag: 'sf-button', root: '.sf-button', prefix: 'sf-button--', legacy: 'tonal', canonical: 'surface',
+  // surface draws as tonal on-surface since C116, so the axis is checked with
+  // two looks that keep their own class (as sf-button-icon below).
+  {tag: 'sf-button', root: '.sf-button', prefix: 'sf-button--', legacy: 'tonal', canonical: 'outline',
+   changeFrom: 'tonal', changeTo: 'outline',
    css: ['core/core/css/core.css', 'component/component/buttons/css/buttons.css'],
    js: 'smart/smart/button/js/button.js'},
   // sf-button-icon's looks are four since rule C15 (actions block, 2026-11-08):
@@ -43,14 +46,14 @@ const classCases = [
    js: 'smart/smart/list-item/js/list-item.js', attributes: {type: 'icon', text: 'x'}, expect: 'sf-list-item--icon'},
   {tag: 'sf-list-item', root: '.sf-list-item', css: ['core/core/css/core.css', 'component/component/dropdown/css/dropdown.css'],
    js: 'smart/smart/list-item/js/list-item.js', attributes: {kind: 'avatar', text: 'x'}, expect: 'sf-list-item--avatar'},
-  {tag: 'sf-tag', root: '.sf-tag', css: ['core/core/css/core.css', 'component/component/tags/css/tags.css'],
-   js: 'smart/smart/tag/js/tag.js', attributes: {type: 'success', text: 'x'}, expect: 'sf-tag--success',
-   note: 'a status word given as the legacy type reaches the status axis'},
-  {tag: 'sf-tag', root: '.sf-tag', css: ['core/core/css/core.css', 'component/component/tags/css/tags.css'],
+  {tag: 'sf-tag', root: '.sf-tag, .sf-tag-badge', css: ['core/core/css/core.css', 'component/component/tags/css/tags.css'],
+   js: 'smart/smart/tag/js/tag.js', attributes: {type: 'success', text: 'x'}, expect: 'sf-badge--success',
+   note: 'a status word given as the legacy type reaches the status axis (a status tag nobody presses or removes draws the tonal badge of it, C140 (6))'},
+  {tag: 'sf-tag', root: '.sf-tag, .sf-tag-badge', css: ['core/core/css/core.css', 'component/component/tags/css/tags.css'],
    js: 'smart/smart/tag/js/tag.js', attributes: {type: 'icon', text: 'x'}, expect: 'sf-tag--icon',
    note: 'and a content word reaches the kind axis'},
-  {tag: 'sf-tag', root: '.sf-tag', css: ['core/core/css/core.css', 'component/component/tags/css/tags.css'],
-   js: 'smart/smart/tag/js/tag.js', attributes: {kind: 'icon', status: 'warning', text: 'x'}, expect: 'sf-tag--warning',
+  {tag: 'sf-tag', root: '.sf-tag, .sf-tag-badge', css: ['core/core/css/core.css', 'component/component/tags/css/tags.css'],
+   js: 'smart/smart/tag/js/tag.js', attributes: {kind: 'icon', status: 'warning', text: 'x'}, expect: 'sf-badge--warning',
    absent: 'sf-tag--icon', note: 'with both set, the status is what the one class reports'},
   {tag: 'sf-badge', root: '.sf-badge', css: ['core/core/css/core.css', 'component/component/badges/css/badges.css'],
    js: 'smart/smart/badge/js/badge.js', attributes: {scheme: 'danger', text: 'x'}, expect: 'sf-badge--error',
@@ -61,8 +64,8 @@ const classCases = [
   {tag: 'sf-progress-bar', root: '.sf-progress-bar', css: ['core/core/css/core.css', 'component/component/progress-bar/css/progress-bar.css'],
    js: 'smart/smart/progress-bar/js/progress-bar.js', attributes: {tone: 'success', value: '40'}, expect: 'sf-progress-bar--success'},
   {tag: 'sf-progress-bar', root: '.sf-progress-bar', css: ['core/core/css/core.css', 'component/component/progress-bar/css/progress-bar.css'],
-   js: 'smart/smart/progress-bar/js/progress-bar.js', attributes: {tone: 'primary', value: '40'}, expect: 'sf-progress-bar--neutral',
-   note: 'the legacy colour word is answered as neutral'},
+   js: 'smart/smart/progress-bar/js/progress-bar.js', attributes: {tone: 'primary', value: '40'}, expect: 'sf-progress-bar',
+   absent: 'sf-progress-bar--neutral', note: 'the legacy colour word is the default, the theme primary, not neutral grey (C131 (1))'},
 ];
 
 const failures = [];

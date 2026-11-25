@@ -23,6 +23,9 @@ const html = (theme) => `<!doctype html><html class="theme-${theme}"><body>
   <button type="button" class="sf-button sf-button--size-1 sf-button--surface sf-button--on-surface" id="button-surface">
     <span class="sf-button-text-container">surface</span>
   </button>
+  <button type="button" class="sf-button sf-button--size-1 sf-button--tonal sf-button--on-surface" id="button-tonal">
+    <span class="sf-button-text-container">tonal</span>
+  </button>
   <button type="button" class="sf-button sf-button--size-1 sf-button--ghost sf-button--on-surface" id="button-ghost">
     <span class="sf-button-text-container">ghost</span>
   </button>
@@ -107,7 +110,12 @@ try {
 
     // Every family: ghost empty at rest, surface faint with a stronger boundary.
     const families = [
-      {name: 'button', surface: 'button-surface', ghost: 'button-ghost', disabled: 'button-disabled', boundary: (s) => alpha(s.border)},
+      // The button's surface class is a former name since C116: it draws exactly
+      // as tonal on-surface (journal class-button-set-c116), a fill of the alpha
+      // scale's fill family (12-32 %, owner decision on the alpha scale) with no
+      // boundary of its own. So the button is held to the tonal it names, not to
+      // the faint fill with a stronger edge the class drew before (GB19 triage).
+      {name: 'button', surface: 'button-surface', ghost: 'button-ghost', disabled: 'button-disabled', boundary: (s) => alpha(s.border), drawsAs: 'button-tonal'},
       // The icon button has no surface look since component.icon-buttons 1.6.0 (C15): its
       // former class draws as tonal (journal class-icon-button-retired-looks-c15).
       {name: 'tag', surface: 'tag-surface', ghost: 'tag-ghost', disabled: null, boundary: (s) => shadowAlpha(s.shadow)},
@@ -122,10 +130,14 @@ try {
       }
       const fill = alpha(surface.background);
       const edge = family.boundary(surface);
-      if (!(fill > 0 && fill < 0.1)) {
+      if (family.drawsAs) {
+        const named = await read(family.drawsAs);
+        if (surface.background !== named.background) note({family: family.name, surfaceFill: surface.background, tonal: named.background, expected: 'the fill of tonal on-surface (C116)'});
+        if (!(fill >= 0.12 - 1e-6 && fill <= 0.32 + 1e-6)) note({family: family.name, surfaceFill: surface.background, expected: 'a fill of the fill family, 12-32 %'});
+      } else if (!(fill > 0 && fill < 0.1)) {
         note({family: family.name, surfaceFill: surface.background, expected: 'a faint translucent fill'});
       }
-      if (!(edge > fill)) {
+      if (!family.drawsAs && !(edge > fill)) {
         note({family: family.name, surfaceFill: surface.background, surfaceEdge: edge, expected: 'a boundary one step stronger than the fill'});
       }
 
@@ -179,4 +191,4 @@ try {
   await browser.close();
 }
 if (failures.length) throw new Error(JSON.stringify(failures, null, 2));
-process.stdout.write('Alpha appearances: PASS — button and tag: ghost empty until touched, surface faint with a stronger boundary, status colour untouched, both themes from one declaration\n');
+process.stdout.write('Alpha appearances: PASS — button and tag: ghost empty until touched, the button former surface drawn as tonal on-surface, the tag surface faint with a stronger boundary, status colour untouched, both themes from one declaration\n');

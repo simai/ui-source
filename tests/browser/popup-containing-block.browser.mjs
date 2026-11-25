@@ -77,6 +77,9 @@ const POPUPS = {
     open: async (page) => page.focus('#tooltip-button'),
     anchor: '#tooltip',
     panel: '#tooltip-tip',
+    // A tooltip with a tail stands its tail's length plus --sf-space-1/4 off the
+    // trigger (--sf-tooltip--tail-gap, 12 at size 1): the point keeps the 4.
+    maxGap: 13,
   },
   help: {
     surface: true,
@@ -198,7 +201,7 @@ try {
               measures[label] = got;
               if (!got.found || !got.shown) note({case: `${label}: opens`, got});
               else {
-                if (got.gap > 8) note({case: `${label}: within 8px of its anchor`, got});
+                if (got.gap > (spec.maxGap ?? 8)) note({case: `${label}: within ${spec.maxGap ?? 8}px of its anchor`, got});
                 if (!got.inside) note({case: `${label}: inside the viewport`, got});
                 if (!got.own) note({case: `${label}: nothing covers or clips it`, got});
                 const key = `${scrolled}`;
