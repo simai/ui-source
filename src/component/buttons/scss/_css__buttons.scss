@@ -677,12 +677,47 @@
   .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))) {
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
+  /* The line at a join of filled parts (VL-77, owner 2026-11-24) is the
+     part's own label ink at 24, the step of the quiet line
+     (--sf-outline-variant): it stands on the part's fill with the contrast
+     the label has, so it reads alike on every fill and in both themes
+     (1.5-2.0:1 measured). It was white at 24 on every fill: 1.04:1 on a light
+     tonal fill and 1.06-1.14:1 on a dark-theme filled one, invisible there
+     and seen only on the dark fills. The ink is the label's role of each
+     look, the author's --sf-button-color first; outline draws its own frame
+     and ghost the group's outline (the custom sheet). */
+  .sf-button.sf-button--default.sf-button--primary {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-primary));
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-button--on-place-ink, var(--sf-on-surface-inverse)));
+  }
+  .sf-button.sf-button--tonal.sf-button--primary {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-primary-container));
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-surface));
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-error));
+  }
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-error-container));
+  }
+  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));
+  }
   .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle) {
-    border-inline-end-color: var(--sf-white--alfa-24, transparent);
+    border-inline-end-color: color-mix(in srgb, var(--sf-button--join-ink, currentColor) 24%, transparent);
   }
 }
 
 @layer sf.states {
+  /* A disabled part's join takes the disabled ink of its label (VL-77). */
+  .sf-button:is(:disabled, [aria-disabled="true"]):not(.sf-button-state-loading:not(.disabled)) {
+    --sf-button--join-ink: var(--sf-on-surface-disabled);
+  }
+
   .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))):not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))):not(:disabled):not(.disabled):focus-visible {
     --sf-button--background-color: var(--sf-transparent-for-focus);
   }

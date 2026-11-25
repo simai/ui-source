@@ -506,6 +506,22 @@
       "reason": "recorded by the group build 18 pre-cut (merge of feat/gb18-tabs d69bcc8bd, f977c8a70, VO-1): sf-tabs appends a tab button's forwarded data-* names last in the host's order, and settles them only when one stands before its own; attribute order the script writes, the class markup is unchanged",
       "decision": "GB18 tabs VO-1, View round 16 acceptance",
       "date": "2026-11-24"
+    },
+    {
+      "unit": "component.buttons",
+      "version": "1.22.5",
+      "twin": "smart.button",
+      "reason": "recorded by group build 19 (VL-77): the join line of filled segments is the look's label ink at 24 and an icon ghost segment is framed; the Smart host renders the class markup with segment-* and takes it as it is",
+      "decision": "VL-77, DEV msg-78ac7465af444d738daa",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "component.icon-buttons",
+      "version": "1.20.3",
+      "twin": "smart.button-icon",
+      "reason": "recorded by group build 19 (VL-77): the join line of filled segments is the look's label ink at 24 and an icon ghost segment is framed; the Smart host renders the class markup with segment-* and takes it as it is",
+      "decision": "VL-77, DEV msg-78ac7465af444d738daa",
+      "date": "2026-11-25"
     }
   ]
 }

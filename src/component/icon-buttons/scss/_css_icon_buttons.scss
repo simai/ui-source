@@ -510,12 +510,39 @@
   .sf-icon-button .sf-icon {
     color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
   }
+  /* The line at a join of filled parts (VL-77, owner 2026-11-24), as on
+     sf-button: the label ink of the look at 24, the step of the quiet line.
+     The label's role and not the glyph's paler one, so a join reads the same
+     whichever part stands first. It was white at 24 on every fill. */
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-primary));
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-primary-container));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-error));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-error-container));
+  }
   .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle) {
-    border-inline-end-color: var(--sf-white--alfa-24, transparent);
+    border-inline-end-color: color-mix(in srgb, var(--sf-icon-button--join-ink, currentColor) 24%, transparent);
   }
 }
 
 @layer sf.states {
+  /* A disabled part's join takes the disabled ink of its label (VL-77). */
+  .sf-icon-button:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--join-ink: var(--sf-on-surface-disabled);
+  }
+
   .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
     --sf-icon-button--background-color: var(--sf-surface-disabled);
   }

@@ -158,7 +158,11 @@ Joined positions `segment-start`, `segment-middle` and `segment-end` square
 the corners two neighbours share and draw one line at each join: the end edge
 of the segment before it (a segment that follows another has no start edge).
 An outline segment among others owns both of its joins, so a selected outline
-segment is framed whole.
+segment is framed whole. Between filled segments the line is the label's ink
+of the look at 24 % (1.22.5, owner remark VL-77): it reads alike on a light
+and a dark fill, as the label does (about 1.5-2:1 on its fill in both themes);
+a disabled segment draws it in the disabled ink. Ghost segments, buttons and
+icon buttons alike, draw the group's outline (`--sf-outline`) around them.
 
 Six emphases, each in an accent (`primary`) and a neutral (`on-surface`)
 scheme:
