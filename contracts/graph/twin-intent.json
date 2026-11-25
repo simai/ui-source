@@ -586,6 +586,54 @@
       "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/<file> as shipped; manifest only, the class tags are unchanged",
       "decision": "GB19 render, Docara template paths (q-b98d1c5770)",
       "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.breadcrumbs",
+      "version": "1.2.11",
+      "twin": "component.breadcrumbs",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-tools e7e14211a, area C): the «…» menu waits for its code through SF.Loader.ensure with press (GB18 L2) in place of customElements.whenDefined; the element's behaviour only, the class breadcrumbs are unchanged",
+      "decision": "DEV answer 5 on GB18, msg-cda157ebd00d44df8792",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.file-preview",
+      "version": "1.5.6",
+      "twin": "component.file-preview",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-tools e7e14211a, area C): the gallery loads through SF.Loader.ensure with press; the element's behaviour only, the class file preview is unchanged",
+      "decision": "DEV answer 5 on GB18, msg-cda157ebd00d44df8792",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.input-date",
+      "version": "1.18.1",
+      "twin": "component.datepicker",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-tools e7e14211a, area C): the phone bottom sheet loads through SF.Loader.ensure with press; the element's behaviour only, the class datepicker is unchanged",
+      "decision": "DEV answer 5 on GB18, msg-cda157ebd00d44df8792",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.checkbox",
+      "version": "1.6.2",
+      "twin": "component.checkbox",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-device 7f92c0770, touch size): a bare Smart box takes the 44 hit area on a coarse pointer through module.smart-helpers checkable-row.css; the class checkbox takes the same area from the core rule _sf_css__touch_targets.scss (core.styles), so its own sheet is unchanged",
+      "decision": "Touch screens rule 12, C428, DEV msg-48be8a01a7364c99a67b",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.radio",
+      "version": "1.4.6",
+      "twin": "component.radio",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-device 7f92c0770, touch size): a bare Smart radio takes the 44 hit area on a coarse pointer through module.smart-helpers checkable-row.css; the class radio takes the same area from the core rule _sf_css__touch_targets.scss (core.styles), so its own sheet is unchanged",
+      "decision": "Touch screens rule 12, C428, DEV msg-48be8a01a7364c99a67b",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.switch",
+      "version": "1.10.3",
+      "twin": "component.switch",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-device 7f92c0770 over feat/gb19-render's 1.10.2): a bare Smart switch takes the 44 hit area on a coarse pointer through module.smart-helpers checkable-row.css, and 1.10.2's template path as shipped is manifest only; the class switch takes the area from the core rule _sf_css__touch_targets.scss (core.styles), so its own sheet is unchanged",
+      "decision": "Touch screens rule 12, C428, DEV msg-48be8a01a7364c99a67b; GB19 render (q-b98d1c5770)",
+      "date": "2026-11-25"
     }
   ]
 }
