@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -97,7 +97,7 @@
       "appearance": {
         "type": "string",
         "default": "inline",
-        "description": "inline: the question and its answers inside its row, above the row's line, on a quiet plate (owner decision C166, R245: the place's surface-container, --sf-radius-2, --sf-space-1/2 by --sf-space-1 inside, --sf-space-1/2 all round on a phone), no frame of their own. card: in a framed card with its own inset. window: the content of a question window (sf-modal size=\"question\", decision C39) -- the window's title is the question, so it only names the group here; the consequences on a quiet plate, the decisive sentence (consequence) on its own line, the page's options, the name to type (require), then the answers at the start, the filled danger answer first.",
+        "description": "inline: the question and its answers inside its row, above the row's line, on a quiet plate (owner decision C166, R245: the place's surface-container, --sf-radius-2, --sf-space-1/2 by --sf-space-1 inside, --sf-space-1/2 all round on a phone), no frame of their own. card: in a framed card with its own inset. window: the content of a question window (sf-modal size=\"question\", decision C39) -- in a window with a header the window's title is the question and the question's own line is not drawn; on a page of its own (no window around it) the question stands first, at the question window's title step (heading 4, bold), --sf-space-1 above the plate; the consequences on a quiet plate, the decisive sentence (consequence) on its own line, the page's options, the name to type (require), then the answers at the start, the filled danger answer first.",
         "enum": [
           "inline",
           "card",
@@ -338,11 +338,11 @@
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
-        "sha256": "06bc63df2b10d8a63f766ba42837d53a4ad926109d8bc729f1d40d1cca3cdc1b"
+        "sha256": "1bad4dde33dfb796133161007d8c560a2078cf6f16308d85851295871327f107"
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
-        "sha256": "f78e17fc814781fdd96e378687b9cf99731c24914e51a34952ea5d49ce226215"
+        "sha256": "d81de9b139a3eb31d16902d7cfb94d1abb05ba5d39e076992421a6b013b1888f"
       },
       {
         "path": "src/smart/confirm/rule.js",
@@ -350,11 +350,11 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "69607b26331c91f2927aeb95ec2eff1d7a8e95ca670c54cb2f68bbcaac7a7f6e"
+        "sha256": "ce81af5d3b015f3fc95db494c51f349d19602d32e8e31769f3a8257ab495940f"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "741421273884bb5f0f8ffafff969db4aeecdd3022d85f2d283dcb28de307a958"
+        "sha256": "882c5848b8a72dc34275abce50293203ab8a2d74920237faf0f794ae8fd39f8b"
       },
       {
         "path": "src/smart/confirm/lang/en.json",
