@@ -1,3 +1,5 @@
+@use '../../../core/scss/mix/mix__touch' as touch;
+
 @layer sf.override {
   /* One line at a join (docs review R003, 2026-11-06), as on the button: a
      segment that follows another has no start edge. Here, after surface has
@@ -496,3 +498,19 @@
   }
 }
 
+/* Touch screens rule 12 (DEV decision on the coarse-pointer target size,
+   group build 19): under a coarse pointer an icon button keeps its drawn
+   size and its hit area reaches the touch target, --sf-hit--touch (44), by
+   an invisible pseudo-element under its neighbours (core mix/_mix__touch.scss,
+   _sf_css__touch_targets.scss). In sf.base and without weight, so a sheet
+   that positions the button (a close in a corner) keeps its position. Left
+   out where the row is the target or a part keeps an area of its own: tab
+   rows (they grow to 44), sf-settings rows, the tag's remove button (C145
+   (1)), the drawer head (C173 (6)) and the loading layer. */
+@include touch.coarse {
+  @layer sf.base {
+    :where(.sf-icon-button:not(.loading, .sf-icon-button-state-loading, .sf-tabs-top *, .sf-settings-row *, .sf-tag > *, .sf-drawer-head *, .sf-drawer-edge *)) {
+      @include touch.hit-area;
+    }
+  }
+}

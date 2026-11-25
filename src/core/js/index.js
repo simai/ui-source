@@ -42,6 +42,11 @@ import './sanitize.js';
 // (core.runtime 1.28.0).
 import {publishFormat} from './format.js';
 import './breakpoints.js';
+// The two device words, layout (the place's width) and pointer (coarse or
+// fine), and the item scope `devices` (study S-A, q-7097831f9f): SF.device.
+import './device.js';
+// A held touch, shared by lists, cards and boards (study S-A (4)): SF.longPress.
+import './long-press.js';
 import './clipboard.js';
 // What a copy says, one feedback for sf-button-copy and the attribute route
 // data-sf-copy (owner decision C48, 2026-11-11): SF.copyFeedback.

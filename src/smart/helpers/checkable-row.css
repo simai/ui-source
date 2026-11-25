@@ -264,3 +264,27 @@
     }
   }
 }
+
+/* Touch screens rule 12 (DEV decision on the coarse-pointer target size,
+   group build 19): a bare box -- a check box, radio or switch without text
+   (a table cell, a toolbar) -- keeps its drawn size under a coarse pointer
+   and its hit area reaches the touch target, --sf-hit--touch (44), by an
+   invisible pseudo-element under its neighbours. The rule is core's
+   (mix/_mix__touch.scss hit-area, _sf_css__touch_targets.scss), written out
+   here because this sheet is plain CSS; the query is the core pointer word.
+   A control with text is a row of the touch target's height already (W5,
+   above). In sf.base and without weight. */
+@media (pointer: coarse) and (not (any-pointer: fine)) {
+  @layer sf.base {
+    :where(.sf-checkable:not(.sf-checkable--text)) {
+      position: relative;
+    }
+
+    :where(.sf-checkable:not(.sf-checkable--text))::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-hit--touch)) / 2));
+    }
+  }
+}

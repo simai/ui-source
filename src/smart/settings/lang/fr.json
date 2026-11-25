@@ -27,6 +27,8 @@
     "pin": "Épingler",
     "unpin": "Désépingler",
     "move-hint": "Alt avec les flèches haut et bas change l’ordre",
-    "position": "{text} : {index} sur {count}"
+    "position": "{text} : {index} sur {count}",
+    "phone": "Sur le téléphone",
+    "phone-of": "{text} : sur le téléphone"
   }
 }

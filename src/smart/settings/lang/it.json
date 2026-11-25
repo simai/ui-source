@@ -27,6 +27,8 @@
     "pin": "Fissa",
     "unpin": "Sblocca",
     "move-hint": "Alt con le frecce su e giù cambia l’ordine",
-    "position": "{text}: {index} di {count}"
+    "position": "{text}: {index} di {count}",
+    "phone": "Sul telefono",
+    "phone-of": "{text}: sul telefono"
   }
 }

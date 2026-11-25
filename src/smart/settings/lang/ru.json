@@ -28,6 +28,8 @@
     "pin": "Закрепить",
     "unpin": "Открепить",
     "move-hint": "Alt и стрелки вверх и вниз меняют порядок",
-    "position": "{text}: {index} из {count}"
+    "position": "{text}: {index} из {count}",
+    "phone": "На телефоне",
+    "phone-of": "{text}: на телефоне"
   }
 }

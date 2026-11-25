@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 28,
-    "translated": 28,
+    "words": 30,
+    "translated": 30,
     "share": 100
   },
   "words": {
@@ -42,7 +42,9 @@
       "pin": "Закрепить",
       "unpin": "Открепить",
       "move-hint": "Alt и стрелки вверх и вниз меняют порядок",
-      "position": "{text}: {index} из {count}"
+      "position": "{text}: {index} из {count}",
+      "phone": "На телефоне",
+      "phone-of": "{text}: на телефоне"
     }
   }
 }

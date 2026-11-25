@@ -49,6 +49,8 @@
 @use 'sf_css__composition';
 @use 'sf_css__placeholder';
 @use 'sf_css__touch_fields';
+// Touch targets (Touch screens rule 12): the parent of an isolated control holds its hit area.
+@use 'sf_css__touch_targets';
 @use 'sf_css__field_width';
 // Hide and show (C212 (6)): sr-only and not-sr-only at the first paint.
 @use 'sf_css__hide';

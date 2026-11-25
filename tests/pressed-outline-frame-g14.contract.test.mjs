@@ -19,12 +19,12 @@ for (const [file, block] of [['src/component/icon-buttons/scss/_css_icon_buttons
 }
 
 test('G14: versions', () => {
-  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.3'); // GB19 VL-77: the join line; FS-11: the name tooltip serves a marked control
+  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.4'); // FS-11: the name tooltip serves a marked control // GB19 touch size (C428)
   assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.5'); // GB19 VL-77: the join line
 });
 
 test('G14: the Smart twins say what the sheets draw -- an outline toggle keeps its edge when pressed', () => {
-  for (const [path, version] of [['src/smart/button/component.json', '1.18.2'], ['src/smart/button-icon/component.json', '1.14.1']]) {
+  for (const [path, version] of [['src/smart/button/component.json', '1.18.2'], ['src/smart/button-icon/component.json', '1.14.2']]) { // GB19 touch size (C428)
     const manifest = JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'));
     assert.equal(manifest.version, version, path);
     const text = JSON.stringify(manifest);

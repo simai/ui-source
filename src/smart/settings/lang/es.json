@@ -27,6 +27,8 @@
     "pin": "Fijar",
     "unpin": "Desfijar",
     "move-hint": "Alt con las flechas arriba y abajo cambia el orden",
-    "position": "{text}: {index} de {count}"
+    "position": "{text}: {index} de {count}",
+    "phone": "En el teléfono",
+    "phone-of": "{text}: en el teléfono"
   }
 }

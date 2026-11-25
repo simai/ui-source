@@ -146,6 +146,7 @@
     "src/core/js/css-url.js",
     "src/core/js/density.js",
     "src/core/js/deprecations.js",
+    "src/core/js/device.js",
     "src/core/js/display-settings.js",
     "src/core/js/early-port.js",
     "src/core/js/effects.js",
@@ -315,6 +316,7 @@
     "src/core/js/language-packs.js",
     "src/core/js/layer-stack.js",
     "src/core/js/loader.js",
+    "src/core/js/long-press.js",
     "src/core/js/mask.js",
     "src/core/js/menu-open.js",
     "src/core/js/motion.js",
@@ -1060,7 +1062,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "f6f4b94104eb02a568816bfa9f09614658427314b2da1421a962b2cfe11d6fea",
+  "content_sha256": "7a8ccabd892d43cfc3d912007e4ec133321eadc4c169eb631259cbdc8d6fd3c8",
   "dependencies": [
     {
       "id": "core.styles",

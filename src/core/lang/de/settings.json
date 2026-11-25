@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 28,
-    "translated": 28,
+    "words": 30,
+    "translated": 30,
     "share": 100
   },
   "words": {
@@ -42,7 +42,9 @@
       "pin": "Anheften",
       "unpin": "Lösen",
       "move-hint": "Alt mit Pfeil nach oben und unten ändert die Reihenfolge",
-      "position": "{text}: {index} von {count}"
+      "position": "{text}: {index} von {count}",
+      "phone": "Auf dem Telefon",
+      "phone-of": "{text}: auf dem Telefon"
     }
   }
 }

@@ -581,6 +581,107 @@
       "expect": {
         "look": "panel"
       }
+    },
+    {
+      "name": "phone-columns",
+      "title": "Колонки для компьютера и телефона: одна очередь, переключатель «На телефоне» у колонки",
+      "settings": {
+        "look": "panel",
+        "size": "1/2",
+        "label": "Колонки и вид",
+        "items": [
+          {
+            "type": "group",
+            "text": "Колонки",
+            "items": [
+              {
+                "id": "columns",
+                "type": "fields",
+                "text": "Колонки",
+                "sortable": true,
+                "phoneSwitch": true,
+                "options": [
+                  {
+                    "id": "title",
+                    "text": "Заказ",
+                    "checked": true,
+                    "phone": true,
+                    "sortable": false,
+                    "phoneSwitch": false
+                  },
+                  {
+                    "id": "client",
+                    "text": "Клиент",
+                    "checked": true,
+                    "phone": true
+                  },
+                  {
+                    "id": "sum",
+                    "text": "Сумма",
+                    "checked": true,
+                    "phone": true
+                  },
+                  {
+                    "id": "status",
+                    "text": "Статус",
+                    "checked": true
+                  },
+                  {
+                    "id": "manager",
+                    "text": "Менеджер",
+                    "checked": true
+                  },
+                  {
+                    "id": "city",
+                    "text": "Город"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "group",
+            "text": "Вид",
+            "items": [
+              {
+                "id": "density",
+                "type": "choice",
+                "text": "Плотность",
+                "value": "normal",
+                "options": [
+                  {
+                    "id": "compact",
+                    "text": "Плотно"
+                  },
+                  {
+                    "id": "normal",
+                    "text": "Обычно"
+                  }
+                ]
+              },
+              {
+                "id": "nowrap",
+                "type": "switch",
+                "text": "Текст в одну строку",
+                "value": false
+              },
+              {
+                "id": "grid",
+                "type": "switch",
+                "text": "Линии между столбцами",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "first-paint": {
+        "max-bytes": 14336,
+        "why": "the panel stands open in the page's flow: six field rows, each with its handle, check and «На телефоне» switch (sf-switch printed), and the view group, print before any code, so the panel keeps its height when the runtime arrives"
+      },
+      "expect": {
+        "look": "panel"
+      }
     }
   ],
   "pages": [

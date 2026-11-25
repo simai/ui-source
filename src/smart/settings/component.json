@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.10.2",
+  "version": "1.11.1",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -73,6 +73,22 @@
             },
             "keywords": {
               "type": "array"
+            },
+            "devices": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "phone",
+                  "desktop"
+                ]
+              }
+            },
+            "phoneSwitch": {
+              "type": "boolean"
+            },
+            "phone": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -81,7 +97,7 @@
         }
       },
       "default": [],
-      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first; a choice in the panel look may say sortable and pinnable too (a filter's saved templates, C106 (3), (6)): the chosen option is the fill alone, the handle at the start, the pin at the end, the pinned on top; its value stays the chosen option's id and its order goes out as arrange and arranged ([{id, pinned}]). An option of a list that orders or pins may say sortable: false or pinnable: false (a table's system column): no handle or no pin, their places kept, and it stays where it stands while the others move"
+      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first; a choice in the panel look may say sortable and pinnable too (a filter's saved templates, C106 (3), (6)): the chosen option is the fill alone, the handle at the start, the pin at the end, the pinned on top; its value stays the chosen option's id and its order goes out as arrange and arranged ([{id, pinned}]). An option of a list that orders or pins may say sortable: false or pinnable: false (a table's system column): no handle or no pin, their places kept, and it stays where it stands while the others move. Any item, a group's item and an option of a fields list or a choice may say devices: [\"phone\"] or [\"desktop\"] (study S-A, decision q-7097831f9f; core's SF.device): it is shown only in that layout and hidden -- not disabled -- in the other, its value kept. A fields list with phoneSwitch: true draws a «На телефоне» switch on each field (the option's phone; one column list decides the desktop and the phone, S-A (2), VL-82); its value is then [{id, checked, pinned, phone}]; an option with phoneSwitch: false has none, its place kept"
     },
     "look": {
       "type": "enum",
@@ -125,6 +141,16 @@
       "type": "string",
       "default": "",
       "summary": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written after every change and put back into the items before the first drawing"
+    },
+    "device": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "phone",
+        "desktop"
+      ],
+      "default": "auto",
+      "summary": "The layout the items are shown for (study S-A; core's SF.device): auto measures the element's place -- its nearest size container, else the page -- and is phone below 600 px, desktop from 600; phone or desktop is a host's own word (a host that already knows its layout). An item with devices is shown only in the layouts it names"
     },
     "label": {
       "type": "string",
@@ -576,7 +602,9 @@
     "version 1.9.1 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (p10-width p11-fold); the pair before carried the old checks under the same number. No code, setting, word or drawing changes.",
     "version 1.10.0 (2026-11-19, owner decision C396; research ui-control control/research/2026-11-19-text-measure section 8.3; written above every origin branch, 1.9.1 the highest): a minor, nothing in its own files: its phone sheet comes from core mix/_mix__sheet.scss, which stops at --sf-measure-96 now (768px at text 16, 672 on a phone; 44rem before), and its panel is core --sf-popup-panel-width, 44 characters. Settings, values, events and keys unchanged.",
     "version 1.10.1 (2026-11-21, group build 16 G8; owner remark VR11-4, study ui-control control/research/2026-11-21-popup-head): a patch, a look fix. The panel head is as tall as its search -- the row and the inset above and below, the hairline inside: 48 at size 1, 40 at 1/2 and in a compact region (it was 45 / 41 / 37) -- and the close button's glyph ends in the rows' end column, where their checks end, with and without the body's scrollbar (it stood 8 px past them, 19 with the scrollbar); the search's icon moves in with the scrollbar too. No fill change: the shared grey head waits for the owner.",
-    "version 1.10.2 (2026-11-21, group build 16, G10; above 1.10.0 of every origin branch and G8's 1.10.1): a patch (owner remark VR11-5, view round 11 order 3). A drag by the handle marks the landing place with SF.Sortable's drop line -- one straight 2 px line across the list, .sf-sortable-indicator of sf-sortable's sheet, the rect of its line preview -- where the panel drew its own inset shadow on the landing row, which bent at the row's 4 px corners. New lazy relation cl-sortable for that sheet, asked for (SF.Loader.ensure) when a panel with a handle opens and when a drag starts. The row being dragged keeps its fill; the order written, the keys (Alt+arrows) and the events are unchanged."
+    "version 1.10.2 (2026-11-21, group build 16, G10; above 1.10.0 of every origin branch and G8's 1.10.1): a patch (owner remark VR11-5, view round 11 order 3). A drag by the handle marks the landing place with SF.Sortable's drop line -- one straight 2 px line across the list, .sf-sortable-indicator of sf-sortable's sheet, the rect of its line preview -- where the panel drew its own inset shadow on the landing row, which bent at the row's 4 px corners. New lazy relation cl-sortable for that sheet, asked for (SF.Loader.ensure) when a panel with a handle opens and when a drag starts. The row being dragged keeps its fill; the order written, the keys (Alt+arrows) and the events are unchanged.",
+    "version 1.11.0 (2026-11-25, group build 19 area A, study S-A decision q-7097831f9f (1), (2); above 1.10.2 of every origin branch): a minor. Device scope: any item, a group's item and an option of a fields list or a choice may carry devices: [\"phone\"] | [\"desktop\"]; in the other layout it is hidden (left out of the menu entries and the panel's groups, not disabled), its value kept in values, reset and remember. The layout is core's word (core/js/device.js, SF.device): the new setting device (auto | phone | desktop, default auto) -- auto measures the element's place, its nearest size container or the page, phone below 600 px, and follows it while connected. The author's mark is the item's own devices; a component that knows its own layout-bound items puts its marks on with SF.device.markDevices(items, marks), which leaves an item that has devices alone (the author's mark wins). Phone columns (S-A (2), VL-82, VL-83 phone part): a fields list with phoneSwitch: true draws a «На телефоне» switch on each field in a column of its own at the row's end (a role=\"switch\" named «<field>: на телефоне», sf-switch 1/2 for its look, at least 44 wide on a coarse pointer) and the column's name «На телефоне» at the end of the list's label row; one shared order; the value is then [{id, checked, pinned, phone}] and a switch press goes out as change and changed of the list as a check does; an option with phoneSwitch: false keeps the column empty; the arrow inward reaches the pin, then the switch; Space and Enter turn it. Words: phone, phone-of (11 languages). Without devices and phoneSwitch nothing is drawn, valued or emitted differently.",
+    "version 1.11.1 (2026-11-25, group build 19 touch size; DEV decision msg-48be8a01a7364c99a67b): a patch. Touch screens rule 12 (DEV decision on the coarse-pointer target size, C428): under a coarse pointer (the core pointer word) the panel's rows grow to the touch target, --sf-hit--touch (44), at every size (core mix/_mix__touch.scss row-height); size 1/2 rows were 28 on a phone. The phone switch's place owns the whole 44 row. Text, pads and the fine pointer's rows unchanged. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

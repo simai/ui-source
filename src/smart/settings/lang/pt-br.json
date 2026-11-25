@@ -27,6 +27,8 @@
     "pin": "Fixar",
     "unpin": "Desafixar",
     "move-hint": "Alt com as setas para cima e para baixo muda a ordem",
-    "position": "{text}: {index} de {count}"
+    "position": "{text}: {index} de {count}",
+    "phone": "No celular",
+    "phone-of": "{text}: no celular"
   }
 }

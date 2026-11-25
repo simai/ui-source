@@ -28,6 +28,8 @@
     "pin": "Pin",
     "unpin": "Unpin",
     "move-hint": "Alt with the up and down arrows changes the order",
-    "position": "{text}: {index} of {count}"
+    "position": "{text}: {index} of {count}",
+    "phone": "On phone",
+    "phone-of": "{text}: on phone"
   }
 }

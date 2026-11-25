@@ -1,5 +1,6 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__paint' as paint;
+@use '../../../core/scss/mix/mix__touch' as touch;
 
 /* A row's border width is registered as a length: the row's padding gives
    the border back (calc(padding - border width)), and a unitless 0 written
@@ -415,5 +416,18 @@
 @layer sf.paint {
   ::highlight(sf-menu-match) {
     background-color: var(--sf-mark--color, var(--sf-mark));
+  }
+}
+
+/* Touch screens rule 12 (DEV decision on the coarse-pointer target size,
+   group build 19): under a coarse pointer a menu row is a stacked target and
+   grows to the touch target, --sf-hit--touch (44), whatever its step (core
+   mix/_mix__touch.scss, row); its text and padding stay the step's and stand
+   on the row's centre line. */
+@include touch.coarse {
+  @layer sf.components {
+    .sf-menu-element {
+      @include touch.row;
+    }
   }
 }

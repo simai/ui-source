@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.10.2",
+  "version": "1.11.1",
   "title": "Settings",
   "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of two looks -- drill (the value under the name, the options in the same panel) or rows (the control at the row's end; a choice that does not fit beside its name drills by itself). With a trigger it opens over the page (a bottom sheet on a phone); without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. Where a product has a sign-in, the person's theme, language and text size are rows of the person menu (sf-menu-context, owner decision C176 (1)); sf-settings is the gear of a screen's view and of a site without a sign-in. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "kind": "smart",
@@ -101,6 +101,16 @@
         "default": "",
         "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written after every change and put back into the items before the first drawing"
       },
+      "device": {
+        "type": "string",
+        "default": "auto",
+        "description": "The layout the items are shown for (study S-A; core's SF.device): auto measures the element's place -- its nearest size container, else the page -- and is phone below 600 px, desktop from 600; phone or desktop is a host's own word (a host that already knows its layout). An item with devices is shown only in the layouts it names",
+        "enum": [
+          "auto",
+          "phone",
+          "desktop"
+        ]
+      },
       "label": {
         "type": "string",
         "description": "The panel's accessible name. «Настройки» / «Settings» in the page language when not set"
@@ -136,7 +146,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first; a choice in the panel look may say sortable and pinnable too (a filter's saved templates, C106 (3), (6)): the chosen option is the fill alone, the handle at the start, the pin at the end, the pinned on top; its value stays the chosen option's id and its order goes out as arrange and arranged ([{id, pinned}]). An option of a list that orders or pins may say sortable: false or pinnable: false (a table's system column): no handle or no pin, their places kept, and it stays where it stands while the others move"
+        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first; a choice in the panel look may say sortable and pinnable too (a filter's saved templates, C106 (3), (6)): the chosen option is the fill alone, the handle at the start, the pin at the end, the pinned on top; its value stays the chosen option's id and its order goes out as arrange and arranged ([{id, pinned}]). An option of a list that orders or pins may say sortable: false or pinnable: false (a table's system column): no handle or no pin, their places kept, and it stays where it stands while the others move. Any item, a group's item and an option of a fields list or a choice may say devices: [\"phone\"] or [\"desktop\"] (study S-A, decision q-7097831f9f; core's SF.device): it is shown only in that layout and hidden -- not disabled -- in the other, its value kept. A fields list with phoneSwitch: true draws a «На телефоне» switch on each field (the option's phone; one column list decides the desktop and the phone, S-A (2), VL-82); its value is then [{id, checked, pinned, phone}]; an option with phoneSwitch: false has none, its place kept"
       }
     },
     "additionalProperties": false
@@ -577,7 +587,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "fba660cf8a006219985364eeda33c58dcc1fd5e82ced723fb209df899c693568"
+        "sha256": "46c3f696bdd01a05d19dc52cd49695f7457bff8199ad1e65a8135a81d402336d"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
@@ -589,7 +599,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "897f2189f1b509db8f2c893690ea6c126c9183ae629ef7baa14b49d749a7fcf8"
+        "sha256": "25d617a15df6ebefc4d1b780da3ed05475b914c496850fc7e201dd8585ad1dfa"
       }
     ],
     "generated_runtime": []

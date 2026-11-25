@@ -56,12 +56,12 @@ test('the versions move with the look', () => {
   // Group build 7: the C123 notes numbered above the released pair; later notes (input-color's C123 (3),
   // the textarea and switch patch without icon-buttons, quantity's C122 names) stand above them.
   // Group build 8: the current numbers moved on (RG-S2 and C201 on input, C209 on input-color, the GB8 patches of moved units).
-  const want = {input: ['1.13.0', '1.17.0'], 'input-textarea': ['1.12.0', '1.14.0'], dropdown: ['1.16.0', '1.25.3'], 'input-color': ['1.13.0', '1.20.0'], switch: ['1.7.0', '1.10.2'], 'input-quantity': ['1.9.0', '1.13.0']}; // group build 17: sf-dropdown 1.25.2 over the two 1.25.1 // group build 15: the merged numbers // group build 10: the merged numbers // group build 9: the merged branches' numbers // C282: the language-file patch
+  const want = {input: ['1.13.0', '1.17.0'], 'input-textarea': ['1.12.0', '1.14.0'], dropdown: ['1.16.0', '1.25.3'], 'input-color': ['1.13.0', '1.20.0'], switch: ['1.7.0', '1.10.3'], 'input-quantity': ['1.9.0', '1.13.0']}; // group build 17: sf-dropdown 1.25.2 over the two 1.25.1 // group build 15: the merged numbers // group build 10: the merged numbers // group build 9: the merged branches' numbers // C282: the language-file patch
   for (const [folder, [version, current]] of Object.entries(want)) {
     const component = JSON.parse(read(`src/smart/${folder}/component.json`));
     assert.equal(component.version, current, folder);
     const note = new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123`, 'u');
     assert.ok(component['x-decisions'].some((line) => note.test(line)), `${folder} ${version} note`);
   }
-  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.21.1'); // group build 17 F4: optionBadgeLook, optionBadgeClass // feat/button-truncate-appearance: field-appearance.js (one look vocabulary for every field) // 1.13.0: the anchored badge's .sf-dot (C185 (8)); 1.13.1 char-count (area E) // C282: 1.13.1 moved on by the language-file patch (Russian is a language file) // group build 13: 1.16.0 moved on by the merged branches or a GB11 merge
+  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.21.2'); // group build 17 F4: optionBadgeLook, optionBadgeClass // feat/button-truncate-appearance: field-appearance.js (one look vocabulary for every field) // 1.13.0: the anchored badge's .sf-dot (C185 (8)); 1.13.1 char-count (area E) // C282: 1.13.1 moved on by the language-file patch (Russian is a language file) // group build 13: 1.16.0 moved on by the merged branches or a GB11 merge // GB19 touch size (C428)
 });

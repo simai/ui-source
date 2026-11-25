@@ -2,6 +2,7 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__sheet' as sheet;
 @use '../../../core/scss/mix/mix__paint' as paint;
+@use '../../../core/scss/mix/mix__touch' as touch;
 
 @layer sf.components {
   @include paint.part(shape);
@@ -65,6 +66,20 @@
   --sf-settings-panel--line: var(--sf-text-height-1);
   --sf-settings-panel--pad: var(--sf-ui-1--space-x);
   --sf-settings-panel--pin: calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-low));
+}
+
+/* Touch screens rule 12 (DEV decision on the coarse-pointer target size,
+   group build 19): under a coarse pointer the panel's rows are stacked
+   targets and grow to the touch target, --sf-hit--touch (44), at every size
+   (core mix/_mix__touch.scss); the text and the pads stay the size's. */
+@include touch.coarse {
+  .sf-settings-panel {
+    --sf-settings-panel--row-height: #{touch.row-height(var(--sf-ui-1\/2--control-height))};
+  }
+
+  .sf-settings-panel--size-1 {
+    --sf-settings-panel--row-height: #{touch.row-height(var(--sf-ui-1--control-height))};
+  }
 }
 
 /* Compact (C22): no rule of its own. The density already moves the size's
@@ -364,6 +379,66 @@
   opacity: 1;
 }
 
+/* A field's «На телефоне» switch (study S-A (2), VL-82): a column of its own
+   at the row's end, on the same plate -- the main control keeps its check,
+   its pad, then the switch and the pad. A field without one (phoneSwitch:
+   false) keeps the column with an invisible switch, so the checks stand in
+   one column. */
+.sf-settings-row--phones {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'row phone';
+}
+
+.sf-settings-row--phones > .sf-settings-row-phone,
+.sf-settings-row--phones > .sf-settings-row-phone-place {
+  grid-area: phone;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch;
+  padding-inline-end: var(--sf-settings-panel--pad);
+  border-radius: inherit;
+}
+
+.sf-settings-row-phone {
+  outline: none;
+  cursor: pointer;
+}
+
+.sf-settings-row-phone > sf-switch,
+.sf-settings-row-phone-place > sf-switch {
+  pointer-events: none;
+}
+
+/* Only the switch inside the place is hidden: the place itself takes a press
+   (and swallows it), so a press there does not reach the row's check. */
+.sf-settings-row-phone-place > sf-switch {
+  visibility: hidden;
+}
+
+/* A touch pointer (Touch screens, rules 9 and 12): the switch's hit area is
+   at least 44 wide and owns the whole row's height, which is the touch
+   target at every size (above); it never reaches over the neighbouring
+   rows. */
+@media (pointer: coarse) and (not (any-pointer: fine)) {
+  .sf-settings-row--phones > .sf-settings-row-phone,
+  .sf-settings-row--phones > .sf-settings-row-phone-place {
+    min-inline-size: var(--sf-d1);
+  }
+}
+
+/* The column's name over the switches, at the label row's end. */
+.sf-settings-panel-label--phones {
+  display: flex;
+  gap: var(--sf-settings-panel--gap);
+  justify-content: space-between;
+}
+
+.sf-settings-panel-label-end {
+  margin-inline-start: auto;
+  text-align: end;
+}
+
 /* A range: the name, the slider, the number. */
 .sf-settings-row--range {
   display: flex;
@@ -536,6 +611,7 @@
   }
 
   /* The ring turns inwards: the row stands flush against its neighbours. */
+  .sf-settings-row-phone:focus-visible,
   .sf-settings-row-main:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: var(--sf-focus--inset);

@@ -1,6 +1,6 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-import {choiceArranges, choiceOptions, fieldOptions, holdsValue, itemValue, matches, optionMoves, optionPins} from '../settings.js';
+import {choiceArranges, choiceOptions, fieldOptions, holdsValue, itemValue, matches, optionMoves, optionPhones, optionPins} from '../settings.js';
 
 // sf-settings' panel look (owner decision C106, 2026-11-12): the settings of a
 // list's view -- its fields, their order, the density -- in a panel of its own,
@@ -72,11 +72,28 @@ function renderRow(row, context) {
                 title=${row.pinned ? words.unpin : words.pin}
                 data-sf-setting=${row.setting} data-sf-option=${row.option}></sf-button-icon>`
         : nothing;
-    return html`<div class=${['sf-settings-row', `sf-settings-row--${row.kind}`, row.pins ? 'sf-settings-row--pins' : ''].filter(Boolean).join(' ')}
+    // The «На телефоне» switch of a field (study S-A (2), VL-82: one column
+    // list decides the desktop and the phone): the row's own switch, as a
+    // switch row draws it -- sf-switch 1/2 for its look, the span the role and
+    // the name («Статус: на телефоне»). One Tab stop with the rows: the arrow
+    // inward reaches it after the pin. A field that has none (phoneSwitch:
+    // false, a table's system column) keeps its place empty.
+    const phone = row.phones
+        ? (row.phone
+            ? html`<span class="sf-settings-row-phone" role="switch" tabindex="-1"
+                    aria-checked=${row.onPhone ? 'true' : 'false'}
+                    aria-disabled=${row.disabled ? 'true' : nothing}
+                    aria-label=${words.phoneOf(row.text)}
+                    data-sf-setting=${row.setting} data-sf-option=${row.option}><sf-switch size="1/2"
+                    ?checked=${row.onPhone} ?disabled=${row.disabled} inert aria-hidden="true"></sf-switch></span>`
+            : html`<span class="sf-settings-row-phone-place" aria-hidden="true"><sf-switch size="1/2" inert></sf-switch></span>`)
+        : nothing;
+    return html`<div class=${['sf-settings-row', `sf-settings-row--${row.kind}`, row.pins ? 'sf-settings-row--pins' : '', row.phones ? 'sf-settings-row--phones' : ''].filter(Boolean).join(' ')}
             ?hidden=${row.hidden}
             ?data-checked=${row.checked}
             ?data-pinned=${row.pinned}
-            ?data-disabled=${row.disabled}>${main}${pin}</div>`;
+            ?data-phone=${row.onPhone}
+            ?data-disabled=${row.disabled}>${main}${pin}${phone}</div>`;
 }
 
 // The rows of one list, and whether each is the list's Tab stop: the one the
@@ -154,13 +171,20 @@ function renderItems(items, context) {
             continue;
         }
         if (item.type === 'fields') {
+            const phones = Boolean(item.phoneSwitch);
             const rows = fieldOptions(item).map((option) => ({key: String(option.id), kind: 'field', role: 'checkbox', setting: item.id,
                 option: String(option.id), checked: Boolean(option.checked), pinned: Boolean(option.pinned),
                 text: option.text ?? '', disabled: Boolean(item.disabled || option.disabled),
                 sorts: Boolean(item.sortable), pins: Boolean(item.pinnable),
                 handle: optionMoves(item, option), pin: optionPins(item, option),
+                phones, phone: optionPhones(item, option), onPhone: phones && Boolean(option.phone),
                 hidden: !matches(context.query, option.text, option.keywords)}));
-            if (item.text && context.layout !== 'tabs') parts.push(html`<div class="sf-settings-panel-label" role="presentation" ?hidden=${rows.every((row) => row.hidden)}>${item.text}</div>`);
+            // A list with phone switches names their column at its end, over
+            // the switches («На телефоне»); each switch carries its own name,
+            // so the caption is not read out.
+            const caption = phones ? html`<span class="sf-settings-panel-label-end" aria-hidden="true">${context.words.phone}</span>` : nothing;
+            const label = item.text && context.layout !== 'tabs' ? item.text : '';
+            if (label || phones) parts.push(html`<div class=${['sf-settings-panel-label', phones ? 'sf-settings-panel-label--phones' : ''].filter(Boolean).join(' ')} role="presentation" ?hidden=${rows.every((row) => row.hidden)}>${label}${caption}</div>`);
             parts.push(listOf(`fields:${item.id}`, 'group', item.text, rows, context, {sortable: Boolean(item.sortable)}));
             continue;
         }

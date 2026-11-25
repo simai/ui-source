@@ -27,6 +27,8 @@
     "pin": "Anheften",
     "unpin": "Lösen",
     "move-hint": "Alt mit Pfeil nach oben und unten ändert die Reihenfolge",
-    "position": "{text}: {index} von {count}"
+    "position": "{text}: {index} von {count}",
+    "phone": "Auf dem Telefon",
+    "phone-of": "{text}: auf dem Telefon"
   }
 }
