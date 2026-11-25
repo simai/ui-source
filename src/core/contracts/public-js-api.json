@@ -518,6 +518,45 @@
       ]
     },
     {
+      "name": "SF.device",
+      "status": "public",
+      "layer": "core",
+      "audience": "public",
+      "author": "Tells scripts a component's layout (phone or desktop, by the width of its place) and the page's pointer (coarse or fine), and filters items by their devices scope.",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The two device words of the Touch screens page (study S-A, q-7097831f9f; docs/foundation-touch-screens.md): layoutOf(element | width | word) 'phone' below PHONE_BELOW (600 px) of the element's place (its nearest size container, else the page), else 'desktop'; layoutOfWidth(width); layoutPlace(element); watchLayout(element, callback) answers stop(); pointer() 'coarse' when COARSE_QUERY matches (a touch pointer and no fine one), else 'fine'; watchPointer(callback) answers stop(); the item scope devices: ['phone'] | ['desktop'] -- devicesOf(item), inLayout(item, layout), itemsInLayout(items, layout, {options}) (nested items, and options when asked); markDevices(items, marks) puts a component's own marks {id: layouts} on the items without a devices of their own (the author's mark wins). LAYOUTS ['phone', 'desktop']. docs/developer/device-scope.md.",
+      "members": [
+        "PHONE_BELOW",
+        "LAYOUTS",
+        "COARSE_QUERY",
+        "layoutOf",
+        "layoutOfWidth",
+        "layoutPlace",
+        "watchLayout",
+        "pointer",
+        "watchPointer",
+        "devicesOf",
+        "inLayout",
+        "itemsInLayout",
+        "markDevices"
+      ]
+    },
+    {
+      "name": "SF.longPress",
+      "status": "public",
+      "layer": "core",
+      "audience": "public",
+      "author": "Watches a held touch on an element, the long press lists, cards and boards share.",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The long press of the Touch screens page (study S-A (4); docs/foundation-touch-screens.md): watch(target, {accepts, press, ms}) calls press(event) when a primary touch is held ms (500, the tooltip's long press) on target and accepts(event) took its pointerdown; a touch the browser takes for a scroll (pointercancel) presses nothing; the browser's own long-press menu is suppressed while held. It answers {swallowed(), stop()}: swallowed() is true once, for the click that follows a fired press. ms 500. On a surface with multiple selection press() chooses the item, else it opens the item's «⋯» menu. docs/developer/device-scope.md.",
+      "members": [
+        "ms",
+        "watch"
+      ]
+    },
+    {
       "name": "SF.copyText",
       "status": "public",
       "layer": "core",

@@ -27,6 +27,8 @@
     "pin": "固定",
     "unpin": "固定を解除",
     "move-hint": "Alt と上下の矢印キーで順序を変更",
-    "position": "{text}: {index}/{count}"
+    "position": "{text}: {index}/{count}",
+    "phone": "スマートフォン",
+    "phone-of": "{text}: スマートフォン"
   }
 }

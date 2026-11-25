@@ -11,12 +11,23 @@
 //   {type: 'heading', text}, {type: 'separator'}
 //   {type: 'group', text, items: [...]}                              a titled block
 //   {id, type: 'fields', text, options: [{id, text, checked, pinned}],
-//    sortable, pinnable}                                             a list of many
+//    sortable, pinnable, phoneSwitch}                                a list of many
+//
+// Any item, and an option of a fields list or a choice, may carry
+// `devices: ['phone']` or `devices: ['desktop']` (study S-A, q-7097831f9f):
+// it is shown only in that layout and hidden -- not disabled -- in the other;
+// its value is kept. The layout is core's word (core/js/device.js): 'phone'
+// below 600 px of the element's place. A fields list with `phoneSwitch: true`
+// draws a «На телефоне» switch on each field (option `phone`), the one column
+// list that decides both the desktop and the phone (S-A (2), VL-82); an
+// option with `phoneSwitch: false` has none (a table's system column).
 //
 // The value lives in the item and nowhere else. A fields list (the panel look,
 // owner decision C106) keeps its value in its options: their order, which are
 // checked and which are pinned; its value reads them as [{id, checked, pinned}]
 // in order, the pinned ones first.
+
+import {itemsInLayout} from '../../../core/js/device.js';
 
 export const LOOKS = ['drill', 'rows', 'panel'];
 // The tiles look left (owner decision C176 (5), 2026-11-14): its switches are
@@ -83,6 +94,19 @@ function colorOptions(item) {
 const allowsOwn = (item) => item?.custom !== false;
 
 const isItem = (item) => Boolean(item) && typeof item === 'object' && TYPES.includes(item.type);
+
+/**
+ * The items shown in a layout ('phone' | 'desktop'): an item, a group's item
+ * and an option of a fields list or a choice scoped by `devices` to the other
+ * layout are left out (core's itemsInLayout). Without a layout, all of them.
+ */
+export function itemsFor(items, layout) {
+  if (!layout) return Array.isArray(items) ? items : [];
+  return itemsInLayout(items, layout, {options: true});
+}
+
+/** Whether a fields list's option has a «На телефоне» switch: the list draws them and the option does not refuse. */
+export const optionPhones = (item, option) => item?.type === 'fields' && Boolean(item?.phoneSwitch) && option?.phoneSwitch !== false;
 const optionsOf = (item) => (Array.isArray(item?.options) ? item.options.filter((option) => option && typeof option === 'object' && option.id !== undefined && option.id !== null) : []);
 
 /**
@@ -114,10 +138,17 @@ function fieldsPatch(item, value) {
     const option = {...byId.get(one.id)};
     if (typeof one.checked === 'boolean') option.checked = one.checked;
     if (typeof one.pinned === 'boolean') option.pinned = one.pinned;
+    if (typeof one.phone === 'boolean') option.phone = one.phone;
     return option;
   });
   return {options: fieldOptions({options: [...ordered, ...options.filter((option) => !listed.has(option.id))]})};
 }
+
+// A fields list's option as its value reads it: {id, checked, pinned}, and
+// phone when the list draws the «На телефоне» switches.
+const fieldValue = (item, option) => (item?.phoneSwitch
+  ? {id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned), phone: Boolean(option.phone)}
+  : {id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)});
 
 /** Whether two values are the same: by identity, or for a fields list by what it holds. */
 export function sameValue(a, b) {
@@ -135,7 +166,7 @@ export const holdsValue = (item) => isItem(item) && VALUE_TYPES.has(item.type) &
  * null).
  */
 export function itemValue(item) {
-  if (item?.type === 'fields') return fieldOptions(item).map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
+  if (item?.type === 'fields') return fieldOptions(item).map((option) => fieldValue(item, option));
   if (item?.type === 'switch') return Boolean(item.value);
   if (item?.type === 'range') {
     const number = Number(item.value ?? item.min ?? 0);
@@ -313,8 +344,8 @@ function entriesOf(items, look, word, folded = NONE) {
  * A former look (tiles) draws the look it became (lookOf). A switch is a row
  * in every look (C176 (5)); `tile` on an item is no longer read.
  */
-export function entriesFor(items, look = 'drill', {word = plainWord, folded = NONE} = {}) {
-  return entriesOf(items, lookOf(look), word, folded instanceof Set ? folded : new Set(folded ?? []));
+export function entriesFor(items, look = 'drill', {word = plainWord, folded = NONE, layout = ''} = {}) {
+  return entriesOf(itemsFor(items, layout), lookOf(look), word, folded instanceof Set ? folded : new Set(folded ?? []));
 }
 
 // ─── the panel look (owner decision C106) ─────────────────────────────────
@@ -324,10 +355,10 @@ export function entriesFor(items, look = 'drill', {word = plainWord, folded = NO
  * gathered into an untitled one, in the order they stand. A heading or a
  * separator stays in the group it stands in.
  */
-export function panelGroups(items) {
+export function panelGroups(items, {layout = ''} = {}) {
   const groups = [];
   let loose = null;
-  for (const item of Array.isArray(items) ? items : []) {
+  for (const item of itemsFor(items, layout)) {
     if (!isItem(item)) continue;
     if (item.type === 'group') {
       loose = null;
@@ -350,8 +381,8 @@ export function panelGroups(items) {
  * list (a fields list) -- the list and its search take a tab of their own.
  * A single group is never a tab.
  */
-export function panelLayout(items, {search = false} = {}) {
-  const groups = panelGroups(items);
+export function panelLayout(items, {search = false, layout = ''} = {}) {
+  const groups = panelGroups(items, {layout});
   if (!search || groups.length < 2) return 'sections';
   return groups.some((group) => group.items.some((item) => item.type === 'fields')) ? 'tabs' : 'sections';
 }
@@ -441,7 +472,7 @@ export function orderMap(items, into = {}) {
 function arranged(item, options) {
   return item?.type === 'choice'
     ? options.map((option) => ({id: option.id, pinned: Boolean(option.pinned)}))
-    : options.map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
+    : options.map((option) => fieldValue(item, option));
 }
 
 // The options again with the ones that do not move back at the places they
@@ -498,5 +529,6 @@ export function toggledField(item, optionId, key = 'checked') {
   const option = options.find((one) => one.id === optionId);
   if (!option || (key === 'checked' && (option.disabled || item?.type !== 'fields'))) return null;
   if (key === 'pinned' && !optionPins(item, option)) return null;
+  if (key === 'phone' && (option.disabled || !optionPhones(item, option))) return null;
   return arranged(item, options.map((one) => (one.id === optionId ? {...one, [key]: !one[key]} : one)));
 }

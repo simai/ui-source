@@ -364,6 +364,62 @@
   opacity: 1;
 }
 
+/* A field's «На телефоне» switch (study S-A (2), VL-82): a column of its own
+   at the row's end, on the same plate -- the main control keeps its check,
+   its pad, then the switch and the pad. A field without one (phoneSwitch:
+   false) keeps the column with an invisible switch, so the checks stand in
+   one column. */
+.sf-settings-row--phones {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'row phone';
+}
+
+.sf-settings-row--phones > .sf-settings-row-phone,
+.sf-settings-row--phones > .sf-settings-row-phone-place {
+  grid-area: phone;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch;
+  padding-inline-end: var(--sf-settings-panel--pad);
+  border-radius: inherit;
+}
+
+.sf-settings-row-phone {
+  outline: none;
+  cursor: pointer;
+}
+
+.sf-settings-row-phone > sf-switch,
+.sf-settings-row-phone-place > sf-switch {
+  pointer-events: none;
+}
+
+.sf-settings-row-phone-place {
+  visibility: hidden;
+}
+
+/* A touch pointer (Touch screens, rule 6): the switch's hit area is at least
+   44 wide; the row is already 44 high on a phone (C49). */
+@media (pointer: coarse) and (not (any-pointer: fine)) {
+  .sf-settings-row--phones > .sf-settings-row-phone,
+  .sf-settings-row--phones > .sf-settings-row-phone-place {
+    min-inline-size: var(--sf-d1);
+  }
+}
+
+/* The column's name over the switches, at the label row's end. */
+.sf-settings-panel-label--phones {
+  display: flex;
+  gap: var(--sf-settings-panel--gap);
+  justify-content: space-between;
+}
+
+.sf-settings-panel-label-end {
+  margin-inline-start: auto;
+  text-align: end;
+}
+
 /* A range: the name, the slider, the number. */
 .sf-settings-row--range {
   display: flex;
@@ -536,6 +592,7 @@
   }
 
   /* The ring turns inwards: the row stands flush against its neighbours. */
+  .sf-settings-row-phone:focus-visible,
   .sf-settings-row-main:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: var(--sf-focus--inset);

@@ -27,6 +27,8 @@
     "pin": "تثبيت",
     "unpin": "إلغاء التثبيت",
     "move-hint": "Alt مع السهمين لأعلى ولأسفل يغيّر الترتيب",
-    "position": "{text}: {index} من {count}"
+    "position": "{text}: {index} من {count}",
+    "phone": "على الهاتف",
+    "phone-of": "{text}: على الهاتف"
   }
 }

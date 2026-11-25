@@ -40,6 +40,7 @@ import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {focusablesIn} from '../../core/js/layer-stack.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {swipeToClose} from '../../core/js/sheet-swipe.js';
+import {layoutOf, watchLayout} from '../../core/js/device.js';
 import {PanelScrollbar} from '../../component/panel-scrollbar.js';
 import {
   APPLY, DEFAULT_SIZE, FORMER_LOOKS, OWN_COLOR, SIZES, applyCount, choiceArranges, choiceOrder, lookOf, colorCode, entriesFor, findItem, itemValue, matches,
@@ -77,6 +78,17 @@ const ROW = '.sf-settings-row-main';
 // the focus and carries the row's setting and option.
 const PIN = '.sf-settings-row-pin';
 const pinButton = (pin) => (pin?.matches?.('button') ? pin : pin?.querySelector?.('button')) ?? null;
+// A field's «На телефоне» switch (study S-A (2), VL-82): a role="switch" of
+// the row, reached by the arrow inward after the pin, as the pin is.
+const PHONE = '.sf-settings-row-phone';
+// The controls inside a row after its main one, in the order the arrow
+// inward reaches them: the pin's button, the phone switch.
+const innerControls = (main) => {
+  const row = main?.parentElement;
+  return [pinButton(row?.querySelector(`:scope > ${PIN}`)), row?.querySelector(`:scope > ${PHONE}`)]
+    .filter((one) => one && one.getAttribute('aria-disabled') !== 'true');
+};
+const innerKind = (control) => (control?.closest?.(PHONE) ? PHONE : PIN);
 const rowKey = (main) => main?.dataset.sfOption ?? main?.dataset.sfSetting ?? '';
 
 // The values are a preference of the person (SF.Preferences, owner
@@ -170,7 +182,7 @@ class SfSettings extends SettingsElement {
     this._declared = null;
     this._declaredFor = null;
     this._restoredFor = null;
-    this._entries = {items: null, look: '', folded: null, list: []};
+    this._entries = {items: null, look: '', folded: null, layout: '', list: []};
     // The rows look's choices that did not fit beside their names (C176 (3)),
     // measured for the panel's width and text size they were drawn at.
     this._fit = {key: '', ids: new Set()};
@@ -191,6 +203,31 @@ class SfSettings extends SettingsElement {
     this._onPanelFocusIn = (event) => this.onPanelFocusIn(event);
     this._onPanelFocusOut = (event) => this.onPanelFocusOut(event);
     this._onPanelPointerDown = (event) => this.onPanelPointerDown(event);
+    // The layout the items are shown for (core's word, study S-A): measured
+    // on its place while connected, unless the page writes device.
+    this._layout = '';
+    this._stopLayout = null;
+  }
+
+  /**
+   * The layout the items are shown for, 'phone' or 'desktop': the device
+   * setting when written, else the width of the element's place (core's
+   * layoutOf: its nearest size container, else the page; phone below 600).
+   * An item with devices is shown only in the layouts it names.
+   */
+  get deviceLayout() {
+    if (this.device === 'phone' || this.device === 'desktop') return this.device;
+    return this._layout || 'desktop';
+  }
+
+  // The layout followed while connected: a change draws the items again.
+  watchDeviceLayout() {
+    this._stopLayout?.();
+    this._layout = layoutOf(this);
+    this._stopLayout = watchLayout(this, (now) => {
+      this._layout = now;
+      if (this.device !== 'phone' && this.device !== 'desktop') this.requestComponentUpdate('layout');
+    });
   }
 
   // The trigger is the default slot (component.json): the children the page
@@ -214,6 +251,7 @@ class SfSettings extends SettingsElement {
     this.addEventListener('focusin', this._onPanelFocusIn);
     this.addEventListener('focusout', this._onPanelFocusOut);
     this.addEventListener('pointerdown', this._onPanelPointerDown);
+    this.watchDeviceLayout();
   }
 
   disconnectedCallback() {
@@ -228,6 +266,8 @@ class SfSettings extends SettingsElement {
     this.removeEventListener('focusin', this._onPanelFocusIn);
     this.removeEventListener('focusout', this._onPanelFocusOut);
     this.removeEventListener('pointerdown', this._onPanelPointerDown);
+    this._stopLayout?.();
+    this._stopLayout = null;
     super.disconnectedCallback?.();
   }
 
@@ -554,9 +594,10 @@ class SfSettings extends SettingsElement {
   entries(look) {
     const cache = this._entries;
     const folded = this._fit.ids;
-    if (cache.items !== this.items || cache.look !== look || cache.folded !== folded) {
+    const layout = this.deviceLayout;
+    if (cache.items !== this.items || cache.look !== look || cache.folded !== folded || cache.layout !== layout) {
       const word = (key, vars) => this.sfWord(key, vars ? {vars} : undefined);
-      this._entries = {items: this.items, look, folded, list: entriesFor(this.items, look, {word, folded})};
+      this._entries = {items: this.items, look, folded, layout, list: entriesFor(this.items, look, {word, folded, layout})};
     }
     return this._entries.list;
   }
@@ -689,8 +730,9 @@ class SfSettings extends SettingsElement {
 
   panelContext() {
     const items = this.shownItems();
-    const groups = panelGroups(items);
-    const layout = panelLayout(items, {search: Boolean(this.search)});
+    const device = this.deviceLayout;
+    const groups = panelGroups(items, {layout: device});
+    const layout = panelLayout(items, {search: Boolean(this.search), layout: device});
     const tab = Math.min(this._tab, Math.max(0, groups.length - 1));
     const shown = layout === 'tabs' ? [groups[tab]].filter(Boolean) : groups;
     const query = this.search ? this._query : '';
@@ -715,6 +757,8 @@ class SfSettings extends SettingsElement {
         search: this.searchPlaceholder || this.sfWord('search'), empty: this.emptyText || this.sfWord('empty'),
         pin: this.pinLabel || this.sfWord('pin'), unpin: this.unpinLabel || this.sfWord('unpin'),
         moveHint: this.moveLabel || this.sfWord('move-hint'),
+        phone: this.sfWord('phone'),
+        phoneOf: (text) => this.sfWord('phone-of', {vars: {text}}),
       },
     };
   }
@@ -852,6 +896,11 @@ class SfSettings extends SettingsElement {
       this.togglePin(pin);
       return;
     }
+    const phone = target.closest(PHONE);
+    if (phone) {
+      this.togglePhone(phone);
+      return;
+    }
     if (target.closest('.sf-settings-row-handle')) return;
     const main = target.closest('.sf-settings-row')?.querySelector(`:scope > ${ROW}`);
     if (main) {
@@ -887,6 +936,22 @@ class SfSettings extends SettingsElement {
     await this.commitArrangement(id, value);
     await this.whenRendered?.();
     if (focused) this.rowControl(id, option, `${PIN} button`)?.focus({preventScroll: true});
+  }
+
+  // A field's «На телефоне» switch pressed (S-A (2)): the fields list's
+  // value with the option's phone the other way, asked and written as a
+  // check is; the focus stays on the switch.
+  async togglePhone(phone) {
+    if (phone.getAttribute('aria-disabled') === 'true') return;
+    const id = phone.dataset.sfSetting;
+    const option = phone.dataset.sfOption;
+    const item = findItem(this.shownItems(), id);
+    const value = item && toggledField(item, option, 'phone');
+    if (!value) return;
+    const focused = phone === document.activeElement;
+    await this.commitValue(id, value);
+    await this.whenRendered?.();
+    if (focused) this.rowControl(id, option, PHONE)?.focus({preventScroll: true});
   }
 
   // A row's control or pin by its setting and option, after a drawing.
@@ -953,20 +1018,35 @@ class SfSettings extends SettingsElement {
       }
       return;
     }
-    const pin = target.closest(PIN);
-    const main = pin ? pin.parentElement?.querySelector(`:scope > ${ROW}`) : target.closest(ROW);
+    const inner = target.closest(`${PIN}, ${PHONE}`);
+    const main = inner ? inner.parentElement?.querySelector(`:scope > ${ROW}`) : target.closest(ROW);
     if (!main) return;
     const list = main.closest('.sf-settings-list');
     const rows = this.listRows(list);
     const at = rows.indexOf(main);
-    if (pin) {
+    if (inner) {
+      // The pin and the phone switch: outward and inward step among the
+      // row's controls, up and down go to the same control of the next row
+      // (else its main control); Space and Enter turn the phone switch.
+      const controls = innerControls(main);
+      const here = controls.findIndex((one) => one === target || one.contains(target) || target.contains(one));
+      const kind = innerKind(target);
       if (event.key === outward) {
         event.preventDefault();
-        main.focus();
+        (here > 0 ? controls[here - 1] : main).focus();
+      } else if (event.key === inward) {
+        if (here >= 0 && here < controls.length - 1) {
+          event.preventDefault();
+          controls[here + 1].focus();
+        }
       } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault();
         const next = rows[(at + (event.key === 'ArrowDown' ? 1 : rows.length - 1)) % rows.length];
-        pinButton(next?.parentElement?.querySelector(`:scope > ${PIN}`))?.focus() ?? next?.focus();
+        const same = innerControls(next).find((one) => innerKind(one) === kind);
+        (same ?? next)?.focus();
+      } else if (kind === PHONE && (event.key === ' ' || event.key === 'Enter')) {
+        event.preventDefault();
+        this.togglePhone(target.closest(PHONE));
       }
       return;
     }
@@ -997,7 +1077,7 @@ class SfSettings extends SettingsElement {
       return;
     }
     if (event.key === inward) {
-      const own = pinButton(main.parentElement?.querySelector(`:scope > ${PIN}`));
+      const own = innerControls(main)[0];
       if (own) {
         event.preventDefault();
         own.focus();
@@ -1217,9 +1297,10 @@ class SfSettings extends SettingsElement {
       if (!anchor) return {outcome: 'unavailable', reason: 'no-trigger'};
       if (!(await this.openPanel(anchor))) return {outcome: 'cancelled'};
     }
-    const groups = panelGroups(this.shownItems());
+    const layout = this.deviceLayout;
+    const groups = panelGroups(this.shownItems(), {layout});
     const at = groups.findIndex((group) => findItem(group.items, id));
-    if (at >= 0 && panelLayout(this.shownItems(), {search: Boolean(this.search)}) === 'tabs') this.chooseGroup(at);
+    if (at >= 0 && panelLayout(this.shownItems(), {search: Boolean(this.search), layout}) === 'tabs') this.chooseGroup(at);
     await this.whenRendered?.();
     const control = this.rowControl(id) ?? this.panel?.querySelector(`[data-sf-setting="${CSS.escape(id)}"]`);
     if (!control) return {outcome: 'unavailable', reason: 'no-panel'};
@@ -1230,8 +1311,9 @@ class SfSettings extends SettingsElement {
 
   /** The tab the panel shows (its groups as tabs), 0 when they are sections or it is not a panel. */
   get tab() {
-    if (!this.isPanel || panelLayout(this.shownItems(), {search: Boolean(this.search)}) !== 'tabs') return 0;
-    return Math.min(this._tab, Math.max(0, panelGroups(this.shownItems()).length - 1));
+    const layout = this.deviceLayout;
+    if (!this.isPanel || panelLayout(this.shownItems(), {search: Boolean(this.search), layout}) !== 'tabs') return 0;
+    return Math.min(this._tab, Math.max(0, panelGroups(this.shownItems(), {layout}).length - 1));
   }
 
   /**
@@ -1244,7 +1326,7 @@ class SfSettings extends SettingsElement {
     const tab = given && typeof given === 'object' ? given.tab : given;
     if (!this.isPanel || !this.popup) return {outcome: 'refused', reason: 'not-popup'};
     await this.whenRendered?.();
-    if (Number.isInteger(tab) && tab >= 0 && tab < panelGroups(this.shownItems()).length) this.chooseGroup(tab);
+    if (Number.isInteger(tab) && tab >= 0 && tab < panelGroups(this.shownItems(), {layout: this.deviceLayout}).length) this.chooseGroup(tab);
     if (this._open) {
       await this.whenRendered?.();
       return {outcome: 'applied'};

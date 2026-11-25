@@ -27,6 +27,8 @@
     "pin": "置顶",
     "unpin": "取消置顶",
     "move-hint": "按 Alt 和上下方向键可调整顺序",
-    "position": "{text}：{index}/{count}"
+    "position": "{text}：{index}/{count}",
+    "phone": "手机上",
+    "phone-of": "{text}：手机上"
   }
 }
