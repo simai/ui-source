@@ -681,6 +681,10 @@
           }
         ]
       },
+      "first-paint": {
+        "max-bytes": 14336,
+        "why": "the panel stands open in the page's flow: six field rows, each with its handle, check and «На телефоне» switch (sf-switch printed), and the view group, print before any code, so the panel keeps its height when the runtime arrives"
+      },
       "expect": {
         "look": "panel"
       }
