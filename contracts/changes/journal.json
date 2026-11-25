@@ -20894,6 +20894,71 @@
         "after": "<sf-tooltip text=\"Доступ\" supporting-text=\"Только чтение\"></sf-tooltip>"
       },
       "source": "src/smart/tooltip/index.js templateContext, src/smart/tooltip/component.json aliases"
+    },
+    {
+      "recorded_on": "2026-11-24",
+      "stage": "compat",
+      "deprecated_on": "2026-11-24",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite on a page. A server that read a template from a component.json of the distribution reads it at the path named now (template/<file>). It is the Lit source of the template and is read, not run; to print a component from its settings, call core/js/composition/first-paint-render.mjs (docs/developer/first-paint-render.md).",
+      "owner": "ui-source",
+      "id": "path-template-file-as-shipped",
+      "kind": "component",
+      "summary": "The manifests of sf-badge 1.8.1, sf-tag 1.13.2, sf-tooltip 1.5.5, sf-avatar 1.8.7, sf-progress-bar 1.5.7, sf-reference-link 1.3.6, sf-button-copy 1.7.8 and sf-switch 1.10.2 name their templates at the path the distribution holds (group build 19, Docara msg-c2e920a66b614b669ada): templates.<name>.file is template/<file>, where the build ships the ui-source folder js/templates/. They named js/templates/<file>, a path no pair has shipped, and sf-switch named a template.html that never existed. Nothing a component draws changes. scripts/check-shipped-paths.mjs fails on a path a manifest names that the distribution does not hold; the other components' paths are listed as debt in contracts/shipped-template-paths.json until they step.",
+      "items": [
+        {
+          "component": "sf-badge",
+          "from": "js/templates/default.js",
+          "to": "template/default.js"
+        },
+        {
+          "component": "sf-tag",
+          "from": "js/templates/default.js",
+          "to": "template/default.js"
+        },
+        {
+          "component": "sf-tooltip",
+          "from": "js/templates/default.js",
+          "to": "template/default.js"
+        },
+        {
+          "component": "sf-avatar",
+          "from": "js/templates/default.js",
+          "to": "template/default.js"
+        },
+        {
+          "component": "sf-avatar",
+          "from": "js/templates/label.js",
+          "to": "template/label.js"
+        },
+        {
+          "component": "sf-avatar",
+          "from": "js/templates/card.js",
+          "to": "template/card.js"
+        },
+        {
+          "component": "sf-progress-bar",
+          "from": "js/templates/default.js",
+          "to": "template/default.js"
+        },
+        {
+          "component": "sf-reference-link",
+          "from": "js/templates/default.js",
+          "to": "template/default.js"
+        },
+        {
+          "component": "sf-button-copy",
+          "from": "js/templates/default.js",
+          "to": "template/default.js"
+        },
+        {
+          "component": "sf-switch",
+          "from": "template.html",
+          "to": "template/default.js"
+        }
+      ],
+      "source": "src/smart/<folder>/component.json templates; scripts/check-shipped-paths.mjs; contracts/shipped-template-paths.json"
     }
   ]
 }

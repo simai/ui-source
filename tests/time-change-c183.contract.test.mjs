@@ -50,7 +50,8 @@ test('C183: sf-time 1.3.0 -- just now, the time-zone setting, list times off the
   assert.match(source, /if \(day === 0\) shown = ahead \? joinWords\(words\.dateAt, relativeDay\(\), time\(\)\) : time\(\);/u);
   assert.match(source, /else if \(day === 1\) shown = joinWords\(words\.dateAt, relativeDay\(\), time\(\)\);/u);
   // The snapshots are taken on one clock, so the zone they print is the same everywhere.
-  assert.match(read('scripts/snapshot-first-paint.mjs'), /const SNAPSHOT_TIME_ZONE = 'Europe\/Moscow';/u);
+  assert.match(read('scripts/first-paint-lib.mjs'), /export const SNAPSHOT_TIME_ZONE = 'Europe\/Moscow';/u);
+  assert.match(read('scripts/snapshot-first-paint.mjs'), /SNAPSHOT_TIME_ZONE/u);
 });
 
 test('C183: sf-confirm-change 1.9.0 -- the main answer filled, the deadline an sf-time under the answers', () => {

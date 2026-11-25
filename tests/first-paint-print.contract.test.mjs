@@ -83,8 +83,14 @@ test('5. the tool reuses the snapshot machinery, never a copy of it', () => {
   const snapshot = readFileSync(join(root, 'scripts', 'snapshot-first-paint.mjs'), 'utf8');
   assert.match(tool, /from '\.\.\/\.\.\/scripts\/first-paint-lib\.mjs'/u);
   assert.match(tool, /scripts', 'first-paint-page\.js'/u, 'the same page serializer');
+  // The snapshot draws an example through first-paint-lib.mjs drawExample
+  // (group build 19: shared with tools/first-paint/render.mjs), which takes
+  // the first paint with the same steps as this tool.
+  const lib = readFileSync(join(root, 'scripts', 'first-paint-lib.mjs'), 'utf8');
+  const draw = lib.slice(lib.indexOf('export async function drawExample('), lib.indexOf('/** The assemblies, each with'));
+  assert.match(snapshot, /drawExample\(\{/u, 'the snapshot draws through drawExample');
   for (const shared of ['serializeSettled', 'settleSheets', 'watchRequests', 'PAGE_CONTEXT']) {
-    assert.ok(tool.includes(shared) && snapshot.includes(shared), `${shared}: both take the first paint the same way`);
+    assert.ok(tool.includes(shared) && draw.includes(shared), `${shared}: both take the first paint the same way`);
   }
   assert.doesNotMatch(tool, /__sfFirstPaintSerialize\(/u, 'serialized through serializeSettled');
 });

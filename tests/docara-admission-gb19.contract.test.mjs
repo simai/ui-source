@@ -22,7 +22,7 @@ const json = (path) => JSON.parse(read(path));
 test('D1: sf-button-copy carries settings, slots and events in one component.json', () => {
   const component = json('src/smart/button-copy/component.json');
   assert.equal(component.tag, 'sf-button-copy');
-  assert.equal(component.version, '1.7.7');
+  assert.equal(component.version, '1.7.8'); // GB19 render: 1.7.8 above 1.7.7
   assert.deepEqual(component.slots, {}, 'no slots: the element reads nothing written inside the host');
   for (const name of ['value', 'target', 'text', 'label', 'size', 'appearance']) assert.ok(component.settings[name], name);
   assert.deepEqual(Object.keys(component.events).sort(), ['copied', 'copy-failed']);
@@ -67,7 +67,7 @@ test('D2: sf-tabs declares how panel content is given, as the element reads it',
 
 test('D3: the tooltip static markup prints size as the drawing does, and size is retired', () => {
   const component = json('src/smart/tooltip/component.json');
-  assert.equal(component.version, '1.5.4');
+  assert.equal(component.version, '1.5.5'); // GB19 render: 1.5.5 above 1.5.4
   const template = read('src/smart/tooltip/js/templates/default.js');
   assert.match(template, /`sf-tooltip--size-\$\{context\.size\}`/u, 'the drawing prints sf-tooltip--size-<size>');
   const fallback = component.settings.size.default;

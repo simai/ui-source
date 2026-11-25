@@ -12,7 +12,7 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const json = (path) => JSON.parse(read(path));
 
 test('FO-1: switch, checkbox, segmented and file upload take invalid and error-message', () => {
-  for (const [folder, version, noted = version] of [['switch', '1.10.1', '1.10.0'], ['checkbox', '1.6.1', '1.6.0'], ['segmented', '1.8.4', '1.7.0'], ['file-upload', '1.6.4', '1.6.0']]) { // GB13 notes: file-upload 1.6.4 (a folder on a single area) // group build 13: segmented and file-upload moved on by the merged branches
+  for (const [folder, version, noted = version] of [['switch', '1.10.2', '1.10.0'], ['checkbox', '1.6.1', '1.6.0'], ['segmented', '1.8.4', '1.7.0'], ['file-upload', '1.6.4', '1.6.0']]) { // GB13 notes: file-upload 1.6.4 (a folder on a single area) // group build 13: segmented and file-upload moved on by the merged branches
     const manifest = json(`src/smart/${folder}/component.json`);
     assert.equal(manifest.version, version, folder);
     assert.equal(manifest.settings.invalid?.type, 'boolean', `${folder} invalid`);

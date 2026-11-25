@@ -37,7 +37,7 @@ import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, rmSync}
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {ensureLocalPlaywright} from './playwright-local.mjs';
-import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, lateGiven, lateHeld, fontsReady, sizeProblem, freezeClock, PAGE_CONTEXT, watchRequests, serializeSettled, settleSheets, sameSnapshot} from './first-paint-lib.mjs';
+import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, fontsReady, sizeProblem, freezeClock, PAGE_CONTEXT, drawExample, SNAPSHOT_TIME_ZONE, sameSnapshot} from './first-paint-lib.mjs';
 import {renderSkeletonTemplate, renderPartSkeleton} from './first-paint-skeleton.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -54,59 +54,24 @@ const pageScript = readFileSync(join(here, 'first-paint-page.js'), 'utf8');
 
 const pages = new Map([['/first-paint-page.js', pageScript]]);
 const site = await serveOutput(out, {pages});
-// Every snapshot is taken on one clock: sf-time prints the zone it writes in
-// (owner decision C183 (3): «…, Москва (UTC+3)»), so a snapshot taken on a
-// machine elsewhere would differ by its zone. Moscow, as the manifest probes
-// (fix/time-probes-tz).
-const SNAPSHOT_TIME_ZONE = 'Europe/Moscow';
+// One clock for every snapshot (first-paint-lib.mjs SNAPSHOT_TIME_ZONE).
 const browser = await chromium.launch();
 const results = {written: [], stale: [], missing: [], failed: [], tooLarge: [], unchanged: 0, sheetDrift: []};
 
 async function snapshot(component, example) {
   const id = `${component.folder}/${example.name}`;
-  const path = `/page/${id}`;
-  const spec = {...hostSpec(component, example), late: component.late, lateHeld: lateHeld(component, lateGiven(component, example))};
-  pages.set(path, `${head({title: id, extra: '<script src="/first-paint-page.js"></script>'})}<body>
-<main id="stage"></main>
-<script>window.__sfFirstPaintBuild(${JSON.stringify(spec).replace(/</g, '\\u003c')});</script>
-${coreScript}
-</body></html>`);
-  const context = await browser.newContext({...PAGE_CONTEXT, timezoneId: SNAPSHOT_TIME_ZONE});
-  const page = await context.newPage();
-  await freezeClock(page, example);
-  const errors = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  // The sheets this page asks for: the first paint needs every one.
-  const net = watchRequests(page);
-  try {
-    await page.goto(`${site.origin}${path}`, {waitUntil: 'load'});
-    // Drawn; a closed overlay draws nothing until it opens (its first paint
-    // is what it has then, often nothing).
-    await page.waitForFunction((overlay) => {
-      const host = window.__sfFirstPaintHost;
-      if (!host || !customElements.get(host.localName)) return false;
-      if (window.__sfFirstPaintHosts.some((one) => 'isRendered' in one && !overlay && one.isRendered !== true)) return false;
-      if (overlay) return host.hasAttribute('data-sf-started') || !host.constructor.manifest;
-      return 'isRendered' in host ? host.isRendered === true : true;
-    }, component.overlay, {timeout: 20000});
-    const prefix = `sf-${component.folder}-${example.name}`.replace(/[^a-z0-9-]/giu, '-');
-    const html = await serializeSettled(page, net, prefix);
-    let skeleton = null;
-    // A skeleton stands for data the example gives late: an example that
-    // gives none of the late settings (a tree of item elements) has none, and
-    // neither has one that gives an empty list -- that is the empty state,
-    // data that has arrived (element-manifest.js sfAwaitingData).
-    if (givesLateData(component, example)) {
-      skeleton = component.skeletonFile
-        ? renderSkeletonTemplate(component, example, html)
-        : await page.evaluate((prefix) => window.__sfFirstPaintSerialize({skeleton: true, prefix}), prefix);
-    }
-    await settleSheets(page, net);
-    return {html, skeleton, sheets: [...new Set(net.sheets)], errors};
-  } finally {
-    await context.close();
-    pages.delete(path);
-  }
+  const prefix = `sf-${component.folder}-${example.name}`.replace(/[^a-z0-9-]/giu, '-');
+  // A skeleton stands for data the example gives late: an example that
+  // gives none of the late settings (a tree of item elements) has none, and
+  // neither has one that gives an empty list -- that is the empty state,
+  // data that has arrived (element-manifest.js sfAwaitingData).
+  const skeletonOf = givesLateData(component, example)
+    ? async (page, html) => (component.skeletonFile
+      ? renderSkeletonTemplate(component, example, html)
+      : page.evaluate((prefix) => window.__sfFirstPaintSerialize({skeleton: true, prefix}), prefix))
+    : null;
+  const got = await drawExample({browser, site, pages, path: `/page/${id}`, title: id, component, example, prefix, after: skeletonOf});
+  return {html: got.html, skeleton: got.after, sheets: got.sheets, errors: got.errors};
 }
 
 async function snapshotAssembly(assembly, layout, example) {

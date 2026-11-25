@@ -1,0 +1,248 @@
+{
+  "$comment": "Paths Smart component manifests name for a server that the distribution does not hold yet (scripts/check-shipped-paths.mjs; group build 19). Each is migration debt: the build ships a component template folder (template/ or js/templates/ in ui-source) as template/, so a manifest names template/<file>. The check fails on a path not shipped and not listed here, and on a listed path that ships now: when a component steps for another reason, point its manifest at what ships and take its row off. The seven components Docara prints from settings and sf-switch were fixed in group build 19.",
+  "schema": "simai.shipped-template-paths",
+  "schema_version": 1,
+  "debt": {
+    "smart.accordion": [
+      "js/templates/default.js"
+    ],
+    "smart.alert": [
+      "js/templates/default.js"
+    ],
+    "smart.alert-bar": [
+      "js/templates/default.js"
+    ],
+    "smart.avatar-group": [
+      "js/templates/default.js",
+      "js/templates/default.js",
+      "js/templates/default.js",
+      "js/templates/default.js",
+      "js/templates/default.js"
+    ],
+    "smart.breadcrumbs": [
+      "js/templates/default.js"
+    ],
+    "smart.bulk-actions": [
+      "js/templates/default.js"
+    ],
+    "smart.button": [
+      "js/templates/default.js"
+    ],
+    "smart.button-close": [
+      "js/templates/default.js"
+    ],
+    "smart.button-icon": [
+      "js/templates/default.js"
+    ],
+    "smart.change": [
+      "js/templates/default.js"
+    ],
+    "smart.checkbox": [
+      "js/templates/default.js"
+    ],
+    "smart.confirm": [
+      "js/templates/default.js"
+    ],
+    "smart.confirm-change": [
+      "js/templates/default.js"
+    ],
+    "smart.contents": [
+      "js/templates/default.js"
+    ],
+    "smart.display-settings": [
+      "js/templates/default.js"
+    ],
+    "smart.drawer": [
+      "index.js"
+    ],
+    "smart.dropdown": [
+      "js/templates/default.js"
+    ],
+    "smart.editor-inline": [
+      "../../core/js/composition/inline-editor.mjs"
+    ],
+    "smart.editor-overlay": [
+      "../../core/js/composition/overlay.mjs"
+    ],
+    "smart.empty-state": [
+      "js/templates/default.js"
+    ],
+    "smart.file-download": [
+      "js/templates/default.js"
+    ],
+    "smart.file-preview": [
+      "js/templates/default.js"
+    ],
+    "smart.file-upload": [
+      "js/templates/default.js"
+    ],
+    "smart.form": [
+      "js/templates/default.js"
+    ],
+    "smart.gallery": [
+      "js/templates/default.js"
+    ],
+    "smart.header-page": [
+      "js/templates/default.js"
+    ],
+    "smart.header-site": [
+      "js/templates/default.js"
+    ],
+    "smart.help-mark": [
+      "js/templates/default.js"
+    ],
+    "smart.icon": [
+      "js/templates/default.js"
+    ],
+    "smart.include": [
+      "js/templates/default.js"
+    ],
+    "smart.input": [
+      "js/templates/default.js"
+    ],
+    "smart.input-choice": [
+      "js/templates/default.js"
+    ],
+    "smart.input-code": [
+      "js/templates/default.js"
+    ],
+    "smart.input-color": [
+      "js/templates/default.js"
+    ],
+    "smart.input-country": [
+      "js/templates/default.js"
+    ],
+    "smart.input-date": [
+      "js/templates/default.js"
+    ],
+    "smart.input-image": [
+      "js/templates/default.js"
+    ],
+    "smart.input-lookup": [
+      "js/templates/default.js"
+    ],
+    "smart.input-quantity": [
+      "js/templates/default.js"
+    ],
+    "smart.input-rich": [
+      "js/templates/default.js"
+    ],
+    "smart.input-textarea": [
+      "js/templates/default.js"
+    ],
+    "smart.language": [
+      "js/templates/default.js"
+    ],
+    "smart.list": [
+      "js/templates/default.js"
+    ],
+    "smart.list-attention": [
+      "js/templates/default.js"
+    ],
+    "smart.list-description": [
+      "js/templates/default.js"
+    ],
+    "smart.list-feed": [
+      "js/templates/default.js"
+    ],
+    "smart.list-item": [
+      "js/templates/default.js"
+    ],
+    "smart.list-timeline": [
+      "js/templates/default.js"
+    ],
+    "smart.menu": [
+      "js/templates/default.js"
+    ],
+    "smart.menu-context": [
+      "js/templates/default.js"
+    ],
+    "smart.modal": [
+      "js/templates/default.js"
+    ],
+    "smart.pager": [
+      "js/templates/default.js"
+    ],
+    "smart.pagination": [
+      "js/templates/default.js"
+    ],
+    "smart.popover": [
+      "js/templates/default.js"
+    ],
+    "smart.profile-picker": [
+      "js/templates/default.js"
+    ],
+    "smart.progress-ring": [
+      "js/templates/default.js"
+    ],
+    "smart.progress-run": [
+      "js/templates/default.js"
+    ],
+    "smart.progress-scale": [
+      "js/templates/default.js"
+    ],
+    "smart.radio": [
+      "js/templates/default.js"
+    ],
+    "smart.resizer": [
+      "none"
+    ],
+    "smart.search": [
+      "js/templates/default.js"
+    ],
+    "smart.segmented": [
+      "js/templates/default.js"
+    ],
+    "smart.settings": [
+      "js/templates/default.js"
+    ],
+    "smart.skeleton": [
+      "js/templates/default.js"
+    ],
+    "smart.slider": [
+      "js/templates/default.js"
+    ],
+    "smart.slider-range": [
+      "js/templates/default.js"
+    ],
+    "smart.sortable": [
+      "../../core/js/composition/sortable.mjs"
+    ],
+    "smart.spinner": [
+      "js/templates/default.js"
+    ],
+    "smart.steps": [
+      "js/templates/default.js"
+    ],
+    "smart.tabs": [
+      "js/templates/default.js"
+    ],
+    "smart.tag-group": [
+      "js/templates/default.js"
+    ],
+    "smart.theme-generator": [
+      "js/templates/default.js"
+    ],
+    "smart.tile-metric": [
+      "js/templates/default.js"
+    ],
+    "smart.time": [
+      "js/templates/default.js"
+    ],
+    "smart.toast": [
+      "js/templates/default.js"
+    ],
+    "smart.tree": [
+      "js/templates/default.js"
+    ],
+    "smart.tree-item": [
+      "js/templates/default.js"
+    ],
+    "smart.wizard": [
+      "js/templates/default.js"
+    ],
+    "smart.wizard-step": [
+      "js/templates/default.js"
+    ]
+  }
+}
