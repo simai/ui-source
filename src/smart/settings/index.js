@@ -901,6 +901,9 @@ class SfSettings extends SettingsElement {
       this.togglePhone(phone);
       return;
     }
+    // The empty place of a field without the switch is not a part of its
+    // check: a press there does nothing.
+    if (target.closest('.sf-settings-row-phone-place')) return;
     if (target.closest('.sf-settings-row-handle')) return;
     const main = target.closest('.sf-settings-row')?.querySelector(`:scope > ${ROW}`);
     if (main) {

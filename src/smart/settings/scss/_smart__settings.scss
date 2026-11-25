@@ -406,6 +406,19 @@
   .sf-settings-row--phones > .sf-settings-row-phone-place {
     min-inline-size: var(--sf-d1);
   }
+
+  /* A row lower than 44 (size 1/2 on a phone, 28) keeps its height; the
+     switch's hit area reaches over it to 44, centred on the row. */
+  .sf-settings-row--phones > .sf-settings-row-phone {
+    position: relative;
+  }
+
+  .sf-settings-row--phones > .sf-settings-row-phone::after {
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--sf-d1)) / 2));
+    inset-inline: 0;
+    content: '';
+  }
 }
 
 /* The column's name over the switches, at the label row's end. */
