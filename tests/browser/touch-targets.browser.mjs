@@ -102,7 +102,15 @@ for (const [ws, theme] of CONF) for (let n = 1; n <= LOADS; n++) {
   const ctx = await b.newContext({viewport: {width: w, height: 1100}, colorScheme: theme, hasTouch: phone, isMobile: phone, deviceScaleFactor: 1});
   const pg = await ctx.newPage();
   const run = {tag: `${w}-${theme}#${n}`, checks: [], console: []};
-  pg.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') run.console.push(`${m.type()}: ${m.text().slice(0, 160)}`); });
+  // The loader's icon subset fallback (the subset host icons.simai.io over 3000 ms, the runner's known flake
+  // «icon subset font fallback») and a network failure (this page serves the build itself, so only an
+  // external host fails) are the font's timing, not a target's: kept apart so they never hide another message.
+  run.flakes = [];
+  pg.on('console', (m) => {
+    if (m.type() !== 'error' && m.type() !== 'warning') return;
+    const text = `${m.type()}: ${m.text().slice(0, 160)}`;
+    if (/SFLoader icon subset font fallback|Failed to load resource: net::ERR_(?:CONNECTION_TIMED_OUT|TIMED_OUT|NAME_NOT_RESOLVED|INTERNET_DISCONNECTED)/u.test(text)) run.flakes.push(text); else run.console.push(text);
+  });
   pg.on('pageerror', (e) => run.console.push(`pageerror ${e.message.slice(0, 160)}`));
   await pg.goto(`http://127.0.0.1:${server.address().port}/?theme=${theme}`, {waitUntil: 'load'});
   await pg.waitForFunction(() => window.__ready === true, null, {timeout: 30000});
@@ -230,7 +238,7 @@ for (const [ws, theme] of CONF) for (let n = 1; n <= LOADS; n++) {
     }
   }
   check(run, 'console clean', run.console.length === 0, run.console);
-  out2.runs.push({tag: run.tag, pass: run.checks.filter((c) => c.ok).length, fail: run.checks.filter((c) => !c.ok).length, checks: run.checks});
+  out2.runs.push({tag: run.tag, flakes: run.flakes.length, pass: run.checks.filter((c) => c.ok).length, fail: run.checks.filter((c) => !c.ok).length, checks: run.checks});
   await ctx.close();
 }
 } finally {
@@ -238,6 +246,6 @@ for (const [ws, theme] of CONF) for (let n = 1; n <= LOADS; n++) {
   server.close();
 }
 const total = out2.runs.reduce((s, r) => s + r.pass + r.fail, 0);
-console.log(JSON.stringify({total, failed: out2.bad.length, ruleCheck: out2.ruleCheck}));
+console.log(JSON.stringify({total, failed: out2.bad.length, ruleCheck: out2.ruleCheck, flakes: out2.runs.reduce((sum, r) => sum + r.flakes, 0)}));
 if (out2.bad.length) { console.error(JSON.stringify({failures: out2.bad.slice(0, 30), count: out2.bad.length}, null, 1)); process.exit(1); }
 console.log('TOUCH_TARGETS_OK');
