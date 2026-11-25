@@ -522,6 +522,70 @@
       "reason": "recorded by group build 19 (VL-77): the join line of filled segments is the look's label ink at 24 and an icon ghost segment is framed; the Smart host renders the class markup with segment-* and takes it as it is",
       "decision": "VL-77, DEV msg-78ac7465af444d738daa",
       "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.tabs",
+      "version": "1.5.4",
+      "twin": "component.tabs",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-docara 75c27c458, D2): component.json declares the slots the element reads since 1.3.0 (page panels, panel-<n>, tab-<n>); manifest only, the class tabs are unchanged",
+      "decision": "GB19 Docara admission D2, Docara msg-991e765ceb3d4b02ace3",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.button-copy",
+      "version": "1.7.8",
+      "twin": "component.clipboard",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/<file> as shipped (1.7.8, above the D1 empty slots declaration of 1.7.7 on feat/gb19-docara); manifest only, the class clipboard is unchanged",
+      "decision": "GB19 render, Docara template paths (q-b98d1c5770); GB19 Docara admission D1",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.tooltip",
+      "version": "1.5.5",
+      "twin": "component.tooltip",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/<file> as shipped (1.5.5, above the D3 retired size alias of 1.5.4 on feat/gb19-docara); manifest, alias and snapshot only, the class tooltip is unchanged",
+      "decision": "GB19 render, Docara template paths (q-b98d1c5770); GB19 Docara admission D3, C160 (3)",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.badge",
+      "version": "1.8.1",
+      "twin": "component.badges",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/<file> as shipped; manifest only, the class badges are unchanged",
+      "decision": "GB19 render, Docara template paths (q-b98d1c5770)",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.progress-bar",
+      "version": "1.5.7",
+      "twin": "component.progress-bar",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/<file> as shipped; manifest only, the class progress bar is unchanged",
+      "decision": "GB19 render, Docara template paths (q-b98d1c5770)",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.reference-link",
+      "version": "1.3.6",
+      "twin": "component.reference-link",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/<file> as shipped; manifest only, the class reference link is unchanged",
+      "decision": "GB19 render, Docara template paths (q-b98d1c5770)",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.switch",
+      "version": "1.10.2",
+      "twin": "component.switch",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/default.js as shipped (it named a template.html that never existed); manifest only, the class switch is unchanged",
+      "decision": "GB19 render, Docara template paths (q-b98d1c5770)",
+      "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.tag",
+      "version": "1.13.2",
+      "twin": "component.tags",
+      "reason": "recorded by the group build 19 integration (merge of feat/gb19-render 2bc061aa6, Docara option B): the template path names template/<file> as shipped; manifest only, the class tags are unchanged",
+      "decision": "GB19 render, Docara template paths (q-b98d1c5770)",
+      "date": "2026-11-25"
     }
   ]
 }
