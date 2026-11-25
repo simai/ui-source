@@ -19,7 +19,7 @@
    with C113 -- and pulse with sf-placeholder-pulse below. A place that
    redefines the fill (a dark plate, a tinted place) moves every skeleton
    in it. */
-:where(.sf-skeleton, .sf-first-paint-bar, .sf-first-paint-fill, [data-sf-region-loading]),
+:where(.sf-skeleton, .sf-first-paint-bar, .sf-first-paint-fill, [data-sf-region-loading], [data-sf-fragment-loading="html"]),
 :where([data-sf-skeleton]):not(:defined) {
   --sf-skeleton-base: var(--sf-surface-container);
 }
@@ -1382,11 +1382,16 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
 }
 
 @layer sf.base {
+/* A refreshable block waiting for its markup (simai.interface-fragment
+   1.1.0, block refresh, html mode) draws the same skeleton in the block
+   only; a data block's parts draw their own (data-state="loading"). The
+   block keeps its height meanwhile. */
 /* A region on its way (region navigation, 2026-10-15): the content that is
    leaving gives up its place to the skeleton of a page -- a heading bar and
    rows -- in that region only; the shell around it stays as it is. The
    region keeps its size, so nothing below it moves while the answer comes. */
-[data-sf-region-loading] {
+[data-sf-region-loading],
+[data-sf-fragment-loading="html"] {
   --sf-skeleton-row: calc(var(--sf-text-height-1) + 2 * var(--sf-space-1));
   /* The rows' bars are as tall as the capitals (C136 (1)). */
   --sf-skeleton-row-bar: calc(var(--sf-text-size-1) * 0.727);
@@ -1404,18 +1409,21 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
 }
 
 @supports (block-size: round(nearest, 1em, 1em)) {
-  [data-sf-region-loading] {
+  [data-sf-region-loading],
+  [data-sf-fragment-loading="html"] {
     --sf-skeleton-row-bar: round(nearest, calc(var(--sf-text-size-1) * 0.727), var(--sf-a2));
   }
 }
 
-[data-sf-region-loading] > * {
+[data-sf-region-loading] > *,
+[data-sf-fragment-loading="html"] > * {
   visibility: hidden;
 }
 
 /* Still for a person who asked for less motion, as the element shapes are. */
 @media (prefers-reduced-motion: reduce) {
-  [data-sf-region-loading] {
+  [data-sf-region-loading],
+  [data-sf-fragment-loading="html"] {
     animation: none;
   }
 }

@@ -11,6 +11,9 @@ import { valueTypeEntry, valueTypeName } from './routing.mjs';
 export const FRAGMENT_DESCRIPTOR_SCHEMA = 'simai.interface-fragment.v1';
 
 const FIELDS = ['schema', 'id', 'element', 'regions', 'port', 'outputs', 'inputs', 'operation', 'url_state', 'budget'];
+// Optional: schema_version (the format name without a version) and refresh
+// (descriptor 1.3.0, simai.interface-fragment 1.1.0, block refresh contract 1).
+const OPTIONAL = ['schema_version', 'refresh'];
 const ID = /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/u;
 const ELEMENT = /^[a-z][a-z0-9]*-[a-z0-9-]+$/u;
 const NAME = /^[a-z][a-z0-9-]{0,31}$/u;
@@ -42,7 +45,7 @@ export function checkFragmentDescriptor(descriptor) {
   const problems = [];
   const keys = Object.keys(descriptor);
   for (const field of FIELDS) if (!keys.includes(field)) problems.push(`${field}: required`);
-  for (const key of keys) if (!FIELDS.includes(key) && key !== 'schema_version') problems.push(`${key}: undeclared`);
+  for (const key of keys) if (!FIELDS.includes(key) && !OPTIONAL.includes(key)) problems.push(`${key}: undeclared`);
   // Either form of the format name: simai.interface-fragment.v1, or
   // simai.interface-fragment with schema_version 1 (schema-name.mjs).
   if (!isSchema(descriptor, 'simai.interface-fragment', 1)) problems.push('schema: not simai.interface-fragment, schema_version 1');
@@ -59,6 +62,44 @@ export function checkFragmentDescriptor(descriptor) {
   if (!closed(budget, ['kb', 'first_answer_ms'])
     || !Number.isSafeInteger(budget.kb) || budget.kb < 0 || budget.kb > 2048
     || !Number.isSafeInteger(budget.first_answer_ms) || budget.first_answer_ms < 0 || budget.first_answer_ms > 10000) problems.push('budget: {kb 0-2048, first_answer_ms 0-10000}');
+  if ('refresh' in descriptor) problems.push(...refreshProblems(descriptor.refresh, descriptor.url_state));
+  return problems;
+}
+
+// The block refresh part of a descriptor: the mode, the wire contract, the
+// keys it reads (never its own: those are url_state) and its part names.
+function refreshProblems(refresh, own) {
+  if (!closed(refresh, ['mode', 'contract', 'reads', 'parts'])) return ['refresh: {mode, contract, reads?, parts?}'];
+  const problems = [];
+  if (!['data', 'html'].includes(refresh.mode)) problems.push('refresh.mode: data or html');
+  if (refresh.contract !== 1) problems.push('refresh.contract: 1');
+  if ('reads' in refresh && (!uniqueList(refresh.reads, 16, (key) => typeof key === 'string' && URL_KEY.test(key))
+    || (Array.isArray(own) && refresh.reads.some((key) => own.includes(key))))) problems.push('refresh.reads: up to sixteen query keys the fragment does not own');
+  if ('parts' in refresh && !uniqueList(refresh.parts, 32, (name) => typeof name === 'string' && NAME.test(name))) problems.push('refresh.parts: up to thirty-two part names');
+  if (refresh.mode === 'html' && Array.isArray(refresh.parts) && refresh.parts.length) problems.push('refresh.parts: a data block only');
+  return problems;
+}
+
+/**
+ * The page's refreshable blocks checked together (a package gate): ids
+ * unique, each key owned once, every key read owned by some block. Takes
+ * descriptors (or {id, url_state, refresh}); returns the problems.
+ */
+export function checkRefreshPage(descriptors) {
+  const problems = [];
+  const ids = new Set();
+  const owners = new Map();
+  for (const descriptor of descriptors) {
+    if (ids.has(descriptor.id)) problems.push(`${descriptor.id}: id twice on the page`);
+    ids.add(descriptor.id);
+    for (const key of descriptor.url_state ?? []) {
+      if (owners.has(key)) problems.push(`${key}: owned by ${owners.get(key)} and ${descriptor.id}`);
+      else owners.set(key, descriptor.id);
+    }
+  }
+  for (const descriptor of descriptors) {
+    for (const key of descriptor.refresh?.reads ?? []) if (!owners.has(key)) problems.push(`${descriptor.id}: reads ${key}, which no block owns`);
+  }
   return problems;
 }
 

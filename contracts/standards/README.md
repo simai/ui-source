@@ -10,7 +10,7 @@ version, in the `standard-contract` envelope:
 | `simai.composite-host-port` | 1.0.5 | the seam itself: a declared, separately versioned port, compatibility rules, a host declaring what it implements, a transport-neutral conformance kit |
 | `simai.change-lifecycle` | 1.0.1 | how a public name leaves the Framework: two stages, a dated journal, a calendar sweep, and an upgrade read from the journal |
 | `simai.component-package` | 1.1.3 | a package of Smart components owned by a product or an external author: layout, a pinned Framework revision, rule and manifest of each component, names, a reproducible build with a receipt, delivery and page declaration, licence and trust |
-| `simai.interface-fragment` | 1.0.3 | a page built from fragments: a descriptor per fragment, routes declared by the page, closed value types, a contained failure, the address as shared state, and region navigation with a full-load fallback |
+| `simai.interface-fragment` | 1.1.0 | a page built from fragments: a descriptor per fragment, routes declared by the page, closed value types, a contained failure, the address as shared state, region navigation with a full-load fallback, and blocks that refresh themselves (block refresh contract 1) |
 | `simai.interaction-rules` | 1.0.0 | how every Smart component loads, talks and draws: one action one render, five states with a skeleton for loading, props down and events up, routes between neighbours, light markup for repeats, stable geometry, contained failure, each rule a check in the build |
 | `simai.effect` | 1.4.0 | an animated background: effect.json with typed, bounded settings (a setting may be shown only while another holds given values), the schemes it draws and a pair of the other scheme, one module with mount/update/pause/resume/destroy, still for reduced motion, idle in a hidden tab, no network, clean destroy, a placement theme mode with the area in the drawn theme at 4.5:1, palette tones not roles, a mask-safe windows mode, a pair under the same trust, foreign effects sandboxed, an about menu on a right-click over the background, a kit (scripts/effect-kit.mjs) run before listing |
 | `simai.ai-development` | 1.0.0 | how an AI agent develops on and with the Framework: the contracts read first, the public surface only, generated output never edited, exact pins, upgrades by the journal, names without versions, ports by their kit, what a person sees measured in a browser, evidence over report, one writer per repository, the owner's decisions asked, content as data |
@@ -95,6 +95,24 @@ previous inventory under today's hash rule (its hashes taken anew from its
 source revision), so the compare shows only what changed. Every hash of a tree
 that holds the marker is unchanged. `simai.component-set` 1.4.0, not yet
 released, names it by digest; 1.0.2 keeps its bytes under history.
+
+When blocks of a page had to refresh themselves without a full load
+(2026-11-25, group build 19; Larena handoff ho-34086ca2988b, the proposal in
+ui-control control/research/2026-11-23-block-refresh-contract, agreed by
+Larena on 2026-11-23, room decision dec-b7452769b3b9), `simai.interface-fragment`
+was issued as 1.1.0: two requirements (`refreshable-block`, `block-refresh`,
+the wire contract 1 with the headers `X-SIMAI-Fragment`, `-Mode` and
+`-Contract`, no timer refresh) and four amended (`fragment-is-a-composite`
+admits a plain server block that has no behaviour of its own;
+`five-states` says no-access is answered by the host; `shareable-state-in-the-address`
+says what a key owned twice does; `region-navigation` says each runtime takes
+only history entries with its own marker and leaves a product's own entries
+alone). The standard keeps twenty requirements, the agreed ceiling. The
+descriptor schema became 1.3.0 (an optional `refresh` object) and is pinned as
+the frozen copy `pinned/interface-fragment-1.3.0.schema.json`; the 1.2.0 copy
+keeps its bytes for the editions in history. No standard pins the interface
+fragment by digest, so nothing else was re-issued; 1.0.3 keeps its bytes under
+history. The runtime is `SF.FragmentRefresh` in core.
 
 A pinned reference also names the version the target itself declares: a
 contract carries `x-simai-version` (schemas) or `version` (locks), and the gate

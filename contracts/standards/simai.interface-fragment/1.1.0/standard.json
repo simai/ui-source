@@ -1,0 +1,183 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.interface-fragment",
+  "version": "1.1.0",
+  "title": "SIMAI Interface Fragment",
+  "appliesTo": [
+    "simai.framework.composite-component"
+  ],
+  "requirements": [
+    {
+      "id": "fragment-is-a-composite",
+      "level": "must",
+      "text": "A fragment is a Smart composite placed in a named region of a page. It has exactly one host port and the composition ports it publishes; it is not a page, a template or a server partial with behaviour of its own. The one server block this standard admits is a refreshable block (refreshable-block): plain server markup inside the content region, which has no behaviour of its own either -- the core runtime refreshes it.",
+      "verification": "manual"
+    },
+    {
+      "id": "descriptor-published",
+      "level": "must",
+      "text": "Every fragment publishes a descriptor (simai.interface-fragment.v1): its identity, element, the regions it may stand in, its port standard and version, its outputs and inputs with their value types, the access operation needed to show it, the address keys it owns and its budget. Nothing it exchanges or needs is left undeclared.",
+      "verification": "manual"
+    },
+    {
+      "id": "descriptor-checked",
+      "level": "must",
+      "text": "A package gate checks every descriptor against the published schema (SF.Composition.checkFragmentDescriptor) before the package is released; a fragment without a valid descriptor is not placed on a page.",
+      "verification": "manual",
+      "guidance": "Framework: SF.Composition.checkFragmentDescriptor; the probe tests/interface-fragment.contract.test.mjs holds it against the pinned schema."
+    },
+    {
+      "id": "no-direct-calls",
+      "level": "must",
+      "text": "A fragment never calls another fragment's methods or host port, and never finds another fragment in the DOM. What one fragment says to another goes out on a published output and arrives on a declared input.",
+      "verification": "manual"
+    },
+    {
+      "id": "routes-on-the-page",
+      "level": "must",
+      "text": "The page is one layout.scope: its fragments are endpoints, and the routes between their ports are declared by the page, not by the fragments. A route joins two existing endpoints, and the value types of its ends are the same.",
+      "verification": "manual"
+    },
+    {
+      "id": "closed-value-types",
+      "level": "must",
+      "text": "Values that cross between fragments use the closed vocabulary of value types (record-changed, record-removed, collection-changed, files-moved, counter, navigation, preference-changed and the composition types). A type is named without a version; the older label with the version (record-changed.v1 ...) names the same type and is read until the change journal retires it. Each has a schema and a check; a value that fails its check is refused, never coerced.",
+      "verification": "manual",
+      "guidance": "Framework: VALUE_TYPES and valueTypeName in src/core/js/composition/routing.mjs, one check per type, either form of a name read in one place; refused values in tests/interface-fragment.contract.test.mjs."
+    },
+    {
+      "id": "values-say-what-changed",
+      "level": "must",
+      "text": "A value says what changed and where, never the data itself: a fragment that hears record-changed reads the record again through its own port, under its own permissions.",
+      "verification": "manual"
+    },
+    {
+      "id": "host-is-an-endpoint",
+      "level": "must",
+      "text": "The page host is an endpoint of the scope. The effects a product's port answer carries are published on the host's outputs as typed values, and the declared routes deliver them; a later push channel (changes made by others) arrives on the same outputs.",
+      "verification": "manual"
+    },
+    {
+      "id": "failure-is-contained",
+      "level": "must",
+      "text": "A fragment that throws while loading or rendering is replaced in its place by the error state with a retry. The rest of the page, its fragments and their routes keep working.",
+      "verification": "manual",
+      "guidance": "Framework: the fragment error boundary (sf-empty-state error with retry), probed with a throwing fragment beside a working one whose routes still deliver."
+    },
+    {
+      "id": "five-states",
+      "level": "must",
+      "text": "A fragment shows the same five states every Smart component shows -- loading, populated, empty, no-access, error -- with loading drawn as its skeleton in its own region and never as an empty answer. Loading and error are the client's; populated, empty and no-access are answered by the host. A block the person may see on the page but whose data they may not read answers no-access, never an error and never empty.",
+      "verification": "manual"
+    },
+    {
+      "id": "access-before-placement",
+      "level": "must",
+      "text": "A fragment whose operation the person may not perform is not placed, or is placed in its no-access state; it never renders controls the host will refuse.",
+      "verification": "manual"
+    },
+    {
+      "id": "shareable-state-in-the-address",
+      "level": "must",
+      "text": "State a person would share or come back to -- a folder, a filter, a selected record, a block's period -- lives in the address under the keys the fragment or block declares in url_state or data-sf-fragment-keys; two owners never hold the same key on one page. A block writes only its own keys and keeps every other key of the address as it is; a key or an id declared twice makes every block that declares it plain (its controls load the page in full), with one console error and the sf-fragment-conflict event, and the package gate (checkRefreshPage) refuses such a page before it ships.",
+      "verification": "manual",
+      "guidance": "Framework: keyMap in src/core/js/fragment-refresh.js at runtime, checkRefreshPage in src/core/js/composition/fragments.mjs in a package gate."
+    },
+    {
+      "id": "region-navigation",
+      "level": "must",
+      "text": "A link inside the shell changes the content region rather than the page: the region is asked for with the region header, swapped in place with a skeleton in that region only, the address goes into the history, Back and Forward work and scroll returns on Back, and focus moves to the new heading. History entries carry the marker of the runtime that wrote them -- sfRegion for region navigation, sfFragment for block refresh -- and each runtime takes only its own; a product's own entries carry the product's own marker and both runtimes leave them alone, never removing or rewriting another marker's fields. A Back or Forward that changes only block keys is block refresh's, not region navigation's.",
+      "verification": "manual",
+      "guidance": "Framework: the region navigator in the core (the pair after this standard), with browser probes for Back/Forward, scroll, focus, assets once and released listeners."
+    },
+    {
+      "id": "full-load-fallback",
+      "level": "must",
+      "text": "Navigation falls back to a full page load whenever the shell revision differs from the page's own, the link asks for one, the address is on another origin, or anything in the region answer is not as declared. A partial swap is never left on screen.",
+      "verification": "manual",
+      "guidance": "Framework: the same navigator; Larena answers the region request only for a 200 JSON region answer, and a redirect to sign-in stays a redirect."
+    },
+    {
+      "id": "refreshable-block",
+      "level": "must",
+      "text": "A refreshable block is a named part of the content region declared in markup, with no code of its own in the product: data-sf-fragment (its id, unique on the page), data-sf-fragment-keys (the query keys it owns, up to 16), data-sf-fragment-mode (data or html), data-sf-fragment-contract (1) and, optional, data-sf-fragment-reads (keys another block owns that change it) and data-sf-fragment-port (<standard>@<major> of its data port). Its controls stay <a href> and <form method=get>: without JavaScript each loads the page with the keys it names, and the runtime takes one only when its address has the page's origin and path and differs only in the block's own keys or in keys other blocks own (the hash ignored), and asks for that address with the other blocks' keys as the page has them; a key no block owns is the page's, and a change there, another path, POST, a modifier key, a target, download or data-full-load stay the browser's or region navigation's. A data block names the targets of its answer with data-sf-fragment-part and draws its first data from a <script type=application/json data-sf-fragment-data> island; its links are not drawn again, so after each answer the runtime writes the applied values of the block's other keys into them (a link sets the keys named by data-sf-fragment-sets on it or its group, else those its group's links differ in). An html block is plain server markup and is drawn again whole. A block that changed its keys publishes a parameters-changed value ({keys, url}, the sf-fragment-parameters event), and every block that reads one of those keys refreshes itself with its own request; the owner writes the address once. A fragment that refreshes declares it in its descriptor (refresh: mode, contract, reads, parts).",
+      "verification": "manual",
+      "guidance": "Framework: SF.FragmentRefresh.enable({scope}) once per page shell; readBlock and ownedChange in src/core/js/fragment-refresh.js; the descriptor's refresh object in interface-fragment.v1.schema.json 1.3.0."
+    },
+    {
+      "id": "block-refresh",
+      "level": "must",
+      "text": "A block refreshes by GET of the address its control leads to (the other blocks' keys as the page has them) with X-SIMAI-Fragment: <id>, X-SIMAI-Fragment-Mode: data|html, X-SIMAI-Fragment-Contract: 1 and the Accept of the mode; the host answers 200, not redirected, with the same X-SIMAI-Fragment and X-SIMAI-Fragment-Contract, Vary on both request headers, Cache-Control private, no-store. A data answer is JSON {fragment, contract, port?, state, url, keys?, parts?, controls?} of at most 256 KB: state populated, empty or no-access; url and keys the address the host applied, which the runtime writes; parts only the block's own parts and only fields each part takes; an html answer is the block's outer element alone, one root with the same id. The whole answer is checked first and drawn in one step, then the address is written (push by default, replace for a control or group marked data-sf-fragment-history=replace, and replace when a refresh that writes nothing -- Back, Forward, a linked block -- is answered with another address); scroll does not move and focus stays on the control. One request per block: a newer one aborts the older and a late answer is dropped; a skeleton only inside the block after 150 ms, the block keeping its height. A network failure, a 10 s timeout or a 5xx shows the error state inside the block with a retry; a 4xx, a redirect, a missing or other confirming header, another id, root, part, port major or contract, a wrong content type or invalid JSON loads the target address in full (sf-fragment-fallback with the reason). Contract 1 has no timer refresh.",
+      "verification": "manual",
+      "guidance": "Framework: refresh, headerProblems and dataAnswerProblems in src/core/js/fragment-refresh.js; tests/fragment-refresh.contract.test.mjs and the browser probe tests/browser/fragment-refresh.browser.mjs (Back/Forward, newest wins, skeleton, error and retry, every fallback reason, key conflict, assets once, linked blocks, a product's own history entries, JavaScript off). The product answers the headers (Larena: a middleware before AdminRegionMiddleware)."
+    },
+    {
+      "id": "assets-once",
+      "level": "must",
+      "text": "A region brings the assets its fragments need; an asset already on the page is not requested again, and a fragment loads only what it brings, beyond the shared runtime.",
+      "verification": "manual"
+    },
+    {
+      "id": "release-on-leave",
+      "level": "must",
+      "text": "A fragment that leaves the page by a region swap is disconnected: its routes, listeners and timers are released, and nothing it started keeps answering.",
+      "verification": "manual"
+    },
+    {
+      "id": "budget-declared",
+      "level": "must",
+      "text": "A fragment declares its budget -- kilobytes beyond the shared runtime and milliseconds to its first answer -- and the budget is measured in the package's probes; a fragment over its budget does not pass the gate.",
+      "verification": "manual"
+    },
+    {
+      "id": "versioned-with-its-port",
+      "level": "must",
+      "text": "A fragment's descriptor follows its port's versioning: a minor version only adds optional outputs, inputs or url keys; removing or renaming one, or changing its value type, is a new major.",
+      "verification": "manual"
+    }
+  ],
+  "extends": [
+    {
+      "id": "simai.composite-host-port",
+      "version": "1.0.5",
+      "path": "../../simai.composite-host-port/1.0.5/standard.json",
+      "sha256": "72fc8c8176adc0bef52a57d407880c251f41f3c44c7c1cd6fd9faea8b985384f",
+      "description": "The seam between a composite and its host. A fragment is such a composite placed in a page region beside others."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.interface-fragment-descriptor",
+      "version": "1.3.0",
+      "path": "../../pinned/interface-fragment-1.3.0.schema.json",
+      "sha256": "3a47b8db1b65addb7ce1d5af27cf4a57bb19269db99c343fb42b879251a62d8a",
+      "description": "The form of a fragment descriptor: element, regions, port, outputs and inputs with value types (either form of a name), operation, url_state, budget and, optional since 1.3.0, refresh (mode, contract, reads, parts)."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "co_author": "simai/larena",
+      "publication": "ui-doc",
+      "builds_on": "simai.composite-host-port 1.0.3; the rules of the road (ui-control control/designs/2026-10-15-interaction-rules.md)",
+      "scope_note": "Pages built from fragments that update one another through declared contracts, a shell whose content region changes without a full load, and blocks inside the content region that refresh themselves from their own links and forms. The product keeps data access, permissions and the region and block answers; the Framework keeps the descriptor, the value types, routing, region navigation and block refresh.",
+      "origin": "Asked for by simai/larena (larena-specs docs/architecture/2026-10-15-interface-fragments.md, handoff ui-control control/handoffs/2026-10-15-interface-fragments.md), owner decision 2026-10-15, authored for publication by the Framework owner.",
+      "validated_against": [
+        "the closed value-type checks in src/core/js/composition/routing.mjs, either form of a name",
+        "SF.Composition.checkFragmentDescriptor against the pinned descriptor schema",
+        "the routing contract 1.1.0 corpus src/core/contracts/composition-routing-v1/fixtures/value-type-names.json",
+        "SF.FragmentRefresh (src/core/js/fragment-refresh.js): readBlock, keyMap, ownedChange, headerProblems and dataAnswerProblems, held by tests/fragment-refresh.contract.test.mjs; the browser probe tests/browser/fragment-refresh.browser.mjs on real blocks",
+        "checkRefreshPage in src/core/js/composition/fragments.mjs, the package gate of a page's refreshable blocks"
+      ],
+      "reissue": "Issued as 1.1.0 on 2026-11-25 (group build 19) for block refresh: Larena handoff ho-34086ca2988b, proposal ui-control control/research/2026-11-23-block-refresh-contract, agreed by Larena on 2026-11-23 (msg-f2802b4d31584589bba3, room decision dec-b7452769b3b9) with these answers: the header X-SIMAI-Fragment beside the mode and contract headers (the mode header is required because a product may rewrite Accept), no-access kept as a state a block answers, no timer refresh in contract 1, and a product's own history entries carry their own marker and are left alone. Two requirements are added (refreshable-block, block-refresh); fragment-is-a-composite gains the server-block clause, five-states says who answers no-access, shareable-state-in-the-address says what a key owned twice does, and region-navigation gains the history markers. The descriptor schema 1.3.0, pinned as the frozen copy pinned/interface-fragment-1.3.0.schema.json, adds the optional refresh object. Additive: a fragment that does not refresh is valid unchanged. 1.0.3 keeps its bytes in history. Before: Re-issued as 1.0.3 on 2026-11-23 because the standard it extends by digest, simai.composite-host-port, was re-issued as 1.0.5 to pin the port declaration form 1.3.0. Requirements are unchanged; the bytes of 1.0.0 to 1.0.2 stay in history. Before: Re-issued as 1.0.2 because value types are named without a version (owner decision 2026-10-19, change journal record value-types-without-version): the descriptor schema 1.2.0, pinned as a frozen copy, takes a value type by its bare name or by the older label with the version, and closed-value-types names the types without it. Before: 1.0.1, re-issued because the standard it extends, simai.composite-host-port, became 1.0.4 for the Recipe contract 1.1.0 (2026-10-19). The other requirements are unchanged since 1.0.0; the bytes of 1.0.0 and 1.0.1 stay in history."
+    }
+  }
+}

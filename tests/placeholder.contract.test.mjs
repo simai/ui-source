@@ -23,7 +23,8 @@ test('a placeholder is only for an element not defined yet, and calms down for r
   assert.doesNotMatch(sheet.replace(/\/\*[\s\S]*?\*\//gu, ''), /\[data-sf-skeleton[^\]]*\](?!\):not\(:defined\))/u);
   assert.match(sheet, /prefers-reduced-motion: reduce[\s\S]*animation: none/u);
   // The region skeleton too (DEV, 2026-10-16: it pulsed for reduced motion).
-  assert.match(sheet, /prefers-reduced-motion: reduce\)\s*\{\s*\[data-sf-region-loading\]\s*\{\s*animation: none/u);
+  // And a refreshable block waiting for its markup (block refresh, html mode).
+  assert.match(sheet, /prefers-reduced-motion: reduce\)\s*\{\s*\[data-sf-region-loading\],\s*\[data-sf-fragment-loading="html"\]\s*\{\s*animation: none/u);
 });
 
 test('every Smart manifest declares its skeleton and names a known shape', () => {
