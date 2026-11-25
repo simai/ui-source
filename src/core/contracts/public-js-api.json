@@ -240,6 +240,9 @@
         "refresh",
         "contract",
         "enabled"
+      ],
+      "internal_members": [
+        "claimsPop"
       ]
     },
     {
