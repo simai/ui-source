@@ -473,7 +473,7 @@ class SfFilePreview extends FilePreviewElement {
     const start = files.indexOf(this) + 1;
     const nameOf = (file) => file?.querySelector?.('.sf-file-preview-name') || file;
     try {
-      if (!globalThis.SF?.Gallery?.view) await globalThis.SF?.Loader?.ensure?.(['sf-gallery']);
+      if (!globalThis.SF?.Gallery?.view) await globalThis.SF?.Loader?.ensure?.(['sf-gallery'], {press: true});
     } catch {
       // Without the viewer the browser opens the file.
     }

@@ -775,7 +775,7 @@ export function startInlineEdit(element, options = {}) {
 
   // The field takes the focus once sf-input has drawn it.
   function focusField() {
-    const ready = globalThis.customElements?.get('sf-input') ? null : globalThis.SF?.Loader?.ensure?.(['sf-input', 'sf-button']);
+    const ready = globalThis.customElements?.get('sf-input') ? null : globalThis.SF?.Loader?.ensure?.(['sf-input', 'sf-button'], {press: true});
     Promise.resolve(ready).then(() => linkInput.updateComplete).then(() => {
       if (finished || linkPanel.hidden) return;
       const control = fieldControl();

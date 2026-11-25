@@ -47,10 +47,10 @@ const BUTTONS = [
   `<sf-button data-b="smart-tonal" appearance="tonal" scheme="primary" size="1" height="low" icon-start="refresh" text="Действие"></sf-button>`,
   `<sf-button data-b="smart-ghost" appearance="ghost" scheme="on-surface" size="1" height="low" icon-start="logout" text="Действие"></sf-button>`,
   `<sf-button-icon data-b="smart-icon" appearance="ghost" scheme="on-surface" size="1" height="low" icon="more_vert" aria-label="Ещё"></sf-button-icon>`,
-  `<button type="button" data-b="class-icon" class="sf-icon-button sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center" aria-label="Ещё"><i class="sf-icon" aria-hidden="true">more_vert</i></button>`,
+  `<button type="button" data-b="class-icon" class="sf-icon-button sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center" aria-label="Ещё"><i class="sf-icon" aria-hidden="true">more_vert</i></button>`,
 ].join('');
 const KINDS = ['tonal-primary', 'link-on-surface', 'outline-primary', 'default-primary', 'bare', 'smart-tonal', 'smart-ghost', 'smart-icon', 'class-icon'];
-const close = `<button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center" aria-label="Закрыть"><span class="sf-close sf-close--size-1 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>`;
+const close = `<button type="button" class="sf-icon-button sf-icon-button--close sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center" aria-label="Закрыть"><span class="sf-close sf-close--size-1 flex justify-center items-center" aria-hidden="true"><span class="sf-close-icon"></span></span></button>`;
 
 const classAlert = (level, appearance) => `
   <div data-k="alert-${level}-${appearance}" data-level="${level}" class="sf-alert sf-alert--${level} sf-alert--${appearance} flex items-start" role="status">

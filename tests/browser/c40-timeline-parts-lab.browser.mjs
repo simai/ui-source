@@ -322,12 +322,13 @@ try {
           const c = m.change ?? {};
           if (c.before !== 'Собран' || c.after !== 'Передан в доставку') fail(`sf-change values ${c.before} / ${c.after}`);
           if (c.beforeColour !== t.variant || c.arrowColour !== t.variant || c.afterColour !== t.onSurface || c.afterWeight !== '500') fail(`sf-change look ${JSON.stringify(c)} vs ${t.variant} ${t.onSurface}`);
-          if (c.arrowHidden !== 'true' || c.sr !== 'на' || c.strike || c.badges) fail(`sf-change a11y/look arrow ${c.arrowHidden} sr «${c.sr}» strike ${c.strike} badges ${c.badges}`);
+          // One phrase with both values for a screen reader (sf-change 1.1.0, C177 follow-up #86).
+          if (c.arrowHidden !== 'true' || c.sr !== 'было Собран, стало Передан в доставку' || c.strike || c.badges) fail(`sf-change a11y/look arrow ${c.arrowHidden} sr «${c.sr}» strike ${c.strike} badges ${c.badges}`);
           if (!c.pairGlued) fail('sf-change: the arrow is not on the new value\'s first line');
           if (c.pairOverflow > 0.5) fail(`sf-change: the new value passes its line by ${c.pairOverflow}px`);
           if (c.size !== c.sentenceSize) fail(`sf-change size ${c.size}, its sentence ${c.sentenceSize}`);
-          if (m.labelled !== 'Получатель: пусто → на Ирина Котова') fail(`sf-change show-label «${m.labelled}»`);
-          if (m.list?.rows !== 4 || m.list?.terms.join('|') !== 'Вес|Габариты|Склад|Комментарий' || !/^Позвонить → на пусто$/u.test(m.list?.last ?? '') || m.list?.emptyItalic !== 'italic') fail(`sf-change list ${JSON.stringify(m.list)}`);
+          if (!/^Получатель: пусто →\s?было пусто, стало Ирина Котова Ирина Котова$/u.test(m.labelled ?? '')) fail(`sf-change show-label «${m.labelled}»`);
+          if (m.list?.rows !== 4 || m.list?.terms.join('|') !== 'Вес|Габариты|Склад|Комментарий' || !/^Позвонить →\s?было Позвонить, стало пусто пусто$/u.test(m.list?.last ?? '') || m.list?.emptyItalic !== 'italic') fail(`sf-change list ${JSON.stringify(m.list)}`);
           if (!phone && new Set(m.list?.termLeft).size !== 1) fail(`sf-change list values start at ${m.list?.termLeft}`);
           if (m.long?.text !== 'Показать изменения' || m.long?.expanded !== 'false' || m.long?.blocksHidden !== true) fail(`sf-change long ${JSON.stringify(m.long)}`);
           if (m.long && !near(m.long.icon, t.line12)) fail(`sf-change toggle icon ${m.long.icon}, rung 1/2 line ${t.line12}`);
@@ -377,7 +378,7 @@ try {
             if (!byId.comment?.comment || byId.comment.comment.border !== '1px' || byId.comment.comment.background !== 'rgba(0, 0, 0, 0)' || !near(byId.comment.comment.padTop, t.space12) || !near(byId.comment.comment.padLeft, t.space1)) fail(`comment ${JSON.stringify(byId.comment?.comment)}`);
             if (byId.sms?.glyph?.text !== 'phone_iphone') fail(`sms glyph ${byId.sms?.glyph?.text}`);
             if (!/--error/u.test(byId.charge?.marker?.classes ?? '') || byId.charge?.marker?.background === byId.status?.marker?.background) fail(`error marker ${byId.charge?.marker?.classes} ${byId.charge?.marker?.background} vs ${byId.status?.marker?.background}`);
-            if (byId.status?.change !== 'Собран → на Передан в доставку') fail(`status change «${byId.status?.change}»`);
+            if (!/^Собран →\s?было Собран, стало Передан в доставку Передан в доставку$/u.test(byId.status?.change ?? '')) fail(`status change «${byId.status?.change}»`);
             if (!/^14:30$/u.test(byId.status?.meta ?? '')) fail(`status meta «${byId.status?.meta}»`);
             if (!/^09:12 · Карта/u.test(byId.charge?.meta ?? '')) fail(`charge meta «${byId.charge?.meta}»`);
             const folds = ref.items.filter((one) => one.fold);
@@ -391,9 +392,11 @@ try {
           }
           const steps = m.timelines.steps;
           const currentSteps = steps?.items.filter((one) => one.current === 'step') ?? [];
-          if (currentSteps.length !== 1 || currentSteps[0].state !== 'current' || !/inset/u.test(currentSteps[0].marker?.shadow ?? '')) fail(`steps current ${JSON.stringify(currentSteps)}`);
+          if (currentSteps.length !== 1 || currentSteps[0].state !== 'current' || !/0px 0px 0px 2px.*0px 0px 0px 4px/u.test(currentSteps[0].marker?.shadow ?? '') || /inset/u.test(currentSteps[0].marker?.shadow ?? '')) fail(`steps current ${JSON.stringify(currentSteps)}`);
           const dashed = steps?.items.filter((one) => one.connector && one.connector.style === 'dashed').map((one) => one.state) ?? [];
-          if (dashed.join(',') !== 'current') fail(`steps dashed after ${dashed}`);
+          // The current step's ring stands outside the marker through a 2 px gap (C61 round 4);
+          // no dashed line after it any more (C204 (1)): one line, sf-steps'.
+          if (dashed.length) fail(`steps dashed after ${dashed}`);
           const side = m.timelines.side;
           if (side && !(side.L <= (ref?.L ?? 0))) fail(`side panel line ${side.L} above ${ref?.L}`);
           // A status without an icon: the dot component's size of the rung (1/2: a6), no new value.

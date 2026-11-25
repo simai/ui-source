@@ -26,9 +26,24 @@
       "reason": "Derived from the page: an absent file-name is the link's last part, else the word for a file in the page's language (decision C25)."
     },
     {
-      "component": "gallery",
-      "prop": "modalId",
-      "reason": "Generated per instance when not set."
+      "component": "input-date",
+      "prop": "format",
+      "reason": "Follows the locale when not set (the document's lang, else the browser's): MM/DD/YYYY on an English page, DD.MM.YYYY on a Russian one (GB19 triage of the known reds)."
+    },
+    {
+      "component": "input-date",
+      "prop": "placeholder",
+      "reason": "The locale's format when not set, as format (GB19 triage)."
+    },
+    {
+      "component": "input-date",
+      "prop": "maskPattern",
+      "reason": "The locale's format as a mask when not set, as format (GB19 triage)."
+    },
+    {
+      "component": "list",
+      "prop": "timeFormat",
+      "reason": "Chosen per group when not set (timeFormatFor(group)): a function, not one value (GB19 triage)."
     },
     {
       "component": "modal",

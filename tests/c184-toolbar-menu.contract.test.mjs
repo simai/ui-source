@@ -81,7 +81,7 @@ test('C184 (4): SF.menu.open, public, one menu on the page', () => {
   // One per page, behind the shared global: every bundle's copy calls the published one.
   assert.match(open, /if \(typeof SF\.menu\.open !== 'function'\) SF\.menu\.open = installMenuOpen\(\);/u);
   assert.match(open, /const SHARED = 'data-sf-menu-shared';/u);
-  assert.match(open, /await globalThis\.SF\?\.Loader\?\.ensure\?\.\(\['sf-menu-context'\]\);/u);
+  assert.match(open, /await globalThis\.SF\?\.Loader\?\.ensure\?\.\(\['sf-menu-context'\], \{press: true\}\);/u); // GB19: a press waits for a slow load (L2)
   // In the open modal dialog the opener is in, else the body.
   assert.match(open, /anchor\?\.closest\?\.\('dialog\[open\]'\) \|\| doc\.body/u);
   // A second press on the same control closes it; a point opens at its corner.

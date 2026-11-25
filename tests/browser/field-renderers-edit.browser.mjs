@@ -42,6 +42,10 @@ try {
     + '<div id="host" style="width:600px"></div></body></html>',
   );
   for (const path of styles) await page.addStyleTag({path}).catch(() => {});
+  // Russian is a language file (owner decision C282): the bundles carry the
+  // English words only, so the Russian page includes core/lang/ru.js before
+  // core, as a site does (GB19 triage; as field-renderers-view, GB18 D2).
+  await page.addScriptTag({path: join(out, 'core/core/lang/ru.js')});
   for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
   await page.waitForTimeout(1300);
 

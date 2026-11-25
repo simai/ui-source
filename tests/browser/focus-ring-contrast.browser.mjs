@@ -154,7 +154,12 @@ try {
       }
 
       const colour = parse(ring.colour);
-      const surface = parse(inward ? ring.fill : ring.surface);
+      // An inward ring on a control with no fill of its own (a tab, alpha 0)
+      // lies on the page: reading it against the transparent fill measured it
+      // against black (1.22 for the on-surface ring of a light tab; GB19
+      // triage).
+      const ownFill = parse(ring.fill);
+      const surface = parse(inward && ownFill && ownFill[3] !== 0 ? ring.fill : ring.surface);
       if (!colour || !surface) {
         note({control: id, colour: ring.colour, surface: ring.surface, expected: 'a colour that can be read'});
         continue;

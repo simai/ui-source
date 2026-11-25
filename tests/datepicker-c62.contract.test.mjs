@@ -145,7 +145,7 @@ test('a period on a phone opens a ribbon of months in the bottom sheet', () => {
   // Below the breakpoint lg (60rem), read from core/js/breakpoints.js, not a raw length (C18).
   assert.match(source, /import \{matchesBreakpoint\} from '\.\.\/\.\.\/core\/js\/breakpoints\.js';/u);
   assert.match(source, /if \(!this\.range \|\| !this\.input \|\| this\._ribbonUnavailable\) return false;\s*return matchesBreakpoint\('lg', \{below: true\}\);/u);
-  assert.match(source, /await globalThis\.SF\?\.Loader\?\.ensure\?\.\(\['sf-drawer'\]\)/u);
+  assert.match(source, /await globalThis\.SF\?\.Loader\?\.ensure\?\.\(\['sf-drawer'\], \{press: true\}\)/u); // GB19: a press waits for a slow load (L2)
   assert.match(source, /sheet\.setAttribute\('placement', 'bottom'\);/u);
   assert.match(source, /body\.className = 'sf-datepicker sf-datepicker--sheet';/u);
   // No drawer on the page: the popup.

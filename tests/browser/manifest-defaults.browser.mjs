@@ -64,7 +64,10 @@ try {
         const spec = inputs[attribute] || inputs[key];
         if (!spec || !('default' in spec)) continue;
         const actual = key in context ? context[key] : getter(key) ? element[key] : element.getProp(key);
-        rows.push({key, attribute, manifest: spec.default, actual: actual instanceof Object && !Array.isArray(actual) && actual.constructor !== Object ? String(actual) : actual});
+        // A Set (sf-list's chosen) is its members: an empty one is the empty list
+        // the manifest says, not the text «[object Set]» (GB19 triage).
+        const plain = actual instanceof Set ? [...actual] : actual;
+        rows.push({key, attribute, manifest: spec.default, actual: plain instanceof Object && !Array.isArray(plain) && plain.constructor !== Object ? String(plain) : plain});
       }
       element.remove();
       return {rows};

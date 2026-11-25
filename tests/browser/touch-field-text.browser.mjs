@@ -74,7 +74,10 @@ const measure = async (options) => {
   const fields = await page.evaluate(() => [...document.querySelectorAll('[data-field]')].map((host) => {
     const control = host.querySelector('input, textarea');
     const box = (host.querySelector('.sf-input-field, .sf-textarea-field, .sf-datepicker-field') || control).getBoundingClientRect();
-    return {name: host.dataset.field, font: parseFloat(getComputedStyle(control).fontSize), height: box.height};
+    // A textarea's rows and line: on a touch phone its lines stand on the size 1
+    // text line (TR-2, component.textarea), so it grows by rows x the line's change.
+    const textarea = control.tagName === 'TEXTAREA' ? {rows: control.rows, line: parseFloat(getComputedStyle(control).lineHeight)} : {};
+    return {name: host.dataset.field, font: parseFloat(getComputedStyle(control).fontSize), height: box.height, ...textarea};
   }));
   // The dropdown's search.
   await page.locator('#dropdown button[aria-haspopup]').click();
@@ -125,7 +128,9 @@ try {
   for (const field of touch.fields) {
     const flat = plain.fields.find((entry) => entry.name === field.name);
     check(`touch 390px ${field.name}: the text is at least 16px`, field.font >= 16, field);
-    check(`touch 390px ${field.name}: the field is as tall as in a plain window`, flat && Math.abs(flat.height - field.height) <= 0.01, {touch: field, plain: flat});
+    // Only the font size moves, and a textarea's lines take the size 1 line (TR-2).
+    const lifted = field.rows && flat?.line ? field.rows * (field.line - flat.line) : 0;
+    check(`touch 390px ${field.name}: the field is as tall as in a plain window${lifted ? ', its lines on the size 1 line (TR-2)' : ''}`, flat && Math.abs(flat.height + lifted - field.height) <= 0.01, {touch: field, plain: flat});
     // A field already at 16px or more keeps its own text: the floor never shrinks one.
     check(`touch 390px ${field.name}: the text is its own or the floor, whichever is larger`, flat && field.font === Math.max(16, flat.font), {touch: field, plain: flat});
   }

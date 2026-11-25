@@ -161,9 +161,14 @@ for (const theme of ['light', 'dark']) {
   // .sf-accordion
   const panel = await tab.evaluate(() => {
     const content = document.querySelector('#by-class .sf-accordion-content');
-    return {hidden: content.hidden, shown: getComputedStyle(content).display !== 'none', expanded: document.querySelector('#by-class .sf-accordion-trigger').getAttribute('aria-expanded')};
+    // A closed panel is hidden="until-found" (component.accordion: the
+    // browser's find-in-page searches it): content.hidden reads the string
+    // and the panel is not drawn through content-visibility, not display
+    // (GB19 triage: the probe read hidden === true and display none).
+    const style = getComputedStyle(content);
+    return {hidden: content.hidden, shown: style.display !== 'none' && style.contentVisibility !== 'hidden' && content.getBoundingClientRect().height > 0, expanded: document.querySelector('#by-class .sf-accordion-trigger').getAttribute('aria-expanded')};
   });
-  ok(`${t} accordion: a panel closed by the class carries the hidden attribute`, panel.hidden === true && !panel.shown && panel.expanded === 'false', panel);
+  ok(`${t} accordion: a panel closed by the class carries the hidden attribute`, (panel.hidden === true || panel.hidden === 'until-found') && !panel.shown && panel.expanded === 'false', panel);
   ax = await axOf(tab, cdp, '#by-class-link');
   ok(`${t} accordion: its content is out of the accessibility tree`, !ax || ax.ignored, ax);
   const tabbable = await tab.evaluate(async () => {

@@ -21049,6 +21049,46 @@
         }
       ],
       "source": "src/smart/form/scss/_smart__form.scss"
+    },
+    {
+      "recorded_on": "2026-11-25",
+      "stage": "compat",
+      "deprecated_on": "2026-11-25",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-press-remaining-call-sites",
+      "kind": "behaviour",
+      "summary": "core.runtime and seven Smart components (group build 19 area C, DEV answer 5 on GB18, msg-cda157ebd00d44df8792): every remaining place that loads a part because a person pressed something asks the Loader with press (SF.Loader.ensure(tags, {press: true}), GB18 L2): the 30 s wait that goes on while the load is in flight, so a press on a slow connection still opens what it asked for. SF.menu.open, the overflow row's «Ещё», the inline editor's field, sf-tabs 1.5.5 (settings menu, its sortable and checkbox), sf-file-preview 1.5.6 (gallery), sf-input-date 1.18.1 (the phone bottom sheet), sf-profile-picker 1.9.1, sf-breadcrumbs 1.2.11 (the «…» menu; it waited for customElements.whenDefined only), sf-bulk-actions 1.3.2, sf-editor-inline 1.13.1. Drawing paths keep the plain ensure.",
+      "items": [
+        {
+          "component": "core.runtime, sf-tabs, sf-file-preview, sf-input-date, sf-profile-picker, sf-breadcrumbs, sf-bulk-actions, sf-editor-inline",
+          "from": "SF.Loader.ensure(tags) at a press (its 3 s default wait), sf-breadcrumbs customElements.whenDefined",
+          "to": "SF.Loader.ensure(tags, {press: true}) at a press"
+        }
+      ],
+      "source": "src/core/js/menu-open.js"
+    },
+    {
+      "recorded_on": "2026-11-25",
+      "stage": "compat",
+      "deprecated_on": "2026-11-25",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "format-first-paint-sheets-printed-skeleton",
+      "kind": "format",
+      "summary": "scripts/snapshot-first-paint.mjs (group build 19 area C, msg-c0a09a5a1e0b4e23a254, Admin 1.2.1 object-menu): an example's static/sheets.json lists the sheets of its full render and of its printed skeleton, read on the page the strict first-paint gate builds (printedBody, scripts/first-paint-lib.mjs) at the same drawn moment (DRAWN, PRINTED_SETTLE_MS). Before, it listed the full render's only, so a skeleton that prints parts the full render does not draw (sf-skeleton rows) got a list the gate's 24d rejected. On ui-source main every list is unchanged (193 examples, 0 stale); a package whose skeleton prints such parts gets them on its next snapshot.",
+      "items": [
+        {
+          "component": "scripts/snapshot-first-paint.mjs",
+          "from": "the full render's sheets",
+          "to": "the full render's and the printed skeleton's sheets, read as the gate reads them"
+        }
+      ],
+      "source": "scripts/snapshot-first-paint.mjs"
     }
   ]
 }

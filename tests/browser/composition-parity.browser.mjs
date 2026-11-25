@@ -41,6 +41,9 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
+// Russian is a language file (owner decision C282): the server render reads
+// its words from the registry the file fills, as a page with the file does.
+(0, eval)(readFileSync(join(parts.core, 'lang', 'ru.js'), 'utf8'));
 const {render} = await import(pathToFileURL(resolve(import.meta.dirname, '../../src/core/js/composition/index.mjs')).href);
 
 const text = (value) => [{type: 'text', value}];
@@ -94,6 +97,7 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script>
+<script src="/distr/core/lang/ru.js"></script>
 <style>body{margin:0;background:var(--sf-surface-0)}</style></head><body>${output.html}
 <div id="raw"><sf-button id="raw-off" href="#off" disabled text="Выключено"></sf-button><sf-button id="raw-unsafe" href="javascript:alert(1)" text="Небезопасно"></sf-button></div></body></html>`;
 

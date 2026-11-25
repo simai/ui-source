@@ -139,7 +139,7 @@ test('the inserter is the standard menu, and Escape is its layer alone', async (
   // Placed by core's one standard-menu helper (TL-8), which asks the Loader.
   assert.match(source, /placeStandardMenu\(list, '_sfInserterMenu'/);
   assert.match(helper, /createElement\('sf-menu-context'\)/);
-  assert.match(helper, /Loader\?\.ensure\?\.\(\['sf-menu-context'\]\)/);
+  assert.match(helper, /Loader\?\.ensure\?\.\(\['sf-menu-context'\], \{press: true\}\)/); // GB19: a press waits for a slow load (L2)
   assert.match(source, /surface\.search = \{ placeholder: text\('search'\), empty: text\('empty'\) \};/);
   assert.match(source, /surface\.openFor\(button,/);
   // No Escape of its own on the document: the menu owns it and holds the

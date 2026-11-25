@@ -79,8 +79,12 @@ try {
   const page = await open('total="0" count-known="false" can-count="true" has-next="true" current="3" page-size="10" selected-count="2" actions="archive:В архив" show-action-for-all="true"');
   let shown = await look(page);
   if (!shown.link) note({case: 'unknown count', text: shown.text, expected: 'an offer to find out'});
-  if (!/Show the number/u.test(shown.text)) note({case: 'unknown count', text: shown.text, expected: 'the label of the offer'});
-  if (/Total: \d/u.test(shown.text)) note({case: 'unknown count', text: shown.text, expected: 'no number invented'});
+  // Since C97 (sf-pagination 1.5.0) the total place says the range, «21–30
+  // of many», and the offer is its link «count» (words range-many and
+  // show-count-label); the probe still read «Show the number» and «Total: N»
+  // (GB19 triage).
+  if (!/^21–30 of many count$/u.test(shown.text)) note({case: 'unknown count', text: shown.text, expected: 'the range «21–30 of many» and the offer «count»'});
+  if (/of \d/u.test(shown.text)) note({case: 'unknown count', text: shown.text, expected: 'no number invented'});
   if (shown.marked) note({case: 'unknown count', expected: 'the footer does not say how many are marked'});
   // The row of numbers was replaced by the page field, so an unknown count has
   // nothing left to invent: the field says 3 and the arrows do the rest.
@@ -88,7 +92,9 @@ try {
     note({case: 'unknown count', got: {places: shown.places, field: shown.field}, expected: 'no numbers, the page in the field'});
   }
   if (!shown.next || !shown.last) note({case: 'unknown count', expected: 'forward and last from has_next'});
-  if (!shown.showMore) note({case: 'unknown count', expected: 'Show more from has_next'});
+  // «Show more» in the compatible footer is drawn only when top is written
+  // (C97, sf-pagination 1.10.0 and its probe 1.10.1), not from has_next alone.
+  if (shown.showMore) note({case: 'unknown count', expected: 'no «Show more» without top (C97)'});
 
   // 2. The link asks, and while the answer is on its way there is a short wait.
   // The hosts are display: contents, so a click goes to the real button inside.
@@ -113,7 +119,7 @@ try {
   });
   await page.waitForTimeout(250);
   shown = await look(page);
-  if (!/Total: 450/u.test(shown.text)) note({case: 'answered', text: shown.text, expected: 'the number'});
+  if (!/^21–30 of 450$/u.test(shown.text)) note({case: 'answered', text: shown.text, expected: 'the range with the number, «21–30 of 450»'});
   if (shown.spinner || shown.link) note({case: 'answered', expected: 'no wait and no offer once it is known'});
   if (shown.marked) note({case: 'answered', expected: 'still no marked count in the footer'});
   await page.close();
@@ -167,8 +173,9 @@ try {
   // 6. A host that cannot count is offered nothing at all.
   const mute = await open('total="0" count-known="false" can-count="false" has-next="true" current="2" page-size="10"');
   const quiet = await look(mute);
-  if (quiet.link || /Show the number/u.test(quiet.text) || quiet.text) {
-    note({case: 'no capability', text: quiet.text, expected: 'nothing where the number would be'});
+  // The range stays (C97); no offer is drawn after it.
+  if (quiet.link || quiet.text !== '11–20 of many') {
+    note({case: 'no capability', text: quiet.text, expected: 'the range alone, «11–20 of many», with no offer'});
   }
   if (!quiet.next) note({case: 'no capability', expected: 'the switcher still works from has_next'});
   await mute.evaluate(() => document.getElementById('p').requestCount('total'));

@@ -47,6 +47,10 @@ try {
     + '<div id="host" style="width:600px"></div></body></html>',
   );
   for (const path of styles) await page.addStyleTag({path}).catch(() => {});
+  // Russian is a language file (owner decision C282): the bundles carry the
+  // English words only, so the Russian page includes core/lang/ru.js before
+  // core, as a site does (GB19 triage; as field-renderers-view, GB18 D2).
+  await page.addScriptTag({path: join(out, 'core/core/lang/ru.js')});
   for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
   await page.waitForTimeout(1300);
 
@@ -58,8 +62,11 @@ try {
     const leaks = () => document.documentElement.outerHTML.includes(SENTINEL)
       || document.documentElement.outerHTML.includes(STORED);
 
-    const entry = set.registry.find((one) => one.type === 'string');
-    const variant = entry?.variants.find((one) => one.id === 'password') ?? null;
+    // Since C302 (1) the password is a type of its own, write-only (registry.js;
+    // a string with variant password reads as it until 2027-01-01,
+    // TYPE_ALIASES); the probe still looked for the string's variant (GB19
+    // triage).
+    const variant = set.registry.find((one) => one.type === 'password') ?? null;
 
     // The host: a change map like sf-view-properties's, and the save payload it sends.
     const changed = new Map();

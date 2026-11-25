@@ -1924,7 +1924,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         this._sheetOpening = true;
         try {
             // The sheet is a lazy relation: asked for when a phone opens a period.
-            if (!globalThis.customElements?.get('sf-drawer')) await globalThis.SF?.Loader?.ensure?.(['sf-drawer']);
+            if (!globalThis.customElements?.get('sf-drawer')) await globalThis.SF?.Loader?.ensure?.(['sf-drawer'], {press: true});
         } catch {
             // The popup below.
         }

@@ -61,10 +61,12 @@ const tameButtons = (panel) => {
 };
 
 // Asks the Loader for a lazy relation and answers whether it is defined.
+// A press asks (the sheet, the change menu): the wait goes on while its code
+// is on its way (SF.Loader.ensure press, GB18 L2; GB19).
 const ensureElement = async (tag) => {
   if (globalThis.customElements?.get(tag)) return true;
   try {
-    await globalThis.SF?.Loader?.ensure?.([tag]);
+    await globalThis.SF?.Loader?.ensure?.([tag], {press: true});
   } catch {
     // Not on this page: the caller's fallback.
   }

@@ -191,7 +191,10 @@ try {
         tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
         await tab.goto(`http://127.0.0.1:${server.address().port}/?theme=${theme}`);
         await tab.waitForFunction(() => document.querySelectorAll('sf-alert > .sf-alert').length === 10
-          && document.querySelectorAll('sf-alert sf-button-icon > button.sf-icon-button').length === 10, null, {timeout: 30000})
+          // The close is sf-button-close since it took the alert's cross (the
+          // template's own element); the wait read sf-button-icon alone and
+          // timed out on every load (GB19 triage).
+          && document.querySelectorAll('sf-alert :is(sf-button-icon, sf-button-close) > button.sf-icon-button').length === 10, null, {timeout: 30000})
           .catch(() => failures.push(`${key} load ${load}: the page never drew its alerts`));
         await tab.evaluate(() => document.fonts.ready);
         await tab.waitForTimeout(300);

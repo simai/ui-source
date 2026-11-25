@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// A theme toggle (.sf-theme-button without data-theme) shows the theme it
-// switches to: a moon on a light page, a sun on a dark one -- on an
+// A theme toggle (.sf-theme-button without data-theme) shows the theme on
+// screen (owner decision C244, 2026-11-16: the two-theme cycle): a sun on a
+// light page, a moon on a dark one -- on an
 // sf-button-icon host and on a native button's .sf-icon -- and an author's
 // own glyph stays (ui-effects site, 2026-10-28). A choice (data-theme) stays a
 // choice after its sf-button-icon has started and handed data-theme to the
@@ -78,9 +79,11 @@ try {
     pressedLook: document.querySelector('#choice > button')?.classList.contains('sf-icon-button--pressed') ?? null,
     active: document.querySelector('#choice > button')?.classList.contains('active') ?? null}));
   const expect = (name, got, want) => { if (JSON.stringify(got) !== JSON.stringify(want)) failures.push(`${name}: ${JSON.stringify(got)}`); };
-  expect('light page: moons, the author glyph and the choice untouched', seen.light, {host: 'dark_mode', native: 'dark_mode', own: 'palette', choice: 'dark_mode'});
-  expect('dark page: suns, the author glyph and the choice untouched', seen.dark, {host: 'light_mode', native: 'light_mode', own: 'palette', choice: 'dark_mode'});
-  expect('back to light: moons again', seen.back, seen.light);
+  // C244: the glyph is the theme on screen (the probe still read the theme a
+  // press gives, from before C244; GB19 triage).
+  expect('light page: suns, the author glyph and the choice untouched', seen.light, {host: 'light_mode', native: 'light_mode', own: 'palette', choice: 'dark_mode'});
+  expect('dark page: moons, the author glyph and the choice untouched', seen.dark, {host: 'dark_mode', native: 'dark_mode', own: 'palette', choice: 'dark_mode'});
+  expect('back to light: suns again', seen.back, seen.light);
   // A choice is a radio (rule C12), not a pressed toggle: aria-checked, the
   // chosen-segment look, no aria-pressed and no pressed fill.
   expect('a click on the dark choice sets dark, checked', seen.clicked, {preference: 'dark', dark: true, pressed: null,

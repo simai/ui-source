@@ -8,8 +8,9 @@
 // - a slotted footer stands under the rows, its two buttons sharing the width;
 // - an sf-dropdown grid at 1/2 has cells as tall as a size-1/2 field and a
 //   supplied trigger's grid is as wide as its columns, not 18rem;
-// - a size-1 skeleton bar is 16px tall in a 24px line, and three lines are
-//   72px tall.
+// - a size-1 skeleton bar is the capitals' height of its 16px text, 12px
+//   (owner decision C136 (1): 0.727 em rounded to an even pixel), in a 24px
+//   line, and three lines are 72px tall.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -175,8 +176,10 @@ try {
     note({case: 'footer', footer: measured.footer, expected: 'two buttons sharing the width'});
   }
   if (measured.footer && Math.abs(measured.footer.bottomGap) > 1.5) note({case: 'footer', gap: measured.footer.bottomGap, expected: 'at the panel bottom'});
-  if (measured.skeleton.lines.some((height) => Math.round(height) !== 16) || Math.round(measured.skeleton.block) !== 72) {
-    note({case: 'skeleton at 1', skeleton: measured.skeleton, expected: '16px bars, three 24px lines = 72px'});
+  // C136 (1): a text bar is the capitals' height, 12 on 16px text; the probe
+  // still asked the 16px bar it had before (GB19 triage).
+  if (measured.skeleton.lines.some((height) => Math.round(height) !== 12) || Math.round(measured.skeleton.block) !== 72) {
+    note({case: 'skeleton at 1', skeleton: measured.skeleton, expected: '12px bars (C136 (1)), three 24px lines = 72px'});
   }
   if (!grid) note({case: 'grid', expected: 'the grid opens'});
   else {

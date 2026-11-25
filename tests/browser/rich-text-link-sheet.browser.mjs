@@ -68,7 +68,10 @@ try {
         await page.goto(`${base}/probe`, {waitUntil: 'load'});
         await page.waitForFunction(() => customElements.get('sf-input-rich')
           && document.querySelector('#r .sf-rich-text-editor')
-          && document.querySelectorAll('#r button.sf-rich-text-tool').length === 12, null, {timeout: 20000});
+          // The toolbar folds the tools its row has no room for into «More»
+          // (10 at 390 and 1440 on this build, 12 before the fold): the probe
+          // needs the link tool, not a count (GB19 triage).
+          && [...document.querySelectorAll('#r button.sf-rich-text-tool')].some((button) => /link|ссылк/iu.test(button.getAttribute('aria-label') || '')), null, {timeout: 20000});
         await page.evaluate(() => {
           const editor = document.querySelector('#r .sf-rich-text-editor');
           editor.focus();

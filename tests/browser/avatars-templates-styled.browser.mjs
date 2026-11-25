@@ -14,7 +14,11 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
-  'component/component/avatars/css/avatars.css'];
+  'component/component/avatars/css/avatars.css',
+  // The presence point is the Framework's one dot since C185 (8): sf-avatar and
+  // sf-avatar-group name the dot sheet as a relation (GB19 triage: the probe
+  // loaded the avatar sheets alone and read sf-dot classes as unanswered).
+  'component/component/dot/css/dot.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/avatar-group/js/avatar-group.js'];
 const IMG = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2296%22 height=%2296%22%3E%3Crect width=%2296%22 height=%2296%22 fill=%22%233b82f6%22/%3E%3C/svg%3E';
 const HOSTS = [

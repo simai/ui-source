@@ -671,3 +671,109 @@ export function snapshotIndex(distr) {
 export function sameSnapshot(a, b) {
   return a === b || sortedAttributes(a) === sortedAttributes(b);
 }
+
+// ---------- the printed page: what the gate prints and the snapshot reads ----------
+// The strict gate (tests/browser/first-paint-gate.browser.mjs, 24d) prints a
+// committed snapshot on a page and counts every component or Smart sheet the
+// Loader fetches for the printed parts until the element has drawn and the
+// page has had PRINTED_SETTLE_MS more, before any late data or port. The
+// snapshot script took an example's sheet list from the full render alone,
+// so a derived skeleton that prints parts the full render does not draw
+// (sf-skeleton rows under sf-admin-menu's object menu, Admin 1.2.1) got a
+// list the gate then rejected (GB19, msg-c0a09a5a1e0b4e23a254). Both now
+// build the printed page from printedBody and wait for the same drawn moment
+// (DRAWN), so the list the script writes holds what the gate counts.
+
+/** Milliseconds the gate waits after the element drew (and the fonts) before it counts the printed parts' sheets. */
+export const PRINTED_SETTLE_MS = 400;
+
+/**
+ * Drawn, as the gate reads it: defined and drawn, or keeping its printed
+ * skeleton for its data; a closed overlay is drawn once it started. Source
+ * text of a function (el, overlay) => boolean, for a page script.
+ */
+export const DRAWN = "(el, overlay) => el.matches(':defined') && ((overlay && el.hasAttribute('data-sf-started')) || !('isRendered' in el) || el.isRendered || el.sfAwaitingData?.() === true)";
+
+/** A printed snapshot without its generated header comment(s). */
+export const stripHeader = (html) => html.replace(/<!--[\s\S]*?-->\n?/gu, '').trim();
+
+/**
+ * The example's own surroundings (markup around the element, a parent), with
+ * the printed host in the element's place.
+ */
+export function placed(example, tag, host) {
+  if (example.markup && new RegExp(`<${tag}[\\s>]`, 'u').test(example.markup)) {
+    // Each element of the markup in turn takes its printed host (the file
+    // holds them in order, one per line).
+    const printed = host.split(new RegExp(`\\n(?=<${tag}[\\s>])`, 'u'));
+    let markup = example.markup;
+    let from = 0;
+    for (const one of printed) {
+      const start = markup.indexOf(`<${tag}`, from);
+      const end = markup.indexOf(`</${tag}>`, start);
+      if (start < 0 || end < 0) break;
+      markup = `${markup.slice(0, start)}${one}${markup.slice(end + tag.length + 3)}`;
+      from = start + one.length;
+    }
+    return markup;
+  }
+  // The page around the element: the element comes after it, in its parent.
+  const before = example.markup ?? '';
+  if (example.parent) {
+    const at = example.parent.lastIndexOf('</');
+    return `${before}${example.parent.slice(0, at)}${host}${example.parent.slice(at)}`;
+  }
+  return `${before}${host}`;
+}
+
+/**
+ * The body of a printed page: the stage with the printed snapshot (`html`,
+ * header stripped) in its place, the text below it, and for an assembly its
+ * module. `written` is markup after the stage (the gate's bare tag builder).
+ */
+export function printedBody({component, example, html, assembly = false, bare = false, written = ''}) {
+  return `<main id="stage">${bare ? '' : assembly ? html : placed(example, component.tag, html)}</main>${written}
+${assembly ? `<script>window.__fpPrinted = [...document.querySelectorAll('#stage [data-sf-role]')];</script>` : ''}
+<p id="after">Текст под элементом</p>
+${assembly ? assemblyModule(component) : ''}`;
+}
+
+/**
+ * The sheets the Loader asks for while a printed snapshot draws (the gate's
+ * 24d moment): the page links core.css alone, so every other sheet the
+ * printed markup needs is a request. Waits until the element (an assembly:
+ * every part) has drawn, the fonts are in and PRINTED_SETTLE_MS have passed,
+ * then for the Loader's idle scan (settleSheets); no late data, no port.
+ * Answers request paths (/distr/...), in request order, and the page errors.
+ */
+export async function printedSheets({browser, site, pages, path, component, example, html, assembly = false, timezoneId = 'Europe/Moscow', timeout = 20000}) {
+  pages.set(path, `${head({title: path})}<body>
+${printedBody({component, example, html, assembly})}
+${coreScript}
+</body></html>`);
+  const context = await browser.newContext({...PAGE_CONTEXT, timezoneId});
+  const page = await context.newPage();
+  await freezeClock(page, example);
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  const net = watchRequests(page);
+  try {
+    await page.goto(`${site.origin}${path}`, {waitUntil: 'load'});
+    await page.waitForFunction(({tag, overlay, assembly, drawn}) => {
+      // eslint-disable-next-line no-eval
+      const isDrawn = (0, eval)(drawn);
+      const host = document.querySelector(`#stage ${tag}`);
+      if (!host || !isDrawn(host, overlay)) return false;
+      if (!assembly) return true;
+      const parts = [...host.querySelectorAll('[data-sf-role]')];
+      return parts.length > 0 && parts.every((part) => isDrawn(part, overlay));
+    }, {tag: component.tag, overlay: Boolean(component.overlay), assembly, drawn: DRAWN}, {timeout});
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(PRINTED_SETTLE_MS);
+    await settleSheets(page, net);
+    return {sheets: [...new Set(net.sheets)], errors};
+  } finally {
+    await context.close();
+    pages.delete(path);
+  }
+}

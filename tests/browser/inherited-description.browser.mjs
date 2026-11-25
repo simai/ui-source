@@ -70,7 +70,9 @@ const CONTROLS = {
   ...Object.fromEntries(Object.entries(FIELDS).flatMap(([id, field]) => STATES.map((state) => [`${id}-${state}`, `#${id}-${state} ${field.control}`]))),
   'error-both': '#error-both input',
   'select-inherited': '#select-inherited .sf-dropdown-field > button',
-  'color-inherited': '#color-inherited .sf-color-input',
+  // The colour field's control is its trigger button (sf-input-color template,
+  // .sf-color-trigger); .sf-color-input is gone (GB19 triage).
+  'color-inherited': '#color-inherited .sf-color-trigger',
 };
 const said = (value) => `Наследуется: ${value}`;
 const expected = {};
@@ -97,7 +99,12 @@ try {
   await page.route(`${origin}/**`, (route) => {
     const url = new URL(route.request().url());
     if (url.pathname === '/') return route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: '<!doctype html><html lang="ru"><head><meta charset="utf-8"></head><body></body></html>'});
-    const path = join(out, url.pathname);
+    // The Loader takes its base from core.js (/core/core/js/core.js -> /core/)
+    // and asks for the parts it draws (list-item, dropdown, the field sheets)
+    // under it, as distr/ lays them out; the build output nests each layer
+    // in its own name (GB19 triage: these 404s held the fields undrawn).
+    const layer = /^\/core\/(component|smart|utility)\/(.*)$/u.exec(url.pathname);
+    const path = layer && !existsSync(join(out, url.pathname)) ? join(out, layer[1], layer[1], layer[2]) : join(out, url.pathname);
     return existsSync(path)
       ? route.fulfill({status: 200, contentType: path.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8', body: readFileSync(path)})
       : route.fulfill({status: 404, body: ''});
@@ -109,6 +116,10 @@ try {
   await page.evaluate(() => {
     document.getElementById('select-inherited').options = [{value: 'kazan', text: 'Казань'}, {value: 'moscow', text: 'Москва'}];
   });
+  // Russian is a language file (owner decision C282): the Russian page includes
+  // core/lang/ru.js before core, as a site does; without it the Loader holds
+  // the fields for their words and nothing draws (GB19 triage).
+  await page.addScriptTag({url: `${origin}/core/core/lang/ru.js`});
   for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
   await page.waitForFunction((controls) => Object.values(controls).every((selector) => document.querySelector(selector)), CONTROLS, {timeout: 15000});
   await page.waitForFunction(() => [...document.querySelectorAll('[inherited-value]')]

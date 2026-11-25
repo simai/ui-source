@@ -103,7 +103,10 @@ try {
     // The control each host names, focuses and describes.
     const CONTROL = {
       text: '#text input', number: '#number input', area: '#area textarea',
-      select: '#select .sf-dropdown-field > button', color: '#color .sf-color-input', toggle: '#toggle input[type="checkbox"]',
+      select: '#select .sf-dropdown-field > button',
+      // The colour field's control is its trigger button since C84 (GB19 triage:
+      // .sf-color-input is gone, so the probe read no control).
+      color: '#color .sf-color-trigger', toggle: '#toggle input[type="checkbox"]',
     };
     const NAMES = {text: 'site', number: 'count', area: 'sign', select: 'city', color: 'brand', toggle: 'notify'};
     const read = () => page.evaluate(({CONTROL, NAMES}) => {
