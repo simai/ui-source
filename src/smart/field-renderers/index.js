@@ -1,4 +1,5 @@
-import {html, nothing} from "lit";
+import {html, noChange, nothing} from "lit";
+import {Directive, PartType, directive} from "lit/directive.js";
 import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeLook} from "../helpers/option-badge.js";
 import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
@@ -1853,12 +1854,50 @@ function isImageField(field) {
 // No syntax colouring. That needs an editor component, which is its own part with
 // its own decision; a monospace area that keeps indentation is honest, usable and
 // does not pretend to be more.
+//
+// The <pre><code> is not lit's (View round 19, include-w1): sf-highlight takes
+// every `pre code` on the page, writes the code's innerHTML and moves the pre
+// into its own frame, and a lit text part inside that code lost its node. The
+// next record wrote its text into nothing («Cannot set properties of null
+// (setting 'data')» from lit's commit in smart-base) and the record stopped
+// drawing. Lit owns an empty box here; the block inside it is written by the
+// directive below, again only when the text or the language changes, so
+// whatever a page's enhancer does inside the box is never lit's DOM.
+class IncludeBlock extends Directive {
+    constructor(partInfo) {
+        super(partInfo);
+        if (partInfo.type !== PartType.ELEMENT) throw new Error('includeBlock belongs on an element');
+    }
+
+    render() {
+        return noChange;
+    }
+
+    update(part, [text, language]) {
+        const box = part.element;
+        if (this.text === text && this.language === language && box.firstChild) return noChange;
+        this.text = text;
+        this.language = language;
+        const pre = box.ownerDocument.createElement('pre');
+        pre.className = 'sf-field-include';
+        if (language) pre.dataset.language = language;
+        const code = box.ownerDocument.createElement('code');
+        code.textContent = text;
+        pre.append(code);
+        box.replaceChildren(pre);
+        return noChange;
+    }
+}
+
+const includeBlock = directive(IncludeBlock);
+
 function renderIncludeView(field, value) {
     const text = scalarValue(value);
     if (!text) return nothing;
-    return html`
-        <pre class="sf-field-include" data-language=${templateParam(field, 'language') ? String(templateParam(field, 'language')) : nothing}><code>${String(text)}</code></pre>
-    `;
+    const language = templateParam(field, 'language') ? String(templateParam(field, 'language')) : '';
+    // display: contents -- the box is for ownership only; the block (or the
+    // frame a highlighter puts round it) lays out as the value's own child.
+    return html`<div class="sf-field-include-box" style="display: contents" ${includeBlock(String(text), language)}></div>`;
 }
 
 // The include editor is code (C141 (8)): sf-input-textarea's text="code" --

@@ -27,6 +27,9 @@
      --sf-form-field-gap                 between fields
      --sf-form-group-gap                 between groups and before the buttons
      --sf-form-label-color               the label and «*»
+     --sf-form-label-width               labels="start": the label column's
+                                         width (as long as its longest label
+                                         up to 40 % of the row without it)
      --sf-form-summary-background-color  the errors summary's fill
      --sf-form-footer-background-color   the sticky footer's fill */
 .sf-form {
@@ -224,6 +227,10 @@
 .sf-form[data-labels="start"] {
   --sf-form--label-width: 40%;
   --sf-form--label-gap: var(--sf-ui-1--space-x);
+  /* The column from outside (study S-B, SB-4; group build 19): a record
+     card sets one width for the labels of every group and section, so its
+     values start on one axis in reading and in editing alike. */
+  --sf-form--label-column: var(--sf-form-label-width, fit-content(var(--sf-form--label-width)));
 }
 
 .sf-form[data-labels="start"][data-size="1/2"] {
@@ -241,14 +248,20 @@
   --sf-form--label-line: var(--sf-text-height-1\/2);
 }
 
+/* The rows weigh what their own classes weigh (group build 19, View round
+   17 cde9354e): the form's attribute is read through :where, so a host that
+   lays the fields out in its own columns -- a record card's full-page edit
+   in two -- does so with an ordinary class rule; the attribute made every
+   start-labelled field span the whole grid at a weight a host matched only
+   by repeating it. */
 @media (min-width: map.get(bp.$breakpoint-array, md)) {
   @container not (max-width: #{mq.container-step(g0)}) {
-    .sf-form[data-labels="start"] .sf-form-fields {
-      grid-template-columns: fit-content(var(--sf-form--label-width)) minmax(0, 1fr);
+    :where(.sf-form[data-labels="start"]) .sf-form-fields {
+      grid-template-columns: var(--sf-form--label-column) minmax(0, 1fr);
       column-gap: var(--sf-form--label-gap);
     }
 
-    .sf-form[data-labels="start"] .sf-form-field {
+    :where(.sf-form[data-labels="start"]) .sf-form-field {
       display: grid;
       grid-column: 1 / -1;
       grid-template-columns: subgrid;
@@ -260,17 +273,17 @@
       align-items: start;
     }
 
-    .sf-form[data-labels="start"] .sf-form-field > .sf-form-label {
+    :where(.sf-form[data-labels="start"]) .sf-form-field > .sf-form-label {
       grid-column: 1;
       grid-row: 1 / span 3;
       padding-block-start: calc((var(--sf-ui-1--control-height) - var(--sf-form--label-line)) / 2);
     }
 
-    .sf-form[data-labels="start"][data-size="1/2"] .sf-form-field > .sf-form-label {
+    :where(.sf-form[data-labels="start"][data-size="1/2"]) .sf-form-field > .sf-form-label {
       padding-block-start: calc((var(--sf-ui-1\/2--control-height) - var(--sf-form--label-line)) / 2);
     }
 
-    .sf-form[data-labels="start"] .sf-form-field > :not(.sf-form-label) {
+    :where(.sf-form[data-labels="start"]) .sf-form-field > :not(.sf-form-label) {
       grid-column: 2;
     }
   }

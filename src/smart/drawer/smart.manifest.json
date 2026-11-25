@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.22.0",
+  "version": "1.22.1",
   "title": "Drawer",
   "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
   "kind": "smart",
@@ -941,7 +941,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "558473433a69f190d512ee591e02b3937e945e992d92cebea6395d39b8e3ee13"
+        "sha256": "1e4eeea7360cd05e5fa004adcc4f07df639472219b687181d6fed1986ce61d94"
       }
     ],
     "generated_runtime": [

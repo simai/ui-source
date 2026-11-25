@@ -4835,6 +4835,13 @@
           "since": "2026-11-14"
         },
         {
+          "name": "--sf-form-label-width",
+          "role": "inline-size",
+          "summary": "labels=\"start\": the label column's width, one for every group, so a record card's values start on one axis in reading and in editing (study S-B, SB-4). Without it the column is as wide as the longest label up to 40 % of the row.",
+          "default": "fit-content(40%)",
+          "since": "2026-11-25"
+        },
+        {
           "name": "--sf-form-summary-background-color",
           "role": "background",
           "summary": "The errors summary's fill.",

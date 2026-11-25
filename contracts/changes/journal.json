@@ -20869,6 +20869,51 @@
         }
       ],
       "source": "scripts/linkage.mjs"
+    },
+    {
+      "recorded_on": "2026-11-25",
+      "stage": "compat",
+      "deprecated_on": "2026-11-25",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A composite that took its own foot bar back from the side window's default with an id or a repeated selector (View's sf-view-properties: .sf-property-view-actions:is(..., #sf-property-view-own-foot)) can drop the extra weight: its own class rule wins now.",
+      "owner": "ui-source",
+      "id": "behaviour-window-content-actions-weightless",
+      "kind": "behaviour",
+      "summary": "sf-drawer 1.22.1, sf-modal 1.11.2 (side window), core mix/_mix__window-footer.scss (group build 19, View round 17 return): the rows a window's content writes at its end (D-SCROLL: an sf-confirm question's answers, a form's last row of buttons, the body's or its one wrapper's last row of buttons) are held at the window's foot by a rule of no weight (:where). A composite's own class rule for its own bar wins over it; before, the body's long selector outweighed any ordinary rule and a record card's own foot bar was made sticky and pulled down by the window's inset (the panel scrolled 16 px).",
+      "items": [
+        {
+          "component": "smart.drawer",
+          "from": "content-actions rows at the body selector's weight",
+          "to": "content-actions rows at no weight (:where)"
+        },
+        {
+          "component": "smart.modal",
+          "from": "content-actions rows at the body selector's weight",
+          "to": "content-actions rows at no weight (:where)"
+        }
+      ],
+      "source": "src/core/scss/mix/_mix__window-footer.scss"
+    },
+    {
+      "recorded_on": "2026-11-25",
+      "stage": "compat",
+      "deprecated_on": "2026-11-25",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A host that repeated .sf-form[data-labels] to lay start-labelled fields out in its own columns can use a plain class rule; a host that wants one label column for several forms sets --sf-form-label-width.",
+      "owner": "ui-source",
+      "id": "behaviour-form-start-labels-weight-and-width",
+      "kind": "behaviour",
+      "summary": "sf-form 1.16.0 (group build 19, study S-B SB-4, View round 17 return): labels=\"start\" reads the form's attribute through :where, so the start-label grid (the label column, the field spanning the grid as a subgrid, the control in the second column) weighs its own classes and a host's column layout wins with an ordinary class rule. The public variable --sf-form-label-width sets the label column's width from outside; without it the column is as wide as the longest label up to 40 % of the row, as in 1.15.2.",
+      "items": [
+        {
+          "component": "smart.form",
+          "from": "start-label grid at (0,3,0); the label column fit-content(40%) only",
+          "to": "start-label grid at its classes' weight; --sf-form-label-width or fit-content(40%)"
+        }
+      ],
+      "source": "src/smart/form/scss/_smart__form.scss"
     }
   ]
 }
