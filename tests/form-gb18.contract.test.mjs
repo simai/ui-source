@@ -15,11 +15,11 @@ const source = () => read('src/smart/form/index.js');
 const template = () => read('src/smart/form/js/templates/default.js');
 
 test('GB18 versions: above every origin branch at the time of writing', () => {
-  assert.equal(form().version, '1.15.2'); // group build 18: moved on by the merged branches or a GB15 assembly item
+  assert.equal(form().version, '1.16.0'); // group build 18: moved on by the merged branches or a GB15 assembly item
   assert.equal(json('src/smart/checkbox/component.json').version, '1.6.2'); // GB19 touch size (C428)
   assert.equal(json('src/smart/radio/component.json').version, '1.4.6'); // GB19 touch size (C428)
   assert.equal(json('src/smart/switch/component.json').version, '1.10.3'); // GB19 touch size (C428)
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.1') // GB18 L6;
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.2') // GB19 B: include view owns no lit DOM // GB18 L6;
   assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.21.2'); // GB19 touch size (C428)
 });
 

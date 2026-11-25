@@ -77,10 +77,18 @@ $content-actions: (
   "> :only-child > :last-child:has(> :is(sf-button, button, input[type='submit'])):not(:has(> :not(sf-button, button, a, input[type='submit'], input[type='button'], input[type='hidden'])))"
 );
 
+//
+// The rows weigh nothing (:where, group build 19, View round 17 cde9354e):
+// the body's long selector gave a row a weight no ordinary rule reaches, so
+// a composite whose content is the body's one child -- a record card with
+// its own foot bar, a column that already holds the bar at its end -- had
+// its bar made sticky and pulled down by the window's inset (the panel
+// scrolled 16 px) and could take it back only with an id. A class of the
+// composite's own now outweighs the default, as a page's own rule does.
 @mixin content-actions($body, $end, $more-end) {
   @each $row in $content-actions {
     @if paint.writes-shape() {
-      #{$body} #{$row} {
+      :where(#{$body} #{$row}) {
         position: sticky;
         inset-block-end: 0;
         z-index: 1;
@@ -88,13 +96,13 @@ $content-actions: (
         margin-block-end: calc(-1 * #{$end});
       }
 
-      #{$more-end} #{$row} {
+      :where(#{$more-end} #{$row}) {
         box-shadow: 0 calc(-1 * var(--sf-px)) 0 var(--sf-outline-variant);
       }
     }
 
     @if paint.writes-paint() {
-      #{$body} #{$row} {
+      :where(#{$body} #{$row}) {
         background-color: var(--sf-surface-place);
       }
     }
