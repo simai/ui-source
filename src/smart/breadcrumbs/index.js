@@ -696,10 +696,16 @@ class SfBreadcrumbs extends BreadcrumbsElement {
     this._menuKind = kind;
     menu.setAttribute('aria-label', label);
     menu.entries = menuEntries(crumbs);
-    // The Loader brings sf-menu-context with the first trail that needs it.
-    customElements
-      .whenDefined('sf-menu-context')
-      .then(() => menu.toggleFor(anchor, { align: 'start' }));
+    // The Loader brings sf-menu-context with the first trail that needs it;
+    // the press asks for it too and waits while its code is on its way
+    // (SF.Loader.ensure press, GB18 L2; GB19). Without a Loader, whenever it
+    // is defined.
+    const ready = globalThis.SF?.Loader?.ensure
+      ? Promise.resolve(globalThis.SF.Loader.ensure(['sf-menu-context'], { press: true }))
+      : customElements.whenDefined('sf-menu-context');
+    ready.then(() => {
+      if (customElements.get('sf-menu-context')) menu.toggleFor(anchor, { align: 'start' });
+    });
     return true;
   }
 

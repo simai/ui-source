@@ -1564,8 +1564,10 @@ class SfTabs extends TabsElement {
     if (this._settingsMenu?.isConnected) return this._settingsMenu;
     // The list's elements are asked for now, not waited for: the Loader also
     // finds them in the menu once it is drawn.
-    globalThis.SF?.Loader?.ensure?.(['sf-sortable', 'sf-checkbox']);
-    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
+    globalThis.SF?.Loader?.ensure?.(['sf-sortable', 'sf-checkbox'], {press: true});
+    // A press opens the settings: the wait goes on while the menu's code is
+    // on its way (SF.Loader.ensure press, GB18 L2; GB19).
+    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context'], {press: true});
     const menu = document.createElement('sf-menu-context');
     menu.setAttribute('popup', '');
     menu.setAttribute('aria-label', this.text('customize'));

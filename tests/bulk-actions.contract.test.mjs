@@ -76,7 +76,7 @@ test('up to three labelled actions, the rest in «⋯», the dangerous one alway
 
 test('the manifest: a new component of family bulk with the contract of C295', () => {
   assert.equal(manifest.tag, 'sf-bulk-actions');
-  assert.equal(manifest.version, '1.3.1'); // msg-afb6bff8: one «⋯» on a phone (1.3.0: LV3-26/27, LV4-23)
+  assert.equal(manifest.version, '1.3.2'); // GB19 area C: the menus load through press (DEV answer 5); msg-afb6bff8: one «⋯» on a phone (1.3.0: LV3-26/27, LV4-23)
   assert.equal(manifest.family, 'bulk');
   for (const name of ['count', 'page-count', 'total', 'all-selected', 'count-text', 'place', 'size', 'label', 'actions']) {
     assert.ok(manifest.settings[name], name);

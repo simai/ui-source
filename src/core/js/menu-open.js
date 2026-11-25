@@ -121,7 +121,9 @@ function installMenuOpen() {
     if (atPoint && !(Number.isFinite(Number(x)) && Number.isFinite(Number(y)))) return null;
     const doc = globalThis.document;
     if (!doc) return null;
-    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
+    // A press opens it: the wait does not give up while the menu's code is
+    // on its way (SF.Loader.ensure press, GB18 L2; GB19).
+    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context'], {press: true});
     if (!globalThis.customElements?.get('sf-menu-context')) return null;
     const menu = sharedMenu(atPoint ? returnTo : anchor);
     // The same control again: its open menu closes (a toggle).

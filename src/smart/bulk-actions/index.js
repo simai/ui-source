@@ -667,7 +667,7 @@ class SfBulkActions extends BulkActionsElement {
       doc.addEventListener('sf-confirm-answer', onAnswer, true);
       modal.addEventListener('sf-modal-closed', () => finish(false));
       customElements.whenDefined('sf-modal').then(() => modal.open?.());
-      globalThis.SF?.Loader?.ensure?.([modal.localName, confirm.localName]);
+      globalThis.SF?.Loader?.ensure?.([modal.localName, confirm.localName], {press: true});
     });
   }
 
@@ -753,7 +753,7 @@ class SfBulkActions extends BulkActionsElement {
     });
     modal.addEventListener('sf-modal-closed', () => setTimeout(() => modal.remove(), 400));
     customElements.whenDefined('sf-modal').then(() => modal.open?.());
-    globalThis.SF?.Loader?.ensure?.([modal.localName, list.localName]);
+    globalThis.SF?.Loader?.ensure?.([modal.localName, list.localName], {press: true});
   }
 
   retry() {
