@@ -7,7 +7,7 @@
 // opens nothing. The click the release sends afterwards is the press's, not a
 // press of the row: swallowed() answers it once.
 //
-// A core helper since core.runtime 1.69.0 (study S-A, decision q-7097831f9f
+// A core helper since group build 19 (study S-A, decision q-7097831f9f
 // (4); docs/foundation-touch-screens.md): cards and boards share it with the
 // list. On a surface with multiple selection a long press chooses the item
 // (sf-list selection="many", C150 (9)); without selection it opens the item's

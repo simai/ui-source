@@ -1,6 +1,6 @@
 # Device scope: layout, pointer, long press
 
-Since core.runtime 1.69.0 (group build 19, area A; study S-A, owner question
+Since the pair of group build 19 (core.runtime above 1.68.0; area A; study S-A, owner question
 q-7097831f9f). The rules are on the Touch screens page
 ([../foundation-touch-screens.md](../foundation-touch-screens.md)); this page
 is the scripted contract a component or a set (View, Admin, Pro) calls.
