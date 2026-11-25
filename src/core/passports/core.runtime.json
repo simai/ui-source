@@ -153,6 +153,7 @@
     "src/core/js/format-number.js",
     "src/core/js/format-relative.js",
     "src/core/js/format.js",
+    "src/core/js/fragment-refresh.js",
     "src/core/js/host-port.js",
     "src/core/js/host-runtime-marks.js",
     "src/core/js/icon-choices.js",
@@ -320,6 +321,7 @@
     "src/core/js/overflow-row.js",
     "src/core/js/package-modules.js",
     "src/core/js/page-actions.js",
+    "src/core/js/page-assets.js",
     "src/core/js/page-language.js",
     "src/core/js/page-storage.js",
     "src/core/js/pending-tags.js",
@@ -1055,7 +1057,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "a7c51a2a7c7da38c277c8b3405fbe141519a39b838fe9caf609794c006b2858f",
+  "content_sha256": "8fa7b88fb407db7db63de1c76e1a8be6959f973019064c97a6121c1e66595379",
   "dependencies": [
     {
       "id": "core.styles",
