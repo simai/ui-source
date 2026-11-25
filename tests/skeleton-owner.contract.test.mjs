@@ -31,7 +31,7 @@ test('ordinary Skeleton uses logical token geometry and semantic paint', async (
   // C130 (4): the fill is core's one rule.
   assert.match(styles, /background: var\(--sf-skeleton-background-color, var\(--sf-skeleton-base\)\)/);
   const core = await read('src/core/scss/_sf_css__placeholder.scss');
-  assert.match(core, /:where\(\.sf-skeleton, \.sf-first-paint-bar, \.sf-first-paint-fill, \[data-sf-region-loading\]\),\n:where\(\[data-sf-skeleton\]\):not\(:defined\) \{\n  --sf-skeleton-base: var\(--sf-surface-container\);/);
+  assert.match(core, /:where\(\.sf-skeleton, \.sf-first-paint-bar, \.sf-first-paint-fill, \[data-sf-region-loading\], \[data-sf-fragment-loading="html"\]\),\n:where\(\[data-sf-skeleton\]\):not\(:defined\) \{\n  --sf-skeleton-base: var\(--sf-surface-container\);/);
   assert.match(styles, /@media \(forced-colors: active\)/);
   assert.doesNotMatch(styles, /(?:^|[\s:(])\d+(?:\.\d+)?(?:px|rem)(?:[\s;,)])/m);
 });
