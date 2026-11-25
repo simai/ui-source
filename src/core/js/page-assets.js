@@ -69,6 +69,17 @@ export function loadAsset({href, kind, key}) {
 const RUNNABLE = /^(?:|module|text\/javascript|application\/javascript|text\/ecmascript|application\/ecmascript)$/iu;
 export const isRunnableScript = (script) => RUNNABLE.test((script.getAttribute('type') ?? '').trim());
 
+// Before a swap takes the old markup away: every asset the new markup names
+// that is on the page now is recorded as loaded, so the <script src> or
+// <link> that leaves with the old markup is not asked for again.
+export function noteAssets(assets) {
+  const requests = registry();
+  for (const {href, kind} of assets) {
+    const url = absolute(href);
+    if (url && !requests.has(url) && isPresent(url, kind)) requests.set(url, Promise.resolve());
+  }
+}
+
 // Markup parsed but not yet placed: its stylesheets and scripts are taken out
 // and returned as assets (a script set by innerHTML never runs).
 export function parseMarkup(html) {

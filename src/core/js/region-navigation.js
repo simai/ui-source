@@ -36,7 +36,7 @@
 // The device's reduced motion or the site's «остановить движение» (C196).
 import {reducedMotion} from './motion.js';
 // One asset registry and one skeleton delay with block refresh (assets-once).
-import {SKELETON_DELAY_MS, loadAsset, parseMarkup} from './page-assets.js';
+import {SKELETON_DELAY_MS, loadAsset, noteAssets, parseMarkup} from './page-assets.js';
 
 const TIMEOUT_MS = 15000;
 
@@ -89,7 +89,10 @@ function onClick(event) {
 
 function onPopState(event) {
   const state = event.state;
-  if (!config || !state?.sfRegion || event.sfFragment === true) return;
+  // Block refresh's Back (only block keys changed), or one leaving an entry the
+  // Framework did not write: not this navigator's. Asked through the shared
+  // global, so the order of the two listeners does not matter.
+  if (!config || !state?.sfRegion || event.sfFragment === true || globalThis.SF?.FragmentRefresh?.claimsPop?.(state)) return;
   navigate(globalThis.location.href, {history: 'none', scroll: state.scroll ?? 0});
 }
 
@@ -175,6 +178,7 @@ export async function navigate(url, {history = 'push', scroll = 0} = {}) {
     : url;
   const parsed = parseMarkup(answer.html);
   const assets = [...(answer.assets ?? []), ...parsed.assets];
+  noteAssets(assets);
   // Stylesheets before the swap, so the new content never shows unstyled;
   // scripts after, so the elements they define upgrade in place.
   await Promise.all(assets.filter((asset) => asset.kind === 'css').map(loadAsset));

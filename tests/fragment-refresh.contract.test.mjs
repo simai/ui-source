@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {
   CONTRACT, CONTRACT_HEADER, HEADER, MODE_HEADER, changedKeys, dataAnswerProblems, headerProblems,
-  keyMap, ownedChange, readBlock, withKeys,
+  keyMap, linkSets, ownedChange, readBlock, syncedHref, withKeys,
 } from '../src/core/js/fragment-refresh.js';
 import {checkFragmentDescriptor, checkRefreshPage} from '../src/core/js/composition/fragments.mjs';
 import {isRunnableScript} from '../src/core/js/page-assets.js';
@@ -189,4 +189,19 @@ test('the standard is 1.1.0 over the frozen 1.3.0 copy, with the agreed clauses'
   assert.equal(standard.uses[0].path, '../../pinned/interface-fragment-1.3.0.schema.json');
   const previous = json('contracts/standards/history/simai.interface-fragment/1.0.3/standard.json');
   for (const requirement of previous.requirements) assert.ok(ids.includes(requirement.id), `${requirement.id} is kept`);
+});
+
+test('a data block keeps its links current: each link sets its own keys, the others follow the answer', () => {
+  const keys = ['period', 'scale'];
+  const periods = ['?site=s1&period=24h&scale=linear', '?site=s1&period=7d&scale=linear', '?site=s1&period=30d&scale=linear'];
+  const scales = ['?site=s1&period=24h&scale=linear', '?site=s1&period=24h&scale=log'];
+  assert.deepEqual(linkSets(keys, periods[1], periods), ['period'], 'the period group differs in period');
+  assert.deepEqual(linkSets(keys, scales[1], scales), ['scale']);
+  assert.deepEqual(linkSets(keys, periods[1], [periods[1]]), ['period', 'scale'], 'a link alone sets what it names');
+  assert.deepEqual(linkSets(keys, periods[1], periods, ['scale', 'site']), ['scale'], 'data-sf-fragment-sets names them, own keys only');
+  const applied = new URLSearchParams('site=s1&period=7d&scale=linear');
+  assert.equal(syncedHref(scales[1], keys, ['scale'], applied), '?site=s1&period=7d&scale=log', 'the scale link keeps the period just chosen');
+  assert.equal(syncedHref('?period=24h&scale=log#env-charts', keys, ['period'], applied), '?period=24h&scale=linear#env-charts');
+  assert.equal(syncedHref('?period=24h&scale=log', keys, ['period'], new URLSearchParams('period=7d')), '?period=24h&scale=log', 'a key the address does not name keeps the link\'s value');
+  assert.equal(syncedHref('?site=s9&period=24h', keys, ['period'], applied), '?site=s9&period=24h', 'a page key is never touched');
 });

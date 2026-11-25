@@ -141,9 +141,11 @@ async function answerData(request, response, url) {
     response.writeHead(302, {location: '/login'});
     return response.end();
   }
+  // The host may apply another period than asked (echo): it answers for what it applied.
+  const applied = period === 'echo' ? '30d' : period;
   const parts = id === 'env.counter'
-    ? {count: {value: loadValue(period) / 10}}
-    : {requests: {value: loadValue(period)}, errors: {value: keys.scale === 'log' ? 2 : 1}};
+    ? {count: {value: loadValue(applied) / 10}}
+    : {requests: {value: loadValue(applied)}, errors: {value: keys.scale === 'log' ? 2 : 1}};
   const body = {fragment: id, contract: 1, port: {standard: 'test.env-history', version: '1.4.0'}, state: period === 'none' ? 'no-access' : 'populated',
     url: `${url.pathname}${url.search}`, keys: {period, scale: keys.scale}, parts};
   if (id === 'env.counter') {
@@ -187,6 +189,11 @@ const server = createServer(async (request, response) => {
       return response.end(JSON.stringify({region: 'content', html, title: 'Панель', assets: [], shell_revision: SHELL, url: `${path}${url.search}`}));
     }
     hit(`page:${path}${url.search}`);
+    // The product's own page answer: a sign-in redirect where the block got one.
+    if (url.searchParams.get('period') === 'redir') {
+      response.writeHead(302, {location: '/login'});
+      return response.end();
+    }
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
     return response.end(page(url));
   }
@@ -249,7 +256,12 @@ try {
           window.SF.RegionNavigation.enable({root: '#content', header: 'X-Test-Region', revisionMeta: 'test-shell-revision', scope: '/admin'});
           window.SF.FragmentRefresh.enable({scope: '/admin', timeoutMs: 1500, onFullLoad: (url, reason) => { window.__full = {url, reason}; location.assign(url); }});
         });
-        await tab.waitForFunction(() => customElements.get('sf-tile-metric') && document.querySelector('[data-sf-fragment-part="requests"]')?.value === 120, null, {timeout: 15000});
+        if (!address.startsWith('/admin/env')) return;
+        await tab.waitForFunction(() => customElements.get('sf-tile-metric') && document.querySelector('[data-sf-fragment-part="requests"]')?.value === 120, null, {timeout: 15000})
+          .catch(async (error) => {
+            console.log('DIAG', JSON.stringify(await tab.evaluate(() => ({defined: Boolean(customElements.get('sf-tile-metric')), value: document.querySelector('[data-sf-fragment-part="requests"]')?.value, has: 'value' in (document.querySelector('[data-sf-fragment-part="requests"]') ?? {}), sf: Object.keys(window.SF || {}).length}))), consoleErrors);
+            throw error;
+          });
       };
       const look = () => tab.evaluate(() => ({
         marker: window.__marker ?? null,
@@ -275,6 +287,8 @@ try {
         document.getElementById('faults').append(link, ' ');
       }, period);
 
+      tab.setDefaultTimeout(8000);
+      try {
       await open('/admin/env?site=s1');
       await tab.evaluate(() => window.scrollTo(0, 120));
       const start = await look();
@@ -312,7 +326,7 @@ try {
       const back = await look();
       const backRequests = [...requests];
       check(label, 'F3 Back redraws the block in the same document', back.marker === 'same document' && new URLSearchParams(back.search).get('period') === '7d' && back.requests === 840, back);
-      check(label, 'F3 no request for the html block whose key did not change, none for the region', backRequests.every((entry) => entry.id !== 'env.recent-events') && !hits.has('region:/admin/env'), backRequests);
+      check(label, 'F3 no request for the html block whose key did not change, none for the region', backRequests.every((entry) => entry.id !== 'env.recent-events') && !hits.has('region:/admin/env'), {backRequests, region: hits.get('region:/admin/env') ?? 0});
       await tab.goForward();
       await tab.waitForFunction(() => document.querySelector('[data-sf-fragment-part="requests"]')?.value === 3600);
       check(label, 'F3 Forward again', (await look()).marker === 'same document', await look());
@@ -375,47 +389,33 @@ try {
       const doneSlow = await tab.evaluate(() => ({busy: document.getElementById('load').getAttribute('aria-busy'), part: document.querySelector('[data-sf-fragment-part="requests"]').getAttribute('data-state'), style: document.getElementById('load').getAttribute('style')}));
       check(label, 'F6 the skeleton leaves with the answer', doneSlow.busy === null && doneSlow.part === null && doneSlow.style === null, doneSlow);
 
-      // F7 errors in the block
+      // F7 errors in the block: 500, timeout, network down; the retry asks again.
       for (const fault of ['e500', 'hang', 'down']) {
+        await open('/admin/env?site=s1');
         await addFault(fault);
         const searchBefore = await tab.evaluate(() => location.search);
+        requests.length = 0;
         await tab.click(`#f-${fault}`);
         await tab.waitForSelector('#load [data-sf-fragment-error]', {timeout: 5000}).catch(() => null);
         const shown = await look();
         const searchAfter = await tab.evaluate(() => location.search);
         check(label, `F7 ${fault}: the error state in the block, the address and the page stay`, shown.error && shown.state === 'error' && searchAfter === searchBefore && shown.marker === 'same document' && shown.events !== null, shown);
-        // The rest of the page still works: the html block refreshes.
-        await tab.evaluate(() => { location.hash = ''; });
-        // Back to the controls: the retry repeats the same request (which fails again for these three).
-        await tab.evaluate(() => {
-          const block = document.getElementById('load');
-          // A new click on a period would be inside the hidden content: put it back through retry.
-          return Boolean(block);
-        });
-        const retry = tab.locator('#load [data-sf-fragment-error]').getByRole('button');
-        if (fault === 'e500') {
-          await addFaultAfterRetry();
-        } else {
-          await retry.click().catch(() => null);
-          await tab.waitForTimeout(fault === 'hang' ? 1900 : 300);
-          check(label, `F7 ${fault}: retry asks again and shows the error again`, (await look()).error, await look());
-          // Leave the error by a full reload of the current address.
-          await open(`/admin/env${searchBefore}`);
-        }
-      }
-      async function addFaultAfterRetry() {
-        // e500 does not recover; flaky does: first 500, then the answer.
-        await open('/admin/env?site=s1');
-        await addFault('flaky');
-        await tab.click('#f-flaky');
-        await tab.waitForSelector('#load [data-sf-fragment-error]', {timeout: 5000}).catch(() => null);
-        const failed = await look();
         await tab.locator('#load [data-sf-fragment-error]').getByRole('button').click();
-        await tab.waitForFunction(() => new URL(location.href).searchParams.get('period') === 'flaky', null, {timeout: 5000}).catch(() => null);
-        await tab.waitForTimeout(100);
-        const recovered = await look();
-        check(label, 'F7 flaky: the retry recovers, the controls come back', failed.error && !recovered.error && recovered.state === null && recovered.requests === 7 && await tab.locator('#p7d').count() === 1, {failed, recovered});
+        await tab.waitForTimeout(fault === 'hang' ? 1900 : 400);
+        const again = await look();
+        check(label, `F7 ${fault}: the retry asks again and shows the error again`, again.error && requests.filter((entry) => entry.id === 'env.load-history').length >= 2, {again, requests: requests.length});
       }
+      // flaky: first 500, then the answer: the retry recovers and the controls come back.
+      await open('/admin/env?site=s1');
+      await addFault('flaky');
+      await tab.click('#f-flaky');
+      await tab.waitForSelector('#load [data-sf-fragment-error]', {timeout: 5000}).catch(() => null);
+      const failed = await look();
+      await tab.locator('#load [data-sf-fragment-error]').getByRole('button').click();
+      await tab.waitForFunction(() => new URL(location.href).searchParams.get('period') === 'flaky', null, {timeout: 5000}).catch(() => null);
+      await tab.waitForTimeout(100);
+      const recovered = await look();
+      check(label, 'F7 flaky: the retry recovers, the controls come back', failed.error && !recovered.error && recovered.state === null && recovered.requests === 7 && await tab.locator('#p7d').count() === 1, {failed, recovered});
 
       // F8 full loads
       await open('/admin/env?site=s1');
@@ -493,6 +493,10 @@ try {
 
       const unexpected = consoleErrors.filter((text) => !/key q is declared by/u.test(text) && !/status of (403|404|500)/u.test(text) && !/ERR_EMPTY_RESPONSE|net::ERR/u.test(text) && !/favicon/u.test(text));
       check(label, 'console clean (besides the faults asked for)', unexpected.length === 0, unexpected);
+      } catch (error) {
+        const state = await tab.evaluate(() => ({href: location.href, state: history.state, loads: window.__loads, full: window.__full ?? null})).catch(() => null);
+        check(label, `no step stopped (${String(error.message).split('\n')[0]})`, false, {state, requests: requests.slice(-6), consoleErrors, fallbacks, at: String(error.stack).split('\n').find((line) => line.includes('fragment-refresh.browser'))});
+      }
       await context.close();
     }
   }

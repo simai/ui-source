@@ -33,7 +33,7 @@
 // shows its own sign-in, no-access or not-found page. A half-drawn block is
 // never left. There is no timer refresh in contract 1.
 
-import {SKELETON_DELAY_MS, isRunnableScript, loadAsset, parseMarkup} from './page-assets.js';
+import {SKELETON_DELAY_MS, isRunnableScript, loadAsset, noteAssets, parseMarkup} from './page-assets.js';
 import {localeText} from './page-language.js';
 // The words of the fragment boundary: «This block could not be shown».
 import FRAGMENT_TEXT from './lang/fragment/index.mjs';
@@ -297,8 +297,65 @@ function applyFields(part, fields) {
   }
 }
 
+// The keys a link of a data block sets itself: those named by
+// data-sf-fragment-sets on it or its group, else those the links of its group
+// (nav, role=group, fieldset, a history group) differ in. A link alone, or a
+// group whose links differ in nothing, sets every key it names. Pure: takes
+// the link's own keys and its group's links as addresses.
+export function linkSets(keys, href, groupHrefs, named = null) {
+  if (named) return named.filter((key) => keys.includes(key));
+  const own = (address) => new URL(address, 'http://invalid.invalid').searchParams;
+  const mine = own(href);
+  const named2 = keys.filter((key) => mine.has(key));
+  if (groupHrefs.length < 2) return named2;
+  const varying = named2.filter((key) => new Set(groupHrefs.map((address) => own(address).get(key))).size > 1);
+  return varying.length ? varying : named2;
+}
+
+/** A link's address with every own key it does not set taken from the applied values. */
+export function syncedHref(href, keys, sets, applied) {
+  const url = new URL(href, 'http://invalid.invalid');
+  for (const key of keys) {
+    if (sets.includes(key) || !url.searchParams.has(key)) continue;
+    // A key the applied address does not name (a default the page did not
+    // write) keeps the link's own value.
+    if (applied.has(key)) url.searchParams.set(key, applied.get(key));
+  }
+  return `${url.search}${url.hash}` || '?';
+}
+
+const GROUP = 'nav, [role="group"], fieldset, [data-sf-fragment-history]';
+
+// A data block's links are not drawn again by the host: after each answer
+// their other own keys take the applied values, so a scale link keeps the
+// period just chosen. A link of the block keeps its path; only the query moves.
+function syncLinks(element, address, echoed = {}) {
+  const keys = readBlock(element).keys;
+  const applied = new URL(address).searchParams;
+  // The keys the host says it applied stand for the ones the address leaves out.
+  for (const [key, value] of Object.entries(echoed)) if (keys.includes(key) && !applied.has(key)) applied.set(key, String(value));
+  const links = [...element.querySelectorAll('a[href]')].filter((link) => link.closest(BLOCK) === element);
+  const plans = links.map((link) => {
+    const href = link.getAttribute('href');
+    const named = link.closest('[data-sf-fragment-sets]');
+    const group = link.closest(GROUP);
+    const inGroup = group && element.contains(group) && group !== element
+      ? links.filter((other) => group.contains(other)).map((other) => other.getAttribute('href'))
+      : [href];
+    const sets = linkSets(keys, href, inGroup, named && element.contains(named) ? words(named.getAttribute('data-sf-fragment-sets')) : null);
+    return {link, href, sets};
+  });
+  for (const {link, href, sets} of plans) {
+    const url = new URL(href, globalThis.location.href);
+    if (url.origin !== globalThis.location.origin || url.pathname !== globalThis.location.pathname) continue;
+    const next = syncedHref(href.startsWith('?') || href.startsWith('#') ? href : `${url.search}${url.hash}`, keys, sets, applied);
+    const kept = href.startsWith('?') || href.startsWith('#') ? next : `${url.pathname}${next === '?' ? '' : next}`;
+    if (kept !== href) link.setAttribute('href', kept);
+  }
+}
+
 // The data answer drawn in one step, after the whole answer was checked.
-function applyData(element, answer) {
+function applyData(element, answer, address = globalThis.location.href) {
   const parts = new Map(ownParts(element).map((part) => [part.getAttribute('data-sf-fragment-part'), part]));
   for (const [name, part] of parts) {
     const fields = answer.parts?.[name];
@@ -310,6 +367,7 @@ function applyData(element, answer) {
   }
   if (answer.state === 'populated') element.removeAttribute('data-sf-fragment-state');
   else element.setAttribute('data-sf-fragment-state', answer.state);
+  syncLinks(element, address, answer.keys ?? {});
   moveCurrent(element, {...(answer.keys ?? {}), ...(answer.controls ?? {})});
 }
 
@@ -349,7 +407,9 @@ async function drawIsland(element) {
   await partsReady(parts);
   if (!element.isConnected) return;
   const names = parts.map((part) => part.getAttribute('data-sf-fragment-part'));
-  const problems = dataAnswerProblems(answer, block, {parts: names, known: (name, field) => knownField(parts.find((part) => part.getAttribute('data-sf-fragment-part') === name), field)});
+  // The island is the page's own markup: it need not repeat the port; one it names is checked.
+  const declared = data.port === undefined ? {...block, port: null} : block;
+  const problems = dataAnswerProblems(answer, declared, {parts: names, known: (name, field) => knownField(parts.find((part) => part.getAttribute('data-sf-fragment-part') === name), field)});
   if (problems.length) {
     globalThis.console?.error?.(`SF.FragmentRefresh: the first data of ${block.id} is not as declared (${problems.join('; ')})`);
     return;
@@ -417,10 +477,13 @@ function restore(element) {
 }
 
 function writeHistory(address, how) {
-  if (how === 'none' || address === globalThis.location.href) {
+  if (address === globalThis.location.href) {
     lastHref = globalThis.location.href;
     return;
   }
+  // Nothing else writes (Back, Forward, a linked block) and the host applied
+  // another address than the entry's: the entry is corrected in place.
+  if (how === 'none') how = 'replace';
   const current = globalThis.history.state;
   if (how === 'replace') {
     // A product's own fields in the entry are kept as they are.
@@ -521,13 +584,14 @@ export async function refresh(element, url, {history = 'push', linked = true, re
     });
     if (problems.length) return fail(problems.join('; '));
     address = withKeys(here.href, new URL(answer.url, here).href, block.keys);
-    draw = () => applyData(element, answer);
+    draw = () => applyData(element, answer, address);
   } else {
     const parsed = parseMarkup(body);
     const roots = [...parsed.content.childNodes].filter((node) => node.nodeType === 1 || (node.nodeType === 3 && node.textContent.trim()));
     const next = roots.length === 1 && roots[0].nodeType === 1 ? roots[0] : null;
     if (!next) return fail('not one root');
     if (next.getAttribute('data-sf-fragment') !== block.id || next.getAttribute('data-sf-fragment-mode') !== 'html') return fail('another root');
+    noteAssets(parsed.assets);
     await Promise.all(parsed.assets.filter((asset) => asset.kind === 'css').map(loadAsset));
     if (stale()) return false;
     address = withKeys(here.href, target, block.keys);
@@ -542,17 +606,19 @@ export async function refresh(element, url, {history = 'push', linked = true, re
   // The answer is whole and as declared: draw it in one step, then the address.
   stopSkeleton(element);
   const focused = element.contains(document().activeElement) ? document().activeElement : null;
+  const controls = (root) => [...root.querySelectorAll('a[href], button, input, select, textarea')].filter((node) => node.closest(BLOCK) === root);
+  const focusIndex = focused ? controls(element).indexOf(focused) : -1;
   const scripts = draw() ?? [];
   if (block.mode === 'html') {
     for (const asset of scripts) await loadAsset(asset);
     if (focused && !focused.isConnected) {
-      // Focus stays on the control that was used: the same control in the new block.
-      const href = focused.getAttribute?.('href');
-      const again = href ? [...drawn.querySelectorAll('a[href]')].find((link) => link.getAttribute('href') === href) : null;
+      // Focus stays on the control that was used: the same control (by id,
+      // else by its place among the block's controls) in the new block.
+      const again = (focused.id && drawn.querySelector(`#${CSS.escape(focused.id)}`)) || controls(drawn)[focusIndex];
       again?.focus({preventScroll: true});
     }
   }
-  writeHistory(address, address === before ? 'none' : history);
+  writeHistory(address, history);
   const answerState = drawn.getAttribute('data-sf-fragment-state') || 'populated';
   emit(drawn, 'sf-fragment-load', {fragment: block.id, url: address, mode: block.mode, state: answerState});
   if (linked) publishParameters(drawn, block, before, address);
@@ -604,7 +670,14 @@ function onClick(event) {
   const target = link.getAttribute('target');
   if (target && target !== '_self') return;
   const map = pageMap();
-  if (map.plain.has(found.element)) return;
+  if (map.plain.has(found.element)) {
+    // A plain block (a key or an id declared twice): its controls load the
+    // page in full, never region navigation's partial swap.
+    if (!ownedChange(link.href, globalThis.location.href, found.block.keys)) return;
+    event.preventDefault();
+    fullLoad(link.href, 'conflict', found.element);
+    return;
+  }
   if (!ownedChange(link.href, globalThis.location.href, found.block.keys, othersKeys(map, found.element))) return;
   event.preventDefault();
   lastHref = globalThis.location.href;
@@ -625,7 +698,12 @@ function onSubmit(event) {
   action.search = new URLSearchParams(new FormData(form, submitter)).toString();
   action.hash = '';
   const map = pageMap();
-  if (map.plain.has(found.element)) return;
+  if (map.plain.has(found.element)) {
+    if (!ownedChange(action.href, globalThis.location.href, found.block.keys)) return;
+    event.preventDefault();
+    fullLoad(action.href, 'conflict', found.element);
+    return;
+  }
   if (!ownedChange(action.href, globalThis.location.href, found.block.keys, othersKeys(map, found.element))) return;
   event.preventDefault();
   lastHref = globalThis.location.href;
@@ -637,18 +715,56 @@ function onSubmit(event) {
 // are left to their owners. When only block keys differ between the entry
 // left and the entry reached, the blocks whose keys changed are drawn again
 // without a history write, and region navigation is told the entry is taken.
+const withoutHash = (href) => href.split('#')[0];
+
+// Whether this Back or Forward is block refresh's (or nobody's) rather than
+// region navigation's. Region navigation asks through the shared global
+// before it acts, so the answer does not depend on the order of listeners.
+// It is:
+//  - 'blocks' when only keys blocks own differ between the entry left and the
+//    entry reached (the blocks are drawn again);
+//  - 'none' when the address reached is the one this runtime last knew: the
+//    entry left was not written by the Framework (a product's own entry, a
+//    hash jump), and leaving it is the product's to handle;
+//  - null otherwise.
+// One answer per popstate, whichever listener asks first.
+let popMemo = null;
+function popClaim(state) {
+  if (popMemo && popMemo.state === state && popMemo.href === globalThis.location.href) return popMemo.claim;
+  const claim = freshClaim(state);
+  popMemo = {state, href: globalThis.location.href, claim, from: lastHref};
+  setTimeout(() => { popMemo = null; }, 0);
+  return claim;
+}
+
+function freshClaim(state) {
+  if (!config || !lastHref || !isObject(state) || !(state.sfFragment || state.sfRegion)) return null;
+  const from = new URL(lastHref);
+  const to = new URL(globalThis.location.href);
+  if (from.origin !== to.origin || from.pathname !== to.pathname) return null;
+  if (withoutHash(from.href) === withoutHash(to.href)) return 'none';
+  if (!state.sfFragment) return null;
+  const changed = changedKeys(from.href, to.href);
+  const map = pageMap();
+  return changed.every((key) => map.owners.has(key)) ? 'blocks' : null;
+}
+
+/** For region navigation: whether the popstate now being handled is not its to take. */
+export function claimsPop(state) {
+  return popClaim(state) !== null;
+}
+
 function onPopState(event) {
-  const left = lastHref;
+  const claim = popClaim(event.state);
+  const left = popMemo?.from ?? lastHref;
   lastHref = globalThis.location.href;
-  if (!config || !left || !isObject(event.state) || !event.state.sfFragment) return;
+  if (!claim) return;
+  event.sfFragment = true;
+  if (claim === 'none') return;
   const from = new URL(left);
   const to = new URL(globalThis.location.href);
-  if (from.origin !== to.origin || from.pathname !== to.pathname) return;
   const changed = changedKeys(from.href, to.href);
-  if (!changed.length) return;
   const map = pageMap();
-  if (!changed.every((key) => map.owners.has(key))) return;
-  event.sfFragment = true;
   const touched = new Set();
   for (const key of changed) touched.add(map.owners.get(key).element);
   for (const block of map.blocks) if (!map.plain.has(block.element) && block.reads.some((key) => changed.includes(key))) touched.add(block.element);
@@ -741,6 +857,7 @@ if (typeof window !== 'undefined') {
     enable,
     disable,
     refresh,
+    claimsPop,
     contract: CONTRACT,
     get enabled() {
       return Boolean(config);
