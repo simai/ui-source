@@ -415,7 +415,7 @@
 
   .sf-settings-row--phones > .sf-settings-row-phone::after {
     position: absolute;
-    inset-block: min(0px, calc((100% - var(--sf-d1)) / 2));
+    inset-block: min(0%, calc((100% - var(--sf-d1)) / 2));
     inset-inline: 0;
     content: '';
   }

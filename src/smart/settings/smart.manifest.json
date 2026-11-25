@@ -587,7 +587,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "fba660cf8a006219985364eeda33c58dcc1fd5e82ced723fb209df899c693568"
+        "sha256": "46c3f696bdd01a05d19dc52cd49695f7457bff8199ad1e65a8135a81d402336d"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
@@ -599,7 +599,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "897f2189f1b509db8f2c893690ea6c126c9183ae629ef7baa14b49d749a7fcf8"
+        "sha256": "9f9edc1929bae4c092430c3673410ee265c42a24ea43e1021debf7942eb3d03f"
       }
     ],
     "generated_runtime": []

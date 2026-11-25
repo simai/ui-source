@@ -207,8 +207,10 @@ test('owner decision C148: the list row -- end column, one Tab stop with arrows 
   assert.match(row, /\['Escape', 'ArrowUp', 'ArrowDown'\]\.includes\(event\.key\)/u);
   assert.match(row, /markCut\(\)/u);
   // (6) the long press, shared by the row and the list (no swipe).
-  const press = read('src/smart/list-item/js/long-press.js');
-  assert.match(press, /const LONG_PRESS_MS = 500;/u);
+  // Since group build 19 (study S-A) the press is core's; the list's module re-exports it.
+  assert.match(read('src/smart/list-item/js/long-press.js'), /from '\.\.\/\.\.\/\.\.\/core\/js\/long-press\.js';/u);
+  const press = read('src/core/js/long-press.js');
+  assert.match(press, /export const LONG_PRESS_MS = 500;/u);
   assert.doesNotMatch(press + row, /swipe\w*\(/u);
   const source = read('src/smart/list/index.js');
   assert.match(source, /import \{watchLongPress\} from "\.\.\/list-item\/js\/long-press\.js";/u);
