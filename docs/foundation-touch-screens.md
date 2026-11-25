@@ -95,9 +95,14 @@ On `feat/gb19-device` (group build 19, area A), not in a released pair:
   to a step moves View's switches with it, so it is a decision for DEV.
 - The scope is read by sf-settings only. sf-menu-context menu items,
   sf-tabs items and sf-list actions do not read `devices` yet.
-- Rule 9 is applied by the sf-settings phone switch; sf-tabs pills of size
+- Rule 9 is applied by the sf-settings phone switch in width (44) and in
+  height where its row is 44 (size 1). A panel of size 1/2 keeps 28 rows on a
+  phone, so the switch's press is 28 high there: an area reaching over the
+  neighbouring rows would take their presses (a press on the lower part of
+  one row's switch turned the next row's, probe round 4). A 44 row on a
+  coarse pointer for every size is a decision for DEV. sf-tabs pills of size
   1/2 (28 px) and sf-checkbox boxes (20 x 20) on a coarse pointer are below
-  44 (study S-A, kanban scene) -- not changed here.
+  44 too (study S-A, kanban scene) -- not changed here.
 - sf-list and sf-list-item keep their own selection-or-menu choice (C148 (6),
   C150 (9)); they now take the press from core.
 

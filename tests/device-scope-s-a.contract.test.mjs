@@ -185,10 +185,10 @@ test('sf-settings: the manifest declares device, devices, phoneSwitch and phone;
   const panel = read('src/smart/settings/js/templates/panel.js');
   assert.match(panel, /class="sf-settings-row-phone" role="switch"/u);
   const sheet = read('src/smart/settings/scss/_smart__settings.scss');
-  // Touch screens rule 6: the hit area of 44 on a coarse pointer, from the size scale.
+  // Touch screens rule 9: the hit area of 44 on a coarse pointer, from the size scale.
   assert.match(sheet, /@media \(pointer: coarse\) and \(not \(any-pointer: fine\)\) \{[^}]*sf-settings-row-phone[^}]*\{\s*min-inline-size: var\(--sf-d1\);/u);
-  // A row lower than 44 keeps its height; the switch's hit area reaches over it.
-  assert.match(sheet, /sf-settings-row-phone::after \{\s*position: absolute;\s*inset-block: min\(0%, calc\(\(100% - var\(--sf-d1\)\) \/ 2\)\);/u);
+  // The press stays inside the row: no area reaching over the neighbours.
+  assert.doesNotMatch(sheet, /sf-settings-row-phone::after/u);
   assert.match(read('src/smart/settings/index.js'), /if \(target\.closest\('\.sf-settings-row-phone-place'\)\) return;/u);
 });
 

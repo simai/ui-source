@@ -401,26 +401,14 @@
   visibility: hidden;
 }
 
-/* A touch pointer (Touch screens, rule 6): the switch's hit area is at least
-   44 wide; the row is already 44 high on a phone (C49). */
+/* A touch pointer (Touch screens, rule 9): the switch's hit area is at least
+   44 wide and owns the whole row's height. A row of size 1 is 44 high on a
+   phone (C49); a row of size 1/2 is 28, and the switch's press stays inside
+   it -- an area reaching over the neighbours would take their presses. */
 @media (pointer: coarse) and (not (any-pointer: fine)) {
   .sf-settings-row--phones > .sf-settings-row-phone,
   .sf-settings-row--phones > .sf-settings-row-phone-place {
     min-inline-size: var(--sf-d1);
-  }
-
-  /* A row lower than 44 (size 1/2 on a phone, 28) keeps its height; the
-     switch's hit area reaches over it to 44, centred on the row. */
-  .sf-settings-row--phones > .sf-settings-row-phone {
-    position: relative;
-    z-index: var(--sf-z-index-1);
-  }
-
-  .sf-settings-row--phones > .sf-settings-row-phone::after {
-    position: absolute;
-    inset-block: min(0%, calc((100% - var(--sf-d1)) / 2));
-    inset-inline: 0;
-    content: '';
   }
 }
 
