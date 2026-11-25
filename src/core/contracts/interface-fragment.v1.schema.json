@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/contracts/interface-fragment.v1.schema.json",
-  "title": "Simai Interface Fragment Descriptor v1",
-  "x-simai-version": "1.2.0",
-  "description": "A fragment is a Smart composite placed in a page region: one host port, published composition ports, nothing reached directly. The descriptor says where it may stand, what it exchanges, what a person needs to see it, which address keys it owns and what it may cost.",
+  "title": "SIMAI Interface Fragment Descriptor v1",
+  "x-simai-version": "1.3.0",
+  "description": "A fragment is a Smart composite placed in a page region: one host port, published composition ports, nothing reached directly. The descriptor says where it may stand, what it exchanges, what a person needs to see it, which address keys it owns, what it may cost and, optionally, how it refreshes itself (simai.interface-fragment 1.1.0, block refresh contract 1).",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "id", "element", "regions", "port", "outputs", "inputs", "operation", "url_state", "budget"],
@@ -34,6 +34,18 @@
       "properties": {
         "kb": {"type": "integer", "minimum": 0, "maximum": 2048},
         "first_answer_ms": {"type": "integer", "minimum": 0, "maximum": 10000}
+      }
+    },
+    "refresh": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "contract"],
+      "description": "The block refreshes itself (block refresh contract 1): mode data answers JSON for its parts through its port, mode html answers its outer element. Its own keys stay in url_state; reads names keys other blocks own that change it; parts names the targets of a data answer.",
+      "properties": {
+        "mode": {"enum": ["data", "html"]},
+        "contract": {"const": 1},
+        "reads": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$"}},
+        "parts": {"type": "array", "maxItems": 32, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,31}$"}}
       }
     }
   },

@@ -226,6 +226,23 @@
       ]
     },
     {
+      "name": "SF.FragmentRefresh",
+      "status": "public",
+      "layer": "core",
+      "audience": "public",
+      "author": "Refreshes one block of the page from its own links and forms instead of loading the whole page.",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Block refresh (simai.interface-fragment 1.1.0, contract 1): a block declared with data-sf-fragment, -keys, -mode asks its own address with X-SIMAI-Fragment, -Mode and -Contract and draws the data or html answer in place; Back and Forward, the error state with a retry, and a full load whenever the answer is not as declared.",
+      "members": [
+        "enable",
+        "disable",
+        "refresh",
+        "contract",
+        "enabled"
+      ]
+    },
+    {
       "name": "SF.workspace",
       "status": "public",
       "layer": "core",

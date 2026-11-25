@@ -25,17 +25,24 @@
 // again, whether it came in `assets` or as a <link>/<script src> in the html;
 // the elements that leave are disconnected, so their routes and listeners go
 // with them.
+//
+// History entries carry the runtime's own marker (simai.interface-fragment
+// 1.1.0, history-markers): this one takes only entries marked sfRegion, block
+// refresh marks its own sfFragment, and a product's own entries carry the
+// product's marker and are left alone. A link inside a refreshable block that
+// changes only the block's keys, and a Back or Forward that block refresh has
+// taken (it changed only block keys), are not this navigator's.
 
 // The device's reduced motion or the site's «остановить движение» (C196).
 import {reducedMotion} from './motion.js';
+// One asset registry and one skeleton delay with block refresh (assets-once).
+import {SKELETON_DELAY_MS, loadAsset, parseMarkup} from './page-assets.js';
 
-const SKELETON_DELAY_MS = 150;
 const TIMEOUT_MS = 15000;
 
 let config = null;
 let controller = null;
 let sequence = 0;
-const assetRequests = new Map();
 
 const absolute = (href) => {
   try {
@@ -82,7 +89,7 @@ function onClick(event) {
 
 function onPopState(event) {
   const state = event.state;
-  if (!config || !state?.sfRegion) return;
+  if (!config || !state?.sfRegion || event.sfFragment === true) return;
   navigate(globalThis.location.href, {history: 'none', scroll: state.scroll ?? 0});
 }
 
@@ -100,62 +107,6 @@ function fullLoad(url, reason) {
   }
   if (url === globalThis.location.href) globalThis.location.reload();
   else globalThis.location.assign(url);
-}
-
-function isPresent(url, kind) {
-  const document = globalThis.document;
-  const nodes = kind === 'css'
-    ? document.querySelectorAll('link[rel~="stylesheet"][href]')
-    : document.querySelectorAll('script[src]');
-  return [...nodes].some((node) => absolute(node.getAttribute(kind === 'css' ? 'href' : 'src')) === url);
-}
-
-// One request per asset for the life of the page: a second region that needs
-// the same file waits on the first request, it does not make another.
-function loadAsset({href, kind, key}) {
-  const url = absolute(href);
-  if (!url || !['css', 'javascript'].includes(kind)) return Promise.resolve();
-  if (assetRequests.has(url)) return assetRequests.get(url);
-  if (isPresent(url, kind)) {
-    assetRequests.set(url, Promise.resolve());
-    return assetRequests.get(url);
-  }
-  const document = globalThis.document;
-  const node = document.createElement(kind === 'css' ? 'link' : 'script');
-  if (kind === 'css') {
-    node.rel = 'stylesheet';
-    node.href = url;
-  } else {
-    node.src = url;
-    node.async = false;
-  }
-  if (key) node.setAttribute('data-sf-asset', key);
-  const loaded = new Promise((resolve) => {
-    node.addEventListener('load', () => resolve(), {once: true});
-    // A file that does not come is the region's loss, not the page's: the
-    // region is shown, and the component that needed it reports its own state.
-    node.addEventListener('error', () => resolve(), {once: true});
-  });
-  document.head.append(node);
-  assetRequests.set(url, loaded);
-  return loaded;
-}
-
-// The region's html, parsed but not yet placed: its stylesheets and scripts
-// are taken out and loaded as assets (a script set by innerHTML never runs).
-function parseRegion(html) {
-  const template = globalThis.document.createElement('template');
-  template.innerHTML = String(html ?? '');
-  const assets = [];
-  for (const link of template.content.querySelectorAll('link[rel~="stylesheet"][href]')) {
-    assets.push({href: link.getAttribute('href'), kind: 'css'});
-    link.remove();
-  }
-  for (const script of template.content.querySelectorAll('script')) {
-    if (script.getAttribute('src')) assets.push({href: script.getAttribute('src'), kind: 'javascript'});
-    script.remove();
-  }
-  return {content: template.content, assets};
 }
 
 function validAnswer(answer, revision) {
@@ -222,7 +173,7 @@ export async function navigate(url, {history = 'push', scroll = 0} = {}) {
   const address = typeof answer.url === 'string' && absolute(answer.url)?.startsWith(globalThis.location.origin)
     ? absolute(answer.url)
     : url;
-  const parsed = parseRegion(answer.html);
+  const parsed = parseMarkup(answer.html);
   const assets = [...(answer.assets ?? []), ...parsed.assets];
   // Stylesheets before the swap, so the new content never shows unstyled;
   // scripts after, so the elements they define upgrade in place.

@@ -27,6 +27,7 @@ import './preferences.js';
 // attributes, the motion mark and the skip link, before anything draws.
 import './display-settings.js';
 import './region-navigation.js';
+import './fragment-refresh.js';
 import './workspace.js';
 import './effects.js';
 // Component sets: SF.package(name) before the Loader has started, and the

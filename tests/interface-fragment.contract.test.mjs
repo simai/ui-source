@@ -58,16 +58,26 @@ test('the code, the port-manifest schema, the descriptor schema and its pinned c
   const descriptor = json('src/core/contracts/interface-fragment.v1.schema.json');
   assert.deepEqual([...ports].sort(), vocabulary);
   assert.deepEqual([...descriptor.$defs.valueType.enum].sort(), vocabulary);
-  // simai.interface-fragment 1.0.2 pins the live schema 1.2.0 as a frozen copy,
-  // byte for byte.
-  const pinned = readFileSync(new URL('../contracts/standards/pinned/interface-fragment-1.2.0.schema.json', import.meta.url));
-  assert.ok(pinned.equals(readFileSync(new URL('../src/core/contracts/interface-fragment.v1.schema.json', import.meta.url))), 'the frozen 1.2.0 copy is the live schema');
-  assert.equal(descriptor['x-simai-version'], '1.2.0');
+  // simai.interface-fragment 1.1.0 pins the live schema 1.3.0 as a frozen copy,
+  // byte for byte (1.0.2 and 1.0.3, in history, pin the 1.2.0 copy).
+  const pinned = readFileSync(new URL('../contracts/standards/pinned/interface-fragment-1.3.0.schema.json', import.meta.url));
+  assert.ok(pinned.equals(readFileSync(new URL('../src/core/contracts/interface-fragment.v1.schema.json', import.meta.url))), 'the frozen 1.3.0 copy is the live schema');
+  assert.equal(descriptor['x-simai-version'], '1.3.0');
+  // 1.3.0 is 1.2.0 with the optional refresh object (block refresh contract 1)
+  // and the title in capitals; nothing else moved.
+  const previous = json('contracts/standards/pinned/interface-fragment-1.2.0.schema.json');
+  const {refresh, ...before} = descriptor.properties;
+  assert.deepEqual(refresh.required, ['mode', 'contract']);
+  assert.ok(!descriptor.required.includes('refresh'));
+  assert.deepEqual(before, previous.properties);
+  assert.deepEqual(descriptor.$defs, previous.$defs);
+  assert.deepEqual(descriptor.required, previous.required);
   // The first published schema, 1.0.0, is the live one without what 1.1.0
   // (the bare format name beside the older label, 2026-10-11) and 1.2.0 (the
   // bare value-type names, 2026-10-19) added.
   const published = json('contracts/standards/pinned/interface-fragment.v1.schema.json');
-  const {anyOf, ...live} = descriptor;
+  const {anyOf, ...liveAll} = descriptor;
+  const live = {...liveAll, title: published.title, description: published.description, properties: before};
   const {schema_version, ...properties} = live.properties;
   assert.deepEqual(anyOf, [{properties: {schema: {const: 'simai.interface-fragment.v1'}}}, {required: ['schema_version']}]);
   assert.deepEqual(schema_version, {const: 1});
