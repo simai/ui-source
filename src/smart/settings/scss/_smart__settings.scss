@@ -395,7 +395,9 @@
   pointer-events: none;
 }
 
-.sf-settings-row-phone-place {
+/* Only the switch inside the place is hidden: the place itself takes a press
+   (and swallows it), so a press there does not reach the row's check. */
+.sf-settings-row-phone-place > sf-switch {
   visibility: hidden;
 }
 
@@ -411,6 +413,7 @@
      switch's hit area reaches over it to 44, centred on the row. */
   .sf-settings-row--phones > .sf-settings-row-phone {
     position: relative;
+    z-index: var(--sf-z-index-1);
   }
 
   .sf-settings-row--phones > .sf-settings-row-phone::after {
