@@ -27,6 +27,7 @@
     "src/core/scss/_sf_css__preset.scss",
     "src/core/scss/_sf_css__scroll.scss",
     "src/core/scss/_sf_css__touch_fields.scss",
+    "src/core/scss/_sf_css__touch_targets.scss",
     "src/core/scss/_sf_ext__common.scss",
     "src/core/scss/_sf_layer_order.scss",
     "src/core/scss/index.scss",
@@ -34,10 +35,11 @@
     "src/core/scss/mix/_mix__notice-link.scss",
     "src/core/scss/mix/_mix__paint.scss",
     "src/core/scss/mix/_mix__sheet.scss",
+    "src/core/scss/mix/_mix__touch.scss",
     "src/core/scss/mix/_mix__window-footer.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "b68539c1dae283e52662e48714078a7c1b44f84697b4e4e1e2b6de772f98c2de",
+  "content_sha256": "d1631547fd5b74c786cf828203c8af9dbe68b6f31cbbc15c610baf8b84d4d7e4",
   "dependencies": [
     {
       "id": "font.inter",

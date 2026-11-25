@@ -1,0 +1,21 @@
+@use 'mix/mix__touch' as touch;
+
+// Touch targets (Touch screens rule 12, DEV decision on the coarse-pointer
+// target size, group build 19; docs/foundation-touch-screens.md).
+//
+// An isolated control's hit area (mix/_mix__touch.scss, hit-area) is an
+// invisible pseudo-element at z-index -1. It lies in the stacking context of
+// the control's parent, which this rule makes one: under the neighbours' own
+// boxes and text (which take their own presses) and over the parent's own
+// background (so the empty room around the control is the control's). Only a
+// coarse pointer; a fine pointer's pages are unchanged. Where a control's
+// parent has no box of its own (display: contents), the area is under the
+// nearest box and the control keeps its drawn size as its target -- never a
+// neighbour's press.
+@include touch.coarse {
+  @layer sf.base {
+    :where(:has(> :is(:is(sf-button-icon, sf-icon-button), sf-checkbox, sf-radio, sf-switch, .sf-icon-button))) {
+      isolation: isolate;
+    }
+  }
+}

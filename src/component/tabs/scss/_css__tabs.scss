@@ -1244,3 +1244,18 @@
     text-align: start;
   }
 }
+
+/* Touch screens rule 12 (DEV decision on the coarse-pointer target size,
+   group build 19): under a coarse pointer the tabs are stacked targets -- a
+   row of them, or the vertical column -- and grow to the touch target,
+   --sf-hit--touch (44), at every size; the label, the line under it and the
+   plate's text stay the size's. The rule is core's (mix/_mix__touch.scss,
+   row); it is written out here as this sheet also builds over a core before
+   it (tabs-container-step above). */
+@media (pointer: coarse) and (not (any-pointer: fine)) {
+  @layer sf.components {
+    .sf-tabs > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button) {
+      min-block-size: var(--sf-hit--touch);
+    }
+  }
+}

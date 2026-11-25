@@ -57,7 +57,7 @@ test('C134 sf-menu: appearance rail, compact a dated value alias; the rail write
   assert.doesNotMatch(sheet, /\.sf-menu\.sf-menu--compact/u);
   assert.equal(withoutPaintBlocks(sheet).match(/\.sf-menu:is\(\.sf-menu--rail, \.sf-menu--compact\)/gu).length, 13); // 13: the rail count's grey (RG-NV 28)
   assert.match(read('src/component/menu/scss/_css__menu_element.scss'), /:where\(\.sf-menu:not\(\.sf-menu--rail, \.sf-menu--compact\)\)/u);
-  assert.equal(json('src/component/menu/passport.json').version, '1.10.4'); // 1.9.1: the C16 sweep's docs names (queue item 244), above 1.9.0 on fix/nav-menus-nv1 // group build 10: 1.9.1 moved on by the merged branches or a GB10 patch // defects-d11: component.menu 1.10.1: the empty sf.components block left by C273 removed // defects-d12: component.menu 1.10.2: a row's panel's path line clears the corner by its block padding // fix/rtl-direction-icons: one RTL turn // GB18 layout: the hover docs say 8 (C42 (5))
+  assert.equal(json('src/component/menu/passport.json').version, '1.10.5'); // 1.9.1: the C16 sweep's docs names (queue item 244), above 1.9.0 on fix/nav-menus-nv1 // group build 10: 1.9.1 moved on by the merged branches or a GB10 patch // defects-d11: component.menu 1.10.1: the empty sf.components block left by C273 removed // defects-d12: component.menu 1.10.2: a row's panel's path line clears the corner by its block padding // fix/rtl-direction-icons: one RTL turn // GB18 layout: the hover docs say 8 (C42 (5)) // GB19 touch size (C428)
   assert.equal(record('value-menu-appearance-compact-to-rail').rewrite, 'rename-value');
   assert.deepEqual(record('class-menu-compact-to-rail').items, [{component: 'sf-menu', from: 'sf-menu--compact', to: 'sf-menu--rail'}]);
 });

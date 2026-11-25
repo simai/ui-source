@@ -1,0 +1,54 @@
+// SIMAI Framework
+// https://simai.io
+
+// TOUCH TARGETS (Touch screens rule 12, DEV decision on the coarse-pointer
+// target size, group build 19; docs/foundation-touch-screens.md).
+//
+// The one place the coarse-pointer target rule is written; component sheets
+// include these and do not write the query or the size themselves.
+//
+// - coarse: the core pointer word as a query -- a touch pointer and no fine
+//   one (SF.device.pointer, core/js/device.js). A laptop with a touch screen
+//   and a tablet with a mouse keep the ladder's rows.
+// - row / row-height: a stacked row (a panel row, a menu item, a list row, a
+//   tab) grows to the touch target, --sf-hit--touch (44), at every size. Rows
+//   stand with no gap, so an area larger than the row would lie over the next
+//   row and take its presses: the row itself grows.
+// - hit-area: an isolated control (a bare check box, radio or switch, an icon
+//   button) keeps its drawn size; an invisible pseudo-element centred on it
+//   reaches --sf-hit--touch in each axis the control is smaller in. It stands
+//   at z-index -1 in the stacking context of the control's parent (core's
+//   _sf_css__touch_targets.scss makes that parent one), so it lies under every
+//   neighbour's own box and text: it is clipped by them and takes only the
+//   empty room around the control. Where two controls stand closer than the
+//   target, the gap is the failure the rule check reports
+//   (tests/browser/touch-targets.browser.mjs), not an overlap.
+//
+// A fine pointer gets nothing from these: its geometry is unchanged.
+
+@mixin coarse {
+  @media (pointer: coarse) and (not (any-pointer: fine)) {
+    @content;
+  }
+}
+
+@mixin row {
+  min-block-size: var(--sf-hit--touch);
+}
+
+// A row height a component keeps in a custom property of its own: the step,
+// never below the touch target.
+@function row-height($step) {
+  @return max(#{$step}, var(--sf-hit--touch));
+}
+
+@mixin hit-area($pseudo: after) {
+  position: relative;
+
+  &::#{$pseudo} {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: min(calc(var(--sf-px) * 0), calc((100% - var(--sf-hit--touch)) / 2));
+  }
+}

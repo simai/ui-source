@@ -67,6 +67,36 @@ core and the sf-settings contract.
 11. **Feedback** (S-A q5). A long press that entered a mode says so (a live
     region «Выбрано N»); a short vibration where the platform allows is
     optional.
+12. **Target size on a coarse pointer** (DEV decision on the coarse-pointer
+    target size, group build 19; C428). The pointer word of rule 1 is the
+    signal: a tablet and a laptop of the same width differ by design.
+    - *Stacked rows* -- sf-settings panel rows, menu rows, list rows, tabs of
+      every size and look -- grow to the touch target, `--sf-hit--touch` (44),
+      at any size. Rows stand with no gap: a 44 area on a 28 row would lie
+      16 px over the next row, and the neighbour would take the press
+      (Material and Apple drop compact density on touch for the same reason).
+      The text, the pads and the line under a tab stay the size's.
+    - *Isolated controls* -- a check box, a radio or a switch without text,
+      an icon button -- keep their drawn size; the hit area reaches 44 in each
+      axis the control is smaller in by an invisible pseudo-element centred on
+      it. The area lies under the neighbours: it stands at z-index -1 in the
+      stacking context of the control's parent, which core makes one on a
+      coarse pointer, so every neighbour's own box and text keep their own
+      presses and the area takes only the empty room around the control.
+    - Two isolated controls whose centres stand closer than 44 (their areas
+      meet) are the rule check's failure: the gap is wrong, not the area. A
+      toolbar of size 1/2 icon buttons with no gap is the example the probe
+      keeps.
+    - Not an area of its own: a control with text (its row is the target,
+      W5), a tab's or a settings row's buttons (the row grows), the remove
+      button of a tag (its own 24 area, C145 (1)), the drawer head's buttons
+      (their own 44 area, C173 (6)).
+    - Core holds the rule (`core/scss/mix/_mix__touch.scss`: `coarse`, `row`,
+      `row-height`, `hit-area`; `core/scss/_sf_css__touch_targets.scss`: the
+      parent's stacking context); the sheets include it. A fine pointer's
+      geometry is unchanged.
+    - Option 3 of the question (a smaller target accepted as an exception) is
+      rejected: this rule is the standard.
 
 ## Numbers
 
@@ -80,12 +110,14 @@ holds them.
 | S-A q1 | `SF.device.PHONE_BELOW` | core/js/device.js | 600 | 600 | 600 |
 | S-A q4 | `SF.longPress.ms` | core/js/long-press.js | 500 | 500 | 500 |
 | S-A q5 | `--sf-d1` | the hit area on a coarse pointer | 44 | 44 | 44 |
+| 12 (C428) | `--sf-hit--touch` | a stacked row's least height and an isolated control's hit area, coarse pointer only | 44 | 44 | 44 |
 
 ## Pending
 
 On `feat/gb19-device` (group build 19, area A), not in a released pair:
-`SF.device`, `SF.longPress` in core, sf-settings 1.11.0 (`devices`,
-`device`, `phoneSwitch`) and this page.
+`SF.device`, `SF.longPress` in core, sf-settings (`devices`, `device`,
+`phoneSwitch`), rule 12 (core touch targets and the sheets that include
+them) and this page.
 
 ## Known gaps
 
@@ -95,19 +127,29 @@ On `feat/gb19-device` (group build 19, area A), not in a released pair:
   to a step moves View's switches with it, so it is a decision for DEV.
 - The scope is read by sf-settings only. sf-menu-context menu items,
   sf-tabs items and sf-list actions do not read `devices` yet.
-- Rule 9 is applied by the sf-settings phone switch in width (44) and in
-  height where its row is 44 (size 1). A panel of size 1/2 keeps 28 rows on a
-  phone, so the switch's press is 28 high there: an area reaching over the
-  neighbouring rows would take their presses (a press on the lower part of
-  one row's switch turned the next row's, probe round 4). A 44 row on a
-  coarse pointer for every size is a decision for DEV. sf-tabs pills of size
-  1/2 (28 px) and sf-checkbox boxes (20 x 20) on a coarse pointer are below
-  44 too (study S-A, kanban scene) -- not changed here.
+- Rule 12 reaches the parts named there. Other rows that are already 44 on
+  a coarse pointer keep their own rules (sf-menu-context rows, sf-list rows,
+  a checkable control with text). Rows drawn by other packages (View tables,
+  Pro lists) take the rule when they use these parts; their own rows are
+  their owners'.
+- Where an isolated control's parent has no box of its own (`display:
+  contents`), its area lies under the nearest box: the control keeps its
+  drawn size as its target, never a neighbour's press. A control in a parent
+  of its own beside another such parent can still meet it: the rule check
+  reports it.
 - sf-list and sf-list-item keep their own selection-or-menu choice (C148 (6),
   C150 (9)); they now take the press from core.
 
 ## Check
 
+- `tests/browser/touch-targets.browser.mjs` (rule 12): at 390 on a touch
+  phone, real taps at the centre and at the top and bottom edge of every
+  stacked row, and at the centre and every edge of each isolated control's
+  44 area (switches and check boxes on and off), a tap on each toolbar
+  button's own box beside its neighbour, and the rule check; at 1440 with a
+  mouse, the ladder's rows and no area.
+- `tests/touch-targets.contract.test.mjs` (rule 12): the core rule and the
+  sheets that include it.
 - `tests/device-scope-s-a.contract.test.mjs`: the layout and pointer words,
   the scope and the marks, the long press, the sf-settings contract (hidden
   items, `phoneSwitch`, the words in every language, the 44 hit area) and the

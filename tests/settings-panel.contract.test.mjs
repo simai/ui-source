@@ -173,7 +173,7 @@ test('C166 follow-up, C144: the footer labels stay on one line; the buttons grow
   assert.doesNotMatch(share, /flex: 1 1 0;/u);
   assert.match(css, /\.sf-settings-panel-footer \.sf-button-text-container \{\s*white-space: nowrap;\s*\}/u);
   const component = JSON.parse(read('src/smart/settings/component.json'));
-  assert.equal(component.version, '1.11.0'); // GB19 device scope: devices, device, phoneSwitch (S-A) // group build 16: VR11-4 head step, G10 drop line; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(component.version, '1.11.1'); // GB19 touch size (C428): rows 44 on a coarse pointer // GB19 device scope: devices, device, phoneSwitch (S-A) // group build 16: VR11-4 head step, G10 drop line; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
 });
 
 // The SIMAI Framework order of the sf-view-table move (C106; ui-control

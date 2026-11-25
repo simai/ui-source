@@ -203,5 +203,5 @@ test('the Touch screens page states the numbers core holds', () => {
   assert.equal(device.PHONE_BELOW, 600);
   assert.equal(longPress.LONG_PRESS_MS, 500);
   const index = read('docs/foundation-standard.md');
-  assert.match(index, /\| Touch screens \| \[foundation-touch-screens\.md\]\(foundation-touch-screens\.md\) \| `tests\/device-scope-s-a\.contract\.test\.mjs` \|/u);
+  assert.match(index, /\| Touch screens \| \[foundation-touch-screens\.md\]\(foundation-touch-screens\.md\) \| `tests\/device-scope-s-a\.contract\.test\.mjs`[^|\n]* \|/u);
 });
