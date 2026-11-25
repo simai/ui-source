@@ -18,7 +18,7 @@ test('GB18 versions: above every origin branch at the time of writing', () => {
   assert.equal(form().version, '1.15.2'); // group build 18: moved on by the merged branches or a GB15 assembly item
   assert.equal(json('src/smart/checkbox/component.json').version, '1.6.1');
   assert.equal(json('src/smart/radio/component.json').version, '1.4.5');
-  assert.equal(json('src/smart/switch/component.json').version, '1.10.1');
+  assert.equal(json('src/smart/switch/component.json').version, '1.10.2'); // GB19 render: the template path as shipped
   assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.1') // GB18 L6;
   assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.21.1');
 });
