@@ -63,7 +63,7 @@ test('invalid schemes, pairs and capabilities are refused', () => {
 });
 
 test('the live schema states the same fields as the reader', () => {
-  assert.equal(schema['x-simai-version'], '1.4.0');
+  assert.equal(schema['x-simai-version'], '1.5.0');
   assert.deepEqual(schema.properties.schemes.items.enum, ['dark', 'light']);
   assert.equal(schema.properties.schemes.minItems, 1);
   assert.equal(schema.properties.schemes.maxItems, 2);
@@ -266,4 +266,13 @@ test('effects settings: packages.effects first, SF_BOOT_CONFIG.effects as the no
     globalThis.SF_BOOT_CONFIG = saved;
     globalThis.SF?.deprecations?.clear?.();
   }
+});
+
+// simai.effect 1.5 (GB20, msg-e1b4fbe2): an effect may answer the pointer in
+// its own layer; the flag is a boolean or absent.
+test('interactive is an optional boolean', () => {
+  assert.ok(!schema.required.includes('interactive'));
+  assert.equal(schema.properties.interactive.type, 'boolean');
+  for (const value of [true, false, undefined]) assert.deepEqual(checkEffectManifest(with_({interactive: value})), [], String(value));
+  for (const value of ['true', 1, null, {}]) assert.deepEqual(checkEffectManifest(with_({interactive: value})), ['interactive: true or false'], String(value));
 });

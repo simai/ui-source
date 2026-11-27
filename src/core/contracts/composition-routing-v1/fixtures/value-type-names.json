@@ -690,6 +690,7 @@
     "counter": "counter.v1",
     "files-moved": "files-moved.v1",
     "navigation": "navigation.v1",
+    "parameters-changed": "parameters-changed.v1",
     "preference-changed": "preference-changed.v1",
     "record-changed": "record-changed.v1",
     "record-id": "record-id.v1",

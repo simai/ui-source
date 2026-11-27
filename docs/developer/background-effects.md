@@ -23,7 +23,7 @@
 > `docs/developer/component-sets.md`.
 
 `SF.Effects` (core, `src/core/js/effects.js`) runs background effects under
-the standard `simai.effect` 1.4.0 (`contracts/standards/simai.effect/1.4.0`).
+the standard `simai.effect` 1.5.0 (`contracts/standards/simai.effect/1.5.0`).
 An effect is an `effect.json` manifest and one module exporting
 `mount(host, settings, context)`. The effects themselves live in the
 catalogue `simai/ui-effects`; the Framework holds the runtime, the standard
@@ -378,6 +378,31 @@ are areas: the gaps and the other cards keep the browser's menu.
 - The words ship in English under the component name `sf-effect-about`
   (keys `menu`, `by`, `open`, `homepage`, `pause`, `resume`); a product may
   register its own through `SF.language`.
+
+## Interactive effects
+
+Since simai.effect 1.5 a manifest may say `"interactive": true`: the effect
+answers the pointer. Its host -- the layer a placement makes under the area's
+children (`[data-sf-effect-layer]`), or the element given to `mountEffect` --
+then has `pointer-events: auto` instead of `none`, so hover, press, click,
+wheel and touch reach the effect's own nodes (a canvas listening for
+`pointermove`, say) wherever none of the area's content is over it. The
+area's content keeps its own events: the layer stands under its children.
+
+- Absent or `false` is the rule before 1.5: the host takes no pointer events.
+  Anything other than a boolean is refused (`interactive: true or false`).
+- The host stays `aria-hidden` and adds nothing to the tab order; an effect
+  that wants focus is not an effect.
+- A foreign effect (run in the sandbox frame) never takes pointer events,
+  `interactive` or not: its frame stays `pointer-events: none`.
+- `destroy()` gives the host back `pointer-events: none`.
+- A right-click on an interactive effect's background still opens the about
+  menu; an effect that handles `contextmenu` itself and calls
+  `preventDefault()` keeps it for itself.
+
+The probe `tests/browser/effect-interactive.browser.mjs` drives hover,
+press, click, wheel and a touch at a free point of an interactive and a
+default effect.
 
 ## Events
 

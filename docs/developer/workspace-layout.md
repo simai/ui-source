@@ -122,7 +122,11 @@ slides in from its edge unless `prefers-reduced-motion: reduce`.
 While it is a drawer it keeps sf-drawer's modal contract, through the same
 document layer stack (`core/js/layer-stack.js`):
 
-- focus moves into it (its first control, or the panel itself);
+- focus moves into it (its first control, or the panel itself) when it is
+  opened -- by `panel(true)`, by the host setting `data-sf-workspace-panel`, or
+  when the container narrows under focus in a region the drawer covers. A
+  page load never moves focus: a panel open in the markup becomes a drawer with
+  focus left where it was, and Tab enters it;
 - the other regions are `inert`, so Tab stays in the panel and a press on the
   scrim lands on nothing behind it;
 - Escape closes it when it is the top layer (a menu open inside it closes
@@ -188,4 +192,5 @@ changed:
   container (the viewport stays 1280 wide): wide, middle and narrow placement,
   the drawer (inert, Tab, Escape, scrim, focus return), the open state across
   widths, the back control and focus on the `aria-current` row, the hidden list,
-  the rail, the width classes, RTL and reduced motion.
+  the rail, the width classes, RTL, reduced motion, and three loads with the
+  panel open in the markup (no focus moved).

@@ -74,3 +74,23 @@ test('no Smart field writes an id from a module counter', () => {
     assert.doesNotMatch(source, /\blet \w*[Ss]equence\b|\+\+\w*[Ss]equence/u, path);
   }
 });
+
+test('an instance that settles later in front of another never takes its id (Mail set 1.0.0, GB20)', () => {
+  const {doc, make} = page();
+  const later = make('sf-input');
+  const first = createFieldContract(later, {prefix: 'sf-input'});
+  assert.equal(first.controlId, 'sf-input-1--control');
+  // A second field settles in front of it: by document order it is the first.
+  const front = make('sf-input');
+  const all = doc.querySelectorAll('sf-input');
+  doc.querySelectorAll = (selector) => (selector === 'sf-input' ? [front, ...all.filter((one) => one !== front)] : []);
+  const second = createFieldContract(front, {prefix: 'sf-input'});
+  assert.notEqual(second.controlId, first.controlId);
+  assert.equal(second.controlId, 'sf-input-1-2--control');
+  assert.equal(createFieldContract(later, {prefix: 'sf-input'}).controlId, first.controlId, 'the first keeps its id');
+  // The first leaves the page: its base is free again for a new instance.
+  later.isConnected = false;
+  const third = make('sf-input');
+  doc.querySelectorAll = (selector) => (selector === 'sf-input' ? [third] : []);
+  assert.equal(createFieldContract(third, {prefix: 'sf-input'}).controlId, 'sf-input-1--control');
+});

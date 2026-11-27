@@ -27,6 +27,12 @@
 //   C. as B, without the script: the Loader marks the icons itself;
 //   E. subset on, the service and the Loader's full font refused (a sandboxed
 //      frame), "Material Symbols Outlined Full" the Docara way, the script;
+//   F. as C, but the face is loaded first and the rule that draws the icons
+//      in it comes 200 ms later (GB20: in a Docara frame the menu's icons are
+//      scanned in the plain family and Docara's rule gives them the loaded
+//      subset family a few tens of ms later; the set of page faces did not
+//      grow, and the icons waited for the plain family's 6 s timer): the
+//      Loader marks them within 300 ms of the rule;
 //   in each, every icon gets the class once and never loses it, 0 flips over
 //   10 s after the face loaded, and no icon marked loaded spells its name;
 //   D. a normal subset page that holds a loaded full face in document.fonts
@@ -78,13 +84,25 @@ const READDER = `<script>
 </script>`;
 
 const FAMILIES = {A: 'Material Symbols Outlined', B: 'Material Symbols Outlined Subset 1923885bcfbd',
-  C: 'Material Symbols Outlined Subset 1923885bcfbd', E: 'Material Symbols Outlined Full'};
+  C: 'Material Symbols Outlined Subset 1923885bcfbd', E: 'Material Symbols Outlined Full',
+  F: 'Material Symbols Outlined Subset 1923885bcfbd'};
 const frameBody = (variant) => {
   const family = FAMILIES[variant];
   const rule = `html body .sf-icon{--sf-icon--font-family:"${family}";font-family:"${family}"!important;`
     + 'font-feature-settings:"liga"!important}';
   // After the Loader has started (its first scan is done): the shell's answer.
-  const add = variant !== 'A'
+  const add = variant === 'F'
+    ? `const face = document.createElement('style');
+       face.textContent = '@font-face{font-family:"${family}";src:url("/face/full.woff2") format("woff2");'
+         + 'font-style:normal;font-weight:100 700;font-display:block}';
+       document.head.appendChild(face);
+       await document.fonts.load('400 24px "${family}"', 'home');
+       await new Promise((done) => setTimeout(done, 200));
+       const style = document.createElement('style');
+       style.setAttribute('data-docara-example-framework-inline-style', 'simai.framework.icon_fallback_font.css');
+       style.textContent = '${rule}';
+       document.head.appendChild(style);`
+    : variant !== 'A'
     ? `const style = document.createElement('style');
        style.setAttribute('data-docara-example-framework-inline-style', 'simai.framework.icon_fallback_font.css');
        style.textContent = '@font-face{font-family:"${family}";src:url("/face/full.woff2") format("woff2");'
@@ -98,7 +116,7 @@ const frameBody = (variant) => {
        const style = document.createElement('style');
        style.textContent = '${rule}';
        document.head.appendChild(style);`;
-  return `${variant === 'C' ? '' : READDER}
+  return `${variant === 'C' || variant === 'F' ? '' : READDER}
 <script>
   window.addEventListener('load', () => setTimeout(async () => {
     window.__faceAddedAt = performance.now();
@@ -135,7 +153,7 @@ const types = {'.js': 'text/javascript; charset=utf-8', '.css': 'text/css; chars
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://x');
   const path = decodeURIComponent(url.pathname);
-  const pageMatch = path.match(/^\/([ABCDE])\/$/u);
+  const pageMatch = path.match(/^\/([ABCDEF])\/$/u);
   if (pageMatch) {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
     return response.end(page(pageMatch[1]));
@@ -146,7 +164,7 @@ const server = createServer(async (request, response) => {
   }
   // A Docara frame gets no icons stylesheet: it holds no plain-family face.
   const from = String(request.headers.referer || '');
-  if (path.startsWith('/distr/component/icons/css/') && /\/[ABCE]\/$/u.test(from)) {
+  if (path.startsWith('/distr/component/icons/css/') && /\/[ABCEF]\/$/u.test(from)) {
     response.writeHead(404); return response.end();
   }
   const mount = mounts.find(([prefix]) => path.startsWith(prefix));
@@ -259,7 +277,7 @@ const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...
 
 const browser = await chromium.launch();
 try {
-  for (const variant of ['A', 'B', 'C', 'E']) {
+  for (const variant of ['A', 'B', 'C', 'E', 'F']) {
     for (let run = 1; run <= LOADS; run += 1) {
       const log = [];
       const context = await browser.newContext({viewport: {width: 600, height: 200}});
@@ -304,6 +322,11 @@ try {
       check(`${tag}: no icon loses the class`, perIcon.every((icon) => icon.removes === 0), {perIcon});
       check(`${tag}: 0 flips over ${WATCH_MS} ms after the face loaded`, flips === 0, {flips, after: after.slice(0, 12)});
       check(`${tag}: no icon marked loaded spells its name once the face is in`, spelled === 0, {spelled});
+      if (variant === 'F') {
+        // The face was in before the rule: nothing but the rule changed.
+        check(`${tag}: the Loader marks the icons within 300 ms of the rule`, perIcon.every((icon) => icon.firstAddAt !== null
+          && icon.firstAddAt - faceLoadedAt <= 300), {perIcon, faceLoadedAt});
+      }
       if (variant === 'C') {
         // Nobody else marks them: the Loader sees the face it did not bring.
         check(`${tag}: the Loader marks the icons within 250 ms of the face`, perIcon.every((icon) => icon.firstAddAt !== null

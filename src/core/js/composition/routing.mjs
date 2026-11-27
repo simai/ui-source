@@ -47,6 +47,8 @@ const isToken = (value) => typeof value === 'string' && TOKEN.test(value);
 const isCollection = (value) => typeof value === 'string' && value.length > 0 && value.length <= 128 && !CONTROL.test(value);
 const isRevision = (value) => (typeof value === 'string' && value.length > 0 && value.length <= 128 && !CONTROL.test(value)) || Number.isSafeInteger(value);
 const PREFERENCE_KEY = /^[\w.*:-]+(?:\/[\w.*:/-]+)?$/u;
+// A query key of a refreshable block (SF.FragmentRefresh URL_KEY).
+const QUERY_KEY = /^[a-z][a-z0-9_-]{0,63}$/u;
 // An address inside the same site: a path, never a scheme of its own, never
 // another origin's protocol-relative form.
 const isLocalUrl = (value) => typeof value === 'string' && value.length > 0 && value.length <= 2048
@@ -182,6 +184,29 @@ export const VALUE_TYPES = Object.freeze({
       closedObject(value, ['key'], [], 'preference-changed.v1');
       if (typeof value.key !== 'string' || value.key.length > 256 || !PREFERENCE_KEY.test(value.key)) throw new TypeError('preference-changed.v1 value is invalid');
       return Object.freeze({ key: value.key });
+    },
+  }),
+  // simai.interface-fragment 1.1 (block refresh): a block that changed its
+  // query keys says which and the address it now stands at; every block that
+  // reads one of them refreshes with its own request (SF.FragmentRefresh,
+  // the sf-fragment-parameters event). Closed here in GB20 (gb19-refresh
+  // open item): the keys are the descriptor's own (refresh.keys form).
+  'parameters-changed.v1': Object.freeze({
+    summary: 'A block changed its query keys: the keys that changed (1 to 16 unique names, a lowercase letter then up to 63 of a-z, 0-9, _ and -) and the address it stands at now, a path of this site with its query. Says which keys, never their values beyond the address.',
+    schema: {
+      type: 'object', additionalProperties: false, required: ['keys', 'url'],
+      properties: {
+        keys: { type: 'array', minItems: 1, maxItems: 16, uniqueItems: true, items: { type: 'string', pattern: '^[a-z][a-z0-9_-]{0,63}$' } },
+        url: { type: 'string', minLength: 1, maxLength: 2048, pattern: '^/(?!/)' },
+      },
+    },
+    check(value) {
+      closedObject(value, ['keys', 'url'], [], 'parameters-changed.v1');
+      const keys = value.keys;
+      if (!Array.isArray(keys) || keys.length === 0 || keys.length > 16 || !keys.every((key) => typeof key === 'string' && QUERY_KEY.test(key))
+        || new Set(keys).size !== keys.length) throw new TypeError('parameters-changed.v1 keys are invalid');
+      if (!isLocalUrl(value.url)) throw new TypeError('parameters-changed.v1 url is invalid');
+      return Object.freeze({ keys: freezeList(keys), url: value.url });
     },
   }),
 });

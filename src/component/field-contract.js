@@ -4,10 +4,43 @@ import {instancePath, partId, pathIsSettled} from '../core/js/instance-path.js';
 // simai/ui-source#41), never from a counter: core/js/instance-path.js.
 const fieldIdentities = new WeakMap();
 
+// The bases the page's fields hold, on a page-wide table (SF.__fieldIds):
+// every bundle that carries this file has its own module copy, so a table
+// here would be one per bundle. An id is kept per instance, and a path in
+// document order is read when the instance first settles, so an instance
+// that settles later in front of it reads the same index: sf-mail-library's
+// and sf-mail-letters' search fields were both sf-input-1--control (Mail set
+// 1.0.0, GB20). A base another connected instance holds, or that an element
+// outside this instance already carries, takes the next free «-<n>».
+function claimedBases() {
+  const sf = (globalThis.SF ||= {});
+  if (!(sf.__fieldIds instanceof Map)) {
+    Object.defineProperty(sf, '__fieldIds', {value: new Map(), configurable: true});
+  }
+  return sf.__fieldIds;
+}
+
+function heldElsewhere(owner, base, claims) {
+  const holder = claims.get(base)?.deref?.();
+  if (holder && holder !== owner && holder.isConnected && holder.ownerDocument === owner.ownerDocument) return true;
+  const taken = owner?.ownerDocument?.getElementById?.(`${base}--control`);
+  return Boolean(taken && taken !== owner && !owner.contains?.(taken));
+}
+
+function freeBase(owner, path) {
+  const base = partId(path);
+  if (!pathIsSettled(owner) || typeof globalThis.WeakRef !== 'function') return base;
+  const claims = claimedBases();
+  let free = base;
+  for (let n = 2; heldElsewhere(owner, free, claims); n += 1) free = `${base}-${n}`;
+  claims.set(free, new globalThis.WeakRef(owner));
+  return free;
+}
+
 function nextIdentity(owner, prefix) {
   if (owner && fieldIdentities.has(owner)) return fieldIdentities.get(owner);
 
-  const base = partId(instancePath(owner, {kind: prefix}));
+  const base = freeBase(owner, instancePath(owner, {kind: prefix}));
   const identity = {
     base,
     controlId: `${base}--control`,
