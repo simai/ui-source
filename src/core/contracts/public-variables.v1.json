@@ -2976,8 +2976,8 @@
         {
           "name": "--sf-page-header-star-color",
           "role": "color",
-          "summary": "The star's ink while the page is a favourite.",
-          "default": "var(--sf-warning)",
+          "summary": "The star's ink while the page is a favourite. The star is the icon button's toggle (C393): unset, a pressed star's glyph takes the toggle's pressed ink; where the toggle look is absent (the former look) it is the warning colour, var(--sf-warning).",
+          "default": "var(--sf-icon-button-pressed-color, var(--sf-on-primary-container))",
           "state": "on",
           "since": "2026-10-27"
         }

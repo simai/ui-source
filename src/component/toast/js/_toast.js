@@ -523,7 +523,10 @@ if (document.readyState === 'loading') {
 const toastObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     mutation.addedNodes.forEach((node) => {
-      if (!(node instanceof Element)) return;
+      // A node taken out again before its record is read (sf-toast placed
+      // and removed in one task) is not bound: its host has already unbound
+      // it, and a binding now would keep it in the fit watch for good.
+      if (!(node instanceof Element) || !node.isConnected) return;
       initToastTree(node);
     });
   });

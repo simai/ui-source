@@ -6,14 +6,14 @@
 // and dark, 1280 and 390, normal and data-sf-density="compact" (the phone
 // keeps the normal widths, C32),
 // `loads` fresh loads each:
-//   1. sf-profile-picker's panel is max(trigger, --sf-popup-panel-width):
-//      320 normal, 288 compact, 320 on the phone, never wider than the
-//      screen (it was as wide as its longest name: 238 / 214);
+//   1. sf-profile-picker's panel is max(trigger, --sf-popup-panel-width),
+//      the panel role on the width ladder (C396: 44 characters, 352 at 1280,
+//      308 compact); on a phone it is the one bottom sheet (C163 (4));
 //   2. sf-settings' drilling panel is the menu's ceiling,
-//      --sf-popup-menu-max-width: 288 normal, 256 compact, 288 on the phone
-//      (it was a fixed 280); the public --sf-context-menu-inline-size still
-//      sets it (20rem: 320);
-//   3. a form's phone sheet is the screen's width up to 44rem (390 at 390);
+//      --sf-popup-menu-max-width (C396: 36 characters, 288 / 252); the
+//      public --sf-context-menu-inline-size still sets it (20rem: 320);
+//   3. a form's phone sheet is the screen's width up to the sheet's step
+//      (C396: 96 characters, 672 on a phone);
 //   4. a long choice in a select list -- sf-menu-context width list and
 //      sf-dropdown's list -- wraps onto a second line and is not cut; a long
 //      command in a menu keeps one line and ends in an ellipsis; the wrapped
@@ -86,12 +86,13 @@ main{display:flex;flex-direction:column;align-items:flex-start;gap:var(--sf-spac
 <sf-menu-context id="m-form" popup width="form" role="dialog" aria-label="Новое представление"><div slot="content">${FORM}</div></sf-menu-context>
 </body></html>`;
 
-const EXPECT = {
-  normal: {picker: 320, drill: 288},
-  compact: {picker: 288, drill: 256},
-  phone: {picker: 320, drill: 288},
-  'phone-compact': {picker: 320, drill: 288},
-};
+// The widths on the ladder in characters (owner decision C396, 2026-11-19,
+// over C32's px table): the picker's panel the panel role (44 characters), the
+// drilling panel the menu's ceiling (36), a sheet up to 96; the char is half
+// the region's text size 1 (8 at 1280 normal, 7 compact and on a phone), read
+// from the page. On a phone the picker's panel is the one bottom sheet,
+// sf-drawer placement=bottom (C163 (4), C157 (5)): the screen's width.
+const LADDER = {picker: 44, drill: 36, sheet: 96};
 const results = [];
 const numbers = {};
 const ok = (name, pass, detail = '') => results.push({name, pass: Boolean(pass), detail});
@@ -120,11 +121,28 @@ try {
         await tab.evaluate(() => document.fonts.ready);
         await tab.waitForTimeout(300);
         const m = {};
+        m.char = await tab.evaluate(() => {
+          const probe = document.createElement('p');
+          probe.style.cssText = 'position:absolute;visibility:hidden;margin:0;inline-size:var(--sf-measure--char);font-size:var(--sf-text--size-1)';
+          probe.textContent = 'x';
+          document.querySelector('main').append(probe);
+          const read = {char: probe.getBoundingClientRect().width, text: parseFloat(getComputedStyle(probe).fontSize)};
+          probe.remove();
+          return read;
+        });
         // 1. The profile picker.
         await tab.click('#pp .sf-profile-picker-trigger');
         await frames(tab);
-        await tab.waitForTimeout(200);
-        m.picker = await tab.evaluate(() => Math.round(document.querySelector('#pp .sf-profile-picker-panel').getBoundingClientRect().width * 100) / 100);
+        await tab.waitForTimeout(400);
+        const picked = await tab.evaluate(() => {
+          const panel = [...document.querySelectorAll('.sf-profile-picker-panel')].find((node) => node.getBoundingClientRect().width > 0);
+          const sheet = panel?.closest('sf-drawer, .sf-drawer, [data-sf-drawer]') ?? null;
+          const box = (sheet ?? panel)?.getBoundingClientRect();
+          return {width: Math.round((panel?.getBoundingClientRect().width ?? 0) * 100) / 100, sheet: Boolean(sheet), sheetWidth: Math.round((box?.width ?? 0) * 100) / 100};
+        });
+        m.picker = picked.width;
+        m.pickerSheet = picked.sheet;
+        m.pickerSheetWidth = picked.sheetWidth;
         m.trigger = await tab.evaluate(() => Math.round(document.querySelector('#pp .sf-profile-picker-trigger').getBoundingClientRect().width));
         if (shots && load === 1) await tab.screenshot({path: join(shots, `${scene}-${theme}-picker.png`)});
         await tab.keyboard.press('Escape');
@@ -190,8 +208,13 @@ try {
         await context.close();
         numbers[name] = m;
 
-        const want = EXPECT[scene];
-        ok(`${name} profile picker ${m.picker} = ${want.picker}`, near(m.picker, Math.max(want.picker, m.trigger)));
+        const want = Object.fromEntries(Object.entries(LADDER).map(([role, n]) => [role, n * m.char.char]));
+        ok(`${name} the measure char ${m.char.char} is half the text ${m.char.text} (C396)`, near(m.char.char * 2, m.char.text, 0.1));
+        if (width < 704) {
+          ok(`${name} profile picker is the bottom sheet, the screen's width (${m.pickerSheetWidth} at ${width})`, m.pickerSheet && m.picker > 0 && near(m.pickerSheetWidth, Math.min(width, want.sheet)));
+        } else {
+          ok(`${name} profile picker ${m.picker} = ${want.picker}`, near(m.picker, Math.max(want.picker, m.trigger)));
+        }
         ok(`${name} profile picker within the screen (${m.picker} <= ${width})`, m.picker <= width);
         ok(`${name} drilling settings ${m.drill} = ${want.drill}`, near(m.drill, want.drill));
         ok(`${name} drilling settings with --sf-context-menu-inline-size 20rem: ${m.drillSet} = 320`, near(m.drillSet, 320));
@@ -205,7 +228,7 @@ try {
           ok(`${name} list: the wrapped choice keeps the one-line row's space (${wrapped.top}/${wrapped.bottom} = ${one.top}/${one.bottom}), row ${wrapped.height} = ${one.height} + ${lines - 1} x ${m.list.line}`,
             near(wrapped.top, one.top, 0.5) && near(wrapped.bottom, one.bottom, 0.5) && near(wrapped.height, one.height + (lines - 1) * m.list.line, 0.5));
         }
-        if (width < 704) ok(`${name} form sheet ${m.form.width} at ${width}, max ${m.form.maxWidth}`, m.form.sheet && near(m.form.width, Math.min(width, 704)) && ['44rem', '704px'].includes(m.form.maxWidth));
+        if (width < 704) ok(`${name} form sheet ${m.form.width} at ${width}, max ${m.form.maxWidth} = ${want.sheet}`, m.form.sheet && near(m.form.width, Math.min(width, want.sheet)) && near(parseFloat(m.form.maxWidth), want.sheet, 0.5));
         else ok(`${name} form anchored`, !m.form.sheet);
         ok(`${name} nothing scrolls sideways`, !m.sideways);
         ok(`${name} console clean`, errors.length === 0, errors.join(' | '));

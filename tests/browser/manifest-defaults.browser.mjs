@@ -17,7 +17,10 @@ const listed = new Map([...contract.derived, ...contract.pending].map((entry) =>
 const names = readdirSync(smartRoot).filter((name) =>
   existsSync(join(smartRoot, name, 'js', `${name}.js`)) && existsSync(join(smartRoot, name, 'smart.manifest.json')));
 
-const empty = (value) => value === null || value === undefined || value === '' || value === false || (Array.isArray(value) && !value.length);
+// An empty map is empty too (GB20 triage: input-date day-marks, a map
+// default {} and no attribute '').
+const empty = (value) => value === null || value === undefined || value === '' || value === false || (Array.isArray(value) && !value.length)
+  || (value?.constructor === Object && !Object.keys(value).length);
 const same = (manifest, actual) => {
   if (empty(manifest) && empty(actual)) return true;
   if (Array.isArray(actual) && typeof manifest === 'string') return manifest === JSON.stringify(actual) || manifest === actual.join(',');
@@ -57,13 +60,17 @@ try {
         }
         return false;
       };
+      const RESERVED = new Set(['custom']);
       const context = element.templateContext ? element.templateContext() : {};
       const rows = [];
       for (const [key, config] of Object.entries(Ctor.props || {})) {
         const attribute = element.resolveAttributeName(Ctor.normalizePropConfig(key, config)) || key;
         const spec = inputs[attribute] || inputs[key];
         if (!spec || !('default' in spec)) continue;
-        const actual = key in context ? context[key] : getter(key) ? element[key] : element.getProp(key);
+        // `custom` in a template context is the base's bag of custom template
+        // props (smart-base createTemplateContext), never a setting of that
+        // name (GB20 triage: sf-input-color custom).
+        const actual = key in context && !RESERVED.has(key) ? context[key] : getter(key) ? element[key] : element.getProp(key);
         // A Set (sf-list's chosen) is its members: an empty one is the empty list
         // the manifest says, not the text «[object Set]» (GB19 triage).
         const plain = actual instanceof Set ? [...actual] : actual;

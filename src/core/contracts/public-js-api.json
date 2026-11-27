@@ -122,7 +122,13 @@
         "styleGates",
         "tokenRuleMatches",
         "themeMediaQuery",
-        "themeMediaListener"
+        "themeMediaListener",
+        "packageOrder",
+        "packageConflicts",
+        "packageRulesSettled",
+        "ruleElementNamesCache",
+        "scriptWhenRules",
+        "scriptsWhenAsked"
       ],
       "kind": "object",
       "loaded_by": "core-loader",
@@ -350,7 +356,8 @@
         "compositionTypeFromSmartManifest",
         "FRAGMENT_DESCRIPTOR_SCHEMA",
         "BUILTIN_TYPE_MANIFESTS",
-        "VALUE_TYPES"
+        "VALUE_TYPES",
+        "loadEditorWords"
       ]
     },
     {
@@ -577,6 +584,20 @@
       ]
     },
     {
+      "name": "SF.newTabLink",
+      "status": "public",
+      "layer": "core",
+      "audience": "public",
+      "author": "Marks every link in text that opens a new tab with the outward arrow and the words that say so, and marks again on demand.",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "Links that open a new tab (owner decision C186 (3)): core gives every link in text with target=\"_blank\" (a plain <a>, an <a> with a link-* utility, an sf-link) the arrow_outward sign after its last word and «(откроется в новой вкладке)» for a screen reader in the page's language, follows links added or changed later and leaves a component's own links alone; refresh(root) marks the links under root again now, opensNewTab(link) answers whether a link opens a new tab.",
+      "members": [
+        "refresh",
+        "opensNewTab"
+      ]
+    },
+    {
       "name": "SF.copyText",
       "status": "public",
       "layer": "core",
@@ -688,7 +709,12 @@
         "known",
         "components",
         "onChange",
-        "forget"
+        "forget",
+        "registerPack",
+        "addPack",
+        "load",
+        "packs",
+        "missing"
       ]
     },
     {

@@ -251,7 +251,11 @@ class SfImageField extends FormField(ImageFieldElement) {
   }
 
   onConnected() {
+    // The list the listener is added to is kept: each matchMedia() call
+    // answers a new list, and removing from another one left the listener
+    // behind after removal (GB20, instance-scope gate 36).
     const query = coarseQuery();
+    this._coarseQuery = query;
     this._coarse = Boolean(query?.matches);
     query?.addEventListener?.('change', this._onCoarse);
     this._phoneQuery = breakpointMedia('md', {below: true});
@@ -268,7 +272,8 @@ class SfImageField extends FormField(ImageFieldElement) {
     this._filesDrop?.stop();
     this._filesDrop = null;
     clearTimeout(this._announceTimer);
-    coarseQuery()?.removeEventListener?.('change', this._onCoarse);
+    this._coarseQuery?.removeEventListener?.('change', this._onCoarse);
+    this._coarseQuery = null;
     this._phoneQuery?.removeEventListener?.('change', this._onPhone);
     this._phoneQuery = null;
     this.removeEventListener('invalid', this._invalidListener, true);

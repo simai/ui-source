@@ -40,8 +40,11 @@ export function renderColorTemplate(context) {
     const component = context.component;
     const name = context.label || context.ariaLabel || (context.brand ? context.brandLabel : context.chooseLabel);
     const shown = context.paintedName;
-    // The value is read with the name: «Цвет метки: Синий».
-    const spoken = shown ? `${name}: ${shown}` : name;
+    // The value is read with the name: «Цвет метки: Синий». While the
+    // inherited colour applies the name is the label alone: the inherited
+    // sentence in the description says the colour (GB20 triage,
+    // inherited-description), so it is not heard twice.
+    const spoken = shown && isSet ? `${name}: ${shown}` : name;
     // The line under the field is sf-input's (fields ladder, 2026-11-14): the
     // help, or the error in its place while the field is invalid and says why.
     const field = createFieldContract(component, {
@@ -301,7 +304,7 @@ function renderOptions(context, list, {label, own = false, className = ''}) {
 // current own colour first and chosen (R153, R168).
 function renderPalette(context) {
     const {component, word} = context;
-    const hues = context.palette.map((hue) => ({value: hue, name: component.colourName(hue)}));
+    const hues = (context.hues ?? []).map((hue) => ({value: hue, name: component.colourName(hue)}));
     const recent = context.recentRow.map((hex) => ({
         value: hex,
         name: alphaOf(hex) < 1 ? word('recent-alpha', {value: hex, alpha: Math.round(alphaOf(hex) * 100)}) : word('recent-one', {value: hex}),
