@@ -20,7 +20,7 @@
     "src/component/buttons/scss/_css__utility_hint_layout.scss",
     "src/component/buttons/scss/index.scss"
   ],
-  "content_sha256": "9c9e129f782a14554d1482d2d85e15594b080d838174ae5df705710d5f30f874",
+  "content_sha256": "f67cee05a8ce395e83a1816caa6e70ec3e1c70880175467f8dedeb36bff9edd3",
   "dependencies": [
     {
       "id": "component.spinner",
