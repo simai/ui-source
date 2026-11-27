@@ -397,8 +397,9 @@ test('render takes a host source resolver: a stored picture name draws from a bl
     { id: 'f', type: 'content.figure', data: { src: 'media:42', alt: 'Kept' } },
     { id: 'm', type: 'content.media', data: { src: 'media:7', alt: '' }, slots: { default: [p('mt', 'Text')] } },
   );
-  // Without a resolver neither a stored name nor a blob: address passes.
-  assert.deepEqual(codes(validate(stored)), ['unsafe_url']);
+  // A stored name is the Document port's media reference: valid without a
+  // resolver (render draws its placeholder, below); a blob: address is not.
+  assert.deepEqual(codes(validate(stored)), []);
   const blob = documentOf({ id: 'f', type: 'content.figure', data: { src: 'blob:https://editor.test/1b2c', alt: '' } });
   assert.deepEqual(codes(await render(blob)), ['unsafe_url']);
   // With one, the stored name is the host's and the answer is drawn.
@@ -432,4 +433,68 @@ test('render takes a host source resolver: a stored picture name draws from a bl
   const page = await render(layout, { content: stored, resolveSource });
   assert.deepEqual(page.diagnostics, []);
   assert.match(page.html, /blob:https:\/\/editor\.test\/42/u);
+});
+
+// simai.document-port keeps a media reference (media:<id>) in a picture's src
+// and a file's href; ui-editor msg-05617659 (2026-11-26): render refused the
+// whole page for one. The render option media(ref) gives the address before
+// the URL check; without it the block draws its placeholder.
+test('render takes the media option: a media:<id> picture or file draws from the host\'s address, or a placeholder without it', async () => {
+  const stored = documentOf(
+    { id: 'f', type: 'content.figure', data: { src: 'media:42', alt: 'Kept', caption: [text('Cap')] }, props: { ratio: '4/3' } },
+    { id: 'm', type: 'content.media', data: { src: 'media:7', alt: '' }, props: { side: 'left' }, slots: { default: [p('mt', 'Text')] } },
+    { id: 'x', type: 'content.file', data: { href: 'media:9', label: 'Report.pdf', mime: 'application/pdf' } },
+    { id: 'y', type: 'content.file', data: { href: 'media:10' } },
+    { id: 'a', type: 'content.figure', data: { src: './a.png', alt: '' } },
+  );
+  assert.deepEqual(validate(stored).diagnostics, [], 'a media reference is valid');
+  // Not a reference: an empty id, a space, markup characters.
+  for (const src of ['media:', 'media: 1', 'media:"x', 'media:<b>']) {
+    assert.deepEqual(codes(validate(documentOf({ id: 'f', type: 'content.figure', data: { src, alt: '' } }))), ['unsafe_url'], src);
+  }
+  // 1. With the option: asked once per reference, with the field, before the URL check.
+  const asked = [];
+  const media = async (ref, { node, field }) => {
+    asked.push(`${node.id} ${field} ${ref}`);
+    return `/media/${ref.slice('media:'.length)}`;
+  };
+  const drawn = await render(stored, { media });
+  assert.deepEqual(drawn.diagnostics, []);
+  assert.deepEqual(asked, ['f src media:42', 'm src media:7', 'x href media:9', 'y href media:10']);
+  assert.match(drawn.html, /<figure class="sf-figure sf-figure--ratio-4x3" data-sf-composition-id="f"><div class="sf-figure-media"><img src="\/media\/42" alt="Kept"/u);
+  assert.match(drawn.html, /<img src="\/media\/7" alt=""/u);
+  assert.match(drawn.html, /<a class="sf-download-file" href="\/media\/9" download type="application\/pdf" data-sf-composition-id="x">/u);
+  assert.match(drawn.html, /<a class="sf-download-file" href="\/media\/10" download data-sf-composition-id="y">.*>10<\/span>/u);
+  assert.match(drawn.html, /<img src="\.\/a\.png"/u, 'an address is not a reference: drawn as it is');
+  assert.doesNotMatch(drawn.html, /media:|data-sf-media-unresolved/u);
+  // The answer is held to the URL rule: an unsafe one draws nothing and is reported.
+  for (const answer of ['javascript:alert(1)', 'data:text/html,x', '//evil.test/a.png', 'media:42']) {
+    const refused = await render(stored, { media: () => answer });
+    assert.deepEqual(refused.diagnostics.map(({ code, path }) => `${code} ${path}`), ['unsafe_url node:f.data.src', 'unsafe_url node:m.data.src', 'unsafe_url node:x.data.href', 'unsafe_url node:y.data.href'], answer);
+    assert.doesNotMatch(refused.html, /<img src="(?!\.\/a)|sf-download-file/u, answer);
+  }
+  // 2. Without it (or with no address for one): the page is drawn, each
+  // reference as its placeholder, one media_unresolved per block.
+  for (const context of [{}, { media: () => null }, { media: async () => '' }]) {
+    const placeholder = await render(stored, context);
+    assert.deepEqual(placeholder.diagnostics.map(({ code, path, reference }) => `${code} ${path} ${reference}`), [
+      'media_unresolved node:f.data.src media:42', 'media_unresolved node:m.data.src media:7',
+      'media_unresolved node:x.data.href media:9', 'media_unresolved node:y.data.href media:10',
+    ]);
+    const body = inner(placeholder.html);
+    assert.ok(body.startsWith('<figure class="sf-figure sf-figure--ratio-4x3" data-sf-media-unresolved="media:42" data-sf-composition-id="f"><div class="sf-figure-media" role="img" aria-label="Kept"></div><figcaption class="sf-figure-caption">Cap</figcaption></figure>'), body);
+    assert.match(body, /<div class="grid grid-col-1 md:grid-col-2 gap-3 items-cross-center" data-sf-composition-id="m"><figure class="sf-figure sf-figure--ratio-16x9" data-sf-media-unresolved="media:7"><div class="sf-figure-media" aria-hidden="true"><\/div><\/figure><div class="min-w-0"><p data-sf-composition-id="mt">Text<\/p><\/div><\/div>/u);
+    assert.match(body, /<span class="sf-download-file" aria-disabled="true" data-sf-media-unresolved="media:9" data-sf-composition-id="x">.*picture_as_pdf.*>Report\.pdf<\/span>/u);
+    assert.match(body, /data-sf-media-unresolved="media:10" data-sf-composition-id="y">.*>media:10<\/span>/u);
+    assert.doesNotMatch(body, /<img src="media:|href="media:/u, 'a reference is never drawn as an address');
+    assert.match(body, /<img src="\.\/a\.png"/u);
+  }
+  // The option wins over resolveSource for a reference; resolveSource still draws an address.
+  const both = await render(stored, { media, resolveSource: (src) => (src.startsWith('media:') ? 'https://wrong.test/x.png' : src) });
+  assert.deepEqual(both.diagnostics, []);
+  assert.doesNotMatch(both.html, /wrong\.test/u);
+  // resolveSource alone keeps answering pictures, as before; a file reference has no resolver then.
+  const source = await render(stored, { resolveSource: (src) => `blob:https://editor.test/${src.slice('media:'.length)}` });
+  assert.deepEqual(source.diagnostics.map(({ code, path }) => `${code} ${path}`), ['media_unresolved node:x.data.href', 'media_unresolved node:y.data.href']);
+  assert.match(source.html, /<img src="blob:https:\/\/editor\.test\/42"/u);
 });

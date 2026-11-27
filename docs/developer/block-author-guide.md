@@ -635,7 +635,11 @@ and gives the address at render through `resolveSource(src, {node})`, which
 may answer a promise. The answer may be a `blob:` address of the page's own
 origin besides what the Document's URL rule allows; any other answer draws
 nothing and is reported as `unsafe_url` at `node:<id>.data.src`. Without a
-resolver a stored `blob:` address stays `unsafe_url`.
+resolver a stored `blob:` address stays `unsafe_url`. A host that keeps its
+files behind a store gives the addresses of its `media:<id>` references, for
+pictures and for files (`content.file` `href`), through the render option
+`media(ref, {node, field})`; without it the block draws a placeholder and the
+page is drawn ([Media references](composition-content-types.md#media-references)).
 
 The check draws a data block in every state, with demo data of its shape
 (`SF.Composition.demoData(shape)`) and with a hostile answer (markup in every

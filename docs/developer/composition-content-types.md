@@ -58,7 +58,9 @@ inline model of `content.paragraph` (inline model 1.2.0): text runs with
 `strong`, `em`, `code`, `strike` (`<s>`), links of text runs and breaks, the
 soft line break `{"type": "break"}` (`<br>`) and the inline component atoms. Every link and every image
 source follows the Document's URL rule (relative, a fragment, http(s), mailto,
-tel); anything else is `unsafe_url`.
+tel); anything else is `unsafe_url`. A picture's `src` and a file's `href` may
+instead hold a media reference, `media:<id>` (see
+[Media references](#media-references)).
 
 No rendered HTML carries a `style` attribute: a `content.table` column aligned
 `center` or `end` puts the text-align utility class (`text-center`,
@@ -181,7 +183,7 @@ type, sf-image-field's value):
 
 | Key | | Meaning |
 |:---|:---|:---|
-| `href` | required | the address the file is fetched from; the Document's URL rule, else `unsafe_url` |
+| `href` | required | the address the file is fetched from; the Document's URL rule, else `unsafe_url`; or a media reference `media:<id>` ([Media references](#media-references)) |
 | `value` | | the host's own reference to the stored file (an id, a key); stored, never drawn |
 | `label` | | the name shown; without one, the last part of `href`, decoded, without its query and fragment |
 | `mime` | | the media type, lowercase `type/subtype` with no parameters (`application/pdf`) |
@@ -300,6 +302,47 @@ published field kind (choice, integer, text, toggle). Every data field a type
 requires has a field, so a parameters form drawn from the manifest alone is
 complete: `content.figure` and `content.media` offer `src` (a text field up to
 2048 characters; `validate` applies the Document's URL rule) beside `alt`.
+
+## Media references
+
+A host that stores its files itself (`simai.document-port`: a media
+reference is an opaque `media:<id>` string in data until the media edition)
+writes the reference where the address goes: `content.figure` and
+`content.media` `data.src`, `content.file` `data.href`. A reference is
+`media:` and 1 to 2042 characters with no space, quote, `<`, `>`, backtick or
+backslash. `validate` accepts it there, so a stored Document never fails
+because of one. Anywhere else (a link, a button, a card's action) it is not an
+address and stays `unsafe_url`.
+
+`render(document, {media})` takes the addresses from the host:
+
+```js
+const {html, diagnostics} = await SF.Composition.render(document, {
+  media: (ref, {node, field}) => storage.url(ref.slice('media:'.length)), // may answer a promise
+});
+```
+
+- `media(ref, {node, field})` is asked once for each block that holds a
+  reference, before the URL check, on a page and on a server alike; `field`
+  is `src` or `href`. Its answer must pass the Document's URL rule (a `blob:`
+  address of the page's own origin too). An answer that fails the rule draws
+  nothing and is reported `unsafe_url` at `node:<id>.data.<field>`.
+- Without the option, or when it answers no address (`null`, `undefined`,
+  `''`: the host does not know the reference), the page is drawn all the
+  same. The block draws its placeholder and render reports
+  `media_unresolved` at `node:<id>.data.<field>` with the `reference`:
+  - a picture: the figure's empty media box (component `figure`'s
+    placeholder, the container fill) at the block's ratio, 16:9 when it has
+    none, so the picture's place is kept; with its `alt` as the box's name
+    (`role="img"`), else hidden; the caption as usual;
+  - a file: the download row with the icon of its `mime` and its `label`
+    (else the reference), as a `<span aria-disabled="true">` with no link.
+
+  Each placeholder carries `data-sf-media-unresolved="<reference>"`. A
+  reference is never written as an address.
+- `resolveSource(src, {node})` ([block author guide](block-author-guide.md))
+  still resolves any picture source. For a reference, `media` is asked when
+  both are given; `resolveSource` alone resolves pictures, not files.
 
 ## Checks
 
