@@ -127,7 +127,7 @@ test('sf-tabs: sf-tabs-change with data only, manual activation over deferred pa
   assert.equal(events.change.name, 'sf-tabs-change');
   assert.equal(events['settings-change'].name, 'sf-tabs-settings-change', 'the DOM name it always had');
   assert.equal(manifest.settings.items.type, 'list');
-  // hint: sf-tabs 1.3.0 (R184 T9); errors: C96 item 6; devices: 1.6.0 (GB20 A).
+  // hint: sf-tabs 1.3.0 (R184 T9); errors: C96 item 6; devices: 1.6.1 (GB20 A).
   assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'label', 'icon', 'count', 'errors', 'href', 'disabled', 'hint', 'pinned', 'devices']);
   assert.equal(manifest.values.selected.type, 'id');
   const {rows} = readAliasTable(json('src/smart/tabs/aliases.json'), {tag: 'sf-tabs'});

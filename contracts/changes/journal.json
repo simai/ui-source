@@ -21150,7 +21150,7 @@
       "manual": "Nothing to rewrite: a list without devices draws as before. A host that has phone-only or desktop-only entries marks them devices: [\"phone\"] or [\"desktop\"].",
       "id": "format-devices-on-menu-entries-tabs-and-list-actions",
       "kind": "behaviour",
-      "summary": "sf-menu-context 1.28.0, sf-tabs 1.6.0, sf-list 1.26.0 (group build 20 area A, msg-6ce10fc0934a4af5ac7e, the device scope of GB19 sf-settings 1.11.0): a menu entry, a tab and a row action may carry devices: [\"phone\"] | [\"desktop\"] (core SF.device: phone below 600 px of the element's place). The other layout's entries are left out -- hidden, not disabled -- and a separator left at an edge or doubled is dropped; the selected tab is always drawn.",
+      "summary": "sf-menu-context 1.28.0, sf-tabs 1.6.1, sf-list 1.26.0 (group build 20 area A, msg-6ce10fc0934a4af5ac7e, the device scope of GB19 sf-settings 1.11.0): a menu entry, a tab and a row action may carry devices: [\"phone\"] | [\"desktop\"] (core SF.device: phone below 600 px of the element's place). The other layout's entries are left out -- hidden, not disabled -- and a separator left at an edge or doubled is dropped; the selected tab is always drawn.",
       "items": [
         {
           "component": "sf-menu-context, sf-tabs, sf-list",
