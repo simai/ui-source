@@ -6,15 +6,19 @@
 // (SF.device, phone below PHONE_BELOW = 600 px of its place), but static
 // first-paint markup is printed at one width. A tab that carries devices
 // says them on its button (data-sf-devices), and core.css hides a printed
-// item scoped to the desktop below the phone layout signal and one scoped
-// to the phone above it, until its element is defined.
+// item scoped to the desktop in the phone layout and one scoped to the
+// phone in the desktop layout, by core's page layout word, until its element
+// is defined.
 //
 // - live, with the script, at 1280 and at 390: the tabs draw their layout's
 //   tabs only («Сделки» desktop, «Поделиться» phone), the marked buttons say
 //   data-sf-devices, the selected tab carries no mark; the drawn markup is
 //   kept as a server would print it;
-// - static, core.css only and no script (sf-tabs undefined), each printed
-//   markup at 390 and at 1440, light and dark, `loads` cold loads each: the
+// - static: each printed markup in a page with core.css and core.js but
+//   before sf-tabs' own script (its bundle held back, so the element stays
+//   undefined, as a page on a slow network draws it), at 390 and at 1440,
+//   light and dark, `loads` cold loads each: <html> carries core's layout
+//   word (data-sf-layout, PHONE_BELOW of the page), the
 //   desktop-scoped tab is not drawn at 390 and drawn at 1440, the
 //   phone-scoped tab is drawn at 390 and not at 1440, the unscoped tabs are
 //   drawn at both; console clean.
@@ -40,7 +44,7 @@ const head = (theme, script) => `<!doctype html><html lang="ru" class="${theme}"
 const live = (theme) => `${head(theme, true)}
 <sf-tabs id="t" aria-label="Карточка" items='${JSON.stringify(ITEMS)}'></sf-tabs><p>Текст под вкладками</p></body></html>`;
 const printed = new Map();
-const still = (theme, key) => `${head(theme, false)}
+const still = (theme, key) => `${head(theme, true)}
 <sf-tabs id="t" aria-label="Карточка">${printed.get(key)}</sf-tabs><p>Текст под вкладками</p></body></html>`;
 
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
@@ -107,23 +111,32 @@ for (const [key, width] of [['desktop', 1280], ['phone', 390]]) {
   await page.close();
 }
 
-// Static: no script, each printed markup at 390 and at 1440.
+// Static: before the element's script, each printed markup at 390 and at 1440.
 for (const from of ['desktop', 'phone']) {
   for (const width of [390, 1440]) {
     for (const theme of ['theme-light', 'theme-dark']) {
       for (let load = 1; load <= LOADS; load += 1) {
-        const {page, errors} = await open(`/static?theme=${theme}&from=${from}`, width, theme);
+        const page = await browser.newPage({viewport: {width, height: 600}, colorScheme: theme === 'theme-dark' ? 'dark' : 'light'});
+        const errors = [];
+        page.on('pageerror', (error) => errors.push(error.message));
+        page.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(message.text()); });
+        // sf-tabs' bundle is held: the request never answers while the page is read.
+        await page.route(/\/distr\/smart\/tabs\//u, () => new Promise(() => {}));
+        await page.goto(`${origin}/static?theme=${theme}&from=${from}`);
         await page.waitForLoadState('load');
-        const state = await page.evaluate(() => ({defined: Boolean(customElements.get('sf-tabs'))}));
+        await page.waitForTimeout(200);
+        const state = await page.evaluate(() => ({defined: Boolean(customElements.get('sf-tabs')), layout: document.documentElement.getAttribute('data-sf-layout')}));
         const tabs = await page.evaluate(READ);
         const one = (label) => tabs.find((tab) => tab.label === label);
         const where = `static ${from} markup @${width} ${theme} #${load}`;
         report.static.push({from, width, theme, load, tabs});
-        check(`${where}: no script ran`, !state.defined, state);
+        check(`${where}: the element is not defined yet`, !state.defined, state);
+        check(`${where}: core marks the page layout`, state.layout === (width < 600 ? 'phone' : 'desktop'), state);
         check(`${where}: the unscoped tabs are drawn`, one('Основное')?.drawn && one('Задачи')?.drawn, {tabs});
         if (from === 'desktop') check(`${where}: the desktop tab is ${width < 600 ? 'hidden below' : 'drawn above'} the phone layout signal`, one('Сделки') && one('Сделки').drawn === (width >= 600), {tabs});
         else check(`${where}: the phone tab is ${width < 600 ? 'drawn below' : 'hidden above'} the phone layout signal`, one('Поделиться') && one('Поделиться').drawn === (width < 600), {tabs});
         check(`${where}: console clean`, errors.length === 0, {errors});
+        await page.unrouteAll({behavior: 'ignoreErrors'}).catch(() => {});
         await page.close();
       }
     }

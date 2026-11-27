@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import test from 'node:test';
-import {PHONE_BELOW} from '../src/core/js/device.js';
+import {PHONE_BELOW, markPageLayout} from '../src/core/js/device.js';
 
 const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const slice = (source, from, to) => {
@@ -23,18 +23,28 @@ test('I1: a choice panel keeps its scrollbar room and its head ends in the check
   const scroll = slice(sheet, '.sf-choice--list[data-panel] .sf-choice-scroll {', '}');
   assert.match(scroll, /scrollbar-gutter:\s*stable;/u);
   assert.match(sheet, /\.sf-choice--list\[data-panel\]\[data-sf-choice-track\] \.sf-choice-search \{\s*padding-inline-end:\s*max\(var\(--sf-choice--panel-inset\), var\(--sf-scroll-bg-width\)\);/u);
-  assert.match(sheet, /:has\(> \.sf-dropdown--band\):has\(\.sf-choice--list\[data-panel\]\[data-sf-choice-track\]\) > \.sf-dropdown--band \{\s*--sf-dropdown-band-end:/u);
+  assert.match(sheet, /:has\(> sf-dropdown > \.sf-dropdown--band, > \.sf-dropdown--band\):has\(\.sf-choice--list\[data-panel\]\[data-sf-choice-track\]\) > :is\(sf-dropdown, \.sf-dropdown--band\) \{\s*--sf-dropdown-band-end:/u);
   assert.equal(JSON.parse(read('src/smart/input-choice/component.json')).version, '1.12.1');
 });
 
-test('I3: printed items of the other layout are hidden at the phone layout signal width (DEV answer 3)', () => {
+test('I3: printed items of the other layout are hidden by the page layout word, the signal\'s own width (DEV answer 3)', () => {
   const sheet = read('src/core/scss/_sf_css__placeholder.scss');
-  const below = /@media \(width < (\d+)px\) \{\s*:not\(:defined\) \[data-sf-devices~="desktop"\]:not\(\[data-sf-devices~="phone"\]\) \{\s*display: none;/u.exec(sheet);
-  const above = /@media \(width >= (\d+)px\) \{\s*:not\(:defined\) \[data-sf-devices~="phone"\]:not\(\[data-sf-devices~="desktop"\]\) \{\s*display: none;/u.exec(sheet);
-  assert.ok(below && above, 'both rules are written');
-  // One width: the signal's own, not a new step.
-  assert.equal(Number(below[1]), PHONE_BELOW);
-  assert.equal(Number(above[1]), PHONE_BELOW);
+  assert.match(sheet, /:root\[data-sf-layout="phone"\] :not\(:defined\) \[data-sf-devices~="desktop"\]:not\(\[data-sf-devices~="phone"\]\),\s*:root\[data-sf-layout="desktop"\] :not\(:defined\) \[data-sf-devices~="phone"\]:not\(\[data-sf-devices~="desktop"\]\) \{\s*display: none;/u);
+  // No width rule of its own: the sheets stay on the ladder (C18, the one breakpoint).
+  const block = slice(sheet, '/* Device scope before the script', '/* sf-hide-show before its script');
+  assert.doesNotMatch(block.replace(/\/\*[\s\S]*?\*\//gu, ''), /@media|@container|px/u);
+  // Core writes the word from PHONE_BELOW of the page and follows resize.
+  const listeners = [];
+  const attributes = new Map();
+  const root = {clientWidth: 390, hasAttribute: (name) => attributes.has(name), getAttribute: (name) => attributes.get(name) ?? null, setAttribute: (name, value) => attributes.set(name, value)};
+  const doc = {documentElement: root, defaultView: {innerWidth: 390, addEventListener: (type, listener) => listeners.push([type, listener])}};
+  markPageLayout(doc);
+  assert.equal(attributes.get('data-sf-layout'), 'phone');
+  root.clientWidth = PHONE_BELOW;
+  listeners.find(([type]) => type === 'resize')[1]();
+  assert.equal(attributes.get('data-sf-layout'), 'desktop');
+  markPageLayout(doc);
+  assert.equal(listeners.length, 1, 'one mark per page');
   const template = read('src/smart/tabs/js/templates/default.js');
   assert.match(template, /function devicesMark\(item\) \{\s*const scope = item\.selected \? null : devicesOf\(item\);/u);
   assert.equal((template.match(/data-sf-devices=\$\{devicesMark\(item\)\}/gu) || []).length, 4, 'every tab form carries the mark');

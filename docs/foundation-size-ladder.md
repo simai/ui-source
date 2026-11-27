@@ -56,6 +56,10 @@ drift apart.
 
 `normal` is a desktop page (from 60rem), `compact` a `data-sf-density="compact"`
 region on a desktop, `phone` a page below 60rem. Values in px at a 16 px root.
+Below 60rem a compact region draws the `compact` column for a fine pointer (a
+mouse) and the `phone` column for touch (C435, clarifying C146 (1)): a 768
+window with a mouse draws compact rows at 32, a tablet in the hand keeps 36 and
+its 44 touch rows.
 `On` names the element when the token is set on a component class.
 
 | Rule | Token | On | normal | compact | phone |

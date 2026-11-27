@@ -1896,23 +1896,17 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
    2026-11-27; study S-A, Touch screens rule 4). An element leaves the other
    layout's items out when it draws (SF.device), but static first-paint
    markup is printed at one width: a tab marked data-sf-devices="desktop"
-   stood on a phone until the element drew. Until its element is defined, a
-   printed item scoped to the desktop is hidden below the phone layout
-   signal and one scoped to the phone above it. The width is the signal's
-   own, SF.device PHONE_BELOW (core/js/device.js, 600 px; a unit holds the
-   two equal), not a new step: the element reads its place (the nearest
-   size container) once it draws, a printed page has only the page's width.
-   Out of any layer, as [hidden] is: an item's own display must not win. */
-@media (width < 600px) {
-  :not(:defined) [data-sf-devices~="desktop"]:not([data-sf-devices~="phone"]) {
-    display: none;
-  }
-}
-
-@media (width >= 600px) {
-  :not(:defined) [data-sf-devices~="phone"]:not([data-sf-devices~="desktop"]) {
-    display: none;
-  }
+   stood on a phone until the element drew. Core marks the page's layout on
+   <html> while it boots (data-sf-layout, SF.device: phone below
+   PHONE_BELOW of the page's width, followed on resize) -- the signal's own
+   width, so no width rule of its own off the ladder. Until its element is
+   defined, a printed item scoped to the desktop is hidden in the phone
+   layout and one scoped to the phone in the desktop layout. The element
+   reads its own place (the nearest size container) once it draws. Out of
+   any layer, as [hidden] is: an item's own display must not win. */
+:root[data-sf-layout="phone"] :not(:defined) [data-sf-devices~="desktop"]:not([data-sf-devices~="phone"]),
+:root[data-sf-layout="desktop"] :not(:defined) [data-sf-devices~="phone"]:not([data-sf-devices~="desktop"]) {
+  display: none;
 }
 
 /* sf-hide-show before its script (OT 27; retired by C187 (8), a dated alias

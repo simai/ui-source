@@ -92,7 +92,7 @@ decision C18); the row's 1 px line is the one length taken off.
 
 | | Row (head and body) | Two lines | Edge inset (first and last cell) | Between two cells |
 | --- | --- | --- | --- | --- |
-| `.table` | size 1: 40 at 1440, 32 compact, 36 on a phone | the two-line rung, size 2: 48, 40, 44 | `--sf-space-1`: 16, 12 compact and phone (C77) | `--sf-space-1` (C105 H6), half on each cell |
+| `.table` | size 1: 40 at 1440, 32 compact (below 60rem too with a mouse, C435), 36 on a phone | the two-line rung, size 2: 48, 40, 44 | `--sf-space-1`: 16, 12 compact and phone (C77) | `--sf-space-1` (C105 H6), half on each cell |
 | `.table-sm` | size 1/2: 32, 28, 28 | two lines and the line: 48, 40, 40 | `max(--sf-space-1/2, --sf-b2)`: 12 (C77) | `--sf-space-1/2`, half on each cell |
 | `.table-frame` row and head | size 1: 40, 32, 36 | a wrapped reference text keeps the step's padding | `--sf-space-1` with the frame's border inside: 16, 12 | `--sf-space-1` on each cell, a gridline between |
 | `.table` with row actions on a phone (C259) | size 1: 36 | a name with its `.table-key-line`: the two-line rung, 44 | `--sf-space-1`: 12 | `--sf-space-1`, half on each cell |

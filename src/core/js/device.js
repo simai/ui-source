@@ -194,4 +194,26 @@ if (typeof globalThis !== 'undefined') {
   if (!globalThis.SF.device) globalThis.SF.device = Device;
 }
 
+// The page's layout word on <html> (data-sf-layout="phone" | "desktop"),
+// written while core boots and followed on resize (DEV answer 3 on group
+// build 20): static first-paint markup printed at one width carries its
+// items' scope (data-sf-devices), and core.styles hides the other layout's
+// items by this word until their element draws -- the signal's own width,
+// PHONE_BELOW of the page, not a width rule of the sheets. One mark per
+// page: a second copy of this module finds it and leaves it.
+export function markPageLayout(doc = globalThis.document) {
+  const root = doc?.documentElement;
+  const view = doc?.defaultView;
+  if (!root || !view || root.hasAttribute('data-sf-layout-watched')) return;
+  root.setAttribute('data-sf-layout-watched', '');
+  const write = () => {
+    const word = layoutOfWidth(root.clientWidth || view.innerWidth || 0);
+    if (root.getAttribute('data-sf-layout') !== word) root.setAttribute('data-sf-layout', word);
+  };
+  write();
+  view.addEventListener?.('resize', write, {passive: true});
+}
+
+if (typeof document !== 'undefined') markPageLayout(document);
+
 export default Device;

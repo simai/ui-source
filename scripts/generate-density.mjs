@@ -21,10 +21,17 @@
 // buttons at 32. data-sf-density="normal" on an element or a container is the
 // one way back to the normal ladder (a fixed size).
 //
-// Desktop only (>= 60rem): below it the phone ladder already is the dense one
-// (control 36, text 14) and its touch targets stay (owner decision C36: compact
-// on a phone does not make the buttons smaller); the rule that set compact
-// body text was desktop-only before as well.
+// Desktop, and below it a fine pointer (C435, 2026-11-27, clarifying C146 (1)
+// on DEV's answer to the group build 20 display question, msg-e6aaf2ea): at
+// and above 60rem compact moves the desktop ladder one step down for every
+// pointer; below 60rem it does so only for a fine pointer (a mouse), so a 768
+// window with a mouse draws compact tables, buttons and fields (32) as the
+// desktop does. A coarse pointer below 60rem keeps the phone ladder (control
+// 36, text 14) and its touch targets (owner decision C36: compact on a phone
+// does not make the buttons smaller); the touch rows stay 44 (touch screens
+// rule 12). Below 60rem the normal block writes the phone ladder back (the
+// root values of the ladder files), and the compact block keeps the headings
+// at the phone's own steps (C44), so a region reads the ladder of its width.
 //
 // The values are read from the ladder files as they are built (desktop
 // blocks), not from a second table: when a ladder step changes, rerun this
@@ -54,6 +61,9 @@ const OUTPUT = 'src/core/scss/_sf_css__density.scss';
 // defined ladder (S-03, 2026-11-10).
 const SIZING = JSON.parse(readFileSync(join(root, 'src/core/contracts/adaptive-sizing.v1.json'), 'utf8'));
 export const DESKTOP = `${SIZING.modes.desktop.minWidthPx / SIZING.meta.nominalRootPx}rem`;
+// Below the breakpoint, compact for a fine pointer only (C435): the exact
+// complement of the breakpoint, and the primary pointer a mouse.
+export const QUERIES = [`(min-width: ${DESKTOP})`, `(not (min-width: ${DESKTOP})) and (pointer: fine)`];
 
 // The control ladder. A step below the lowest stays at the lowest: 1/3 is a
 // 24px control, the smallest target (WCAG 2.5.8), and text under 12 is a
@@ -174,7 +184,8 @@ export function ladder() {
         compact = desktopDeclarations(lower).get(family[1](step));
         if (!compact) throw new Error(`${lower}: no desktop value for ${family[1](step)}`);
       }
-      rows.push({variable, step, normal, compact, from: file});
+      const phone = rootDeclarations(file).get(variable) ?? normal;
+      rows.push({variable, step, normal, compact, phone, from: file});
     });
   }
   return rows;
@@ -191,9 +202,9 @@ export function ladder() {
 // heading is the same on <html> and on a container. The line heights are the
 // title lines, which density never moves.
 const HEADINGS = Array.from({length: 6}, (_, index) => `--sf-heading-${index + 1}--size`);
-export function headings() {
+export function headings(width = 'desktop') {
   const roles = rootDeclarations('figma_typography_roles.scss');
-  const sizes = desktopDeclarations('figma_text_text_size.scss');
+  const sizes = width === 'phone' ? rootDeclarations('figma_text_text_size.scss') : desktopDeclarations('figma_text_text_size.scss');
   return HEADINGS.map((name) => {
     const value = roles.get(name);
     const match = /^var\((--sf-text--size-[^)]+)\)$/u.exec(value ?? '');
@@ -247,7 +258,7 @@ export function widths() {
     if (!match) throw new Error(`${WIDTHS_FILE}: no declaration of ${variable}`);
     const value = match[1].trim();
     if (!/^var\(--sf-measure-\d+\)$/u.test(value)) throw new Error(`${variable}: ${value} is not a step of the width ladder (C396)`);
-    return {variable, normal: value, compact: value};
+    return {variable, normal: value, compact: value, phone: value};
   });
 }
 
@@ -262,11 +273,11 @@ export function render() {
   const rows = ladder();
   const aliases = derived();
   const popup = widths();
-  const block = (pick, indent) => [
+  const block = (pick, indent, width = 'desktop') => [
     ...rows.map((row) => `${indent}${esc(row.variable)}: ${row[pick]};`),
     ...popup.map((row) => `${indent}${row.variable}: ${row[pick]};`),
     ...aliases.map(([name, value]) => `${indent}${esc(name)}: ${value};`),
-    ...(pick === 'compact' ? headings().map(([name, value]) => `${indent}${name}: ${value};`) : []),
+    ...(pick === 'compact' ? headings(width).map(([name, value]) => `${indent}${name}: ${value};`) : []),
     `${indent}--sf-text--size: var(--sf-text--size-1);`,
     `${indent}--sf-text--height: var(--sf-text--height-1);`,
   ].join('\n');
@@ -280,8 +291,9 @@ export function render() {
  * gap, icon and text together. Each step variable holds the value of the step
  * below; components read their steps as always, an explicit size too (C79: a
  * size is a step on the region's ladder). data-sf-density="normal" takes the
- * normal ladder back for an element or a region. Desktop only: below 60rem
- * the phone ladder already is the dense one.
+ * normal ladder back for an element or a region. From 60rem for every
+ * pointer; below 60rem for a fine pointer only (C435), where normal is the
+ * phone ladder: a coarse pointer keeps the phone ladder and its touch rows.
  *
  * The widths in characters (C396) follow the text: the measure ladder and
  * the popup widths on its steps are declared again here, with the same
@@ -293,7 +305,7 @@ export function render() {
  * container.
  */
 @layer sf.base {
-  @media (min-width: ${DESKTOP}) {
+  @media ${QUERIES[0]} {
     [data-sf-density="compact"] {
 ${block('compact', '      ')}
     }
@@ -302,17 +314,33 @@ ${block('compact', '      ')}
 ${block('normal', '      ')}
     }
 
-    /* On <html> the variables only, which body reads: a font-size on the
+${FONT}
+  }
+
+  /* Below the breakpoint, a fine pointer (C435): the same compact steps, the
+     headings at the phone's steps, normal is the phone ladder. */
+  @media ${QUERIES[1]} {
+    [data-sf-density="compact"] {
+${block('compact', '      ', 'phone')}
+    }
+
+    [data-sf-density="normal"] {
+${block('phone', '      ')}
+    }
+
+${FONT}
+  }
+}
+`;
+}
+
+const FONT = `    /* On <html> the variables only, which body reads: a font-size on the
        root element would move rem, and with it every step of the ladder. */
     [data-sf-density="compact"]:not(:root),
     [data-sf-density="normal"]:not(:root) {
       font-size: var(--sf-text--size);
       line-height: var(--sf-text--height);
-    }
-  }
-}
-`;
-}
+    }`;
 
 const px = (value) => {
   const match = /var\(--sf-([a-i])(\d)\)/u.exec(value);

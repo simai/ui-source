@@ -395,7 +395,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "3d59d33f962cd0f333533ca5c20129e1ef685561f68625b7cb9c2587fd671fbf"
+        "sha256": "0df10f763db2d3f2c343d586897a60fdc6ee8b8ae0cb6ee79c5de49179f64e52"
       },
       {
         "path": "src/smart/input-choice/rule.js",

@@ -927,7 +927,7 @@ $choice-search-edge: calc(var(--sf-px) * 0);
     padding-inline-end: max(var(--sf-choice--panel-inset), var(--sf-scroll-bg-width));
   }
 
-  :has(> .sf-dropdown--band):has(.sf-choice--list[data-panel][data-sf-choice-track]) > .sf-dropdown--band {
+  :has(> sf-dropdown > .sf-dropdown--band, > .sf-dropdown--band):has(.sf-choice--list[data-panel][data-sf-choice-track]) > :is(sf-dropdown, .sf-dropdown--band) {
     --sf-dropdown-band-end: max(calc(var(--sf-px) * 0), calc(var(--sf-scroll-bg-width) - #{panel.$inset} - #{panel.$row-padding}));
   }
 

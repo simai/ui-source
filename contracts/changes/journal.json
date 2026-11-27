@@ -21484,8 +21484,8 @@
       "rewrite": "none",
       "id": "behaviour-device-scope-before-the-script",
       "kind": "behaviour",
-      "manual": "Nothing to rewrite. Static markup a server prints may carry data-sf-devices=\"desktop\" or \"phone\" on an item: it is hidden on the other layout until the element draws.",
-      "summary": "smart.tabs 1.6.2 and core.styles (group build 20 integration I3, DEV answer 3): a tab that carries devices says them on its button (data-sf-devices); before its element is defined, a printed item scoped to the desktop is hidden below the phone layout signal (SF.device PHONE_BELOW, 600 px) and one scoped to the phone above it, so a desktop-only tab no longer stands on a phone in first-paint markup printed at the desktop width.",
+      "manual": "Nothing to rewrite. Static markup a server prints may carry data-sf-devices=\"desktop\" or \"phone\" on an item: with core.js in the page it is hidden on the other layout until the element draws. Do not write data-sf-layout on <html> yourself; core owns it.",
+      "summary": "smart.tabs 1.6.2, core.runtime and core.styles (group build 20 integration I3, DEV answer 3): a tab that carries devices says them on its button (data-sf-devices); core writes the page's layout word on <html> while it boots (data-sf-layout=\"phone\" | \"desktop\", SF.device PHONE_BELOW of the page's width, followed on resize), and before its element is defined a printed item scoped to the desktop is hidden in the phone layout and one scoped to the phone in the desktop layout, so a desktop-only tab no longer stands on a phone in first-paint markup printed at the desktop width. No width rule in the sheets.",
       "items": [
         {
           "component": "smart.tabs",
@@ -21495,10 +21495,15 @@
         {
           "component": "core.styles",
           "from": "printed items of the other layout shown until the element draws",
-          "to": "hidden by the phone layout signal's width until it draws"
+          "to": "hidden by the page layout word until the element draws"
+        },
+        {
+          "component": "core.runtime",
+          "from": "no page layout mark",
+          "to": "<html data-sf-layout> written at boot and on resize"
         }
       ],
-      "source": "src/smart/tabs/js/templates/default.js; src/core/scss/_sf_css__placeholder.scss"
+      "source": "src/smart/tabs/js/templates/default.js; src/core/js/device.js; src/core/scss/_sf_css__placeholder.scss"
     },
     {
       "recorded_on": "2026-11-27",
@@ -21539,6 +21544,26 @@
         }
       ],
       "source": "src/core/js/loader.js"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "rewrite": "none",
+      "id": "behaviour-compact-below-breakpoint-for-a-mouse",
+      "kind": "behaviour",
+      "manual": "Nothing to rewrite. A compact region in a window narrower than 60rem with a mouse now draws the desktop's compact steps (rows, buttons and fields 32); with touch it keeps the phone ladder (36) and the touch rows (44) as before. data-sf-density=\"normal\" there is the phone ladder.",
+      "summary": "core.styles (group build 20 integration I6, C435 clarifying C146 (1), DEV msg-e6aaf2ea): compact density holds below 60rem too, for a fine pointer only -- a 768 window with a mouse draws compact table rows, buttons and fields at 32 as the desktop does; a coarse pointer keeps the phone ladder and its 44 touch rows at every width (C22, C36 hold). Below 60rem the normal block writes the phone ladder back and compact keeps the phone's heading steps (C44). Written by scripts/generate-density.mjs as the exact complement of the breakpoint and (pointer: fine).",
+      "items": [
+        {
+          "component": "core.styles",
+          "from": "compact from 60rem only; a 768 mouse window drew 36",
+          "to": "compact below 60rem for a fine pointer (32); touch unchanged (36, rows 44)"
+        }
+      ],
+      "source": "scripts/generate-density.mjs; src/core/scss/_sf_css__density.scss"
     }
   ]
 }

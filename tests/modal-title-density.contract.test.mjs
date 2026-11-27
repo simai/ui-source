@@ -35,5 +35,13 @@ test('the question title reads values density does not move', () => {
   // variable at all.
   assert.doesNotMatch(density, /--sf-heading-4--height:/u);
   assert.doesNotMatch(density, /--sf-title--height-2:/u);
-  assert.doesNotMatch(density, /--sf-heading-4--size: var\(--sf-(?!c0\))/u);
+  // The desktop block (from 60rem) writes heading 4 at its desktop value; the
+  // block below 60rem for a fine pointer (C435) at the phone's own step, the
+  // one the title reads there without density.
+  const [desktop, phone] = density.split('@media (not (min-width: 60rem)) and (pointer: fine)');
+  assert.doesNotMatch(desktop, /--sf-heading-4--size: var\(--sf-(?!c0\))/u);
+  const phoneStep = /--sf-heading-4--size: var\(--sf-text--size-(\d)\)/u.exec(read('src/core/figma_variables/figma_typography_roles.scss'))[1];
+  const sizes = read('src/core/figma_variables/figma_text_text_size.scss');
+  const phoneValue = new RegExp(`--sf-text--size-${phoneStep}: (var\\(--sf-[a-i]\\d\\));`, 'u').exec(sizes.slice(0, sizes.indexOf('@media')))[1];
+  assert.equal([...phone.matchAll(/--sf-heading-4--size: ([^;]+);/gu)].map(([, value]) => value).join(), phoneValue);
 });

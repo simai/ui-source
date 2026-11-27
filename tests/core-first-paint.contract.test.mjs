@@ -314,6 +314,8 @@ test('a closed container is watched and read again once, when it opens', () => {
     MutationObserver: class {
       constructor(callback) { this.callback = callback; this.targets = []; observers.push(this); }
       observe(target, options) { this.targets.push([target, options]); }
+      // GB20 I5: the Loader watches its list again after an opened or removed container leaves it.
+      disconnect() { this.targets = []; }
     },
   };
   vm.runInNewContext(`${helpers}\n${methods}\nSFLoaderPlugin.prototype.scanCustomElements = function (root) { this.scanned.push(root); };`, context);
@@ -338,6 +340,7 @@ test('a closed container is watched and read again once, when it opens', () => {
   assert.deepEqual(plugin.scanned, [panel], 'read once when it opens');
   observers[0].callback([{target: panel}]);
   assert.deepEqual(plugin.scanned, [panel], 'and not again');
+  assert.equal(observers[0].targets.length, 0, 'an opened container is no longer watched (GB20 I5)');
 
   plugin.holdSmartTag('sf-modal');
   assert.equal(JSON.stringify(holds.at(-1)), JSON.stringify(['sf-modal', {asked: true}]));

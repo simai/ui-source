@@ -3,7 +3,7 @@ import {readdirSync, readFileSync, statSync} from 'node:fs';
 import {dirname, join, relative, resolve} from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
-import {DESKTOP} from '../scripts/generate-density.mjs';
+import {DESKTOP, QUERIES} from '../scripts/generate-density.mjs';
 
 // Every width has exactly one defined ladder (docs precheck S-03, 2026-11-10;
 // owner decisions C01, C22, C36): the phone ladder below the desktop
@@ -30,7 +30,10 @@ test('the density switches at the ladder breakpoint of the contract', () => {
   assert.equal(DESKTOP, BREAKPOINT);
   assert.equal(BREAKPOINT, '60rem');
   const density = readFileSync(join(root, 'src/core/scss/_sf_css__density.scss'), 'utf8');
-  assert.deepEqual([...density.matchAll(/@media ([^{]+)\{/gu)].map(([, query]) => query.trim()), [`(min-width: ${BREAKPOINT})`]);
+  // C435 (2026-11-27): below the breakpoint compact holds for a fine pointer
+  // only, written as the exact complement of the breakpoint and the pointer.
+  assert.deepEqual(QUERIES, [`(min-width: ${BREAKPOINT})`, `(not (min-width: ${BREAKPOINT})) and (pointer: fine)`]);
+  assert.deepEqual([...density.matchAll(/@media ([^{]+)\{/gu)].map(([, query]) => query.trim()), QUERIES);
 });
 
 test('every width query of the core ladder is the breakpoint or its exact complement', () => {
