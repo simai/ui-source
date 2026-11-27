@@ -2427,14 +2427,22 @@ SFLoaderPlugin.prototype.deferClosedSmartElement = function (el) {
 
 SFLoaderPlugin.prototype.watchClosedContainer = function (container) {
   if (!this.closedContainers) {
-    this.closedContainers = new WeakSet();
+    // The containers watched, in a list of their own (a MutationObserver
+    // cannot stop observing one target): a container that leaves the page
+    // closed is dropped from it and the observer watches the rest again
+    // (dropClosedContainersOutOfPage), so a removed component that held one
+    // -- sf-gallery's closed panel -- leaves no observation behind (gate 36,
+    // instance scope; group build 20 I5).
+    this.closedContainers = new Set();
     this.closedContainerObserver = new MutationObserver((records) => {
       const opened = new Set();
       records.forEach(({target}) => {
         if (this.closedContainers.has(target) && !isClosedContainer(target)) opened.add(target);
       });
+      if (!opened.size) return;
+      opened.forEach((target) => this.closedContainers.delete(target));
+      this.observeClosedContainers();
       opened.forEach((target) => {
-        this.closedContainers.delete(target);
         if (target.isConnected) this.scanCustomElements(target);
       });
     });
@@ -2445,6 +2453,31 @@ SFLoaderPlugin.prototype.watchClosedContainer = function (container) {
     attributes: true,
     attributeFilter: CLOSED_CONTAINER_ATTRIBUTES,
   });
+};
+
+// The observer watches the listed containers again from nothing.
+SFLoaderPlugin.prototype.observeClosedContainers = function () {
+  const observer = this.closedContainerObserver;
+  if (!observer) return;
+  observer.disconnect();
+  this.closedContainers.forEach((container) => observer.observe(container, {
+    attributes: true,
+    attributeFilter: CLOSED_CONTAINER_ATTRIBUTES,
+  }));
+};
+
+// Called when nodes leave the page: a watched container no longer in it is
+// dropped. A container that comes back is watched again when the Loader
+// meets its elements (deferClosedSmartElement).
+SFLoaderPlugin.prototype.dropClosedContainersOutOfPage = function () {
+  if (!this.closedContainers?.size) return;
+  let dropped = false;
+  this.closedContainers.forEach((container) => {
+    if (container.isConnected) return;
+    this.closedContainers.delete(container);
+    dropped = true;
+  });
+  if (dropped) this.observeClosedContainers();
 };
 
 // The tag's elements stay invisible while its module is on the way, unless
@@ -3038,6 +3071,11 @@ SFLoaderPlugin.prototype.search = function () {
 
     if (!relevantChanges.length) {
       return;
+    }
+
+    // Nodes left the page: a closed container among them is no longer watched.
+    if (this.closedContainers?.size && relevantChanges.some((change) => change.type === 'childList' && change.removedNodes.length)) {
+      this.dropClosedContainersOutOfPage();
     }
 
     // A static icon whose name changed to one the font does not draw yet

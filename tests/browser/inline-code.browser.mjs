@@ -195,7 +195,18 @@ const read = () => {
       return {box: box.getBoundingClientRect().width, table: table.getBoundingClientRect().width, scroll: box.scrollWidth - box.clientWidth,
         labelBroken: labels.flatMap((td) => wordsWhole(td)), labelWidths: labels.map((td) => Math.round(td.getBoundingClientRect().width)),
         rule: {...fits('tbl-box'), wrap: getComputedStyle(document.getElementById('tbl-rule')).overflowWrap},
-        prose: getComputedStyle(document.getElementById('url')).overflowWrap};
+        prose: getComputedStyle(document.getElementById('url')).overflowWrap,
+        // C186 (7) as DEV read it on group build 20 (answer 2): a cell's plain
+        // words stay whole (break-word), a long code value breaks inside it.
+        labelWrap: labels.map((td) => getComputedStyle(td).overflowWrap),
+        labelText: labels.map((td) => td.textContent),
+        json: (() => {
+          const code = document.getElementById('tbl-json');
+          const cell = code.closest('td').getBoundingClientRect();
+          const rects = [...code.getClientRects()];
+          return {right: code.getBoundingClientRect().right, cellRight: cell.right, lines: new Set(rects.map((rect) => Math.round(rect.top))).size,
+            wrap: getComputedStyle(code).overflowWrap};
+        })()};
     })(),
     line: {withCode: document.getElementById('line-box').getBoundingClientRect().height, plain: document.getElementById('plain-line').getBoundingClientRect().height},
   };
@@ -277,6 +288,15 @@ for (const theme of THEMES) {
   check(`${theme}: a long value in a table cell never widens the table`, layout.table.table <= layout.table.box + 0.5 && layout.table.scroll <= 0
     && layout.table.rule.wrap === 'anywhere' && layout.table.prose === 'break-word', layout.table);
   check(`${theme}: the label column keeps its words`, layout.table.labelBroken.length === 0, layout.table);
+  // C186 (7) clarified (DEV answer 2 on group build 20, 2026-11-27): in a
+  // table cell plain words stay whole -- the cells wrap break-word, so
+  // «умолчанию» is the label column's min-content (79 px at the narrow
+  // width) and never parts mid-word -- and only code values and unbroken
+  // tokens take anywhere: the JSON default breaks inside its own cell.
+  check(`${theme}: a plain word in a table cell stays whole («умолчанию»)`, layout.table.labelText.some((text) => text.includes('умолчанию'))
+    && !layout.table.labelBroken.includes('умолчанию') && layout.table.labelWrap.every((wrap) => wrap === 'break-word'), layout.table);
+  check(`${theme}: a long code value breaks inside its table cell`, layout.table.json.wrap === 'anywhere' && layout.table.json.lines > 1
+    && layout.table.json.right <= layout.table.json.cellRight + 0.5, layout.table);
   // Code does not make the text line taller.
   check(`${theme}: a line with code keeps the text line height`, Math.abs(layout.line.withCode - layout.line.plain) < 0.5, layout.line);
 

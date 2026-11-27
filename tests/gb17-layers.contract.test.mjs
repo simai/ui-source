@@ -54,6 +54,6 @@ test('GB17 versions', () => {
   assert.equal(v('src/smart/popover/component.json'), '1.11.0');
   assert.equal(v('src/smart/drawer/component.json'), '1.22.1');
   assert.equal(v('src/smart/gallery/component.json'), '1.5.6');
-  assert.equal(v('src/component/tabs/passport.json'), '1.5.9'); // GB19 touch size (C428)
+  assert.equal(v('src/component/tabs/passport.json'), '1.5.10'); // GB20 integration I4: the gear on the divider // GB19 touch size (C428)
   assert.equal(v('src/component/carousel/passport.json'), '1.6.1');
 });

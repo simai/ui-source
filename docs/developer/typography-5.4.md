@@ -230,7 +230,10 @@ label column beside it keeps its words. For that the table resets its
 and breaks one only when it cannot fit the column. The rule is on the table,
 not on the cells, so `.table-frame`, whose frame scrolls and which keeps every
 word whole (`overflow-wrap: normal` on its table), is not beaten by it.
-Cells never get `nowrap`.
+Cells never get `nowrap`. C186 (7) reads the same way (DEV, group build 20,
+2026-11-27): in table cells plain words stay whole, and only code values and
+unbroken tokens (code, or the `text-break` utility) break anywhere; the table
+still never pushes past its box, and a docs page gives a name column a width.
 
 The public variables have one dash and are never set by the Framework; set
 them on `:root` or any container. The `--sf-code--*` names with two dashes

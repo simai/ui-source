@@ -930,9 +930,13 @@
     white-space: nowrap;
   }
 
-  // An underline row sits on the divider; the trigger (its host is display:
-  // contents, so the button is the flex item) sits with it.
-  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container--tools > .sf-tabs-more > button {
+  // An underline row sits on the divider; the trigger and the settings gear
+  // (their hosts are display: contents, so the buttons are the flex items)
+  // sit with it. The gear stood on the divider and drew the row one pixel
+  // taller than a control of its size, 41 over the 40 the frame before the
+  // script holds (group build 20 I4, first-paint gate tabs/configurable).
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container--tools > .sf-tabs-more > button,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container--tools > .sf-tabs-settings > button {
     margin-block-end: calc(var(--sf-tabs-border-width, var(--sf-tabs--border-width, var(--sf-px))) * -1);
   }
 

@@ -93,9 +93,10 @@ test('C186 (6): hyphenation in narrow running text and text-hyphens; never headi
   assert.match(wordBreak, /\.#\{\$infix\}text-hyphens \{\s*-webkit-hyphens: auto;\s*hyphens: auto;/u);
 });
 
-test('C186 (7): overflow-wrap: anywhere on paragraphs, lists and table cells; no deprecated break-word', () => {
+test('C186 (7): overflow-wrap: anywhere on paragraphs and lists; table cells keep plain words whole (break-word, DEV answer 2 on GB20); no deprecated word-break: break-word', () => {
   assert.match(typography, /blockquote \{\s*overflow-wrap: anywhere;/u);
-  assert.match(typography, /table \{\s*word-break: normal;\s*overflow-wrap: anywhere;\s*\}/u);
+  assert.match(typography, /table \{\s*word-break: normal;\s*overflow-wrap: break-word;\s*\}/u);
+  assert.match(typography, /:where\(td, th\) code:where\(:not\([^{]+\{\s*overflow-wrap:\s*anywhere;\s*\}/u);
   assert.doesNotMatch(code(typography), /word-break: break-word/u);
 });
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -395,7 +395,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "12b5861819260932d44e24681fb7f45a98ce968b63cff82a4c721b1a4dbefb1b"
+        "sha256": "3d59d33f962cd0f333533ca5c20129e1ef685561f68625b7cb9c2587fd671fbf"
       },
       {
         "path": "src/smart/input-choice/rule.js",

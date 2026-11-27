@@ -1,5 +1,6 @@
 import { html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
+import { devicesOf } from '../../../../core/js/device.js';
 
 function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ');
@@ -118,10 +119,22 @@ function renderIconLink(item, context) {
       aria-current=${item.selected ? 'page' : nothing}
       aria-disabled=${item.disabled ? 'true' : nothing}
       data-sf-tab-index=${String(item.index)}
+        data-sf-devices=${devicesMark(item)}
       data-tab-label=${item.label}
       data-tooltip=${item.hint ? hintId(item, context) : nothing}
     ><sf-icon root-class="pointer-events-none" icon=${item.iconStart || item.icon || item.iconEnd || nothing}
       weight="400" aria-hidden="true"></sf-icon></a>`;
+}
+
+// A tab that carries `devices` says them on its button (data-sf-devices,
+// DEV answer 3 on group build 20): the element leaves the other layout's tabs
+// out when it draws, but static first-paint markup is printed at one width,
+// and core.styles hides a printed «desktop» tab below the phone layout
+// signal (SF.device PHONE_BELOW) and a printed «phone» tab above it until
+// the element draws. The selected tab is always drawn, so it is not marked.
+function devicesMark(item) {
+  const scope = item.selected ? null : devicesOf(item);
+  return scope ? scope.join(' ') : nothing;
 }
 
 // A tab is marked data-sf-tab-index only (R193 DP-11): the unprefixed
@@ -142,6 +155,7 @@ function renderTab(item, context) {
     return html`
       <span
         data-sf-tab-index=${String(item.index)}
+        data-sf-devices=${devicesMark(item)}
         role="tab"
         aria-label=${item.label}
         aria-selected=${item.selected ? 'true' : 'false'}
@@ -195,6 +209,7 @@ function renderTab(item, context) {
                   icon-end=${item.iconRight || nothing}
                   root-class=${tabClasses(item)}
                   data-sf-tab-index=${String(item.index)}
+        data-sf-devices=${devicesMark(item)}
                   data-tooltip=${item.hint ? hintId(item, context) : nothing}
           >
               ${tabContent === nothing ? counted : html`<span slot="text">${tabContent}</span>`}
@@ -216,6 +231,7 @@ function renderTab(item, context) {
                   data-tab-label=${item.label}
                   root-class=${tabClasses(item)}
                   data-sf-tab-index=${String(item.index)}
+        data-sf-devices=${devicesMark(item)}
                   data-tooltip=${item.hint ? hintId(item, context) : nothing}
           >
           </sf-button-icon>

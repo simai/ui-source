@@ -1473,7 +1473,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-choice/smart.manifest.json",
-      "manifest_sha256": "ea2f143cf3a1524a5736d1705e2a728a59115c482f9bdf73a634d900631c6ef0",
+      "manifest_sha256": "a54c159e21d180d9e58aede97adcf2014aaa23cec476a8fa546d6c234a3c9917",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "0000000000000000000000000000000000000000",
@@ -3261,7 +3261,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "8d38eb127a4720d277a1a8c908b087958a8f08b1943a7a89aa5f95a6f1fbeef4",
+      "manifest_sha256": "8f7421e2b9efbbb79561d1f8dcbe7d8c1b1e2db1a414fb961f724061891a1905",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "0000000000000000000000000000000000000000",

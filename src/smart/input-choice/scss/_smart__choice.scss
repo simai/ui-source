@@ -876,6 +876,12 @@ $choice-search-edge: calc(var(--sf-px) * 0);
     min-block-size: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    /* The track's room is kept whether the rows scroll or not (DEV answer 1
+       on group build 20, 2026-11-27): with the 14 track and a compact or
+       phone inset of 12 the checks moved 2 px in when a scrollbar came.
+       A gutter that takes room (a classic scrollbar) is the rows' end and
+       the head's end alike; an overlay scrollbar takes none. */
+    scrollbar-gutter: stable;
     scroll-padding: var(--sf-focus-room);
   }
 
@@ -908,6 +914,21 @@ $choice-search-edge: calc(var(--sf-px) * 0);
      data-sf-choice-track). A track wider than the padding leaves none. */
   .sf-choice--list[data-panel][data-sf-choice-track] :is(.sf-choice-row, .sf-choice-status, .sf-choice-message) {
     padding-inline-end: max(calc(var(--sf-px) * 0), calc(var(--sf-choice--panel-inset) - var(--sf-scroll-bg-width)));
+  }
+
+  /* The head ends in the checks' column (DEV answer 1 on group build 20):
+     the rows end the larger of the inset and the kept track from the edge
+     (12 and 14 compact and on a phone, 16 and 14 otherwise), so the search's
+     icon and a band standing over the panel in the same window (the filter
+     window's condition, sf-dropdown appearance band) end there too. The
+     list marks the kept track (data-sf-choice-track); it does not change
+     with the number of rows. */
+  .sf-choice--list[data-panel][data-sf-choice-track] .sf-choice-search {
+    padding-inline-end: max(var(--sf-choice--panel-inset), var(--sf-scroll-bg-width));
+  }
+
+  :has(> .sf-dropdown--band):has(.sf-choice--list[data-panel][data-sf-choice-track]) > .sf-dropdown--band {
+    --sf-dropdown-band-end: max(calc(var(--sf-px) * 0), calc(var(--sf-scroll-bg-width) - #{panel.$inset} - #{panel.$row-padding}));
   }
 
   .sf-choice--list[data-panel] :is(.sf-checkbox-top, .sf-radio-button-top) {

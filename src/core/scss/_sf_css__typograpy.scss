@@ -248,18 +248,22 @@
     ); //var(--sf-text--margin-end-default);
   }
 
-  // A table's cells break a long run anywhere too (C186 (7)), so an address
-  // or a file name in a cell lowers the cell's min-content and the table
-  // stays inside its holder instead of widening it (a 14rem holder: 433px
-  // before, 224 = the holder after) -- what C10 asked for code in a cell.
-  // word-break stays normal: a word is broken only when it cannot fit the
-  // column it was given. Set on the table, not on its cells, so the cells
-  // inherit it and a table that keeps every word whole -- a .table-frame,
-  // whose frame scrolls instead -- says so once, on the table (the cell rule
-  // beat the frame's own and broke its words, pair-next-3).
+  // A table's cells keep their plain words whole (C186 (7) as clarified by
+  // DEV on group build 20, 2026-11-27, answer 2; C10 variant A): the cells
+  // wrap break-word, which breaks a word only when it cannot fit a line of
+  // its own and keeps it as the column's min-content, so a 79 px label
+  // column never parts «умолчанию» mid-word. Only code values and unbroken
+  // tokens break anywhere: code in a cell (the rule further down) and a
+  // run the page marks with the text-break utility. The table stays inside
+  // its holder through those (an address or a JSON default in a cell lowers
+  // the cell's min-content); a docs page gives a name column its width.
+  // word-break stays normal. Set on the table, not on its cells, so the
+  // cells inherit it and a table that keeps every word whole -- a
+  // .table-frame, whose frame scrolls instead -- says so once, on the table
+  // (the cell rule beat the frame's own and broke its words, pair-next-3).
   table {
     word-break: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   // Line breaking of running text and headings (C186 (9)): a heading h1-h4

@@ -24,5 +24,5 @@ test('Variant B: a panel list gives the scrollbar its rows\' end padding; its se
   assert.doesNotMatch(sheet, /\[data-panel\]\[data-sf-choice-track\] \.sf-choice-search/u);
   assert.match(sheet, /\.sf-choice--list:not\(\[data-panel\]\)\[data-sf-choice-track\] \.sf-choice-search \{/u);
   assert.doesNotMatch(read('src/smart/field-renderers/filter-window.js'), /--sf-dropdown-band-end/u);
-  assert.equal(json('src/smart/input-choice/component.json').version, '1.12.0'); // group build 17 F3/F4
+  assert.equal(json('src/smart/input-choice/component.json').version, '1.12.1'); // GB20 integration I1: the kept scrollbar room // group build 17 F3/F4
 });

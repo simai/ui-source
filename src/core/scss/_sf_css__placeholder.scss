@@ -1892,6 +1892,29 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
 }
 }
 
+/* Device scope before the script (DEV answer 3 on group build 20,
+   2026-11-27; study S-A, Touch screens rule 4). An element leaves the other
+   layout's items out when it draws (SF.device), but static first-paint
+   markup is printed at one width: a tab marked data-sf-devices="desktop"
+   stood on a phone until the element drew. Until its element is defined, a
+   printed item scoped to the desktop is hidden below the phone layout
+   signal and one scoped to the phone above it. The width is the signal's
+   own, SF.device PHONE_BELOW (core/js/device.js, 600 px; a unit holds the
+   two equal), not a new step: the element reads its place (the nearest
+   size container) once it draws, a printed page has only the page's width.
+   Out of any layer, as [hidden] is: an item's own display must not win. */
+@media (width < 600px) {
+  :not(:defined) [data-sf-devices~="desktop"]:not([data-sf-devices~="phone"]) {
+    display: none;
+  }
+}
+
+@media (width >= 600px) {
+  :not(:defined) [data-sf-devices~="phone"]:not([data-sf-devices~="desktop"]) {
+    display: none;
+  }
+}
+
 /* sf-hide-show before its script (OT 27; retired by C187 (8), a dated alias
    until 2027-01-01). The component has no sheet: its script hides the button
    whose action is done, and it came 300 ms after the first paint, so both
