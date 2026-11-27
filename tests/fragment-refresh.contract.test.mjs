@@ -164,7 +164,8 @@ test('a descriptor declares its refresh (descriptor 1.3.0), optional and closed'
   assert.match(broken({mode: 'html'}), /a data block only/u);
   assert.match(broken({timer: 30}), /refresh:/u, 'contract 1 has no timer refresh');
   const schema = json('src/core/contracts/interface-fragment.v1.schema.json');
-  assert.equal(schema['x-simai-version'], '1.3.0');
+  // 1.3.0 brought refresh; 1.4.0 (GB20) only adds parameters-changed to the value types.
+  assert.equal(schema['x-simai-version'], '1.4.0');
   assert.deepEqual(Object.keys(schema.properties.refresh.properties), ['mode', 'contract', 'reads', 'parts']);
 });
 
@@ -177,8 +178,8 @@ test('a page of blocks is checked together: unique ids, one owner per key, every
   assert.match(checkRefreshPage([chart]).join(), /reads site, which no block owns/u);
 });
 
-test('the standard is 1.1.0 over the frozen 1.3.0 copy, with the agreed clauses', () => {
-  const standard = json('contracts/standards/simai.interface-fragment/1.1.0/standard.json');
+test('the standard is 1.1.1 over the frozen 1.4.0 copy, with the agreed clauses', () => {
+  const standard = json('contracts/standards/simai.interface-fragment/1.1.1/standard.json');
   const ids = standard.requirements.map((requirement) => requirement.id);
   assert.ok(ids.includes('refreshable-block') && ids.includes('block-refresh'));
   const text = (id) => standard.requirements.find((requirement) => requirement.id === id).text;
@@ -186,7 +187,9 @@ test('the standard is 1.1.0 over the frozen 1.3.0 copy, with the agreed clauses'
   assert.match(text('region-navigation'), /product's own marker/u, 'a product\'s own history entries are left alone');
   assert.match(text('five-states'), /no-access/u);
   assert.match(text('block-refresh'), /no timer refresh/u);
-  assert.equal(standard.uses[0].path, '../../pinned/interface-fragment-1.3.0.schema.json');
+  assert.equal(standard.uses[0].path, '../../pinned/interface-fragment-1.4.0.schema.json');
+  // 1.1.1 is 1.1.0 with the pin moved (parameters-changed a closed value type, GB20): no requirement changed.
+  assert.deepEqual(standard.requirements, json('contracts/standards/history/simai.interface-fragment/1.1.0/standard.json').requirements);
   const previous = json('contracts/standards/history/simai.interface-fragment/1.0.3/standard.json');
   for (const requirement of previous.requirements) assert.ok(ids.includes(requirement.id), `${requirement.id} is kept`);
 });

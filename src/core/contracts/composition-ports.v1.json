@@ -39,6 +39,7 @@
     "counter": "counter.v1",
     "files-moved": "files-moved.v1",
     "navigation": "navigation.v1",
+    "parameters-changed": "parameters-changed.v1",
     "preference-changed": "preference-changed.v1",
     "record-changed": "record-changed.v1",
     "record-id": "record-id.v1",
@@ -187,6 +188,35 @@
         "type": "object"
       },
       "summary": "Go to an address of the same site, in a named region: url is a path (starting with one slash, up to 2048 code units), region a region name."
+    },
+    "parameters-changed.v1": {
+      "schema": {
+        "additionalProperties": false,
+        "properties": {
+          "keys": {
+            "items": {
+              "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+              "type": "string"
+            },
+            "maxItems": 16,
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "url": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "pattern": "^/(?!/)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "keys",
+          "url"
+        ],
+        "type": "object"
+      },
+      "summary": "A block changed its query keys: the keys that changed (1 to 16 unique names, a lowercase letter then up to 63 of a-z, 0-9, _ and -) and the address it stands at now, a path of this site with its query. Says which keys, never their values beyond the address."
     },
     "preference-changed.v1": {
       "schema": {

@@ -12,7 +12,7 @@ import {VALUE_TYPE_NAME_EFFECTS} from './fixtures/composition-capabilities/cases
 // pinned copy the standard names.
 const json = (path) => JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'));
 
-const PAGE_TYPES = ['record-changed.v1', 'record-removed.v1', 'collection-changed.v1', 'files-moved.v1', 'counter.v1', 'navigation.v1', 'preference-changed.v1'];
+const PAGE_TYPES = ['record-changed.v1', 'record-removed.v1', 'collection-changed.v1', 'files-moved.v1', 'counter.v1', 'navigation.v1', 'preference-changed.v1', 'parameters-changed.v1'];
 
 const GOOD = {
   'record-changed.v1': [{collection: 'news', id: 5, revision: 'r2'}, {collection: 'news', id: 'a-1', revision: 7, fields: ['title', 'status']}],
@@ -22,6 +22,7 @@ const GOOD = {
   'counter.v1': [{key: 'notifications', value: 0}, {key: 'requests.new', value: 12}],
   'navigation.v1': [{url: '/admin/files?folder=2', region: 'content'}],
   'preference-changed.v1': [{key: 'sf-table/news'}, {key: 'sf-table/*'}],
+  'parameters-changed.v1': [{keys: ['period'], url: '/reports?period=week'}, {keys: ['period', 'scale_2'], url: '/reports'}],
 };
 const BAD = {
   'record-changed.v1': [{collection: 'news', id: 5}, {collection: 'news', id: 5, revision: 'r', values: {}}, {collection: '', id: 5, revision: 1}, {collection: 'n', id: 5, revision: 1, fields: ['a', 'a']}],
@@ -31,6 +32,8 @@ const BAD = {
   'counter.v1': [{key: 'n', value: -1}, {key: 'n', value: 1.5}, {key: 'N', value: 1}],
   'navigation.v1': [{url: '//other.site/x', region: 'content'}, {url: 'https://other.site/', region: 'content'}, {url: 'javascript:alert(1)', region: 'content'}, {url: '/a', region: 'Content'}],
   'preference-changed.v1': [{key: 'a b'}, {key: ''}, {key: 'x', value: 1}],
+  'parameters-changed.v1': [{keys: [], url: '/a'}, {keys: ['a', 'a'], url: '/a'}, {keys: ['Period'], url: '/a'}, {keys: ['a'], url: '//other.site/a'},
+    {keys: ['a'], url: 'https://other.site/'}, {keys: ['a'], url: '/a', values: {a: 1}}, {keys: Array.from({length: 17}, (_, n) => `k${n}`), url: '/a'}, {keys: ['a']}],
 };
 
 test('every page value type has a summary, a schema and a check that accepts what it says and refuses the rest', () => {
@@ -58,19 +61,25 @@ test('the code, the port-manifest schema, the descriptor schema and its pinned c
   const descriptor = json('src/core/contracts/interface-fragment.v1.schema.json');
   assert.deepEqual([...ports].sort(), vocabulary);
   assert.deepEqual([...descriptor.$defs.valueType.enum].sort(), vocabulary);
-  // simai.interface-fragment 1.1.0 pins the live schema 1.3.0 as a frozen copy,
-  // byte for byte (1.0.2 and 1.0.3, in history, pin the 1.2.0 copy).
-  const pinned = readFileSync(new URL('../contracts/standards/pinned/interface-fragment-1.3.0.schema.json', import.meta.url));
-  assert.ok(pinned.equals(readFileSync(new URL('../src/core/contracts/interface-fragment.v1.schema.json', import.meta.url))), 'the frozen 1.3.0 copy is the live schema');
-  assert.equal(descriptor['x-simai-version'], '1.3.0');
-  // 1.3.0 is 1.2.0 with the optional refresh object (block refresh contract 1)
-  // and the title in capitals; nothing else moved.
+  // simai.interface-fragment 1.1.1 pins the live schema 1.4.0 as a frozen copy,
+  // byte for byte (1.1.0, in history, pins the 1.3.0 copy; 1.0.2 and 1.0.3
+  // the 1.2.0 copy).
+  const pinned = readFileSync(new URL('../contracts/standards/pinned/interface-fragment-1.4.0.schema.json', import.meta.url));
+  assert.ok(pinned.equals(readFileSync(new URL('../src/core/contracts/interface-fragment.v1.schema.json', import.meta.url))), 'the frozen 1.4.0 copy is the live schema');
+  assert.equal(descriptor['x-simai-version'], '1.4.0');
+  // 1.4.0 is 1.3.0 with parameters-changed in the value types (GB20); 1.3.0
+  // is 1.2.0 with the optional refresh object (block refresh contract 1) and
+  // the title in capitals; nothing else moved.
+  const added = ['parameters-changed.v1', 'parameters-changed'];
+  const v13 = json('contracts/standards/pinned/interface-fragment-1.3.0.schema.json');
+  assert.deepEqual(descriptor.$defs.valueType.enum.filter((name) => !added.includes(name)), v13.$defs.valueType.enum);
+  assert.deepEqual({...descriptor, 'x-simai-version': '1.3.0', $defs: {...descriptor.$defs, valueType: v13.$defs.valueType}}, v13);
   const previous = json('contracts/standards/pinned/interface-fragment-1.2.0.schema.json');
   const {refresh, ...before} = descriptor.properties;
   assert.deepEqual(refresh.required, ['mode', 'contract']);
   assert.ok(!descriptor.required.includes('refresh'));
   assert.deepEqual(before, previous.properties);
-  assert.deepEqual(descriptor.$defs, previous.$defs);
+  assert.deepEqual(v13.$defs, previous.$defs);
   assert.deepEqual(descriptor.required, previous.required);
   // The first published schema, 1.0.0, is the live one without what 1.1.0
   // (the bare format name beside the older label, 2026-10-11) and 1.2.0 (the
@@ -82,7 +91,7 @@ test('the code, the port-manifest schema, the descriptor schema and its pinned c
   assert.deepEqual(anyOf, [{properties: {schema: {const: 'simai.interface-fragment.v1'}}}, {required: ['schema_version']}]);
   assert.deepEqual(schema_version, {const: 1});
   assert.deepEqual(properties.schema.enum, [published.properties.schema.const, 'simai.interface-fragment']);
-  assert.deepEqual(live.$defs.valueType.enum.slice(0, labels.length), published.$defs.valueType.enum, 'the older labels come first, as published');
+  assert.deepEqual(live.$defs.valueType.enum.slice(0, published.$defs.valueType.enum.length), published.$defs.valueType.enum, 'the older labels come first, as published');
   assert.match(live.$defs.valueType.description, /value-types-without-version/u);
   const valueType = {enum: published.$defs.valueType.enum};
   assert.deepEqual({...live, 'x-simai-version': published['x-simai-version'], properties: {...properties, schema: published.properties.schema}, $defs: {...live.$defs, valueType}}, published, 'otherwise the pinned copy is the published schema');

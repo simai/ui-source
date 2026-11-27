@@ -14,7 +14,7 @@
     "type_manifest": "simai.composition.type-manifest.v1 unchanged",
     "value_types": "bare names read beside the older .v1 labels (value-types-without-version); fixtures/routing.json and the sf-table manifest unchanged"
   },
-  "contractDigest": "sha256:ea937e548dc6cbd7249a86c772ea3546069ac29d3db23ecd3e7c593cab0aae29",
+  "contractDigest": "sha256:c3612136eb7817e6fd464ea008a36d34da56ec0d861bea7b8730f41acedac6f5",
   "manifests": {
     "port:sf-table@1.0.0": "sha256:95abeff5e459ad84d3fabfe61a50c3fdad6730e6b705264badfcd2ba28fc7e50",
     "port:sf-view-table@1.1.0": "sha256:83f932fff473f48e55b2646cae28482a0bfec00a208dfa136590ed1eaeed578d",
@@ -23,7 +23,7 @@
   "normativeFiles": {
     "README.md": "sha256:a107e9a0367143926ad7d4eb97917904dd93d89c9f654e01f3c91000076b4af2",
     "fixtures/routing.json": "sha256:54ef6bd2784e9ffa6cbc7e685a267ede6f9ab4d2fbe325068dc0b52de9fd95b0",
-    "fixtures/value-type-names.json": "sha256:e7367315bb5405e904f32b2d3a6c3fb7fff433cd53882bb31e4c2f750853eb4d"
+    "fixtures/value-type-names.json": "sha256:3cc8599e295218403e1b45958c5137785c8ce03906254273c7a95db964999f2d"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",
