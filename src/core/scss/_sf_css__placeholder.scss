@@ -245,6 +245,22 @@
   :where(sf-language:not([size="1/3"], [size="1/2"], [size="2"], [size="3"])) { --sf-language--field-label: var(--sf-text-height-1); }
 }
 
+/* shrink="code" (group build 20): a bar that fits its row (sf-header-site)
+   set data-shrunk on the element, and the code trigger gives up its glyph --
+   the code and the arrow stay, one text line narrower. The narrower box and
+   the hidden glyph live in this one sheet, so they always arrive together (a
+   site that bundles its own copy of the component sheets still gets both
+   with core). The glyph's face is hidden: the sf-icon host carries an inline
+   display: contents, and the face's .sf-icon:not(.hidden) is unlayered, so
+   the rule needs !important. */
+:where(sf-language[shrink="code"][data-shrunk="true"]:not([trigger="icon"], [trigger="name"])) {
+  --sf-language--trigger: calc(2 * var(--sf-language--space-x) + 2 * var(--sf-language--text-x) + 2 * var(--sf-language--line));
+}
+
+:where(sf-language[shrink="code"][data-shrunk="true"]:not([trigger="icon"], [trigger="name"])) > .sf-language-parts > sf-button > button > sf-icon:first-child > * {
+  display: none !important;
+}
+
 /* trigger name (C381): the glyph and the language's own name in the words of
    its place, one line of that place high; its width is the name's, which no
    attribute gives, so before the code the host holds the line and no width. */

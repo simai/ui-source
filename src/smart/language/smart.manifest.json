@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "title": "Language",
   "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -132,6 +132,15 @@
           "code",
           "icon",
           "name"
+        ]
+      },
+      "shrink": {
+        "type": "string",
+        "default": "none",
+        "description": "How the code trigger gives way when the bar it stands in asks it to (group build 20, the docs header; as sf-button shrink, owner decision C370): code, the current code and the arrow without the translate glyph («RU ▾»), one text line narrower, keeping its name «Язык: Русский» and its tooltip; none, never. sf-header-site with collapse auto, or a collapse step with fit, asks first, before its nav gives way (C372), by the host state data-shrunk. The icon and name triggers and the inline and field looks do not shrink",
+        "enum": [
+          "none",
+          "code"
         ]
       },
       "apply": {
@@ -359,7 +368,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "5b658ed37ad92a0b4eafd7c8dd6c07012245b65bde0e28e9d9ac689ca2911cf0"
+        "sha256": "da01133ff7277e9b23955725fc4657f1035758076825ebac65b96bdacbc95df8"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
@@ -371,7 +380,7 @@
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "f287661df598cfc5df0e6abbee03b491a884c3086d577e1a18b0bbe4a529746e"
+        "sha256": "13dd77c81666175dd71cef26d74efd76fd7e57cec5811fb20e67f5a70c7fe670"
       }
     ],
     "generated_runtime": []

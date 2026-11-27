@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -66,6 +66,11 @@
           "auto",
           "always"
         ]
+      },
+      "fit": {
+        "type": "boolean",
+        "default": false,
+        "description": "With a collapse step (sm, md, lg, xl): from the step up the bar fits its own row as collapse auto does (owner decisions C371, C372) -- first the tools that can shrink (sf-button shrink=\"icon\", sf-language shrink=\"code\"), then the nav's sf-menu (overflow more) moves its sections into «Ещё», and the menu button and the panel only when not even one section and «Ещё» fit; below the step the bar is always collapsed, the menu button and its panel, as without fit. The step is the sheet's container condition, so the first paint below it is right without the script; above it the bar measures itself before its first paint (data-fitted). collapse auto, always and none ignore it"
       },
       "menu-placement": {
         "type": "string",
@@ -368,7 +373,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "4134d2880a107ac70425b2976da0c810bcdd37c9f053c808066481f3d5f1f60b"
+        "sha256": "bdf6bfc98190d42a59f3c359bc0531031e3f82c0cf9fd05c552cbc17936b1c43"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
@@ -384,7 +389,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "d1d15cb82321fb73ec8ddbf380674bcbcf7e3ef6d847e29de52e500f1786d2f2"
+        "sha256": "785a30aa3e3a9361f40f2f2624093707963ea2ca596325344f4fb2b431bf6f24"
       }
     ],
     "generated_runtime": []

@@ -47,9 +47,10 @@ test('C371, C372: a row its bar lays out is measured through the bar, before the
   assert.match(menu, /rowNeeds\(\) \{/u);
   const bar = read('src/smart/header-site/index.js');
   // The order: tools whole, tools as glyphs, then the menu's least row, else collapse.
-  assert.match(bar, /if \(needs\.whole <= roomWhole \+ 0\.5\) \{\n\s+this\.setToolsCompact\(false\);\n\s+\} else if \(needs\.least <= \(shrinks \? roomGlyph : roomWhole\) \+ 0\.5\) \{\n\s+this\.setToolsCompact\(shrinks\);\n\s+\} else \{/u);
+  // Group build 20: the fewest tools give way, in the page's order.
+  assert.match(bar, /while \(k < count && needs\.whole > roomWith\(k\) \+ 0\.5\) k \+= 1;\n\s+if \(needs\.whole <= roomWith\(k\) \+ 0\.5\) \{\n\s+this\.setToolsShrunk\(k\);\n\s+\} else if \(needs\.least <= roomWith\(count\) \+ 0\.5\) \{\n\s+this\.setToolsShrunk\(count\);\n\s+\} else \{/u);
   assert.match(bar, /needs\.menu\?\.measureFit\(\{driven: true\}\);/u);
-  assert.match(bar, /drivesRow\(menu\) \{\n\s+return this\.collapse === 'auto' && !this\.collapsed && this\.navMenus\(\)\.includes\(menu\);/u);
+  assert.match(bar, /drivesRow\(menu\) \{\n\s+return this\.fitsRow && !this\.collapsed && this\.navMenus\(\)\.includes\(menu\);/u);
 });
 
 test('C372: sf-header-site collapse auto, its host states and its md floor before its code', () => {

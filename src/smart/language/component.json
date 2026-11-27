@@ -2,7 +2,7 @@
   "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
   "id": "smart.language",
   "tag": "sf-language",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "language",
   "settings": {
@@ -112,6 +112,15 @@
       ],
       "default": "code",
       "summary": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). name, the glyph and the current language's own name («Русский», «Deutsch») in the link role (component link, owner decisions C381, C186: the navigation form, the ink and size of its place, no fill in any state, the line under the name on hover, press, keyboard focus and while open, the link's focus ring), as wide as the name, no tooltip (the name is shown), still named «Язык: Русский». The menu is the same. Core holds the trigger's box before the code arrives (--sf-language--trigger: the code's width, the icon's square, the name's line)"
+    },
+    "shrink": {
+      "type": "enum",
+      "values": [
+        "none",
+        "code"
+      ],
+      "default": "none",
+      "summary": "How the code trigger gives way when the bar it stands in asks it to (group build 20, the docs header; as sf-button shrink, owner decision C370): code, the current code and the arrow without the translate glyph («RU ▾»), one text line narrower, keeping its name «Язык: Русский» and its tooltip; none, never. sf-header-site with collapse auto, or a collapse step with fit, asks first, before its nav gives way (C372), by the host state data-shrunk. The icon and name triggers and the inline and field looks do not shrink"
     },
     "apply": {
       "type": "enum",
@@ -313,7 +322,8 @@
     }
   },
   "host-states": {
-    "data-look": "string"
+    "data-look": "string",
+    "data-shrunk": "boolean"
   },
   "x-summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "x-source": {
@@ -354,7 +364,8 @@
     "version 1.6.1 (2026-11-18): a patch (dispatcher decision on C278: the decision removes languages of other CIS countries; Tatar and Bashkir are languages of regions of Russia). The names table holds tt and ba again (56 languages), with their name-<code> words in every pack and the Cyrillic font list; uk, be, uz, az, hy, ka, ky, tg and tk stay removed. Settings, values, events and keys unchanged.",
     "version 1.7.0 (2026-11-19, owner decision C369, docs header study ui-control control/research/2026-11-19-docs-header, DEV msg-d9c2e1640ee24748b154 item 1.3; numbered above 1.6.1 on origin/fix/lang-follow and origin/integration/pair-next-15): a minor, all additions. trigger=\"icon\": the menu's trigger is sf-button-icon with the translate glyph alone -- a square of the size's step, ghost on-surface, aria-haspopup menu, named «Язык: Русский» (the word trigger) -- which shows its name as the Framework's tooltip by itself (C160 (1)); the element draws no tooltip surface of its own then. The menu, the search, the sheet on a phone and the keys are the same. Core's first paint holds the square for it (core.styles, hash only: --sf-language--trigger is the box for sf-language[trigger=\"icon\"], and an undefined sf-button-icon in the parts holds it too), so the tools beside it do not move. Relation cl-button-icon. The element's former undocumented getter trigger (the drawn button) is triggerButton now; trigger is the setting. Settings otherwise, values, events and keys unchanged. trigger name (owner decision C381 with C369, the Larena Panel sign-in screen 2026-11-19, DEV msg-cfe379b5d6aa492c8ba6 item 1 a): the glyph and the current language's own name in the link role -- a native button with component link's classes sf-link sf-link--navigation (component.link 1.4.0: the navigation form, a link that is a button, the line kept while its menu is open) -- as wide as the name, no tooltip, named as the other triggers; relation link added; core holds its box at one line of its place before the code (its width is the name's, which no attribute gives).",
     "version 1.7.1 (2026-11-20, fix/reds-before-gb15; above every origin branch; numbered above 1.7.0 on origin/feat/header-compact): a patch, probe only. probe.json p5-menu reads the trigger's name on the German page in German («Sprache: Deutsch»), as the component says it since the C278 language packs; it expected the English name. Settings, values, events, words and drawing unchanged.",
-    "version 1.7.2 (2026-11-21, group build 15; above 1.7.1, the highest on every origin branch): a patch, a probe. The manifest probe p5-menu reads the menu's width as the 44-character step where the menu stands (C396), not 320 px. Settings, values, events and keys unchanged."
+    "version 1.7.2 (2026-11-21, group build 15; above 1.7.1, the highest on every origin branch): a patch, a probe. The manifest probe p5-menu reads the menu's width as the 44-character step where the menu stands (C396), not 320 px. Settings, values, events and keys unchanged.",
+    "version 1.8.0 (2026-11-27, group build 20 D, owner remark: «Наборы» hidden at 1440 in the docs header, msg-11e805f8, Docara msg-6be3107d item 2; above 1.7.2, the highest on every origin branch): a minor, one setting and one host state. shrink=\"code\": while sf-header-site sets data-shrunk on it (collapse auto, or a collapse step with fit, sf-header-site 1.17.0), the code trigger draws its code and arrow without the translate glyph, one text line narrower (the box core holds, --sf-language--trigger, loses one --sf-language--line and the glyph is hidden, both in core.styles), so the language gives way before the sections do. shrinkBoxes() tells the bar the trigger's width whole and shrunk, read while whole. Name, tooltip, menu and every other look unchanged; without shrink nothing changes. The name follows sf-button shrink (C370): one attribute, the value naming what stays."
   ],
   "x-registry": {
     "capabilities": [

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-header-site's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.11 and vocabulary 1.1.5; the brief is ui-control's site-header design brief of 2026-10-28.",
   "id": "smart.header-site",
   "tag": "sf-header-site",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "kind": "leaf",
   "family": "header",
   "settings": {
@@ -19,6 +19,11 @@
       ],
       "default": "lg",
       "summary": "Below this step of the bar's own width (sm 32rem, md 44rem, lg 60rem, xl 72rem: the screen breakpoints' places on the container ladder, C181) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A container condition of the sheet, so the first paint is right without the script, and a bar narrower than the window collapses with its nav. auto (owner decisions C371, C372): the bar measures its own row at every width and gives way in one order -- first the tools that can (sf-button shrink=\"icon\" draws its glyph only), then the nav's sf-menu (overflow more) moves its sections one by one into «Ещё», and the menu button and the panel only when not even one section and «Ещё» fit; each width change is decided before the paint, in one step. Before its code the sheet draws auto as md; with it the bar measures itself before its first paint (host state data-fitted says it has)"
+    },
+    "fit": {
+      "type": "boolean",
+      "default": false,
+      "summary": "With a collapse step (sm, md, lg, xl): from the step up the bar fits its own row as collapse auto does (owner decisions C371, C372) -- first the tools that can shrink (sf-button shrink=\"icon\", sf-language shrink=\"code\"), then the nav's sf-menu (overflow more) moves its sections into «Ещё», and the menu button and the panel only when not even one section and «Ещё» fit; below the step the bar is always collapsed, the menu button and its panel, as without fit. The step is the sheet's container condition, so the first paint below it is right without the script; above it the bar measures itself before its first paint (data-fitted). collapse auto, always and none ignore it"
     },
     "menu-placement": {
       "type": "enum",
@@ -284,6 +289,7 @@
     "close-label"
   ],
   "x-decisions": [
+    "version 1.17.0 (2026-11-27, group build 20 D, owner remark: «Наборы» hidden at 1440 in the docs header, msg-11e805f8; Docara measurements msg-6be3107d; above 1.16.0 on every origin branch): a minor, one setting. fit (boolean) with a collapse step sm-xl: below the step the bar is collapsed as before (the sheet's container condition, first paint without the script), from the step up it fits its row as collapse auto does, in the C372 order: the tools with shrink first, then the nav's sections into «Ещё», then the menu button and the panel. collapse auto alone has no such floor once its code is in: on the docs /ru/ page at 704-952 it kept the bar open with no section, no «Ещё» and no menu button (Docara's own sheet hides the bar's nav below 60rem, where it expects the panel, and its side tree too), so the docs were out of reach there; collapse=\"lg\" fit is the floor. The tools give way one by one in the page's order, as few as the row needs (the docs header at 1440: the search shrinks, the language stays whole, six sections in the row); all of them before a section goes into «Ещё». The tools that give way now include sf-language shrink=\"code\" (its code and arrow without the glyph, sf-language 1.8.0); a tool that knows its own boxes says them (shrinkBoxes(): whole and shrunk), an sf-button's glyph is still a square of its height. A name of the dispatcher's (owner delegation 2026-10-27): fit rather than a new collapse value, so collapse keeps one meaning, the step. Without fit every value draws and behaves as in 1.16.0.",
     "version 1.16.0 (2026-11-24, group build 18 L7; Docara request with an owner decision, msg-4c6c5fb0; above 1.15.0 on every origin branch): a minor, one public variable. --sf-site-header-brand-gap sets the space between the brand and the navigation alone in the wide bar: the panel is display: contents, so the two stood the row's gap apart and the only way to move the nav was --sf-site-header-gap, which moved every group. It is the nav's start margin on top of the row's gap (the gap it names minus the row's), so its default is the row's gap (16, a phone 12) and nothing moves until a page sets it; a space-system step (var(--sf-space-2), var(--sf-space-3)). Collapsed (every collapse step, collapse always, a nav that does not fit) the margin is 0: the side panel is unchanged. navigation-align center ignores it (DEV answer 13, the pre-cut of the same group build, a number of this branch alone): the nav stays at the bar's centre, the margin is 0, so the variable is the start layout's alone. Settings, values, slots, events and keys unchanged.",
     "version 1.10.3 (2026-11-14, owner decision C157 (2); written on the branch as 1.10.1): a patch, numbered above fix/headers-c161 (1.10.0) so either merge order keeps the higher one. The phone menu's side panel takes the side panel's step 1/2, 20rem (min(90vw, --sf-g0)); it was 22rem (--sf-g1), off the three steps 20 · 24 · 30rem. --sf-site-header-sheet-inline-size still sets it.",
     "name: sf-site-header (dispatcher, owner-delegated, 2026-10-28). A leaf with slots: its content is the page's, drawn with Framework components (sf-menu, sf-button-group theme-switch, sf-color, sf-button), so it owns no bus and no rules.",

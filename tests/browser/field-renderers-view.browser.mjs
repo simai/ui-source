@@ -154,6 +154,7 @@ try {
         innerDisplay: paint?.display ?? null,
         line: host.getAttribute('line'),
         size: host.getAttribute('size'),
+        text: (() => { const t = box.querySelector('.sf-progress-scale-text'); if (!t) return null; const s = getComputedStyle(t); return [parseFloat(s.fontSize), parseFloat(s.lineHeight)]; })(),
       };
     };
 
@@ -316,9 +317,11 @@ try {
         expected: {value: [fontSize, lineHeight], tags: [[fontSize, lineHeight], [fontSize, lineHeight]], badge: [fontSize, lineHeight]}});
     }
     // And the two that are not inline keep their own scale rather than a line.
-    if (measured.scale?.size !== '1' || measured.scale?.line) {
-      fail({case: 'a scale is a control and keeps its size', got: measured.scale,
-        expected: 'size 1 and no line'});
+    // Group build 20 (1f4667a0, View VL-90): a record view's scale draws at
+    // size 2, its text at the value's text (size 1 drew 14 in a 16 line).
+    if (measured.scale?.size !== '2' || measured.scale?.line || (measured.scale?.text && !atText(measured.scale.text))) {
+      fail({case: 'a scale is a control at the value\'s text', got: measured.scale,
+        expected: `size 2, no line, text ${fontSize}/${lineHeight}`});
     }
     // file-preview has no visual size: its `size` is the file's size as text,
     // so the view passes file-size and never size.

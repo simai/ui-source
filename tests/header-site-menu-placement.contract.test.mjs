@@ -130,7 +130,7 @@ test('header site C104 / C181 (2): collapse is a container step of the bar, and 
   for (const [, selector] of collapsed.matchAll(/^  (&[^{\n]*)\{/gmu)) assert.match(selector, /^&[^ ]* \S/u, `${selector} styles a part of the bar`);
   assert.match(source, /getPropertyValue\('--sf-site-header--collapsed'\)\.trim\(\) === '1'/u);
   // collapse auto (1.14.0, C371, C372) lays the row out in the same observer.
-  assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => \{\n\s+if \(this\.collapse === 'auto'\) \{\n\s+this\.fitRow\(\);\n\s+return;\n\s+\}\n\s+this\.syncCollapsed\(\);\n\s+this\.syncFit\(\);\n\s+\}\);/u);
+  assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => \{\n\s+if \(this\.fitsRow\) \{\n\s+this\.fitRow\(\);\n\s+return;\n\s+\}\n\s+this\.syncCollapsed\(\);\n\s+this\.syncFit\(\);\n\s+\}\);/u);
   // F-1: the nav's content past its box collapses the bar until it is as wide as the nav needed.
   assert.match(source, /this\.setFit\(Math\.ceil\(width \+ spread\.width - room\.width\) \+ 1\);/u);
   assert.equal(component['host-states']['data-nav-overflow'], 'boolean');

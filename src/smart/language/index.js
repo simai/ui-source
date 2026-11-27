@@ -30,6 +30,7 @@ import {pageLocale} from '../../core/js/page-language';
 import BundledPreferences from '../../core/js/preferences.js';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {instancePath, partId} from '../../core/js/instance-path.js';
+import {layoutWidth} from '../../core/js/overflow-row.js';
 import {FormField} from '../helpers/form-field';
 import {renderLanguageTemplate} from './js/templates/default';
 import {SIZES, canonicalCode, languageRows, lookFor, matchLanguage, normalizeLanguages, useNames} from './js/languages';
@@ -51,6 +52,14 @@ const MENU = `:scope > .sf-language-parts > ${tagSelector('sf-menu-context')}`;
 const TRIGGER = `:scope > .sf-language-parts > :is(${tagSelector('sf-button')}, ${tagSelector('sf-button-icon')}, button.sf-language-name)`;
 const TRACK = `:scope > .sf-language-parts > ${tagSelector('sf-segmented')}`;
 const FIELD = `:scope > .sf-language-parts > ${tagSelector('sf-dropdown')}`;
+// The bar that may ask this element to give way (shrink): the nearest
+// ancestor that fits its row (queueFit). The language does not draw it, so it
+// names no bar tag.
+const fittingBar = (element) => {
+  let node = element.parentElement;
+  while (node && typeof node.queueFit !== 'function') node = node.parentElement;
+  return node;
+};
 
 // A phone: below the md breakpoint, where core declares --sf-breakpoint-md
 // (sf-menu-context's own test for its sheet).
@@ -311,6 +320,24 @@ class SfLanguage extends FormField(LanguageElement) {
   }
 
   /**
+   * The trigger's boxes for a bar that fits its row (the site header, collapse
+   * auto, or a step with fit): its width as drawn and its width shrunk, the
+   * code trigger less its translate glyph (shrink="code", group build 20).
+   * Read while whole, the glyph is drawn; read while shrunk, both widths are
+   * the drawn one. Layout boxes, as the bar reads its row. A trigger that
+   * does not shrink says the same width twice.
+   */
+  shrinkBoxes() {
+    const host = this.triggerButton;
+    const box = host?.querySelector(':scope > button') ?? host ?? this;
+    const width = layoutWidth(box);
+    const shrinks = this.getAttribute('shrink') === 'code' && host?.matches(tagSelector('sf-button'));
+    const glyph = shrinks ? box.querySelector(':scope > sf-icon:first-child') : null;
+    const glyphWidth = glyph && glyph.getClientRects().length ? layoutWidth(glyph) : 0;
+    return {width, shrunk: width - glyphWidth};
+  }
+
+  /**
    * Opens or closes the menu of a menu or search look. Open, the chosen
    * language is in view (research LG-5: with Greek chosen of forty the list
    * opened at Русский): in the menu look it takes the focus, so the arrows go
@@ -503,6 +530,14 @@ class SfLanguage extends FormField(LanguageElement) {
     if (!this._tipAsked && this.querySelector('.sf-language-tooltip')) {
       this._tipAsked = true;
       globalThis.SF?.Loader?.ensurePlugin?.('tooltip');
+    }
+    // shrink="code" (group build 20): the bar that fits its row counted this
+    // trigger whole until it was drawn (its glyph is what it gives up); once
+    // the trigger button has drawn, the bar decides its row again.
+    const trigger = this.getAttribute('shrink') === 'code' ? this.triggerButton : null;
+    if (trigger && trigger !== this._shrinkAskedFor && typeof trigger.whenRendered === 'function') {
+      this._shrinkAskedFor = trigger;
+      trigger.whenRendered(() => fittingBar(this)?.queueFit());
     }
     this.sfSyncFormState();
   }

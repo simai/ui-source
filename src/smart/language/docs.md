@@ -276,6 +276,20 @@ it do not move.
 <sf-language slot="tools" languages="ru en" trigger="icon"></sf-language>
 ```
 
+A header that fits its own row (`sf-header-site` with `collapse="auto"`, or a
+collapse step with `fit`) can ask the code trigger to give way before its
+sections do: `shrink="code"` drops the translate glyph and keeps the code and
+the arrow, «RU ▾», one text line narrower. The header sets the host state
+`data-shrunk` while it needs the room; the name «Язык: Русский», the tooltip
+and the menu stay. The icon and name triggers do not shrink.
+
+```html
+<sf-header-site collapse="lg" fit>
+  …
+  <sf-language slot="tools" languages="ru en" size="1/2" shrink="code"></sf-language>
+</sf-header-site>
+```
+
 Beside a form or in a quiet row, `trigger="name"` (owner decision C381, the
 sign-in screen) is the glyph and the current language's own name,
 «Русский», «Deutsch», in the link role: the words take the size and the ink
@@ -329,6 +343,7 @@ rungs: its rows are 32 px up to `1/2`, 40 px from `1`.
 | `search-from` | integer | `8` | The count from which the menu searches (auto). |
 | `labels` | `name` `code` | `name` | Names or codes in the switch (`mode="inline"`). `compact` (boolean) is its dated alias until 2027-01-01. |
 | `size` | `1/3` `1/2` `1` `2` `3` | `1` | The ladder rung. |
+| `shrink` | `none` `code` | `none` | `code`: the code trigger drops its glyph while a fitting header asks (`data-shrunk`). |
 | `apply` | `page` `none` | `page` | Apply a language without an href to the page. |
 | `remember` | string | `""` | A name to keep the choice under (`SF.Preferences` `sf-language/<name>`). |
 | `label` | string | «Язык» / «Language» | The control's name. |

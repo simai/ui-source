@@ -31,7 +31,7 @@ test('the include view draws its block through an element directive, not a lit t
   assert.match(directive, /code\.textContent = text;/u);
   assert.match(directive, /box\.replaceChildren\(pre\);/u);
   assert.match(source, /^import \{Directive, PartType, directive\} from "lit\/directive\.js";$/mu);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.2');
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.3');
 });
 
 test('the content-actions rows of a window weigh nothing', () => {
