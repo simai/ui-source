@@ -373,7 +373,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "973311ac568fa5b6a71f9ca8539f6dca5f2938ef50850a28abeb188fa29fa78c"
+        "sha256": "bdf6bfc98190d42a59f3c359bc0531031e3f82c0cf9fd05c552cbc17936b1c43"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
@@ -389,7 +389,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "aa82958874b91999c151a8d35924b72ec320fdfc859633f6e2983a2cde58f928"
+        "sha256": "785a30aa3e3a9361f40f2f2624093707963ea2ca596325344f4fb2b431bf6f24"
       }
     ],
     "generated_runtime": []

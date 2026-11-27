@@ -21125,7 +21125,7 @@
       "recorded_on": "2026-11-27",
       "stage": "compat",
       "kind": "attribute",
-      "summary": "sf-header-site 1.17.0 (group build 20 D; owner remark: «Наборы» hidden at 1440 in the docs header, msg-11e805f8; Docara msg-6be3107d item 1): a new boolean setting fit. With a collapse step (sm-xl) the bar is collapsed below the step as before, and from the step up it fits its row as collapse auto does (C371, C372): the tools with shrink first, then the nav's sections into «Ещё», then the menu button and the panel. Without fit nothing changes; auto, always and none ignore it.",
+      "summary": "sf-header-site 1.17.0 (group build 20 D; owner remark: «Наборы» hidden at 1440 in the docs header, msg-11e805f8; Docara msg-6be3107d item 1): a new boolean setting fit. With a collapse step (sm-xl) the bar is collapsed below the step as before, and from the step up it fits its row as collapse auto does (C371, C372): the tools with shrink first, then the nav's sections into «Ещё», then the menu button and the panel. Without fit nothing changes; auto, always and none ignore it. Under auto and fit the tools now give way one by one in the page's order, as few as the row needs (before: all at once); with one shrinking tool nothing changes.",
       "items": [
         {
           "component": "sf-header-site",

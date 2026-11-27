@@ -433,10 +433,19 @@ class SfSiteHeader extends SiteHeaderElement {
   }
 
   setToolsCompact(compact) {
-    for (const tool of this.shrinkingTools()) {
-      if (compact) tool.setAttribute('data-shrunk', 'true');
+    this.setToolsShrunk(compact ? this.shrinkingTools().length : 0);
+  }
+
+  // The first `count` tools that can shrink are shrunk, in the page's order
+  // (group build 20): the row gives up only as much as it needs -- the docs
+  // header at 1440 shrinks its search and keeps the language whole when that
+  // is enough for every section. data-tools-compact says one is.
+  setToolsShrunk(count) {
+    this.shrinkingTools().forEach((tool, index) => {
+      if (index < count) tool.setAttribute('data-shrunk', 'true');
       else tool.removeAttribute('data-shrunk');
-    }
+    });
+    const compact = count > 0;
     if (compact === this._toolsCompact) return;
     this._toolsCompact = compact;
     this.sfHostState('data-tools-compact', compact);
@@ -506,8 +515,10 @@ class SfSiteHeader extends SiteHeaderElement {
     const parts = [brand, nav, actions, tools].filter((part) => part && part.getClientRects().length);
     const besides = width(brand) + width(actions) + gap * Math.max(0, parts.length - 1);
     const toolsNow = width(tools);
-    let whole = 0;
-    let glyph = 0;
+    // Each shrinking tool's width whole and shrunk, and the tools' row
+    // without them as they are drawn now.
+    const sizes = [];
+    let drawnNow = 0;
     for (const tool of this.shrinkingTools()) {
       // A tool that knows its own boxes says them (sf-language: its trigger
       // whole and without its glyph, read while whole); an sf-button's glyph
@@ -518,31 +529,37 @@ class SfSiteHeader extends SiteHeaderElement {
       const box = tool.querySelector(':scope > :is(button, a)') ?? tool;
       const own = typeof tool.shrinkBoxes === 'function' ? tool.shrinkBoxes()
         : tool.localName === 'sf-language' ? {width: layoutWidth(box), shrunk: layoutWidth(box)} : null;
+      const shrunkNow = tool.getAttribute('data-shrunk') === 'true';
       const drawn = own ? {width: own.width, height: own.shrunk} : {width: layoutWidth(box), height: layoutHeight(box)};
-      if (!this._toolsCompact) this._wholeWidths.set(tool, drawn.width);
-      whole += this._wholeWidths.get(tool) ?? drawn.width;
-      glyph += this._toolsCompact ? drawn.width : drawn.height;
+      if (!shrunkNow) this._wholeWidths.set(tool, drawn.width);
+      sizes.push({whole: this._wholeWidths.get(tool) ?? drawn.width, glyph: shrunkNow ? drawn.width : drawn.height});
+      drawnNow += drawn.width;
     }
-    const shrinks = this.shrinkingTools().length > 0;
-    const toolsWhole = this._toolsCompact ? toolsNow - glyph + whole : toolsNow;
-    const toolsGlyph = this._toolsCompact ? toolsNow : toolsNow - whole + glyph;
+    const count = sizes.length;
+    // The tools' row with the first k shrunk.
+    const toolsWith = (k) => toolsNow - drawnNow + sizes.reduce((sum, size, index) => sum + (index < k ? size.glyph : size.whole), 0);
+    const roomWith = (k) => room - besides - toolsWith(k);
     if (!nav || !nav.firstElementChild) {
-      this.setToolsCompact(shrinks && besides + toolsWhole > room + 0.5);
+      let k = 0;
+      while (k < count && besides + toolsWith(k) > room + 0.5) k += 1;
+      this.setToolsShrunk(k);
       return;
     }
     const needs = this.navNeeds(nav);
     if (!needs) return;
-    const roomWhole = room - besides - toolsWhole;
-    const roomGlyph = room - besides - toolsGlyph;
-    if (needs.whole <= roomWhole + 0.5) {
-      this.setToolsCompact(false);
-    } else if (needs.least <= (shrinks ? roomGlyph : roomWhole) + 0.5) {
-      this.setToolsCompact(shrinks);
+    // The fewest tools shrunk with every section in the row; else all of
+    // them, and the sections give way into «Ещё».
+    let k = 0;
+    while (k < count && needs.whole > roomWith(k) + 0.5) k += 1;
+    if (needs.whole <= roomWith(k) + 0.5) {
+      this.setToolsShrunk(k);
+    } else if (needs.least <= roomWith(count) + 0.5) {
+      this.setToolsShrunk(count);
     } else {
       // Not even one section beside «Ещё»: the menu button and the panel,
       // until the row is as wide as that row needs.
-      this.setToolsCompact(shrinks);
-      this.setFit(Math.ceil(room + needs.least - (shrinks ? roomGlyph : roomWhole)) + 1);
+      this.setToolsShrunk(count);
+      this.setFit(Math.ceil(room + needs.least - roomWith(count)) + 1);
       this.syncCollapsed();
       return;
     }
