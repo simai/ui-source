@@ -381,6 +381,11 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
 
   onDisconnected() {
     this._lowerLinkPanel();
+    // The toolbar's roving keys watch the bar (a MutationObserver): given
+    // back with the element, made again on the next drawing (GB20,
+    // instance-scope gate 36).
+    this._toolbarRow?.keys.destroy();
+    this._toolbarRow = null;
     this._toolbarObserver?.disconnect();
     this._toolbarObserver = null;
     this._toolbarObserved = null;

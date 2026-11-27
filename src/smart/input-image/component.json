@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-image's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/image-field (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/image-field/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-image",
   "tag": "sf-input-image",
-  "version": "1.10.6",
+  "version": "1.10.7",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -617,7 +617,8 @@
     "version 1.10.3 (written on the branch as 1.9.2; 2026-11-17, owner decision C268; numbered above 1.9.1 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.10.4 (written on the branch as 1.10.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.10.5 (written on the branch as 1.10.1; 2026-11-17, group build 10, fix/forms-fm2; numbered above 1.10.0 on another origin branch): a patch, a look. SM-IF-1: the field label is in the text ink (on-surface), as sf-input's (owner decision C153 (1)); it was on-surface-variant, the hint's ink. At size 1 on a phone (below 60rem) it stays 14 / 20, the value's step there, as sf-input's; it was 12 / 16. Settings, values, events and keys unchanged.",
-    "version 1.10.6 (2026-11-17, Framework order FO-1 of the view set study): a patch. A file held over the field and a dropped file are read by core's files drop (core/js/files-drop.js, filesDrop) on the host, in place of the well's own dragenter, dragover, dragleave and drop handlers: only a drag that carries files, the copy cursor, none while the field takes nothing, the files of a drop once. The drop state, its words and the events are unchanged."
+    "version 1.10.6 (2026-11-17, Framework order FO-1 of the view set study): a patch. A file held over the field and a dropped file are read by core's files drop (core/js/files-drop.js, filesDrop) on the host, in place of the well's own dragenter, dragover, dragleave and drop handlers: only a drag that carries files, the copy cursor, none while the field takes nothing, the files of a drop once. The drop state, its words and the events are unchanged.",
+    "version 1.10.7 (2026-11-27, group build 20 area A, known-red instance-scope; above every origin branch): a patch. The coarse-pointer media query's listener is removed from the same MediaQueryList it was added to: a removed field leaves no listener."
   ],
   "x-rule": {
     "$comment": [

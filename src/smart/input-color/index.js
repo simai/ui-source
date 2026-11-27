@@ -990,7 +990,10 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
             view: this._view || "palette",
             offersPalette: this.offersPalette,
             offersCustom: this.offersCustom,
-            palette: PALETTE,
+            // The sixteen hues of the static palette (C17). Named hues, not
+            // palette: the setting palette (a boolean) keeps its own name in the
+            // context's readers (GB20 triage, manifest defaults).
+            hues: PALETTE,
             alpha: this.takesAlpha,
             brand: this.isBrand,
             checks: this.isBrand ? this.checkLines() : [],

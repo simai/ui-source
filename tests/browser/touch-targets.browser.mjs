@@ -17,6 +17,14 @@
 //     its neighbour reaches that button, never the neighbour;
 //   - the rule check: controls whose 44 areas meet are listed; only the tight
 //     toolbar (gap 0, the expected finding) is;
+//   - the stacking check (GB20, DEV on the touch-size part): a popup drawn
+//     inside the parent that the coarse-pointer rule makes a stacking context
+//     (isolation: isolate) is listed -- it would stay under a later
+//     positioned sibling; only the page's own bad popup (#bad-pop) is, and an
+//     sf-menu-context written inside such a row is not (it opens in the top
+//     layer);
+//   - sf-menu rows touch (GB20, DEV N1): no gap between two rows of a column,
+//     and a tap on the line between two rows reaches a row, never nothing;
 //   - 1440 px, a fine pointer (mouse): the rows keep the ladder's heights and
 //     3 px outside a control's drawn box reaches nothing.
 import {createServer} from 'node:http';
@@ -45,6 +53,9 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
 <div class="page-row" id="b-radios"><sf-radio id="r1" name="r" value="1" size="1/2" aria-label="Один"></sf-radio><sf-radio id="r2" name="r" value="2" size="1/2" aria-label="Два"></sf-radio></div>
 <div class="page-toolbar" id="b-icons"><sf-button-icon id="i1" icon="add" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Добавить"></sf-button-icon><sf-button-icon id="i2" icon="edit" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Изменить"></sf-button-icon><sf-button-icon id="i3" icon="delete" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Удалить"></sf-button-icon></div>
 <div class="page-row" id="b-icons1"><sf-button-icon id="j1" icon="add" size="1" appearance="ghost" scheme="on-surface" aria-label="Добавить"></sf-button-icon><sf-button-icon id="j2" icon="edit" size="1" appearance="ghost" scheme="on-surface" aria-label="Изменить"></sf-button-icon></div>
+<!-- Last on the page: the stacking check reads styles only, and the rows above keep their places in the viewport. -->
+<div class="page-row" id="b-pop" style="position:relative"><sf-checkbox id="p1" size="1/2" aria-label="Фильтр"></sf-checkbox><div id="bad-pop" role="listbox" aria-label="Список" style="position:absolute;inset-inline-start:0;inset-block-start:100%;inline-size:120px;block-size:40px;background:var(--sf-surface-1)"></div></div>
+<div class="page-row" id="b-menu-row" style="position:relative"><sf-button-icon id="k1" icon="more_horiz" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Ещё"></sf-button-icon><sf-menu-context id="row-menu" popup aria-label="Ещё" entries='[{"id":"a","text":"Изменить"},{"id":"b","text":"Удалить"}]'></sf-menu-context></div>
 <script>
 window.__events = [];
 function log(e) { window.__events.push(e); }
@@ -66,7 +77,7 @@ document.addEventListener('click', function (e) {
   var id = h.id || h.getAttribute('data-sf-tab-index') || h.textContent.trim().slice(0, 30);
   log({el: 'click', host: h.tagName.toLowerCase(), id: id});
 }, true);
-Promise.all(['sf-settings', 'sf-tabs', 'sf-menu', 'sf-list', 'sf-checkbox', 'sf-switch', 'sf-radio', 'sf-button-icon'].map(function (n) { return customElements.whenDefined(n); }))
+Promise.all(['sf-settings', 'sf-tabs', 'sf-menu', 'sf-list', 'sf-checkbox', 'sf-switch', 'sf-radio', 'sf-button-icon', 'sf-menu-context'].map(function (n) { return customElements.whenDefined(n); }))
   .then(function () { setTimeout(function () { window.__ready = true; }, 600); });
 </script>
 </body></html>`;
@@ -130,6 +141,10 @@ for (const [ws, theme] of CONF) for (let n = 1; n <= LOADS; n++) {
     const hs = bx.map((r) => Math.round(r.h * 10) / 10);
     if (phone) check(run, `${name}: every row is at least ${HIT} high`, bx.length >= 3 && hs.every((h) => h >= HIT - 0.01), hs);
     else check(run, `${name}: fine pointer keeps the ladder's ${FINE_ROWS[name]}`, bx.length >= 3 && hs.every((h) => Math.abs(h - FINE_ROWS[name]) < 0.01), hs);
+    if (phone && name === 'menu') {
+      const gaps = bx.slice(1).map((r, i) => Math.round((r.y - (bx[i].y + bx[i].h)) * 10) / 10);
+      check(run, 'menu: the rows of a column touch (no gap) under a coarse pointer', gaps.every((g) => Math.abs(g) < 0.5), gaps);
+    }
   }
   // Settings: the centre and both edges of each switch row turn that row's switch (on, then off, then on again).
   {
@@ -168,6 +183,44 @@ for (const [ws, theme] of CONF) for (let n = 1; n <= LOADS; n++) {
     }
     const want = bx.flatMap((r) => [r.text, r.text, r.text]);
     check(run, `${t}: centre, top and bottom edge of each row reach that row`, got.every((g, i) => g && want[i].startsWith(g.slice(0, 6))), {got, want});
+    if (phone && t === 'menu') {
+      const line = [];
+      for (let i = 1; i < bx.length; i++) {
+        const n0 = await events();
+        await press(bx[i].x + bx[i].w / 3, (bx[i - 1].y + bx[i - 1].h + bx[i].y) / 2);
+        const c = await lastClick(n0);
+        line.push(c ? c.id : 'none');
+      }
+      check(run, 'menu: a tap on the line between two rows reaches a row', line.every((g) => g !== 'none'), line);
+    }
+  }
+
+  // The stacking check: a popup drawn inside a parent the coarse rule isolates.
+  if (phone) {
+    await pg.evaluate(() => document.getElementById('row-menu').openFor(document.getElementById('k1')));
+    await pg.waitForTimeout(300);
+    const stacked = await pg.evaluate(() => {
+      const POPUPS = '[role="dialog"], [role="menu"], [role="listbox"], [popover], .sf-context-menu--open';
+      const found = [];
+      for (const pop of document.querySelectorAll(POPUPS)) {
+        if (!pop.getClientRects().length) continue;
+        const own = getComputedStyle(pop).position;
+        if (own !== 'absolute' && own !== 'fixed') continue;
+        if (pop.matches(':popover-open') || pop.matches('dialog:modal')) continue;
+        for (let node = pop.parentElement; node && node !== document.body; node = node.parentElement) {
+          if (getComputedStyle(node).isolation !== 'isolate') continue;
+          if (node.querySelector(':scope > :is(sf-button-icon, sf-checkbox, sf-radio, sf-switch, .sf-icon-button)')) {
+            found.push(pop.id || pop.closest('[id]')?.id || pop.className);
+            break;
+          }
+        }
+      }
+      return found;
+    });
+    check(run, 'stacking check: only #bad-pop is a popup drawn inside an isolated coarse row parent (the row menu opens in the top layer)', stacked.join() === 'bad-pop', stacked);
+    if (n === 1 && theme === 'light') out2.ruleCheck.push({tag: run.tag, popupInsideIsolatedRow: stacked});
+    await pg.evaluate(() => document.getElementById('row-menu').close());
+    await pg.waitForTimeout(200);
   }
 
   // Isolated controls.

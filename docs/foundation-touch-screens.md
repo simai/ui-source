@@ -87,6 +87,15 @@ core and the sf-settings contract.
       meet) are the rule check's failure: the gap is wrong, not the area. A
       toolbar of size 1/2 icon buttons with no gap is the example the probe
       keeps.
+    - The rows of a vertical menu touch too (C429, DEV N1, group build 20):
+      on a coarse pointer the menu and its rows have no gap, so a press on
+      the line between two rows reaches a row, not a dead strip
+      (component.menu 1.10.6).
+    - A popup does not stand inside the parent of an isolated control: that
+      parent is a stacking context on a coarse pointer, so a popup placed in
+      it is drawn under the parent's later neighbours. The rule check flags
+      such a popup (an open listbox, menu or dialog inside an isolated row
+      parent); a popup goes to the top layer or the page's layer stack.
     - Not an area of its own: a control with text (its row is the target,
       W5), a tab's or a settings row's buttons (the row grows), the remove
       button of a tag (its own 24 area, C145 (1)), the drawer head's buttons
@@ -146,7 +155,9 @@ them) and this page.
   phone, real taps at the centre and at the top and bottom edge of every
   stacked row, and at the centre and every edge of each isolated control's
   44 area (switches and check boxes on and off), a tap on each toolbar
-  button's own box beside its neighbour, and the rule check; at 1440 with a
+  button's own box beside its neighbour, the menu rows touching (a tap on
+  the line between two rows reaches a row), and the rule check (gaps under 44,
+  a popup inside an isolated row parent); at 1440 with a
   mouse, the ladder's rows and no area.
 - `tests/touch-targets.contract.test.mjs` (rule 12): the core rule and the
   sheets that include it.

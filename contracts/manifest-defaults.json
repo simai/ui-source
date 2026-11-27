@@ -109,6 +109,21 @@
       "component": "input-quantity",
       "prop": "resetLabel",
       "reason": "The page language's text when not set: \"Reset to inherited\" on an English page, the dictionary's word on another."
+    },
+    {
+      "component": "bulk-actions",
+      "prop": "countText",
+      "reason": "Empty means the bar's own words: the template receives the line said for the count in the page's language («Выбрано N», \"0 selected\" on an English page with none chosen) (GB20 triage of the known reds)."
+    },
+    {
+      "component": "input-choice",
+      "prop": "flow",
+      "reason": "auto is resolved per options: the template receives row for up to three short options, else column (C165 (3)) (GB20 triage)."
+    },
+    {
+      "component": "list",
+      "prop": "leading",
+      "reason": "auto is resolved from the rows shown: the template receives the place itself (none until rows have shown, then icon or avatar) (GB20 triage)."
     }
   ],
   "pending": []

@@ -39,7 +39,7 @@ const sfPaginationMeta = {
         "true",
         "false"
       ],
-      "default": "true",
+      "default": "false",
       "description": "Deprecated until 2027-01-01 (decision C97, change journals value-pagination-show-more-to-more and behaviour-pagination-footer-show-more-written-only): Show more of the compatible footer, drawn on a line of its own above the page row (never beside the arrows) only when an author writes top; a list end writes appearance=\"more\"."
     },
     "middle": {

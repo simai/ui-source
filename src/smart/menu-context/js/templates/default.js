@@ -2,6 +2,7 @@ import {html, nothing} from "lit";
 import {avatarPicture} from "../../../avatar/js/picture";
 import {shortcutView} from "../../../../component/kbd/js/shortcut";
 import {warnUnknownControlStatus} from "../../../helpers/control-status";
+import {inLayout} from "../../../../core/js/device.js";
 
 // A destructive row: danger: true, or status "danger" as every control writes
 // it (C13), with "error" read as its alias. Any other status (success,
@@ -346,8 +347,26 @@ function renderTile(entry, path, context) {
 // tiles a panel's quick settings are. Its items carry paths of their own, the
 // step the submenu grammar already had, and a search narrows them as it
 // narrows the level.
+// The rows of the layout the menu stands in (study S-A, Touch screens rule
+// 4): an entry that carries `devices` is drawn only in the layouts it names,
+// and keeps its index, so a row's path still finds its entry. A separator left
+// first, last or after another one by a hidden row is dropped.
+function inMenuLayout(pairs, context) {
+    const layout = context.layout || "desktop";
+    const kept = pairs.filter(([entry]) => inLayout(entry, layout));
+    if (kept.length === pairs.length) return pairs;
+    const separator = (pair) => pair[0]?.type === "separator";
+    const out = [];
+    for (const pair of kept) {
+        if (separator(pair) && (!out.length || separator(out[out.length - 1]))) continue;
+        out.push(pair);
+    }
+    while (out.length && separator(out[out.length - 1])) out.pop();
+    return out;
+}
+
 function renderGroup(entry, path, context, query) {
-    const items = (entry.items ?? []).map((item, index) => [item, index])
+    const items = inMenuLayout((entry.items ?? []).map((item, index) => [item, index]), context)
         .filter(([item]) => matches(item, query));
     if (!items.length) return nothing;
     const name = entry.text ?? nothing;
@@ -525,7 +544,7 @@ function renderEntries(context) {
     // rows has found nothing, whatever the field holds -- an answer to an older
     // query can arrive after the field was cleared -- so its note shows then too.
     const remote = Boolean(context.search?.remote);
-    let shown = actionOrder(entries.map((entry, index) => [entry, index]).filter(([entry]) => remote || matches(entry, query)));
+    let shown = actionOrder(inMenuLayout(entries.map((entry, index) => [entry, index]), context).filter(([entry]) => remote || matches(entry, query)));
     // On a selection the top level says how many rows it acts on, «Выбрано N»,
     // in place of a heading the host gave the one object (C164 (3)).
     const selection = level.depth === 0 && context.selectionLabel;

@@ -145,7 +145,14 @@ class SfFileUpload extends FormField(FileUploadElement) {
     // A file held over the area is said on the host (§5.3), read by core's
     // files drop (FO-1, core/js/files-drop.js); the area's class component
     // takes the files of the drop; the host only follows the drag (follow).
-    filesDrop(this, {
+    // Followed while connected: its document listeners (dragend, drop) are
+    // given back on removal (GB20, instance-scope gate 36: they stayed).
+    this._drop = null;
+  }
+
+  watchFilesDrop() {
+    this._drop?.stop();
+    this._drop = filesDrop(this, {
       mark: false,
       follow: true,
       disabled: () => Boolean(this.disabled),
@@ -161,6 +168,7 @@ class SfFileUpload extends FormField(FileUploadElement) {
   // the page set no items first.
   connectedCallback() {
     super.connectedCallback();
+    this.watchFilesDrop();
     if (!this._valueRead) {
       this._valueRead = true;
       if (this.hasAttribute('value') && !this._items.length) this.value = this.getAttribute('value');
@@ -675,6 +683,10 @@ class SfFileUpload extends FormField(FileUploadElement) {
   }
 
   onDisconnected() {
+    // The files drop is the connection's, not a render's: teardownRuntime
+    // runs before every render too.
+    this._drop?.stop();
+    this._drop = null;
     this.teardownRuntime();
     this._releasePictures(true);
   }

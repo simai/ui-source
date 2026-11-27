@@ -8,6 +8,7 @@ import { BREAKPOINTS, breakpointMedia } from '../../core/js/breakpoints.js';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { fitInOrder, fitBesideMore, layoutRowRoom, layoutWidth, squeezeStep, standardMenu, textWidth, triggerExtra } from '../../core/js/overflow-row.js';
 import { menuOpen } from '../../core/js/menu-open.js';
+import { inLayout, layoutOf, watchLayout } from '../../core/js/device.js';
 import { renderTabsTemplate, errorBadgeClasses } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -474,6 +475,12 @@ class SfTabs extends TabsElement {
       this._placeObserver = new ResizeObserver(() => this.followPlace());
     }
     this.watchPlace();
+    this._deviceLayout = layoutOf(this);
+    this._stopLayout?.();
+    this._stopLayout = watchLayout(this, (now) => {
+      this._deviceLayout = now;
+      this.requestComponentUpdate('layout');
+    });
     super.connectedCallback?.();
     // The address is read again when it changes (Back, Forward, a link to
     // #<id> on the page); the listener answers only with hash on.
@@ -485,6 +492,8 @@ class SfTabs extends TabsElement {
   }
 
   disconnectedCallback() {
+    this._stopLayout?.();
+    this._stopLayout = null;
     this._narrowMedia?.removeEventListener?.('change', this._onNarrow);
     this._narrowMedia = null;
     this._placeObserver?.disconnect();
@@ -1149,9 +1158,22 @@ class SfTabs extends TabsElement {
   // The tabs as the person arranged them: in their order, without the hidden
   // ones -- except the active one, which is shown in place while it is active,
   // so a panel never stands without its tab.
+  //
+  // A tab that carries `devices` (study S-A, Touch screens rule 4) is shown
+  // only in the layouts it names -- the layout of the tabs' place, core's
+  // word (phone below 600 px) -- and, like a hidden one, stays in place while
+  // it is the active tab.
   get displayItems() {
     const hidden = new Set(this._settings.hidden);
-    return this.arrangedItems.filter((item) => item.pinned || item.selected || !hidden.has(item.key));
+    const layout = this.deviceLayout;
+    return this.arrangedItems.filter((item) => item.selected
+      || ((item.pinned || !hidden.has(item.key)) && inLayout(item, layout)));
+  }
+
+  // The layout the tabs are shown for, 'phone' or 'desktop' (core
+  // SF.device.layoutOf), followed while connected.
+  get deviceLayout() {
+    return this._deviceLayout || 'desktop';
   }
 
   // The arrangement as the settings list shows it: every tab, in order.

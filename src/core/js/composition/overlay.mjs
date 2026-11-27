@@ -701,6 +701,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.connection = null;
       this.resizeObserver?.disconnect();
       this.resizeObserver = null;
+      // The toolbar's roving keys watch the bar (a MutationObserver): bind()
+      // makes them again (GB20, instance-scope gate 36: it stayed).
+      this.toolbarKeys?.destroy();
+      this.toolbarKeys = null;
       if (this.frameRequest) globalThis.cancelAnimationFrame(this.frameRequest);
       this.frameRequest = 0;
       if (this.pointerRequest) globalThis.cancelAnimationFrame(this.pointerRequest);

@@ -2,117 +2,68 @@
   "$comment": "Browser probes (tests/browser/*.browser.mjs) red on the released pair as well as on the candidate: pre-existing, each with its owning unit and what it says. scripts/run-browser-probes.mjs reads this file: a failure named here is reported under failed with known: true and counted apart (knownRed), not as a new red; a named probe that passes again is listed under knownNowPassing, to be taken out. The run still exits 1 while any probe fails, known or new: the list says which reds are not the candidate's, it does not make them green. Taken by the group build 18 pre-cut (DEV msg-5ee6d5bacd684276a776, answer 8); triage of each entry belongs to its owner. Triaged by group build 19 area C (msg-a844079b8ba3455d9123): 25 probe faults fixed and taken out; each entry left is a component fault with its cause under triage, listed as a GB20 item. The list only shrinks.",
   "pair": "ui-b4f79e1c58b7",
   "known": {
-    "c32-addendum": {
-      "owner": "smart.menu-context",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "popup widths of the C32 addendum: profile picker, drilling settings and the phone form sheet off the expected steps",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the C32 addendum widths: the profile picker panel draws 0 wide on a phone, the drilling settings panel is 252 where the C32 step is 288, the phone form sheet is off its step"
-    },
-    "c32-dropdown-widths": {
-      "owner": "smart.menu-context",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "popup widths (C32): menu, list, panel, tabs and form popups one step under the expected width (1620/1812)",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: menu, list, panel, tabs and form popups stand one width step under the C32 step (1620/1812 measures)"
-    },
     "choice-native-smart-geometry": {
       "owner": "smart.checkbox",
       "red_since": "ui-b4f79e1c58b7",
       "why": "native and Smart checkbox/radio geometry (ui-source#49, #50) differ",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the Smart checkbox and radio differ from the native class markup: the host is display: contents and its row measures 0, the help mark draws a different size (ui-source#49, #50)"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the Smart checkbox and radio differ from the native class markup: the host is display: contents and its row measures 0, the help mark draws a different size (ui-source#49, #50) GB20 area A (2026-11-27): not taken (ui-source#49, #50, the checkbox family's geometry)."
     },
     "code-input-smart": {
       "owner": "smart.input-code",
       "red_since": "ui-b4f79e1c58b7",
       "why": "sf-input-code checks fail",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: sf-input-code: the cells miss aria-describedby to the hint, the pointer ring (K1) and the hover border (K4) differ from the field family, a cell speaks without its position"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: sf-input-code: the cells miss aria-describedby to the hint, the pointer ring (K1) and the hover border (K4) differ from the field family, a cell speaks without its position GB20 area A (2026-11-27): not taken (outside menus and touch); the cells speak the English words on a Russian page («digit 6 of 6»), so the position and description checks fail with the K1/K4 looks."
     },
     "field-renderers-file": {
       "owner": "module.smart-field-renderers",
       "red_since": "ui-b4f79e1c58b7",
       "why": "the file edit control: the two items the host recorded are not shown",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the file edit control writes the newly chosen files into the value but draws an empty list: the two items the host recorded are not shown"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the file edit control writes the newly chosen files into the value but draws an empty list: the two items the host recorded are not shown GB20 area A (2026-11-27): not taken (outside menus and touch); after removing a stored file the edit control writes all four names, not the two left, and the host's list of items stays empty."
     },
     "filter-window-one-step": {
       "owner": "smart.dropdown",
       "red_since": "ui-b4f79e1c58b7",
       "why": "the filter window (sf-filter-window, field-renderers/filter-window.js) one-step checks",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: with a 14 px scrollbar the checks, the search icon and the chevron leave the column they keep without one (the popup has no scrollbar gutter); the same cause as popup-head-parts"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: with a 14 px scrollbar the checks, the search icon and the chevron leave the column they keep without one (the popup has no scrollbar gutter); the same cause as popup-head-parts GB20 area A (2026-11-27): measured -- in compact and phone the choice list panel's inset is 12 (4 + 8) and the scrollbar track 14, so the checks stand 2 px off (checkEnd 310 vs 312, 376 vs 378); a look question for DEV (the head follows the excess as sf-settings does, or a narrower gap), not changed."
     },
     "icons-warm-first-frame": {
       "owner": "smart.button-icon",
       "red_since": "ui-b4f79e1c58b7",
       "why": "icon buttons on a warm origin do not draw their glyphs from the first frame",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: on a warm origin the icon buttons stand 6 frames (9 to 105 ms) without their glyphs: the icon font face is not ready when the button first paints (static first paint draws them at 61 ms)"
-    },
-    "inherited-description": {
-      "owner": "smart.input-color",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "the inherited sentence in the accessibility tree (input family)",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: 71 of 72 checks pass after the probe fix; the colour trigger names itself with its value («Цвет: #336699») where the inherited sentence asks for the field name alone"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: on a warm origin the icon buttons stand 6 frames (9 to 105 ms) without their glyphs: the icon font face is not ready when the button first paints (static first paint draws them at 61 ms) GB20 area A (2026-11-27): not taken; on a warm origin icon buttons stand 6-7 frames without their glyph (drawn at 104-124 ms, shown at 9-11)."
     },
     "inline-code": {
       "owner": "component.doc",
       "red_since": "ui-b4f79e1c58b7",
       "why": "code in running text: geometry and copy (C10)",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the label column of the code-in-text table breaks «умолчанию» onto two lines at the narrow width (the column has no min-content floor)"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the label column of the code-in-text table breaks «умолчанию» onto two lines at the narrow width (the column has no min-content floor) GB20 area A (2026-11-27): two decisions meet -- C186 (7) (a table cell may break anywhere) and C10 variant A (the label column keeps whole words; the label column is 79 px at the narrow width); a question for DEV, not changed."
     },
     "instance-scope": {
       "owner": "core.runtime",
       "red_since": "ui-b4f79e1c58b7",
       "why": "gate 36, instance scope",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: 18 components keep observers, document listeners or timers after removal (gate 36), e.g. sf-editor-overlay a MutationObserver, sf-file-upload document drop and dragend"
-    },
-    "manifest-defaults": {
-      "owner": "smart.*",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "a manifest default differs from what a Smart component does when the attribute is absent",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: seven manifest defaults differ from the element without the attribute: bulk-actions countText, input-choice flow, input-color palette and custom, input-date dayMarks, list leading, pagination top (the derived ones were moved to contracts/manifest-defaults.json in GB19)"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: 18 components keep observers, document listeners or timers after removal (gate 36), e.g. sf-editor-overlay a MutationObserver, sf-file-upload document drop and dragend GB20 area A (2026-11-27): sf-editor-overlay, sf-file-upload, sf-input-image, sf-input-rich and sf-toast fixed; left: sf-gallery (the Loader's closed-container MutationObserver keeps a removed closed container, core/js/loader.js watchClosedContainer: the loader's owner) and, on a loaded machine only, the core icon-font wait (FontFaceSet loadingdone, interval 100 ms, timeout 10 s) counted before it settles."
     },
     "popup-head-parts": {
       "owner": "smart.settings",
       "red_since": "ui-b4f79e1c58b7",
       "why": "the heads of the popups",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: with a 14 px scrollbar the head chevron ends 2 px past the check column (no scrollbar gutter in the popup body)"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: with a 14 px scrollbar the head chevron ends 2 px past the check column (no scrollbar gutter in the popup body) GB20 area A (2026-11-27): the same 2 px scrollbar excess as filter-window-one-step; a look question for DEV."
     },
     "popup-head-round2": {
       "owner": "smart.dropdown",
       "red_since": "ui-b4f79e1c58b7",
       "why": "popup heads, DEV round 2",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the same chevron and check column shift with a scrollbar as popup-head-parts"
-    },
-    "public-js-api": {
-      "owner": "core.runtime",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "public-js-api.json against the runtime",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: contracts/public-js-api.json is behind the runtime: SF.newTabLink, the Loader package* and scriptWhenRules members, SF.language.* and Composition.loadEditorWords are public but not in the contract"
-    },
-    "public-js-api-components": {
-      "owner": "core.runtime",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "the component layer of public-js-api.json against the runtime",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the component layer of public-js-api.json misses the same members as public-js-api"
-    },
-    "public-variable-defaults": {
-      "owner": "core.runtime",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "a public variable default (public-variables.v1.json) is not what the component draws (toast, icon, spinner)",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: public-variables.v1.json says one default for the page-header star colour and the component draws another"
+      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the same chevron and check column shift with a scrollbar as popup-head-parts GB20 area A (2026-11-27): the same 2 px scrollbar excess as filter-window-one-step; a look question for DEV."
     }
   }
 }
