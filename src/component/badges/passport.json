@@ -33,7 +33,7 @@
     "src/component/badges/scss/_css__utility_hint_layout.scss",
     "src/component/badges/scss/index.scss"
   ],
-  "content_sha256": "03d0b618d31b6d1f56d3bf19157f59a435c62ff9856b9a54f6af8f5c92171954",
+  "content_sha256": "8c24a87f5d2853d5f995d604fa562115351df0e7ee18d6332273896cac7f78d5",
   "dependencies": [
     {
       "id": "core.runtime",
