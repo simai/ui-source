@@ -80,7 +80,8 @@ test('core publishes SF.device and SF.longPress; the list keeps its import', () 
   assert.equal(globalThis.SF.longPress.watch, longPress.watchLongPress);
   assert.equal(globalThis.SF.longPress.ms, 500);
   const index = read('src/core/js/index.js');
-  assert.match(index, /import '\.\/device\.js';/u);
+  // GB20 I3/I6: core imports markPageLayout and writes the page layout word.
+  assert.match(index, /import (?:\{markPageLayout\} from )?'\.\/device\.js';/u);
   assert.match(index, /import '\.\/long-press\.js';/u);
   assert.match(read('src/smart/list-item/js/long-press.js'), /export \{LONG_PRESS_MS, watchLongPress\} from '\.\.\/\.\.\/\.\.\/core\/js\/long-press\.js';/u);
   const api = JSON.parse(read('src/core/contracts/public-js-api.json')).globals;

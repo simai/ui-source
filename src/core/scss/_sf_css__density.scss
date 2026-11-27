@@ -543,8 +543,8 @@
       --sf-text--height: var(--sf-text--height-1);
     }
 
-    :root[data-sf-layout="desktop"] [data-sf-density="compact"],
-    :root[data-sf-layout="desktop"] [data-sf-density="normal"] {
+    :root[data-sf-layout="desktop"] [data-sf-density="compact"]:not(:root),
+    :root[data-sf-layout="desktop"] [data-sf-density="normal"]:not(:root) {
       font-size: var(--sf-text--size);
       line-height: var(--sf-text--height);
     }

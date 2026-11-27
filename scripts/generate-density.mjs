@@ -336,8 +336,8 @@ ${block('compact', '      ', 'phone')}
 ${block('phone', '      ')}
     }
 
-    ${PAGE_DESKTOP} [data-sf-density="compact"],
-    ${PAGE_DESKTOP} [data-sf-density="normal"] {
+    ${PAGE_DESKTOP} [data-sf-density="compact"]:not(:root),
+    ${PAGE_DESKTOP} [data-sf-density="normal"]:not(:root) {
       font-size: var(--sf-text--size);
       line-height: var(--sf-text--height);
     }
