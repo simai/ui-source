@@ -208,7 +208,7 @@ for (const [ws, theme] of CONF) for (let n = 1; n <= LOADS; n++) {
         if (pop.matches(':popover-open') || pop.matches('dialog:modal')) continue;
         for (let node = pop.parentElement; node && node !== document.body; node = node.parentElement) {
           if (getComputedStyle(node).isolation !== 'isolate') continue;
-          if (node.querySelector(':scope > :is(sf-button-icon, sf-icon-button, sf-checkbox, sf-radio, sf-switch, .sf-icon-button)')) {
+          if (node.querySelector(':scope > :is(sf-button-icon, sf-checkbox, sf-radio, sf-switch, .sf-icon-button)')) {
             found.push(pop.id || pop.closest('[id]')?.id || pop.className);
             break;
           }
