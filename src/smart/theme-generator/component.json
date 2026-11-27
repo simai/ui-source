@@ -2,7 +2,7 @@
   "$comment": "The source of sf-theme-generator's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/theme-generator (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.theme-generator",
   "tag": "sf-theme-generator",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "kind": "leaf",
   "family": "theme",
   "settings": {
@@ -283,7 +283,8 @@
     "version 1.4.3 (written on the branch as 1.4.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.4.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
     "version 1.4.5 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (p1-unset p2-numbers); the pair before carried the old checks under the same number. No code, setting, word or drawing changes.",
-    "version 1.4.6 (2026-11-22, owner decision C402): a patch. The theme it writes carries the two translucent steps the not-set ink reads, neutral 10 and 90 at 64 (core theme-palette THEME_ALPHA), so a page themed from one colour keeps --sf-on-surface-not-set in its own neutral: 146 variables, 144 before."
+    "version 1.4.6 (2026-11-22, owner decision C402): a patch. The theme it writes carries the two translucent steps the not-set ink reads, neutral 10 and 90 at 64 (core theme-palette THEME_ALPHA), so a page themed from one colour keeps --sf-on-surface-not-set in its own neutral: 146 variables, 144 before.",
+    "version 1.4.7 (2026-11-27, pair GB20; above every origin branch): a patch, bytes only. static/default/framework.html and swatches.html are the first-paint snapshots of sf-input-color 1.20.1, whose trigger is named by its label alone (aria-label without the value; the value stays in aria-description), so the version moves with the bytes. Settings, values, events and drawing unchanged."
   ],
   "x-rule": {
     "$comment": [

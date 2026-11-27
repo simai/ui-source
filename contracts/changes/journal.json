@@ -21569,6 +21569,26 @@
         }
       ],
       "source": "scripts/generate-density.mjs; src/core/scss/_sf_css__density.scss; src/core/js/index.js; src/core/js/device.js"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "owner": "ui-source",
+      "id": "behaviour-theme-generator-color-snapshot-name",
+      "kind": "behaviour",
+      "summary": "smart.theme-generator 1.4.7 (pair GB20): the first-paint snapshots of its framework and swatches examples carry sf-input-color 1.20.1's trigger name (the label alone, the value in aria-description), so the version moves with the bytes; behaviour unchanged.",
+      "items": [
+        {
+          "component": "smart.theme-generator",
+          "from": "1.4.6, snapshots of sf-input-color 1.20.0",
+          "to": "1.4.7, snapshots of sf-input-color 1.20.1"
+        }
+      ],
+      "source": "src/smart/theme-generator/static/default/framework.html"
     }
   ]
 }
