@@ -1851,18 +1851,25 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
    drawn; the others are hidden as the page wrote them, and a page that
    left more than one open shows only the first. The row is empty until the
    code draws the tabs from the panels' labels (aria-label, or items).
-   Vertical tabs stand beside their panel and hold nothing here. Static
-   markup printed inside (data-sf-static) is its own box. */
-:where(sf-tabs):not(:defined):not([type="vertical"]):not(:has(> [data-sf-static])):has(> [role="tabpanel"]) {
-  --sf-tabs--box-row: var(--sf-ui-1--control-height);
+   Tabs with no page panel but their items (the attribute or the JSON
+   island) draw the row alone, and hold it. Vertical tabs stand beside their
+   panel and hold nothing here. Static markup printed inside
+   (data-sf-static) is its own box. */
+/* The row's height by size, in one weight (the size rules after the default). */
+:where(sf-tabs):not(:defined) { --sf-tabs--box-row: var(--sf-ui-1--control-height); }
+:where(sf-tabs[size="1/2"]):not(:defined) { --sf-tabs--box-row: var(--sf-ui-1\/2--control-height); }
+:where(sf-tabs[size="2"]):not(:defined) { --sf-tabs--box-row: var(--sf-ui-2--control-height); }
+
+:where(sf-tabs):not(:defined):not([type="vertical"]):not(:has(> [data-sf-static])):is(:has(> [role="tabpanel"]), [items]:not([items=""], [items="[]"]), :has(> script[data-sf-settings])) {
   display: block;
   box-sizing: border-box;
+  min-block-size: var(--sf-tabs--box-row);
+}
+
+:where(sf-tabs):not(:defined):not([type="vertical"]):not(:has(> [data-sf-static])):has(> [role="tabpanel"]) {
   padding-block-start: calc(var(--sf-tabs--box-row) + var(--sf-tabs-main-container--padding-top, var(--sf-space-1)));
   padding-block-end: var(--sf-tabs-main-container--padding-bottom, var(--sf-space-1));
 }
-
-:where(sf-tabs[size="1/2"]):not(:defined) { --sf-tabs--box-row: var(--sf-ui-1\/2--control-height); }
-:where(sf-tabs[size="2"]):not(:defined) { --sf-tabs--box-row: var(--sf-ui-2--control-height); }
 
 :where(sf-tabs):not(:defined):not(:has(> [data-sf-static])) > :where([role="tabpanel"]:not([hidden])) ~ :where([role="tabpanel"]) {
   display: none;
