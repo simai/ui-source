@@ -8,6 +8,7 @@ import { tagSelector } from "../../core/js/tag-aliases.js";
 import { noteDeprecated } from "../../core/js/deprecations.js";
 import { PanelScrollbar } from "../../component/panel-scrollbar.js";
 import { swipeToClose } from "../../core/js/sheet-swipe.js";
+import { layoutOf, watchLayout } from "../../core/js/device.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import {files as languageFiles} from "./lang/index.mjs";
@@ -414,6 +415,14 @@ class SfContextMenu extends ContextMenuElement {
       if (!outermost.close({restoreFocus: false, reason: "outside"}) && outermost !== this) {
         this.close({restoreFocus: false, reason: "outside"});
       }
+    };
+    this._onStackEscape = () => {
+      if (!this._owned) return false;
+      if (this._drill.length) {
+        this.drillBack();
+        return true;
+      }
+      return this.close({reason: "escape"}) !== false;
     };
     this.addEventListener("focusin", (event) => {
       const list = this.rowListOf(event.target);
@@ -1137,6 +1146,26 @@ class SfContextMenu extends ContextMenuElement {
   // open afterwards; refused {reason: prevented} when a listener kept it as it
   // was, {reason: invalid} for an anchor that is not an element; unavailable
   // when the menu has no surface to open.
+  // The layout the entries are drawn for, 'phone' or 'desktop': the place
+  // the menu opens from while open, else the menu's own place.
+  get deviceLayout() {
+    if (!this._layout && this.isConnected) this._layout = layoutOf(this);
+    return this._layout || "desktop";
+  }
+
+  followLayout(place) {
+    this._stopLayout?.();
+    const now = layoutOf(place instanceof Element && place.isConnected ? place : this);
+    if (now !== this._layout) {
+      this._layout = now;
+      this.requestComponentUpdate("layout");
+    }
+    this._stopLayout = watchLayout(place instanceof Element ? place : this, (next) => {
+      this._layout = next;
+      this.requestComponentUpdate("layout");
+    });
+  }
+
   toggleFor(anchor, options = {}) {
     if (this._owned?.anchor === anchor) {
       const closed = this.close();
@@ -1424,6 +1453,10 @@ class SfContextMenu extends ContextMenuElement {
     // a menu without a size of its own is drawn where it stands -- often on
     // <body> -- so the row menu of a table of size 1 opened at 1/2.
     this.followOpenerSize(place);
+    // The layout of the place it opens from (core SF.device): an entry that
+    // carries `devices` is drawn only there, and the menu follows it while
+    // open (a window narrowed to a phone).
+    this.followLayout(place);
     await this.whenRendered();
     const surface = this.surface();
     if (!surface) return {outcome: "unavailable", reason: "no-surface"};
@@ -1544,7 +1577,13 @@ class SfContextMenu extends ContextMenuElement {
     // panel listening on the document in capture runs before the menu's own
     // listener and would otherwise close with it. The outside press comes from
     // the stack.
-    holdOpenSurfaceMark(this, true, {onOutsidePress: this._onOutsidePress});
+    // Escape reaches the menu wherever the focus stands (GB20, View row menu
+    // «≡» after a mouse open): a press on a trigger leaves the focus on it
+    // when the host fills the rows in its open listener, and the menu heard
+    // Escape only on its own keydown. The stack's one document listener asks
+    // the top layer after the page had the key: a row or a field inside
+    // that took Escape already (a drilling level, a submenu) keeps it.
+    holdOpenSurfaceMark(this, true, {onOutsidePress: this._onOutsidePress, onEscape: this._onStackEscape});
     this.sfEmit("opened", {});
     if (focus !== "none") {
       this.syncMenuItems();
@@ -1585,6 +1624,8 @@ class SfContextMenu extends ContextMenuElement {
       this.requestComponentUpdate("query");
     }
     clearTimeout(this._hoverTimer);
+    this._stopLayout?.();
+    this._stopLayout = null;
     owned.position?.stop();
     if (owned.onResize) window.removeEventListener("resize", owned.onResize);
     for (const name of ["--sf-context-menu--min-inline-size", "--sf-context-menu--max-inline-size", "inline-size"]) {
@@ -1948,6 +1989,7 @@ class SfContextMenu extends ContextMenuElement {
       // drew an empty panel. JSON in the attribute is still the props' reading.
       items: this.hasAttribute("items") ? props.items : this.items,
       entries: this.entries,
+      layout: this.deviceLayout,
       search: level.search ?? this.search,
       query: this.query,
       tabs: this.tabs,

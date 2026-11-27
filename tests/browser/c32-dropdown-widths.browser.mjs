@@ -153,11 +153,26 @@ const FIELDS = [['dropdown-narrow', 'dd-narrow'], ['dropdown-wide', 'dd-wide'], 
 // [case, menu id, what takes the focus]
 const FOCUSED = [['form', 'm-form', 'input'], ['form-wide', 'm-form-wide', 'input'], ['panel', 'm-panel', '.sf-context-menu-search-input']];
 
-// C32, in px (rem = 16): normal (desktop and phone) and compact (desktop).
-const STEPS = {
-  normal: {menuMin: 160, menuMax: 288, listMax: 320, panel: 320, form: 320, formWide: 384},
-  compact: {menuMin: 144, menuMax: 256, listMax: 288, panel: 288, form: 288, formWide: 352},
-};
+// The C32 roles on the width ladder in characters (owner decision C396,
+// 2026-11-19, which replaced C32's px table and its compact table): a role
+// is N x --sf-measure--char, the char half the body text the region draws --
+// the region's text size 1: 16 on a desktop (8: 160 / 288 / 352 / 352 / 352 / 416), 14 in a compact
+// region, on a tablet and on a phone (7). The char is read from the page and
+// asserted to be half the body text, so a role off its ladder step still fails.
+const LADDER = {menuMin: 20, menuMax: 36, listMax: 44, panel: 44, form: 44, formWide: 52};
+async function stepsOf(tab) {
+  const {char, text} = await tab.evaluate(() => {
+    const probe = document.createElement('p');
+    probe.style.cssText = 'position:absolute;visibility:hidden;margin:0;inline-size:var(--sf-measure--char);font-size:var(--sf-text--size-1)';
+    probe.textContent = 'x';
+    document.querySelector('main').append(probe);
+    const read = {char: probe.getBoundingClientRect().width, text: parseFloat(getComputedStyle(probe).fontSize)};
+    probe.remove();
+    return read;
+  });
+  ok(`the measure char ${char} is half the body text ${text} (C396)`, near(char * 2, text, 0.1));
+  return Object.fromEntries(Object.entries(LADDER).map(([role, n]) => [role, n * char]));
+}
 
 const results = [];
 const ok = (name, pass, detail = '') => { results.push({name, pass: Boolean(pass), detail}); };
@@ -339,9 +354,9 @@ async function safeArea(tab, tag) {
 }
 
 for (const scene of scenes) {
-  const steps = STEPS[scene.label === 'compact' ? 'compact' : 'normal'];
   for (let load = 1; load <= LOADS; load++) {
     const {tab, context, errors} = await open(scene);
+    const steps = await stepsOf(tab);
     const key = `${scene.label}-${scene.theme}`;
     const tag = `${key} load ${load}`;
     const record = numbers[key] ||= {};

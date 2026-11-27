@@ -44,6 +44,7 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
 import {menuOpen} from "../../core/js/menu-open.js";
+import {inLayout, layoutOf} from "../../core/js/device.js";
 import {rowsWindow, ROWS_WINDOW_FROM, ROWS_VISIBILITY_FROM} from "../../core/js/rows-window.js";
 import {filesDrop} from "../../core/js/files-drop.js";
 import {noteDeprecated} from "../../core/js/deprecations";
@@ -544,11 +545,15 @@ class SfList extends ListElement {
     }
 
     // The menu of one row: «Rename» when the list renames, then the host's
-    // actions the item allows.
+    // actions the item allows. An action that carries `devices` (study S-A,
+    // Touch screens rule 4) is offered only in the layouts it names, the
+    // layout of the list's place (core SF.device.layoutOf, phone below 600).
     menuEntries(item) {
         if (item.disabled === true) return [];
         const allowed = item.actions === false ? [] : Array.isArray(item.actions) ? new Set(item.actions.map(String)) : null;
-        const own = this._actions.filter((action) => !allowed || allowed.has(action.id));
+        const scoped = this._actions.some((action) => action.devices !== undefined && action.devices !== null);
+        const layout = scoped && this.isConnected ? layoutOf(this) : "desktop";
+        const own = this._actions.filter((action) => (!allowed || allowed.has(action.id)) && inLayout(action, layout));
         return [
             ...(this.renamable ? [{id: "rename", text: this.sfWord("rename-text"), icon: "edit", shortcut: "F2"}] : []),
             ...own.map((action) => ({
