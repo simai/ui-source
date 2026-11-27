@@ -18,15 +18,4 @@ sf-button[shrink='icon'][data-shrunk='true'] > .sf-button {
 sf-button[shrink='icon'][data-shrunk='true'] > .sf-button > :is(.sf-button-text-container, .sf-button-shortcut) {
   display: none;
 }
-
-/* sf-language shrink="code" (group build 20): its code trigger -- an
-   sf-button with the translate glyph, the code and the arrow -- gives up the
-   glyph while its bar asks it to (data-shrunk on the sf-language). The rule
-   hides the glyph's face: the sf-icon host carries an inline display:
-   contents, and the face's own .sf-icon:not(.hidden) is unlayered, so a
-   layered rule needs !important to win. The code and the arrow stay; the box core holds for the trigger loses the glyph's
-   line (--sf-language--trigger), so the button and its box agree. */
-sf-language[shrink='code'][data-shrunk='true']:not([trigger='icon'], [trigger='name']) > .sf-language-parts > sf-button > .sf-button > sf-icon:first-child > * {
-  display: none !important;
-}
 }

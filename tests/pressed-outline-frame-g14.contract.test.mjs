@@ -20,7 +20,7 @@ for (const [file, block] of [['src/component/icon-buttons/scss/_css_icon_buttons
 
 test('G14: versions', () => {
   assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.4'); // FS-11: the name tooltip serves a marked control // GB19 touch size (C428)
-  assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.6'); // GB19 VL-77: the join line
+  assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.5'); // GB19 VL-77: the join line
 });
 
 test('G14: the Smart twins say what the sheets draw -- an outline toggle keeps its edge when pressed', () => {

@@ -21145,7 +21145,7 @@
       "recorded_on": "2026-11-27",
       "stage": "compat",
       "kind": "attribute",
-      "summary": "sf-language 1.8.0, component.buttons 1.22.6, core.styles (fingerprint only) (group build 20 D; Docara msg-6be3107d item 2): shrink=\"code\" lets a fitting sf-header-site (collapse auto, or a step with fit) shrink the code trigger: while data-shrunk is on it, the trigger draws the code and the arrow without the translate glyph («RU ▾»), one text line narrower; the box core holds for it follows. Name, tooltip and menu unchanged; without shrink nothing changes.",
+      "summary": "sf-language 1.8.0, core.styles (fingerprint only) (group build 20 D; Docara msg-6be3107d item 2): shrink=\"code\" lets a fitting sf-header-site (collapse auto, or a step with fit) shrink the code trigger: while data-shrunk is on it, the trigger draws the code and the arrow without the translate glyph («RU ▾»), one text line narrower; the box core holds for it follows. Name, tooltip and menu unchanged; without shrink nothing changes.",
       "items": [
         {
           "component": "sf-language",
@@ -21158,7 +21158,7 @@
       "rewrite": "none",
       "manual": "Nothing to rewrite. A header tool that should give way before the sections writes shrink=\"code\" on its sf-language.",
       "owner": "ui-source",
-      "source": "src/smart/language/index.js; src/component/buttons/scss/_css__buttons_shrink.scss; src/core/scss/_sf_css__placeholder.scss"
+      "source": "src/smart/language/index.js; src/core/scss/_sf_css__placeholder.scss"
     },
     {
       "id": "behaviour-view-scale-at-value-text",

@@ -40,12 +40,13 @@ test('sf-language 1.8.0: shrink none|code, host state data-shrunk, shrinkBoxes',
   assert.match(read('src/smart/language/docs.md'), /\| `shrink` \| `none` `code` \| `none` \|/u);
 });
 
-test('the shrunk code trigger: the glyph hidden, the held box one line narrower', () => {
-  const sheet = read('src/component/buttons/scss/_css__buttons_shrink.scss');
-  assert.match(sheet, /sf-language\[shrink='code'\]\[data-shrunk='true'\]:not\(\[trigger='icon'\], \[trigger='name'\]\) > \.sf-language-parts > sf-button > \.sf-button > sf-icon:first-child > \* \{\s*display: none !important;/u);
+test('the shrunk code trigger: the held box one line narrower and the glyph hidden, both in core', () => {
   const core = read('src/core/scss/_sf_css__placeholder.scss');
   assert.match(core, /:where\(sf-language\[shrink="code"\]\[data-shrunk="true"\]:not\(\[trigger="icon"\], \[trigger="name"\]\)\) \{\s*--sf-language--trigger: calc\(2 \* var\(--sf-language--space-x\) \+ 2 \* var\(--sf-language--text-x\) \+ 2 \* var\(--sf-language--line\)\);/u);
-  assert.equal(json('src/component/buttons/passport.json').version, '1.22.6');
+  assert.match(core, /:where\(sf-language\[shrink="code"\]\[data-shrunk="true"\]:not\(\[trigger="icon"\], \[trigger="name"\]\)\) > \.sf-language-parts > sf-button > button > sf-icon:first-child > \* \{\s*display: none !important;/u);
+  // The button sheet is unchanged: a site with its own copy of it still hides the glyph with core.
+  assert.equal(json('src/component/buttons/passport.json').version, '1.22.5');
+  assert.doesNotMatch(read('src/component/buttons/scss/_css__buttons_shrink.scss'), /sf-language/u);
 });
 
 test('field renderers 1.30.3: a viewed scale takes the value text, the cell keeps its line', () => {

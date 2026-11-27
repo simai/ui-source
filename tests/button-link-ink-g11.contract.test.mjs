@@ -13,5 +13,5 @@ test('G11: a.sf-button takes the bare label ink of its appearance', () => {
   assert.match(paint, /:where\(a\)\.sf-button \{\s*color: ButtonText;\s*\}/u);
   assert.doesNotMatch(paint, /(^|\n)\s*a\.sf-button \{\s*color/u);
   assert.ok(paint.indexOf(':where(a).sf-button') < paint.indexOf('.sf-button:not(:has(> *)) {'), 'the bare label rule comes after');
-  assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.6') // G14 moved it on; GB19 VL-77: the join line;
+  assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.5') // G14 moved it on; GB19 VL-77: the join line;
 });
