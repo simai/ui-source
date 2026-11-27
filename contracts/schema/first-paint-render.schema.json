@@ -44,7 +44,7 @@
         "theme": {"type": "array", "items": {"enum": ["theme-light", "theme-dark"]}, "description": "The markup also needs one of these classes on <html>."},
         "snapshot": {"type": ["string", "null"], "description": "The committed snapshot this markup is (smart/<folder>/static/<template>/<example>.html), or null."},
         "notes": {"type": "array", "items": {"enum": ["overlay-closed"]}, "description": "overlay-closed: an overlay is printed closed; its open setting was left out."},
-        "reason": {"enum": ["not-a-request", "not-json", "unknown-field", "schema", "tag", "unknown-tag", "template", "settings", "unknown-setting", "retired-setting", "late-setting", "value", "attributes", "children", "markup", "slots", "lang", "now", "url", "prefix", "page-error", "not-drawn"]},
+        "reason": {"enum": ["not-a-request", "not-json", "unknown-field", "schema", "tag", "unknown-tag", "template", "settings", "unknown-setting", "retired-setting", "place-setting", "late-setting", "value", "attributes", "children", "markup", "slots", "lang", "now", "url", "prefix", "page-error", "not-drawn"]},
         "detail": {"type": "string"}
       }
     }

@@ -173,7 +173,11 @@ try {
     `unknown-field`, `tag`, `template`, `settings`, `unknown-setting`,
     `retired-setting` (the component retired the setting: its manifest's
     alias row leads it to nothing, so it draws nothing, as sf-tooltip `size`;
-    leave it out), `late-setting` (the setting arrives after the first paint; give it to
+    leave it out), `place-setting` (the look depends on the width of the
+    element's place, which a server does not know: sf-tabs `type="vertical"`
+    folds into the line below 44rem of its place; give `fold="never"` or print
+    the horizontal tabs; declared in component.json `x-first-paint.place`),
+    `late-setting` (the setting arrives after the first paint; give it to
     the element on the page instead), `value` (an enum value or a type the
     manifest does not allow), `attributes`, `children`, `markup`, `slots`,
     `lang`, `now`, `url`, `prefix`, `schema`, `not-a-request` and `not-json`.

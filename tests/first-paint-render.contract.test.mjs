@@ -71,7 +71,7 @@ function fakeDistribution() {
   writeFileSync(join(dir, 'core/js/core.js'), '// core');
   writeFileSync(join(dir, 'core/lang/ru.js'), '// ru');
   writeFileSync(join(dir, 'core/lang/en.js'), '// en');
-  for (const folder of ['badge', 'list', 'tooltip']) {
+  for (const folder of ['badge', 'list', 'tooltip', 'tabs']) {
     mkdirSync(join(dir, 'smart', folder), {recursive: true});
     copyFileSync(join(root, 'src/smart', folder, 'component.json'), join(dir, 'smart', folder, 'component.json'));
     copyFileSync(join(root, 'src/smart', folder, 'examples.json'), join(dir, 'smart', folder, 'examples.json'));
@@ -107,6 +107,9 @@ test('5. what a component does not print is refused before any browser starts', 
     // GB20: a retired setting draws nothing (sf-tooltip size, C160 (3)): refused, not printed.
     assert.deepEqual(await ask({tag: 'sf-tooltip', settings: {size: '2'}}), ['refused', 'retired-setting']);
     assert.match((await renderer.render({tag: 'sf-tooltip', settings: {size: '1/3'}})).detail, /retired \(owner decision C160 \(3\)\) until 2027-01-01/u);
+    // GB20: vertical tabs fold by the width of their place (C181 (2)), which a server does not know: refused unless fold="never".
+    assert.deepEqual(await ask({tag: 'sf-tabs', settings: {type: 'vertical'}}), ['refused', 'place-setting']);
+    assert.deepEqual(await ask({tag: 'sf-tabs', settings: {type: 'vertical', fold: 'auto'}}), ['refused', 'place-setting']);
     // sf-list's items arrive after the first paint: refused, not drawn as an empty list.
     const late = JSON.parse(readFileSync(join(distr, 'smart/list/component.json'), 'utf8'));
     const lateName = late.presentation.skeleton.late[0];

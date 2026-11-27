@@ -21205,12 +21205,17 @@
       "kind": "behaviour",
       "id": "behaviour-first-paint-render-retired-setting",
       "manual": "Nothing to rewrite unless a request sets a retired setting (sf-tooltip size): leave it out; it drew nothing.",
-      "summary": "first-paint-render (group build 20): a setting the component retired (an alias row to nothing, mode retired; sf-tooltip size, C160 (3)) is refused with retired-setting instead of printed: the static markup kept a class no sheet reads. sf-tabs is printed with its panels as the seven Docara components are.",
+      "summary": "first-paint-render (group build 20): a setting the component retired (an alias row to nothing, mode retired; sf-tooltip size, C160 (3)) is refused with retired-setting instead of printed: the static markup kept a class no sheet reads. A setting whose look depends on the width of its place (component.json x-first-paint.place: sf-tabs type=\"vertical\" folds below 44rem of its place, C181 (2)) is refused with place-setting unless fold=\"never\" fixes the look. sf-tabs is printed with its panels as the seven Docara components are.",
       "items": [
         {
           "component": "first-paint-render",
           "from": "a retired setting printed (sf-tooltip--size-<value>, drawing nothing)",
           "to": "refused: retired-setting"
+        },
+        {
+          "component": "first-paint-render",
+          "from": "sf-tabs type=\"vertical\" printed as the column (moved on a place below 44rem)",
+          "to": "refused: place-setting, unless fold=\"never\""
         }
       ],
       "source": "tools/first-paint/render.mjs; contracts/schema/first-paint-render.schema.json"

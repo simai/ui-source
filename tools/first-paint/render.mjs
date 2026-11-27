@@ -102,6 +102,17 @@ function retiredSetting(manifest, name) {
  * Checks a request against the component's manifest, without a browser.
  * Answers {component, example, template, prefix, lang} or a refusal.
  */
+// A setting whose look depends on the width of the place (component.json
+// x-first-paint.place): sf-tabs type="vertical" folds into the line below
+// 44rem of its place (C181 (2)), a width a server does not know, so a print
+// of the column moves on a narrow place. Refused unless the row's "unless"
+// settings fix the look (fold="never").
+function placeSetting(manifest, settings) {
+  const rows = Array.isArray(manifest['x-first-paint']?.place) ? manifest['x-first-paint'].place : [];
+  return rows.find((row) => row && Object.hasOwn(settings, row.setting) && String(settings[row.setting]) === String(row.value)
+    && !Object.entries(row.unless ?? {}).every(([name, value]) => Object.hasOwn(settings, name) && String(settings[name]) === String(value))) ?? null;
+}
+
 function admit(request, index, languages) {
   if (!request || typeof request !== 'object' || Array.isArray(request)) return refuse('not-a-request', 'a request is a JSON object');
   const extra = Object.keys(request).filter((key) => !REQUEST_FIELDS.has(key));
@@ -137,6 +148,8 @@ function admit(request, index, languages) {
     if (member.type === 'boolean' && typeof value !== 'boolean' && value !== null) return refuse('value', `${name} is true or false`);
     if (PROPERTY_ONLY.has(member.type) && value !== null && typeof value !== 'object') return refuse('value', `${name} is a list or an object (a JSON island)`);
   }
+  const place = placeSetting(component.manifest, settings);
+  if (place) return refuse('place-setting', `${place.setting}="${place.value}" depends on the width of its place: ${place.why ?? 'a server does not know it'}`);
   const attributes = request.attributes ?? {};
   if (!attributes || typeof attributes !== 'object' || Array.isArray(attributes)) return refuse('attributes', 'attributes is an object of attribute names');
   for (const [name, value] of Object.entries(attributes)) {

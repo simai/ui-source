@@ -435,6 +435,17 @@
       }
     ]
   },
+  "x-first-paint": {
+    "$comment": "Settings whose look depends on the width of the place, which a server does not know: the render tool refuses them (reason place-setting) unless the named setting fixes the look.",
+    "place": [
+      {
+        "setting": "type",
+        "value": "vertical",
+        "unless": {"fold": "never"},
+        "why": "vertical tabs fold into the line below 44rem of their place (C181 (2)); a print draws the column, so on a narrow place the tabs would move when the script draws them: give fold=\"never\", or print the horizontal tabs"
+      }
+    ]
+  },
   "x-summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "x-source": {
     "package": "framework",
