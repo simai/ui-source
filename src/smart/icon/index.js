@@ -186,8 +186,16 @@ class SfIcon extends IconElement {
   syncLoadedState() {
     const loader = window.SF?.Loader;
     const tracked = loader?.getTrackedIconAttrs?.(this) || null;
+    // The glyph goes with the question: a page that brings its own icon face
+    // (a Docara example frame, subset off, no plain-family face) draws it in
+    // that face, and the Loader answers for a glyph only when it can read its
+    // font (isIconDrawnByPageFace). Without it the admin menu's icons waited
+    // for the plain family's 6 s timer (GB20, 6.8 s on ui-doc.test and
+    // ui.simai.io); the Loader asks again while a page face is in
+    // (markPageFaceIcons).
+    const glyph = this.querySelector?.(":scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon") || null;
     const loaded = this.isRegisteredGlyph || Boolean(
-      tracked?.icon && loader?.isTrackedIconLoaded?.(tracked),
+      tracked?.icon && loader?.isTrackedIconLoaded?.(tracked, glyph),
     );
 
     if (loaded) {
@@ -289,6 +297,12 @@ class SfIcon extends IconElement {
     const glyph = this.querySelector(":scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon");
     if (glyph && this.isRegisteredGlyph) glyph.removeAttribute("data-sf-icon-missing");
     else if (glyph && this.getProp("loaded")) checkIconGlyph(glyph);
+    // The first drawing gives the glyph the Loader reads a page face from
+    // (syncLoadedState): asked once more now that it is there.
+    else if (glyph && !this._askedWithGlyph) {
+      this._askedWithGlyph = true;
+      this.syncLoadedState();
+    }
     return result;
   }
 

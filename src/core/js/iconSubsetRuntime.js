@@ -337,7 +337,8 @@ export function installIconSubsetRuntime(
   // The class-markup icons not marked yet that a page face now draws: read
   // every one first, then set the classes (as syncStaticIconLoadedState).
   // Only adds the class; an icon handed over by adoptStaticIcons leaves its
-  // pending set. Answers the number marked.
+  // pending set. Answers the number of class-markup icons marked; every
+  // <sf-icon> whose glyph is not marked is asked to check itself.
   SFLoaderPlugin.prototype.markPageFaceIcons = function () {
     const glyphs = globalThis.document?.getElementsByClassName?.("sf-icon");
     if (!glyphs?.length) return 0;
@@ -354,6 +355,15 @@ export function installIconSubsetRuntime(
       checkIconGlyph(el);
       this.adoptedIconsPending?.delete?.(el);
     });
+    // An <sf-icon> answers for its own glyph: it is asked to look again
+    // (smart.icon syncLoadedState reads the glyph's font through the Loader).
+    const elements = globalThis.document?.getElementsByTagName?.("sf-icon") || [];
+    for (let index = 0; index < elements.length; index++) {
+      const element = elements[index];
+      const glyph = element.querySelector?.(":scope > i.sf-icon, :scope > .sf-badge-anchor > i.sf-icon");
+      if (!glyph || glyph.classList.contains("sf-icon-loaded")) continue;
+      element.syncLoadedState?.();
+    }
     return shown.length;
   };
 
