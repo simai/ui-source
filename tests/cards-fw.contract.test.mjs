@@ -16,7 +16,7 @@ test('CV-7: a number keeps its unit in the edit and filter places, as in the vie
   // The filter: a percent keeps «%», money its currency sign, a number its unit.
   assert.match(body('renderNumberFilterControl'), /const textEnd = look\.percent \? '%' : isolatedSign\(sign && !sign\.before \? sign\.sign : '', locale\)\s+\|\| \(look\.money \? '' : fieldUnit\(field\)\);/u);
   assert.match(body('renderNumericCell'), /return text && field\.unit \? `\$\{text\} \$\{field\.unit\}` : text;/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.2') // GB19 B: include view owns no lit DOM // GB18 L6; // FS-9 (feat/form-defects-fs, merged in GB17); // group build 17 F4: option badge hue // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.30.3') // GB19 B: include view owns no lit DOM // GB18 L6; // FS-9 (feat/form-defects-fs, merged in GB17); // group build 17 F4: option badge hue // group build 16 returns GB16-3: the phone sheet fills; // group build 16 G8: the filter window's one step, PH-3 band radius; // C396 WM-4: the template parameter width, above 1.26.1 on origin // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 
 test('the view set reserves sf-view-cards and sf-view-calendar (rules cl-view-cards, cl-view-calendar)', () => {

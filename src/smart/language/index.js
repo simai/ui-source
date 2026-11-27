@@ -52,8 +52,14 @@ const MENU = `:scope > .sf-language-parts > ${tagSelector('sf-menu-context')}`;
 const TRIGGER = `:scope > .sf-language-parts > :is(${tagSelector('sf-button')}, ${tagSelector('sf-button-icon')}, button.sf-language-name)`;
 const TRACK = `:scope > .sf-language-parts > ${tagSelector('sf-segmented')}`;
 const FIELD = `:scope > .sf-language-parts > ${tagSelector('sf-dropdown')}`;
-// The bar that may ask this element to give way (shrink).
-const BARS = 'sf-header-site, sf-site-header';
+// The bar that may ask this element to give way (shrink): the nearest
+// ancestor that fits its row (queueFit). The language does not draw it, so it
+// names no bar tag.
+const fittingBar = (element) => {
+  let node = element.parentElement;
+  while (node && typeof node.queueFit !== 'function') node = node.parentElement;
+  return node;
+};
 
 // A phone: below the md breakpoint, where core declares --sf-breakpoint-md
 // (sf-menu-context's own test for its sheet).
@@ -314,7 +320,7 @@ class SfLanguage extends FormField(LanguageElement) {
   }
 
   /**
-   * The trigger's boxes for a bar that fits its row (sf-header-site collapse
+   * The trigger's boxes for a bar that fits its row (the site header, collapse
    * auto, or a step with fit): its width as drawn and its width shrunk, the
    * code trigger less its translate glyph (shrink="code", group build 20).
    * Read while whole, the glyph is drawn; read while shrunk, both widths are
@@ -531,7 +537,7 @@ class SfLanguage extends FormField(LanguageElement) {
     const trigger = this.getAttribute('shrink') === 'code' ? this.triggerButton : null;
     if (trigger && trigger !== this._shrinkAskedFor && typeof trigger.whenRendered === 'function') {
       this._shrinkAskedFor = trigger;
-      trigger.whenRendered(() => this.closest(BARS)?.queueFit?.());
+      trigger.whenRendered(() => fittingBar(this)?.queueFit());
     }
     this.sfSyncFormState();
   }
