@@ -19,7 +19,12 @@
 //   6. events sf-workspace-view {view} and sf-workspace-panel {open};
 //   7. RTL mirrors the row and puts the drawer at the left edge;
 //   8. prefers-reduced-motion: the drawer does not slide;
-//   9. the width classes move the thresholds.
+//   9. the width classes move the thresholds;
+//  10. a page loaded with the panel open (markup data-sf-workspace-panel=
+//      "open") at the middle width shows the drawer, and the load leaves focus
+//      where it is (GB20, DEV msg-b016982a: the docs Workspace page moved
+//      focus on 7 of 7 loads) -- three loads; Tab then enters the drawer, and
+//      a click that opens it still takes focus in.
 import {readFileSync, existsSync} from 'node:fs';
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
@@ -303,6 +308,28 @@ try {
   await tab.emulateMedia({reducedMotion: 'no-preference'});
   const slide = await tab.evaluate(() => getComputedStyle(document.querySelector('#ws > .sf-workspace-panel')).transitionDuration);
   check('motion: the drawer slides', slide !== '0s', {slide});
+
+  // 10. A load never moves focus.
+  const loaded = page().replace('<style>body{margin:0} #host{block-size:600px;inline-size:1100px}', '<style>body{margin:0} #host{block-size:600px;inline-size:800px}')
+    .replace('id="ws" data-sf-workspace-view="list"', 'id="ws" data-sf-workspace-view="list" data-sf-workspace-panel="open"');
+  check('the load page has its panel open in markup at 800', loaded.includes('data-sf-workspace-panel="open"') && loaded.includes('inline-size:800px'));
+  for (let load = 1; load <= 3; load += 1) {
+    await open(loaded);
+    await tab.waitForFunction(() => document.querySelector('#ws > .sf-workspace-main').inert);
+    await tab.waitForTimeout(300);
+    b = await boxes();
+    s = await state();
+    evidence[`loadOpen${load}`] = {b, s};
+    check(`load ${load}: the open panel is a drawer, the rest inert`, b.panel.shown && b.panel.position === 'absolute' && b.main.inert && b.list.inert, b);
+    check(`load ${load}: focus stays on the page (no element took it)`, s.active === null || s.active === '', s);
+  }
+  await tab.keyboard.press('Tab');
+  s = await state();
+  check('after the load Tab enters the drawer', s.active === 'panel-first', s);
+  await tab.keyboard.press('Escape');
+  await tab.click('#opener');
+  s = await state();
+  check('after the load a click that opens it takes focus in', s.active === 'panel-first', s);
 
   check('no page errors', errors.length === 0, {errors});
 } finally {

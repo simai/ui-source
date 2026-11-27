@@ -95,6 +95,8 @@ class Workspace {
     this.drawer = false;
     this.inerted = [];
     this.layout = null;
+    // Whether a sync has read a layout from the sheet yet.
+    this.laidOut = false;
     // What opened the panel, where focus goes back when its drawer closes.
     this.opener = null;
     this.resize = typeof globalThis.ResizeObserver === 'function'
@@ -111,10 +113,15 @@ class Workspace {
 
   // narrow | split | wide, as the sheet's container queries said it on the regions.
   readLayout() {
+    return this.readSheetLayout() ?? 'wide';
+  }
+
+  // The layout the sheet says, or null while no sheet has said one.
+  readSheetLayout() {
     const probe = region(this.element, 'main') ?? this.element.firstElementChild;
     if (!probe) return 'wide';
     const value = globalThis.getComputedStyle(probe).getPropertyValue('--sf-workspace--layout').trim();
-    return ['narrow', 'split', 'wide'].includes(value) ? value : 'wide';
+    return ['narrow', 'split', 'wide'].includes(value) ? value : null;
   }
 
   show(view) {
@@ -141,10 +148,21 @@ class Workspace {
       this.closeDrawer(false);
       return;
     }
-    const layout = this.readLayout();
+    const said = this.readSheetLayout();
+    const layout = said ?? 'wide';
     const view = this.readView();
     const open = element.getAttribute(PANEL) === 'open';
     const active = globalThis.document.activeElement;
+    // A load never moves focus (GB20, DEV msg-b016982a: the docs Workspace
+    // page opened its panel and took focus on 7 of 7 loads). The drawer takes
+    // focus when this sync opens it (closed -> open), or when the container
+    // narrowed under a person whose focus is in a region the drawer makes
+    // inert. A panel open in the markup -- the state the page was loaded in --
+    // and a drawer that only appears because the sheet arrived (its first
+    // layout) leave focus where it is.
+    const opening = open && !this.open;
+    const laidOut = this.laidOut;
+    if (said) this.laidOut = true;
     // The container narrowed: the region holding focus may have just been
     // hidden. Nothing else moves focus on a change of width.
     const narrowed = layout === 'narrow' && this.layout && this.layout !== 'narrow';
@@ -158,7 +176,11 @@ class Workspace {
     }
     if (open && !this.open) this.opener = region(element, 'panel')?.contains(active) ? null : active;
     const drawer = open && layout !== 'wide';
-    if (drawer && !this.drawer) this.openDrawer();
+    if (drawer && !this.drawer) {
+      const panel = region(element, 'panel');
+      const elsewhere = Boolean(active) && active !== globalThis.document.body && !panel?.contains(active);
+      this.openDrawer(opening || (laidOut && elsewhere));
+    }
     // Closed: focus goes back to the opener. Still open, as a column now: it
     // stays where it is.
     else if (!drawer && this.drawer) this.closeDrawer(!open);
@@ -189,7 +211,7 @@ class Workspace {
     if (main) tryFocus(main, true);
   }
 
-  openDrawer() {
+  openDrawer(takeFocus = true) {
     const panel = region(this.element, 'panel');
     if (!panel) return;
     this.drawer = true;
@@ -212,7 +234,7 @@ class Workspace {
       },
       onTab: (event) => this.keepTab(event, panel),
     });
-    if (!panel.contains(doc.activeElement)) focusInto(panel);
+    if (takeFocus && !panel.contains(doc.activeElement)) focusInto(panel);
   }
 
   closeDrawer(restoreFocus) {
