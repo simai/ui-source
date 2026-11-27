@@ -159,6 +159,11 @@ value never does. The badge stays a static mark: nothing happens on a click.
 - `value-label` is the word a screen reader says before the value, visually
   hidden: the badge reads «sf-wizard, версия 1.5.3». Without it the word of
   the page's language is said («значение», «value»; runtime `value-label`).
+  It stands in `.sf-badge-value-label` (1.9.0), the part a server writes in
+  the class form too (component badges docs).
+- A long name stops at the width ladder's 28 characters (`--sf-measure-28`)
+  and truncates with an ellipsis, inline in a line of text too; the value
+  stays whole (1.9.0).
 - The divider is hidden from assistive technology. With `aria-label` the
   label alone is said and the value is hidden too, as the text is.
 - The slot `value` takes markup in place of the attribute.

@@ -4,7 +4,6 @@
       "name": "reference",
       "title": "Обзор и история",
       "settings": {
-        "aria-label": "Разделы",
         "items": [
           {
             "id": "overview",
@@ -75,13 +74,15 @@
             "no-network"
           ]
         }
+      },
+      "attributes": {
+        "aria-label": "Разделы"
       }
     },
     {
       "name": "go-to",
       "title": "Переход к вкладке",
       "settings": {
-        "aria-label": "Разделы",
         "items": [
           {
             "id": "overview",
@@ -108,13 +109,15 @@
         },
         "events": []
       },
-      "from": "studio.scenario.json"
+      "from": "studio.scenario.json",
+      "attributes": {
+        "aria-label": "Разделы"
+      }
     },
     {
       "name": "more",
       "title": "Лишние — в «Ещё»",
       "settings": {
-        "aria-label": "Карточка",
         "overflow": "more",
         "items": [
           {
@@ -142,13 +145,15 @@
       },
       "expect": {
         "name": "Карточка"
+      },
+      "attributes": {
+        "aria-label": "Карточка"
       }
     },
     {
       "name": "configurable",
       "title": "Настраиваемые",
       "settings": {
-        "aria-label": "Карточка",
         "configurable": true,
         "items": [
           {
@@ -168,6 +173,9 @@
       },
       "expect": {
         "name": "Карточка"
+      },
+      "attributes": {
+        "aria-label": "Карточка"
       }
     },
     {
@@ -178,10 +186,10 @@
         "why": "a server (a Markdown renderer) prints the tabs with the page's own panels (Docara admission): the tab row and the open panel print with their ids, so the row and the panel hold their place when the code arrives"
       },
       "attributes": {
-        "id": "order"
+        "id": "order",
+        "aria-label": "Заказ"
       },
       "settings": {
-        "aria-label": "Заказ",
         "items": [
           {
             "id": "main",
@@ -203,6 +211,25 @@
         "name": "Заказ",
         "values": {
           "selected": "main"
+        }
+      }
+    },
+    {
+      "name": "panel-labels",
+      "title": "Подписи на панелях",
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a server that cannot print the items list (Docara :::tabs) prints one panel per tab with the tab's label as its aria-label: the row draws from the panels' labels"
+      },
+      "attributes": {
+        "id": "labels",
+        "aria-label": "Заказ"
+      },
+      "children": "<div role=\"tabpanel\" aria-label=\"Основное\"><p>Заказ от 12 ноября, оплачен картой.</p></div><div role=\"tabpanel\" aria-label=\"Позиции\" hidden><p>Три позиции на 8 400 ₽.</p></div><div role=\"tabpanel\" aria-label=\"История\" hidden><p>Создан, оплачен, передан в доставку.</p></div>",
+      "expect": {
+        "name": "Заказ",
+        "values": {
+          "selected": "0"
         }
       }
     }

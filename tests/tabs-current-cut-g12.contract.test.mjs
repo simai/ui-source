@@ -17,7 +17,7 @@ test('G12: the row is fitted with the tabs\' own widths, cut labels included', (
   assert.match(source, /fitBesideMore\(\{widths: own, gap, room: room\(\), must, current/u);
   // The observer still expects the boxes at the widths they are drawn.
   assert.match(source, /this\.expectTabSizes\(hosts, widths, kept\);/u);
-  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.6.1'); // GB19 C (press wait, 1.5.5) // GB19 touch size (C428) over GB19 D2 (slots, 1.5.4) // GB18: VO-1 attribute order, panels example; // GB16-5/6: the label beside the glyph, name tooltips; // GB16 returns: the tightest row // GB19 touch size (C428)
+  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.6.1'); // GB20 integration: 1.6.1 over render 1.6.0 (panel labels) // GB19 C (press wait, 1.5.5) // GB19 touch size (C428) over GB19 D2 (slots, 1.5.4) // GB18: VO-1 attribute order, panels example; // GB16-5/6: the label beside the glyph, name tooltips; // GB16 returns: the tightest row // GB19 touch size (C428)
 });
 
 test('G12: the shortened tab truncates with an ellipsis', () => {

@@ -68,7 +68,35 @@ snapshot `static/default/panels.html` is what the server prints inside the
 host so the row and the open panel hold their place before the code arrives:
 the drawn row and panel row (`data-sf-static`), then the page's own panels as
 held children (`data-sf-held`) that carry their content; the code adopts the
-drawing and moves the held panels into it.
+drawing and moves the held panels into it. The render tool prints that markup
+from the request's settings and children
+(ui-source `docs/developer/first-paint-render.md`):
+
+```json
+{"tag": "sf-tabs", "attributes": {"id": "order"}, "settings": {"aria-label": "Заказ", "items": [{"id": "main", "label": "Основное"}, {"id": "history", "label": "История"}]},
+ "children": "<div role=\"tabpanel\" data-entry=\"main\">…</div><div role=\"tabpanel\" data-entry=\"history\" hidden>…</div>"}
+```
+
+Without the list (a renderer that cannot print `items`), each panel names its
+own tab: `<div role="tabpanel" aria-label="Основное">`. A tab with no label of
+its own takes its page panel's `aria-label` (1.6.0); the panels follow in
+order.
+
+```html
+<sf-tabs id="order" aria-label="Заказ">
+  <div role="tabpanel" aria-label="Основное"><p>Заказ от 12 ноября.</p></div>
+  <div role="tabpanel" aria-label="История" hidden><p>Создан, оплачен.</p></div>
+</sf-tabs>
+```
+
+Printed this way, with no first paint, the tabs still hold their frame before
+the script (1.6.0, from core.css, the one sheet a page links before any
+code): the row, one control of the tabs' size high, and the panel row's
+padding above and below the open panel (`--sf-tabs-main-container--padding-top`
+and `-bottom`, `--sf-space-1`), so the open panel stands where it is drawn and
+nothing moves when the code arrives. The row is empty until then. Only the
+first open panel is shown. Vertical tabs (`type="vertical"`) hold nothing:
+print their first paint.
 The ids are fixed by the host's `id`, so a server can write them and every
 reference holds:
 

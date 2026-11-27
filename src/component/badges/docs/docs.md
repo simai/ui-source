@@ -94,7 +94,11 @@ as the text line, `aria-hidden="true"`) and `.sf-badge-value`; a visually
 hidden word before the value makes a screen reader say «sf-wizard, версия
 1.5.3». `--sf-space-1/3` stands on each side of the divider (`--sf-badge-gap`
 on a badge with a divider). The badge does not wrap inside: a long name
-truncates with an ellipsis, the value never. Every size and look keeps its
+truncates with an ellipsis, the value never. The name stops at the width
+ladder's 28 characters (`--sf-measure-28`, component.badges 1.15.0) and
+truncates there, inline in a line of text too, where its container is the
+whole line; a badge without a value has no cap. A page that wants another
+cap sizes `.sf-badge-text`. Every size and look keeps its
 height (C01, C140 (5)). The divider is the badge's border colour on an outline
 badge and `--sf-outline` on a fill, the text colour on the filled error count;
 `--sf-badge-divider-color` sets it. The value takes the text colour. A badge
@@ -105,9 +109,20 @@ click (C319).
 <span class="sf-badge sf-badge--outline sf-badge--on-surface sf-badge--size-1/2 inline-flex flex-row flex-nowrap justify-center items-center">
   <span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">sf-wizard</span></span>
   <span class="sf-badge-divider" aria-hidden="true"></span>
-  <span class="sf-badge-value"><span class="sr-only">, версия </span>1.5.3</span>
+  <span class="sf-badge-value"><span class="sf-badge-value-label">, версия </span>1.5.3</span>
 </span>
 ```
+
+The hidden word is a part of its own, `.sf-badge-value-label` (component.badges
+1.15.0): the first child of `.sf-badge-value`, its text a comma, a space, the
+word and a space (`, <word> `). The badge sheet hides it from sight and keeps
+it for a screen reader, so the class form needs no utility beside it
+(`sr-only` may stay; sf-badge prints both). The word is the page's own
+(«версия» for a version) or sf-badge's word `value-label` in the page
+language, the one sf-badge says when its `value-label` is empty: in a pair,
+`distr/smart/badge/lang/<lang>.json` → `runtime.value-label` («значение» in
+`ru`, «value» in `en`), the same word as in the language pack
+`distr/core/lang/<lang>/badge.json` → `words["sf-badge"]["value-label"]`.
 
 A colour from the palette (component.badges 1.14.0, owner decision C411): a
 badge whose colour comes from data -- a section, a tag, a choice in a table

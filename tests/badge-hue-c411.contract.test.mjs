@@ -51,7 +51,7 @@ test('C411: the constructor and sf-badge draw the class from hue', () => {
   const constructor = read('src/component/badges/js/_badges.js');
   assert.match(constructor, /const hue = canonicalBadgeHue\(params\.hue\);\n\s+if \(hue\) \{\n\s+this\.badge\.classList\.add\(`sf-badge--\$\{hue\}`\);/u);
   const component = json('src/smart/badge/component.json');
-  assert.equal(component.version, '1.8.1');
+  assert.equal(component.version, '1.9.0'); // GB20: 1.8.1 moved on by the value-label part
   assert.deepEqual(component.settings.hue.values, ['', ...PALETTE]);
   assert.equal(component.settings.hue.default, '');
   const manifest = json('src/smart/badge/smart.manifest.json');
@@ -62,7 +62,7 @@ test('C411: the constructor and sf-badge draw the class from hue', () => {
   const examples = json('src/smart/badge/examples.json');
   assert.deepEqual(examples.examples.find((entry) => entry.name === 'hue').settings, {text: 'Дизайн', hue: 'teal'});
   assert.ok(json('src/smart/badge/probe.json').probes.some((check) => check.id === 'p-hue'));
-  assert.equal(json('src/component/badges/passport.json').version, '1.14.0');
+  assert.equal(json('src/component/badges/passport.json').version, '1.15.0'); // GB20: 1.14.0 moved on by the value-label part
 });
 
 test('C411: the public variables still win and say so; the docs list the classes', () => {

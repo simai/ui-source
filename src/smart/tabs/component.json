@@ -273,7 +273,7 @@
       "default": true,
       "x-element": "div[role=tabpanel]",
       "x-entry": "data-entry",
-      "summary": "Where a panel's content comes from, for each tab in this order: a page panel (this slot), the panel-<n> slot, the data panels of set-panels / set-data. The page's own panels: each direct child <div role=\"tabpanel\"> of the host (without a slot attribute) is a panel, the same live node moved into the panel row, never copied. data-entry=\"<item id>\" makes it the panel of that item; panels without data-entry fill the remaining tabs in their order. The closed ones carry hidden, the open one not. The tabs write on it id=\"<path>--panel-<n>\" (unless it has an id), aria-labelledby=\"<path>--tab-<n>\", data-sf-tab-panel=\"<n>\" and the class sf-tabs-main-tab; <path> is page-<host id> for a host with an id (write one on every host a server prints), n the tab's place from 0. Panels added later are taken as they arrive. This is the route for a server or a Markdown renderer: print the items setting and one panel per item."
+      "summary": "Where a panel's content comes from, for each tab in this order: a page panel (this slot), the panel-<n> slot, the data panels of set-panels / set-data. The page's own panels: each direct child <div role=\"tabpanel\"> of the host (without a slot attribute) is a panel, the same live node moved into the panel row, never copied. data-entry=\"<item id>\" makes it the panel of that item; panels without data-entry fill the remaining tabs in their order. The closed ones carry hidden, the open one not. The tabs write on it id=\"<path>--panel-<n>\" (unless it has an id), aria-labelledby=\"<path>--tab-<n>\", data-sf-tab-panel=\"<n>\" and the class sf-tabs-main-tab; <path> is page-<host id> for a host with an id (write one on every host a server prints), n the tab's place from 0. Panels added later are taken as they arrive. This is the route for a server or a Markdown renderer: print the items setting and one panel per item, or, without items, one panel per tab with the tab's label as the panel's aria-label (1.6.0): a tab with no label of its own takes its page panel's aria-label. Before the script core.css holds the tab row and the panel row above and below the open panel (horizontal tabs), so nothing moves when the code draws the tabs."
     },
     "panel-<n>": {
       "x-pattern": "^panel-\\d+$",
@@ -441,6 +441,17 @@
       }
     ]
   },
+  "x-first-paint": {
+    "$comment": "Settings whose look depends on the width of the place, which a server does not know: the render tool refuses them (reason place-setting) unless the named setting fixes the look.",
+    "place": [
+      {
+        "setting": "type",
+        "value": "vertical",
+        "unless": {"fold": "never"},
+        "why": "vertical tabs fold into the line below 44rem of their place (C181 (2)); a print draws the column, so on a narrow place the tabs would move when the script draws them: give fold=\"never\", or print the horizontal tabs"
+      }
+    ]
+  },
   "x-summary": "A tab list that shows one local panel at a time, with text or icon tabs given as attributes, slots or data, roving keyboard focus and linked tab panels.",
   "x-source": {
     "package": "framework",
@@ -508,7 +519,8 @@
     "version 1.5.4 (2026-11-24, group build 19 D2, Docara msg-991e765ceb3d4b02ace3; above 1.5.3 on feat/gb18-tabs and integration/pair-next-20): a patch, the manifest only. component.json declares slots: the page panels (default slot, <div role=\"tabpanel\"> with data-entry), panel-<n> and tab-<n>, as the element reads them since 1.3.0; nothing the element does changes.",
     "version 1.5.5 (2026-11-25, group build 19 area C, DEV answer 5 on GB18 msg-cda157ebd00d44df8792; numbered above every origin branch): a patch, behaviour on a fast network unchanged. A wait a person's press started does not give up at 3 s while the code is on its way: the settings menu (openSettings) asks SF.Loader.ensure(['sf-menu-context'], {press: true}) and its list's sf-sortable and sf-checkbox with press too; numbered above 1.5.4 on origin/feat/gb19-docara (SF.Loader.ensure press, GB18 L2: 30 s, and on while a Loader load is in flight). Settings, values, events, markup and words unchanged.",
     "version 1.5.6 (2026-11-25, group build 19 touch size; DEV decision msg-48be8a01a7364c99a67b): a patch, above 1.5.5 of every origin branch. Touch screens rule 12 (C428): under a coarse pointer every tab -- line, pills and the vertical column, any size -- is at least --sf-hit--touch (44) high (class sheet component.tabs 1.5.9); size 1/2 tabs were 28 on a phone. Labels, the line under the selected label and the fine pointer unchanged. Settings, values, events and keys unchanged. On integration/gb19 1.5.6 carries 1.5.4 (GB19 D2 slots) and 1.5.5 (GB19 area C press wait) as well.",
-    "version 1.6.1 (2026-11-27, group build 20 area A; above 1.6.0 of origin/feat/gb20-render and 1.5.6 of every other origin branch): a minor over 1.5.6. Device scope (msg-6ce10fc0934a4af5ac7e): an item may carry devices: [\"phone\"] | [\"desktop\"]; the tab list reads its own layout (SF.device, followed while connected) and does not draw the other layout's tabs; the selected tab is always drawn. Without devices nothing changes."
+    "version 1.6.0 (2026-11-27, group build 20; Docara :::tabs, msg-d097cbea): a minor. A tab without a label of its own (no items, or an item without label) takes the aria-label of its page panel, so a server prints <div role=\"tabpanel\" aria-label=\"<label>\"> per tab and no items list (before: «Вкладка N»). Before the script core.css (core.styles) holds the frame of horizontal tabs whose panels are written inside and no first paint printed: the row one control of the size high (--sf-ui-<size>--control-height) and the panel row's padding above and below the open panel (--sf-tabs-main-container--padding-top/-bottom, --sf-space-1), only the first open panel shown; the open panel stands where it is drawn (CLS 0, it was 0.15 at 1440). The render tool prints sf-tabs from its settings and panels as it prints the seven Docara components. Nothing else draws differently. Numbered above 1.5.6, the highest on any origin branch.",
+    "version 1.6.1 (2026-11-27, group build 20 area A; above 1.6.0 of origin/feat/gb20-render and 1.5.6 of every other origin branch): a minor over 1.5.6. Device scope (msg-6ce10fc0934a4af5ac7e): an item may carry devices: [\"phone\"] | [\"desktop\"]; the tab list reads its own layout (SF.device, followed while connected) and does not draw the other layout's tabs; the selected tab is always drawn. Without devices nothing changes. On integration/gb20 1.6.1 carries 1.6.0 (group build 20 area C, panel labels and the pre-script frame) as well."
   ],
   "x-rule": {
     "css": null

@@ -71,7 +71,7 @@ function fakeDistribution() {
   writeFileSync(join(dir, 'core/js/core.js'), '// core');
   writeFileSync(join(dir, 'core/lang/ru.js'), '// ru');
   writeFileSync(join(dir, 'core/lang/en.js'), '// en');
-  for (const folder of ['badge', 'list']) {
+  for (const folder of ['badge', 'list', 'tooltip', 'tabs']) {
     mkdirSync(join(dir, 'smart', folder), {recursive: true});
     copyFileSync(join(root, 'src/smart', folder, 'component.json'), join(dir, 'smart', folder, 'component.json'));
     copyFileSync(join(root, 'src/smart', folder, 'examples.json'), join(dir, 'smart', folder, 'examples.json'));
@@ -104,6 +104,12 @@ test('5. what a component does not print is refused before any browser starts', 
     assert.deepEqual(await ask({tag: 'sf-badge', colour: 'red'}), ['refused', 'unknown-field']);
     assert.deepEqual(await ask({tag: 'sf-badge', schema: 'simai.first-paint-print.v1'}), ['refused', 'schema']);
     assert.deepEqual(await ask([]), ['refused', 'not-a-request']);
+    // GB20: a retired setting draws nothing (sf-tooltip size, C160 (3)): refused, not printed.
+    assert.deepEqual(await ask({tag: 'sf-tooltip', settings: {size: '2'}}), ['refused', 'retired-setting']);
+    assert.match((await renderer.render({tag: 'sf-tooltip', settings: {size: '1/3'}})).detail, /retired \(owner decision C160 \(3\)\) until 2027-01-01/u);
+    // GB20: vertical tabs fold by the width of their place (C181 (2)), which a server does not know: refused unless fold="never".
+    assert.deepEqual(await ask({tag: 'sf-tabs', settings: {type: 'vertical'}}), ['refused', 'place-setting']);
+    assert.deepEqual(await ask({tag: 'sf-tabs', settings: {type: 'vertical', fold: 'auto'}}), ['refused', 'place-setting']);
     // sf-list's items arrive after the first paint: refused, not drawn as an empty list.
     const late = JSON.parse(readFileSync(join(distr, 'smart/list/component.json'), 'utf8'));
     const lateName = late.presentation.skeleton.late[0];
@@ -149,7 +155,7 @@ test('6. the command line: a session answers line by line, in order, and says wh
 });
 
 test('7. the template paths: the seven Docara prints and sf-switch name what the distribution holds', () => {
-  const fixed = {badge: '1.8.1', tag: '1.13.2', tooltip: '1.5.5', avatar: '1.8.7', 'progress-bar': '1.5.7', 'reference-link': '1.3.6', 'button-copy': '1.7.8', switch: '1.10.3'}; // GB19 integration: switch 1.10.2 moved on by touch size (1.10.3)
+  const fixed = {badge: '1.9.0', tag: '1.13.2', tooltip: '1.5.5', avatar: '1.8.7', 'progress-bar': '1.5.7', 'reference-link': '1.3.6', 'button-copy': '1.7.8', switch: '1.10.3'}; // GB19 integration: switch 1.10.2 moved on by touch size (1.10.3)
   for (const [folder, version] of Object.entries(fixed)) {
     const manifest = json(`src/smart/${folder}/component.json`);
     assert.equal(manifest.version, version, `${folder}: group build 19, the template path as shipped`);

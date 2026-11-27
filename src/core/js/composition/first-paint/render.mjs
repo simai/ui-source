@@ -89,10 +89,30 @@ function componentIndex(distr, packages) {
 
 const refuse = (reason, detail) => ({status: 'refused', reason, detail});
 
+// A setting the component retired (an alias row to nothing, mode retired):
+// the runtime still reads it and draws nothing for it, so a print would keep
+// a value that does nothing (sf-tooltip size, C160 (3): the root class
+// sf-tooltip--size-<value> no sheet reads). Refused, with the row's words.
+function retiredSetting(manifest, name) {
+  const rows = Array.isArray(manifest.aliases?.rows) ? manifest.aliases.rows : [];
+  return rows.find((row) => row?.from === name && row.to === null && row.mode === 'retired' && (row.kind ?? 'setting') === 'setting') ?? null;
+}
+
 /**
  * Checks a request against the component's manifest, without a browser.
  * Answers {component, example, template, prefix, lang} or a refusal.
  */
+// A setting whose look depends on the width of the place (component.json
+// x-first-paint.place): sf-tabs type="vertical" folds into the line below
+// 44rem of its place (C181 (2)), a width a server does not know, so a print
+// of the column moves on a narrow place. Refused unless the row's "unless"
+// settings fix the look (fold="never").
+function placeSetting(manifest, settings) {
+  const rows = Array.isArray(manifest['x-first-paint']?.place) ? manifest['x-first-paint'].place : [];
+  return rows.find((row) => row && Object.hasOwn(settings, row.setting) && String(settings[row.setting]) === String(row.value)
+    && !Object.entries(row.unless ?? {}).every(([name, value]) => Object.hasOwn(settings, name) && String(settings[name]) === String(value))) ?? null;
+}
+
 function admit(request, index, languages) {
   if (!request || typeof request !== 'object' || Array.isArray(request)) return refuse('not-a-request', 'a request is a JSON object');
   const extra = Object.keys(request).filter((key) => !REQUEST_FIELDS.has(key));
@@ -117,6 +137,8 @@ function admit(request, index, languages) {
     if (name === 'template' && named !== undefined) continue;
     const member = memberOf(component.manifest, name);
     if (!member) return refuse('unknown-setting', `<${request.tag}> declares no setting or value ${name}`);
+    const retired = retiredSetting(component.manifest, name);
+    if (retired) return refuse('retired-setting', `${name} is retired${retired.section ? ` (${retired.section})` : ''}${retired.remove_after ?? retired['remove-after'] ? ` until ${retired.remove_after ?? retired['remove-after']}` : ''}: it draws nothing, leave it out`);
     if (component.late.includes(name) && value !== null && value !== undefined && !(Array.isArray(value) && !value.length)) {
       return refuse('late-setting', `${name} arrives after the first paint (§5.4): leave it out and give it to the element on the page`);
     }
@@ -126,6 +148,8 @@ function admit(request, index, languages) {
     if (member.type === 'boolean' && typeof value !== 'boolean' && value !== null) return refuse('value', `${name} is true or false`);
     if (PROPERTY_ONLY.has(member.type) && value !== null && typeof value !== 'object') return refuse('value', `${name} is a list or an object (a JSON island)`);
   }
+  const place = placeSetting(component.manifest, settings);
+  if (place) return refuse('place-setting', `${place.setting}="${place.value}" depends on the width of its place: ${place.why ?? 'a server does not know it'}`);
   const attributes = request.attributes ?? {};
   if (!attributes || typeof attributes !== 'object' || Array.isArray(attributes)) return refuse('attributes', 'attributes is an object of attribute names');
   for (const [name, value] of Object.entries(attributes)) {

@@ -57,6 +57,10 @@
       "reads": "nothing but its children: its rows are the page's list items, each holding its own box (first-paint status R222)",
       "core_rule": false
     },
+    "tabs": {
+      "holds": "height",
+      "reads": "type (vertical holds nothing), size (1/2, 1, 2), its items (the attribute or the JSON island) and its direct-child panels (<div role=\"tabpanel\">, the open one without hidden): the row one control of the size high; with page panels the panel row's padding above and below the open panel too (--sf-tabs-main-container--padding-top/-bottom, --sf-space-1), only the first open panel shown (GB20, Docara :::tabs msg-d097cbea, 2026-11-27: CLS 0.15 at 1440). Height, not box: the row's width is its container's."
+    },
     "tag-group": {
       "holds": "box",
       "reads": "layout (row or wrap) and its tags: the row's box, its tags 4 apart, each tag holding its own box (C145 (3))",

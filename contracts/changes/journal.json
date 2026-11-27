@@ -21254,6 +21254,106 @@
         }
       ],
       "source": "src/core/js/composition/routing.mjs; contracts/standards/simai.interface-fragment/1.1.1/standard.json; src/core/contracts/interface-fragment.v1.schema.json; src/core/contracts/composition-port-manifest.v1.schema.json"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-tabs-panel-labels-and-frame",
+      "manual": "Nothing to rewrite. A server that cannot print the items list prints one <div role=\"tabpanel\" aria-label=\"<label>\"> per tab; a page with items is drawn as before. A page that wrote an aria-label on a page panel of a tab without a label now sees that label on the tab instead of «Вкладка N».",
+      "summary": "smart.tabs 1.6.0 and core.styles (group build 20, Docara :::tabs): a tab without a label of its own takes its page panel's aria-label. Before the script, horizontal tabs with their panels written inside and no printed first paint hold their frame from core.css: the row one control of the size high and the panel row's padding above and below the open panel, only the first open panel shown (CLS 0.15 at 1440 and 0.13 at 390 before, 0 after).",
+      "items": [
+        {
+          "component": "smart.tabs",
+          "from": "a tab without a label: «Вкладка N»",
+          "to": "its page panel's aria-label, else «Вкладка N»"
+        },
+        {
+          "component": "core.styles",
+          "from": "sf-tabs before its script: no box, its panels stacked as the page wrote them",
+          "to": "the row and the panel row held (horizontal tabs with direct-child panels)"
+        }
+      ],
+      "source": "src/smart/tabs/index.js; src/core/scss/_sf_css__placeholder.scss"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-badge-value-label-part-and-name-cap",
+      "manual": "Nothing to rewrite. Class markup of a name and value badge may write the hidden word as <span class=\"sf-badge-value-label\">, <word> </span>; markup with sr-only keeps working. A long name in a name and value badge is cut at --sf-measure-28 now; a page that wants it wider sizes .sf-badge-text.",
+      "summary": "component.badges 1.15.0 and smart.badge 1.9.0 (group build 20, Docara msg-1b727506): the visually hidden word before the value is the documented part .sf-badge-value-label, hidden by the badge sheet itself (sf-badge prints it with sr-only); its word is the page's or sf-badge's value-label of the page language. The name of a name and value badge stops at --sf-measure-28 and truncates, inline in text too; a badge without a value is unchanged.",
+      "items": [
+        {
+          "component": "component.badges",
+          "from": "the hidden word written with the sr-only utility, the name as wide as its container allows",
+          "to": ".sf-badge-value-label (hidden by the badge sheet), the name at most --sf-measure-28 in a name and value badge"
+        },
+        {
+          "component": "smart.badge",
+          "from": "<span class=\"sr-only\">",
+          "to": "<span class=\"sf-badge-value-label sr-only\">"
+        }
+      ],
+      "source": "src/component/badges/scss/_css__badges.scss; src/smart/badge/js/templates/default.js"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-composition-media-references",
+      "manual": "Nothing to rewrite. A host that stores media:<id> in a picture's src or a file's href passes render(document, {media: (ref, {node, field}) => address}); without it the page is drawn with placeholders and media_unresolved diagnostics instead of being refused.",
+      "summary": "Composition (group build 20, ui-editor msg-05617659): a media reference (simai.document-port: media:<id>) in content.figure and content.media data.src and content.file data.href is valid; render asks the render option media(ref, {node, field}) for its address before the URL check and draws a placeholder (data-sf-media-unresolved) with the diagnostic media_unresolved without it. Before, validate gave unsafe_url and render refused the whole page.",
+      "items": [
+        {
+          "component": "SF.Composition.validate",
+          "from": "media:<id> in a src or a file href: unsafe_url (the Document refused)",
+          "to": "valid"
+        },
+        {
+          "component": "SF.Composition.render",
+          "from": "no media option; a media reference refused the page",
+          "to": "media(ref, {node, field}) gives the address; without it a placeholder and media_unresolved"
+        }
+      ],
+      "source": "src/core/js/composition/index.mjs; docs/developer/composition-content-types.md"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "kind": "behaviour",
+      "id": "behaviour-first-paint-render-retired-setting",
+      "manual": "Nothing to rewrite unless a request sets a retired setting (sf-tooltip size): leave it out; it drew nothing.",
+      "summary": "first-paint-render (group build 20): a setting the component retired (an alias row to nothing, mode retired; sf-tooltip size, C160 (3)) is refused with retired-setting instead of printed: the static markup kept a class no sheet reads. A setting whose look depends on the width of its place (component.json x-first-paint.place: sf-tabs type=\"vertical\" folds below 44rem of its place, C181 (2)) is refused with place-setting unless fold=\"never\" fixes the look. sf-tabs is printed with its panels as the seven Docara components are.",
+      "items": [
+        {
+          "component": "first-paint-render",
+          "from": "a retired setting printed (sf-tooltip--size-<value>, drawing nothing)",
+          "to": "refused: retired-setting"
+        },
+        {
+          "component": "first-paint-render",
+          "from": "sf-tabs type=\"vertical\" printed as the column (moved on a place below 44rem)",
+          "to": "refused: place-setting, unless fold=\"never\""
+        }
+      ],
+      "source": "tools/first-paint/render.mjs; contracts/schema/first-paint-render.schema.json"
     }
   ]
 }

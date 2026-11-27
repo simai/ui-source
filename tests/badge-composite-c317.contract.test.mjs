@@ -44,8 +44,8 @@ test('C317 public variable: --sf-badge-divider-color, and the badge stays within
 
 test('C317 Smart: value, value-label and the slot value; the word in the language files', () => {
   const component = json('src/smart/badge/component.json');
-  assert.equal(component.version, '1.8.1'); // C411: moved on by the hue setting
-  assert.equal(json('src/component/badges/passport.json').version, '1.14.0'); // C411: moved on by the hue classes
+  assert.equal(component.version, '1.9.0'); // GB20: the value-label part // C411: moved on by the hue setting
+  assert.equal(json('src/component/badges/passport.json').version, '1.15.0'); // GB20: the value-label part // C411: moved on by the hue classes
   assert.deepEqual(component.settings.value, {...component.settings.value, type: 'string', default: ''});
   assert.equal(component.settings['value-label']['default-from'], 'runtime.value-label');
   assert.ok(component.slots.value);
@@ -60,7 +60,7 @@ test('C317 Smart: value, value-label and the slot value; the word in the languag
 
 test('C317 Smart template: the divider hidden, a hidden word before the value; without a value the template of 1.6.3', () => {
   const template = read('src/smart/badge/js/templates/default.js');
-  assert.match(template, /<span class="sf-badge-divider" aria-hidden="true"><\/span><span class="sf-badge-value" aria-hidden=\$\{hasAccessibleLabel \? 'true' : nothing\}><span class="sr-only">, \$\{context\.valueLabel\} <\/span>\$\{content\}<\/span>/u);
+  assert.match(template, /<span class="sf-badge-divider" aria-hidden="true"><\/span><span class="sf-badge-value" aria-hidden=\$\{hasAccessibleLabel \? 'true' : nothing\}><span class="sf-badge-value-label sr-only">, \$\{context\.valueLabel\} <\/span>\$\{content\}<\/span>/u);
   // The template literal drawn without a value is the one 1.6.3 drew,
   // character for character (base 1dd18375c), so its markup is byte-identical.
   // From the backtick after `start` to the template's closing line.
