@@ -21170,7 +21170,7 @@
       "manual": "Nothing to rewrite.",
       "id": "behaviour-coarse-menu-rows-touch",
       "kind": "behaviour",
-      "summary": "component.menu 1.10.6 (group build 20 area A, DEV N1 msg-f0d27a088fff46ab9c56, Touch screens rule 12 C428): on a coarse pointer the rows of a vertical sf-menu touch -- no gap between them (4 px before), so a press between two rows reaches a row instead of the gap; the rows keep 44. A fine pointer keeps its gap.",
+      "summary": "component.menu 1.10.6 (group build 20 area A, DEV N1 msg-f0d27a088fff46ab9c56, decision C429 by Touch screens rule 12 C428; sf-menu 1.15.3): on a coarse pointer the rows of a vertical sf-menu touch -- no gap between them (4 px before), so a press between two rows reaches a row instead of the gap; the rows keep 44. A fine pointer keeps its gap.",
       "items": [
         {
           "component": "component.menu",
