@@ -79,7 +79,8 @@ try {
     const press = await heard(() => page.mouse.click(at.x, at.y));
     expect(`${id}: press and click reach ${where}`, press.filter((x) => /^(pointerdown|click)/u.test(x)), [`pointerdown/mouse@${where}`, `click/mouse@${where}`]);
     const wheel = await heard(() => page.mouse.wheel(0, 40));
-    expect(`${id}: the wheel reaches ${where}`, wheel.filter((x) => x.startsWith('wheel')), [`wheel/mouse@${where}`]);
+    // A WheelEvent carries no pointerType in every Chrome: compare where it lands, not its kind.
+    expect(`${id}: the wheel reaches ${where}`, wheel.filter((x) => x.startsWith('wheel')).map((x) => x.replace('wheel/mouse@', 'wheel@')), [`wheel@${where}`]);
     const tapped = await heard(() => touch(at));
     expect(`${id}: a touch reaches ${where}`, tapped.filter((x) => x.startsWith('pointerdown')), [`pointerdown/touch@${where}`]);
     // Content over the effect keeps its own press.
@@ -88,7 +89,8 @@ try {
   }
 
   // Tab goes button to button: the layer is not in the tab order.
-  await page.evaluate(() => document.body.focus());
+  // Start before the scene: body.focus() leaves the sequential start at the button clicked last.
+  await page.evaluate(() => { const start = document.createElement('span'); start.tabIndex = -1; start.id = 'tab-start'; document.body.prepend(start); start.focus(); });
   await page.keyboard.press('Tab');
   const first = await page.evaluate(() => document.activeElement?.id);
   await page.keyboard.press('Tab');
