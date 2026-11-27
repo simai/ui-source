@@ -43,16 +43,14 @@ const frame = (theme, fit) => `<!doctype html><html lang="ru" class="${theme}"><
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};
 window.__shifts=0;try{new PerformanceObserver((list)=>{for(const entry of list.getEntries()){if(!entry.hadRecentInput)window.__shifts+=entry.value;}}).observe({type:'layout-shift',buffered:true});}catch(error){}</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
-<style>.page-brand{display:inline-flex;align-items:center;gap:8px;inline-size:220px;color:inherit;text-decoration:none;font-weight:600}.page-body{min-block-size:200vh}.page-tools{display:flex;align-items:center;gap:8px}</style>
+<style>.page-brand{display:inline-flex;align-items:center;gap:8px;inline-size:140px;color:inherit;text-decoration:none;font-weight:600}.page-body{min-block-size:200vh}</style>
 <script src="/distr/core/js/core.js"></script></head><body class="bg-surface">
 <sf-header-site id="h" collapse="lg"${fit ? ' fit' : ''} label="Навигация" menu-label="Открыть навигацию" close-label="Закрыть навигацию">
 <a slot="brand" class="page-brand" href="#home">${logo}<span>SIMAI Framework</span></a>
-<div class="page-nav"><sf-menu orientation="horizontal" overflow="more" appearance="navigation" collapse="none"><nav aria-label="Главное"><ul>${SECTIONS.map((text, index) => `<li><a href="#s${index}">${text}</a></li>`).join('')}</ul></nav></sf-menu></div>
-<div slot="tools" class="page-tools">
-<sf-button id="search" size="1" appearance="outline" scheme="on-surface" icon-start="search" text="Поиск" shortcut="mod+k" shrink="icon" aria-label="Открыть поиск по документации" aria-haspopup="dialog"></sf-button>
-<sf-language id="lang" languages="ru en" mode="menu" size="1" value="ru" apply="none" shrink="code" label="Язык"></sf-language>
-<sf-button-icon size="1" icon="settings" appearance="ghost" scheme="on-surface" aria-label="Открыть настройки чтения"></sf-button-icon>
-</div>
+<sf-menu orientation="horizontal" overflow="more" appearance="navigation" aria-label="Главное"><ul>${SECTIONS.map((text, index) => `<li><a href="#s${index}">${text}</a></li>`).join('')}</ul></sf-menu>
+<sf-button id="search" slot="tools" size="1" appearance="outline" scheme="on-surface" icon-start="search" text="Поиск" shortcut="mod+k" shrink="icon" aria-label="Открыть поиск по документации" aria-haspopup="dialog"></sf-button>
+<sf-language id="lang" slot="tools" languages="ru en" mode="menu" size="1" value="ru" apply="none" shrink="code" label="Язык"></sf-language>
+<sf-button-icon slot="tools" size="1" icon="settings" appearance="ghost" scheme="on-surface" aria-label="Открыть настройки чтения"></sf-button-icon>
 </sf-header-site>
 <main class="page-body"><p>Страница</p></main>
 </body></html>`;
@@ -123,7 +121,7 @@ const report = {wide: null, sweep: [], below: [], language: {}, nofit: null, loa
 const browser = await chromium.launch({headless: true, ignoreDefaultArgs: ['--hide-scrollbars']});
 
 async function openHost({theme = 'theme-light', width = 1440, fit = true} = {}) {
-  const page = await browser.newPage({viewport: {width: 1700, height: 700}, colorScheme: theme === 'theme-dark' ? 'dark' : 'light'});
+  const page = await browser.newPage({viewport: {width: 1760, height: 700}, colorScheme: theme === 'theme-dark' ? 'dark' : 'light'});
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(message.text()); });
@@ -141,6 +139,7 @@ async function openHost({theme = 'theme-light', width = 1440, fit = true} = {}) 
     }), null, {timeout: 20000});
   await child.evaluate(READ);
   await page.waitForTimeout(400);
+  if (process.env.DEBUG) console.log(await child.evaluate(() => { const h = document.getElementById('h'); const m = h.querySelector('sf-menu'); return JSON.stringify({attrs: ['data-fitted', 'data-tools-compact', 'data-nav-overflow', 'data-collapsed'].map((n) => `${n}=${h.getAttribute(n)}`), menu: m.outerHTML.slice(0, 400), items: [...h.querySelectorAll('nav li')].map((li) => `${li.hidden ? '-' : ''}${Math.round(li.getBoundingClientRect().width)}`).join(' '), boxes: [...h.querySelectorAll('.sf-site-header-row > *, .sf-site-header-nav, .page-nav, nav.sf-smart-menu, .page-tools > *')].map((e) => `${e.className.toString().split(' ')[0] || e.localName}:${Math.round(e.getBoundingClientRect().width)}`).join(' '), shrunk: [...h.querySelectorAll('[data-shrunk]')].map((e) => e.id), needs: JSON.stringify(m.rowNeeds?.()), row: h.querySelector('.sf-site-header-row').getBoundingClientRect().width, lang: [...document.querySelectorAll('#lang button > *')].map((e) => `${e.localName}.${e.className}[${e.getAttribute('icon')}] ${getComputedStyle(e).display} ${Math.round(e.getBoundingClientRect().width)}`).join(' | '), rowCss: getComputedStyle(h.querySelector('.sf-site-header-row')).maxInlineSize + ' ' + getComputedStyle(h.querySelector('.sf-site-header-row')).paddingInline}); }));
   return {page, child, errors};
 }
 const setWidth = (page, width) => page.evaluate((w) => { document.getElementById('f').style.inlineSize = `${w}px`; }, width);
@@ -152,32 +151,38 @@ const rank = (state) => {
 };
 
 try {
-  // 1440 and the sweep from the step up.
+  // The sweep from wide to the step: six sections whole, then the search
+  // alone shrunk with six sections (the docs header at 1440: the probe
+  // ui-control control/evidence/2026-11-27-gb20-display measures the real
+  // page), then both, then sections into «Ещё».
   {
-    const {page, child, errors} = await openHost();
+    const {page, child, errors} = await openHost({width: 1690});
     const wide = await child.evaluate(() => window.__read());
     report.wide = wide;
-    if (wide.shown.length !== 6 || wide.more) failures.push(`fit 1440: ${wide.shown.length} sections in the row${wide.more ? ' and «Ещё»' : ''} (${wide.shown.join(', ')})`);
-    if (!wide.searchShrunk || wide.langShrunk) failures.push(`fit 1440: search shrunk ${wide.searchShrunk}, language shrunk ${wide.langShrunk} (want the search alone)`);
-    if (wide.bad.length || wide.sideways) failures.push(`fit 1440: ${wide.bad.join('; ')} sideways ${wide.sideways}`);
+    if (wide.shown.length !== 6 || wide.more || wide.shrunk) failures.push(`fit 1690: ${wide.state} (want 6/0)`);
     let last = -1;
-    for (let width = 1600; width >= 960; width -= 16) {
+    const seen = new Set();
+    for (let width = 1690; width >= 976; width -= 16) {
       await setWidth(page, width);
       await settle(child);
       const row = await child.evaluate(() => window.__read());
       report.sweep.push({width, state: row.state});
+      seen.add(row.state);
+      if (row.shrunk === 1 && !row.searchShrunk) failures.push(`fit sweep ${width}: the language shrank before the search`);
       if (row.bad.length) failures.push(`fit sweep ${width}: ${row.bad.join('; ')}`);
       if (row.sideways) failures.push(`fit sweep ${width}: sideways ${row.sideways}`);
       if (row.state === 'menu') failures.push(`fit sweep ${width}: the menu button above the step`);
       if (rank(row.state) < last) failures.push(`fit sweep ${width}: ${row.state} comes back after a narrower state`);
       last = Math.max(last, rank(row.state));
     }
+    for (const state of ['6/0', '6/1']) if (!seen.has(state)) failures.push(`fit sweep: no width drew ${state} (${[...seen].join(', ')})`);
+    if (![...seen].some((state) => /\+more\/2$/u.test(state))) failures.push(`fit sweep: sections went into «Ещё» before both tools shrank (${[...seen].join(', ')})`);
     if (errors.length) failures.push(`fit sweep: ${errors.join(' | ').slice(0, 300)}`);
     await page.close();
   }
 
   // Below the step: the menu button and its panel, by real clicks.
-  for (const width of [944, 900, 768, 704, 390]) {
+  for (const width of [940, 900, 768, 704, 390]) {
     const {page, child, errors} = await openHost({width});
     const row = await child.evaluate(() => window.__read());
     let sections = 0;
@@ -206,7 +211,7 @@ try {
     const {page, child, errors} = await openHost();
     let width = 1440;
     let row = await child.evaluate(() => window.__read());
-    while (!row.langShrunk && width > 960) {
+    while (!row.langShrunk && width > 976) {
       width -= 8;
       await setWidth(page, width);
       await settle(child);
@@ -216,17 +221,17 @@ try {
       const lang = document.getElementById('lang');
       const button = lang.querySelector('.sf-language-parts > sf-button > button');
       const icons = [...button.querySelectorAll(':scope > sf-icon')];
-      const shown = (el) => Boolean(el && el.getBoundingClientRect().width && getComputedStyle(el).display !== 'none');
+      const shown = (el) => { const face = el?.localName === 'sf-icon' ? el.querySelector('i, .sf-icon') : el; return Boolean(face && face.getBoundingClientRect().width && getComputedStyle(face).display !== 'none'); };
       const code = button.querySelector('.sf-language-code');
       return {shrunk: lang.getAttribute('data-shrunk') === 'true', width: Math.round(button.getBoundingClientRect().width * 10) / 10,
         glyph: shown(icons[0]) ? icons[0].getAttribute('icon') : null, arrow: shown(icons.at(-1)) ? icons.at(-1).getAttribute('icon') : null,
-        glyphWidth: Math.round((icons[0]?.getBoundingClientRect().width || 0) * 10) / 10, code: shown(code) ? code.textContent.trim().slice(0, 2) : null,
+        glyphWidth: Math.round((icons[0]?.querySelector('i, .sf-icon')?.getBoundingClientRect().width || 0) * 10) / 10, code: shown(code) ? code.textContent.trim().slice(0, 2) : null,
         name: button.getAttribute('aria-label')};
     });
     const shrunk = await look();
     report.language.width = width;
     report.language.shrunk = shrunk;
-    if (!shrunk.shrunk) failures.push('language: no width from 1440 to 960 shrinks it');
+    if (!shrunk.shrunk) failures.push('language: no width from 1440 to 976 shrinks it');
     else {
       if (shrunk.glyph || shrunk.arrow !== 'expand_more' || shrunk.code !== 'RU') failures.push(`language shrunk: glyph ${shrunk.glyph}, arrow ${shrunk.arrow}, code ${shrunk.code}`);
       if (shrunk.name !== 'Язык: Русский') failures.push(`language shrunk: name «${shrunk.name}»`);
