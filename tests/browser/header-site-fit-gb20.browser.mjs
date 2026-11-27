@@ -3,23 +3,24 @@
 //
 // sf-header-site 1.17.0 collapse="lg" fit and sf-language 1.8.0 shrink="code"
 // on the built bytes (group build 20 D; owner remark: «Наборы» hidden at 1440
-// in the docs header, msg-11e805f8; Docara msg-6be3107d). A Docara-like
-// header -- a 220 px brand, the six Russian sections of the docs in a wrapper
-// (as Docara writes them), a tools wrapper with the search «Поиск ⌘K»
-// shrink="icon", sf-language shrink="code" and the settings glyph -- stands in
-// a frame whose width the probe sets.
+// in the docs header, msg-11e805f8; Docara msg-6be3107d). A docs-like
+// header -- a 140 px brand, the six Russian sections of the docs in an
+// sf-menu, the search «Поиск ⌘K» shrink="icon", sf-language shrink="code"
+// and the settings glyph in the tools slot -- stands in a frame whose width
+// the probe sets.
 //
-// - fit, 1440: all six sections in the row, no «Ещё»; the search shrunk to
-//   its glyph and the language left whole (the fewest tools give way).
-// - fit, sweep 960-1600 step 16 (the step and up): no gap under 8 px between
-//   the parts, no sideways scroll; from wide to narrow the states come in the
-//   C372 order (tools one by one, then sections into «Ещё») and never back.
-// - fit, below the step (944, 900, 768, 704, 390): the menu button stands in
+// - fit, sweep 1690-976 step 16 (above the lg step): no gap under 8 px
+//   between the parts, no sideways scroll; at 1690 (the row at its 1280
+//   container) six sections with the search alone shrunk (the fewest tools
+//   give way, in the page's order); from wide to narrow the states come in
+//   the C372 order (tools one by one, then sections into «Ещё») and never
+//   back; a single shrunk tool is always the search.
+// - fit, below the step (940, 900, 768, 704, 390): the menu button stands in
 //   the bar; a real click opens the panel with every section; Escape closes it.
 // - the language shrunk (a frame width where both tools give way): its
 //   translate glyph is not drawn, the code and the arrow are; it is one
 //   glyph narrower; its name stays «Язык: Русский»; a real click opens its
-//   menu; data-shrunk off draws the glyph again (both states asserted).
+//   menu; the bar widened again draws the glyph (both states asserted).
 // - without fit (collapse lg, the same tools): at 1440 no tool shrinks and
 //   no data-shrunk is set (1.16.0 unchanged).
 // - cold loads at 1440, 1024, 768 and 390, light and dark, `loads` each: CLS
@@ -151,15 +152,16 @@ const rank = (state) => {
 };
 
 try {
-  // The sweep from wide to the step: six sections whole, then the search
-  // alone shrunk with six sections (the docs header at 1440: the probe
-  // ui-control control/evidence/2026-11-27-gb20-display measures the real
-  // page), then both, then sections into «Ещё».
+  // The sweep from wide to the step. The bar's row stops at its container
+  // (1280), where six sections need the search shrunk: the search alone
+  // gives way (the language stays whole), then both, then sections go into
+  // «Ещё». The real docs page is measured in ui-control
+  // control/evidence/2026-11-27-gb20-display.
   {
     const {page, child, errors} = await openHost({width: 1690});
     const wide = await child.evaluate(() => window.__read());
     report.wide = wide;
-    if (wide.shown.length !== 6 || wide.more || wide.shrunk) failures.push(`fit 1690: ${wide.state} (want 6/0)`);
+    if (wide.state !== '6/1' || !wide.searchShrunk) failures.push(`fit 1690: ${wide.state}, search shrunk ${wide.searchShrunk} (want 6/1, the search alone)`);
     let last = -1;
     const seen = new Set();
     for (let width = 1690; width >= 976; width -= 16) {
@@ -175,7 +177,7 @@ try {
       if (rank(row.state) < last) failures.push(`fit sweep ${width}: ${row.state} comes back after a narrower state`);
       last = Math.max(last, rank(row.state));
     }
-    for (const state of ['6/0', '6/1']) if (!seen.has(state)) failures.push(`fit sweep: no width drew ${state} (${[...seen].join(', ')})`);
+    for (const state of ['6/1']) if (!seen.has(state)) failures.push(`fit sweep: no width drew ${state} (${[...seen].join(', ')})`);
     if (![...seen].some((state) => /\+more\/2$/u.test(state))) failures.push(`fit sweep: sections went into «Ещё» before both tools shrank (${[...seen].join(', ')})`);
     if (errors.length) failures.push(`fit sweep: ${errors.join(' | ').slice(0, 300)}`);
     await page.close();
@@ -243,10 +245,11 @@ try {
       if (!open) failures.push('language shrunk: a click did not open its menu');
       await child.press('body', 'Escape');
       await settle(child);
-      // Off: the glyph comes back and the trigger is one glyph wider.
-      await child.evaluate(() => document.getElementById('lang').removeAttribute('data-shrunk'));
+      // Off: the bar widened again gives the glyph back, one glyph wider.
+      await setWidth(page, 1440);
       await settle(child);
       const whole = await look();
+      if (whole.shrunk) failures.push('language: still shrunk at 1440 after the bar widened');
       report.language.whole = whole;
       if (whole.glyph !== 'translate' || whole.arrow !== 'expand_more' || whole.code !== 'RU') failures.push(`language whole: glyph ${whole.glyph}, arrow ${whole.arrow}, code ${whole.code}`);
       if (Math.abs(whole.width - shrunk.width - whole.glyphWidth) > 0.6) failures.push(`language: whole ${whole.width} - shrunk ${shrunk.width} is not the glyph ${whole.glyphWidth}`);
