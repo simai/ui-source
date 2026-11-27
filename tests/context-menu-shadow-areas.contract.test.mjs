@@ -14,13 +14,13 @@ const docs = read('src/smart/menu-context/docs/docs.md');
 const slice = (from, to) => source.slice(source.indexOf(from), source.indexOf(to, source.indexOf(from)));
 
 test('for takes the areas themselves as the property, ids in the attribute', () => {
-  assert.equal(manifest.version, '1.27.3'); // 1.27.1: aria-label watched (small-defects-3) // group build 14: 1.27.1 moved on by the merged branches or the C278 language patch
+  assert.equal(manifest.version, '1.28.0'); // 1.27.1: aria-label watched (small-defects-3) // group build 14: 1.27.1 moved on by the merged branches or the C278 language patch // GB20 A: Escape from the layer stack, devices
   assert.equal(manifest.settings.for.type, 'string');
   assert.match(manifest.settings.for['x-note'], /the property also takes a list of the areas, elements or ids/);
   assert.match(manifest.settings.for.summary, /menu\.for = \[table, \.\.\.\]/);
   assert.deepEqual(manifest['x-registry'].inputs.for.type, ['string', 'array']);
   assert.deepEqual(passport.inputs.properties.for.type, ['string', 'array']);
-  assert.equal(passport.version, '1.27.3'); // group build 14: 1.27.1 moved on by the merged branches or the C278 language patch
+  assert.equal(passport.version, '1.28.0'); // group build 14: 1.27.1 moved on by the merged branches or the C278 language patch
   assert.ok(manifest['x-decisions'].some((note) => note.startsWith('version 1.27.0 (2026-11-17, queue db8793a2')));
   assert.match(source, /  get for\(\) \{\n\s*return Array\.isArray\(this\._forList\) \? this\._forList\.slice\(\) : \(this\.getAttribute\("for"\) \?\? ""\);/);
   assert.match(source, /  set for\(value\) \{\n\s*if \(Array\.isArray\(value\)\) \{\n\s*this\._forList = value\.slice\(\);/);

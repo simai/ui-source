@@ -26,6 +26,8 @@ function setup({vertical = false, rtl = false, selected = 0, disabled = [1]} = {
     elementFromManifest: (manifest, {base}) => base, manifest: {}, aliases: {}, languageFiles: {en: {}},
     instancePath: () => 'page/tabs', partId: (path) => path.replace(/\W+/gu, '-'),
     getComputedStyle: () => ({direction: rtl ? 'rtl' : 'ltr'}),
+    // Device scope (core/js/device.js) is out of these tests' scope: every tab in every layout.
+    inLayout: () => true, layoutOf: () => 'desktop', watchLayout: () => () => {},
   });
   const host = new Constructor(), list = {getAttribute: () => vertical ? 'vertical' : 'horizontal'};
   const tabs = [0, 1, 2].map(index => {

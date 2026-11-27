@@ -42,7 +42,7 @@ test('D1: the old path smart/copy-button/ is a forward, not a second contract', 
 
 test('D2: sf-tabs declares how panel content is given, as the element reads it', () => {
   const component = json('src/smart/tabs/component.json');
-  assert.equal(component.version, '1.5.6'); // GB19 integration: 1.5.4 (D2) moved on by area C (1.5.5) and touch size (1.5.6)
+  assert.equal(component.version, '1.6.0'); // GB19 integration: 1.5.4 (D2) moved on by area C (1.5.5) and touch size (1.5.6) // GB20 A: devices (1.6.0)
   const {slots} = component;
   assert.deepEqual(Object.keys(slots), ['panels', 'panel-<n>', 'tab-<n>']);
   assert.equal(slots.panels.default, true);

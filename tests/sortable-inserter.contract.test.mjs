@@ -146,8 +146,8 @@ test('the inserter is the standard menu, and Escape is its layer alone', async (
   // open-surface mark, so a drawer or modal around the list stands back.
   assert.doesNotMatch(source, /addEventListener\('keydown'[^)]*true\)/);
   assert.doesNotMatch(source, /key === ['"]Escape['"]/);
-  // The outside press comes through the layer stack with the mark.
-  assert.match(menu, /holdOpenSurfaceMark\(this, true, \{onOutsidePress: this\._onOutsidePress\}\);/);
+  // The outside press and Escape come through the layer stack with the mark (GB20 A: Escape wherever focus stands).
+  assert.match(menu, /holdOpenSurfaceMark\(this, true, \{onOutsidePress: this\._onOutsidePress, onEscape: this\._onStackEscape\}\);/);
   // The point is a native button of the smallest rung, a tab stop after the items.
   assert.match(source, /sf-icon-button--size-1\/3/);
   // Under a finger the phone's step 36 (rung 1) with a 44 target (SO-5).

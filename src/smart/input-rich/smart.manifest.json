@@ -349,7 +349,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "82d7f42201a6de46c0124b577f58e5a4124dd416bc0121f4e518a97c48df7bb0"
+        "sha256": "c5e79b0c024ef3c4e200ca84eddb015734190bec01738d57426c0ce7aa848566"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
