@@ -21161,6 +21161,26 @@
       "source": "src/smart/language/index.js; src/core/scss/_sf_css__placeholder.scss"
     },
     {
+      "id": "token-progress-scale-text",
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "sf-progress-scale 1.5.0, component.progress-scale 1.8.0 (group build 20 D; View register VL-90, «Оценка клиента» 14 in a 16 line): two public variables, --sf-progress-scale-font-size and --sf-progress-scale-line-height, set the scale's text where its host draws it in a row of another text size. Unset, the text follows size as before.",
+      "items": [
+        {
+          "component": "sf-progress-scale",
+          "from": "the text only by size",
+          "to": "--sf-progress-scale-font-size, --sf-progress-scale-line-height"
+        }
+      ],
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A host that draws the scale beside a value of another size (View's record value) sets the two variables to that value's text.",
+      "owner": "ui-source",
+      "source": "src/component/progress-scale/scss/_css__progress_scale.scss; src/smart/progress-scale/component.json"
+    },
+    {
       "id": "behaviour-view-scale-at-value-text",
       "recorded_on": "2026-11-27",
       "stage": "compat",

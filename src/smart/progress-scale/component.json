@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-scale's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/progress-scale (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.progress-scale",
   "tag": "sf-progress-scale",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -154,6 +154,14 @@
     "--sf-progress-scale-gap": {
       "type": "length",
       "state": "default"
+    },
+    "--sf-progress-scale-font-size": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-progress-scale-line-height": {
+      "type": "length",
+      "state": "default"
     }
   },
   "aliases": {
@@ -230,7 +238,8 @@
     "version 1.4.0 (2026-11-16, owner decision C219, DEV RG-PS-1; numbered above 1.3.2 on origin/fix/returns-gb67): a minor. Every scale lays its track and its value out in one row, the value at the row's end, as the bar's inline-end and the level (C185 (5), C203); it stood under the track. The per cent is spelt with a no-break space, «60 %» (C203 (3)); a level keeps «4 из 5». With component.progress-scale 1.5.0. Settings, values, events and keys unchanged.",
     "version 1.4.1 (2026-11-17, feat/lang-file-c282; numbered above 1.4.0 on origin/fix/feedback-defects-fb1): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.4.2 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes.",
-    "version 1.4.3 (2026-11-22, DEV msg-4f3adb0f PS-1; numbered above every origin branch, 1.4.2 the highest): a patch. Once its value was changed from a script, any later drawing (a window or frame resize) threw TypeError «Cannot set properties of null (setting 'data')»: the class renderer (component.progress-scale 1.7.3) wrote the value's text with textContent and replaced the text node and the marker the template keeps; it now writes into that node. show-text is drawn again by the template rather than patched, so a text made by the patch never stands beside the one the template draws. Settings, values, events and the drawing unchanged."
+    "version 1.4.3 (2026-11-22, DEV msg-4f3adb0f PS-1; numbered above every origin branch, 1.4.2 the highest): a patch. Once its value was changed from a script, any later drawing (a window or frame resize) threw TypeError «Cannot set properties of null (setting 'data')»: the class renderer (component.progress-scale 1.7.3) wrote the value's text with textContent and replaced the text node and the marker the template keeps; it now writes into that node. show-text is drawn again by the template rather than patched, so a text made by the patch never stands beside the one the template draws. Settings, values, events and the drawing unchanged.",
+    "version 1.5.0 (2026-11-27, group build 20 D, View register VL-90 «Оценка клиента»: the scale's text 14 in a 16 line; above 1.4.3, the highest on every origin branch; component.progress-scale 1.8.0): a minor, two public CSS variables. --sf-progress-scale-font-size and --sf-progress-scale-line-height set the scale's text size and line where a host draws the scale in a row of another text size (a record view's value: View sets them to the value's text, --sf-text-size-1 and --sf-text-height-1); without them the text follows size as before. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

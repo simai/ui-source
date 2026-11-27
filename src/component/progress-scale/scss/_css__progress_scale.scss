@@ -6,9 +6,12 @@
   --sf-progress-scale--fill-color: var(--sf-progress-scale-fill-color, var(--sf-primary));
   font-family: var(--sf-progress-scale--font-family, var(--sf-text--family));
   font-weight: var(--sf-progress-scale--font-weight, var(--sf-font-weight-regular));
-  font-size: var(--sf-progress-scale--font-size);
+  /* The text's size and line follow the scale's size; a host that sets the
+     scale in a row of another text size (a record view's value, View VL-90)
+     gives the public pair instead (group build 20). */
+  font-size: var(--sf-progress-scale-font-size, var(--sf-progress-scale--font-size));
   gap: var(--sf-progress-scale--gap);
-  line-height: var(--sf-progress-scale--line-height);
+  line-height: var(--sf-progress-scale-line-height, var(--sf-progress-scale--line-height));
   width: 100%;
 }
 

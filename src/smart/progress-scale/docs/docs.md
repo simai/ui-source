@@ -40,6 +40,24 @@ The application owns `aria-busy`, task lifecycle, completion and error
 messages. The component never receives focus. Shared `root-class` and
 `root-style` remain presentation-only Framework escape hatches.
 
+## CSS variables
+
+The text follows `size`. A host that draws the scale in a row of another
+text size (a record view's value beside a 16 px label) sets the scale's text
+with two public variables, for example:
+
+```css
+.my-record-value sf-progress-scale {
+  --sf-progress-scale-font-size: var(--sf-text-size-1);
+  --sf-progress-scale-line-height: var(--sf-text-height-1);
+}
+```
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `--sf-progress-scale-font-size` | the size's text | the text's size |
+| `--sf-progress-scale-line-height` | the size's line | the text's line |
+
 ## Actions
 
 - `chunk({done, total})` — shows a part of a job: `value` becomes `done` of
