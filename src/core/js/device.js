@@ -201,11 +201,15 @@ if (typeof globalThis !== 'undefined') {
 // items by this word until their element draws -- the signal's own width,
 // PHONE_BELOW of the page, not a width rule of the sheets. One mark per
 // page: a second copy of this module finds it and leaves it.
+const LAYOUT_MARK = Symbol.for('sf.device.page-layout');
+
 export function markPageLayout(doc = globalThis.document) {
   const root = doc?.documentElement;
   const view = doc?.defaultView;
-  if (!root || !view || root.hasAttribute('data-sf-layout-watched')) return;
-  root.setAttribute('data-sf-layout-watched', '');
+  // One mark per page, kept on the document under a registry symbol: every
+  // bundle carries its own copy of this module, the document is shared.
+  if (!root || !view || doc[LAYOUT_MARK]) return;
+  doc[LAYOUT_MARK] = true;
   const write = () => {
     const word = layoutOfWidth(root.clientWidth || view.innerWidth || 0);
     if (root.getAttribute('data-sf-layout') !== word) root.setAttribute('data-sf-layout', word);
@@ -213,7 +217,5 @@ export function markPageLayout(doc = globalThis.document) {
   write();
   view.addEventListener?.('resize', write, {passive: true});
 }
-
-if (typeof document !== 'undefined') markPageLayout(document);
 
 export default Device;

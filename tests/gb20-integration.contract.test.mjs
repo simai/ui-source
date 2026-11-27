@@ -45,6 +45,10 @@ test('I3: printed items of the other layout are hidden by the page layout word, 
   assert.equal(attributes.get('data-sf-layout'), 'desktop');
   markPageLayout(doc);
   assert.equal(listeners.length, 1, 'one mark per page');
+  // core writes it as it boots; the module itself does not (each bundle
+  // carries a copy of device.js).
+  assert.match(read('src/core/js/index.js'), /import \{markPageLayout\} from '\.\/device\.js';[\s\S]*?markPageLayout\(document\);/u);
+  assert.doesNotMatch(read('src/core/js/device.js'), /^if \(typeof document !== 'undefined'\) markPageLayout/mu);
   const template = read('src/smart/tabs/js/templates/default.js');
   assert.match(template, /function devicesMark\(item\) \{\s*const scope = item\.selected \? null : devicesOf\(item\);/u);
   assert.equal((template.match(/data-sf-devices=\$\{devicesMark\(item\)\}/gu) || []).length, 4, 'every tab form carries the mark');
@@ -81,4 +85,16 @@ test('I5: the Loader stops watching a closed container that left the page', () =
   assert.equal(loaderPlugin.closedContainers.has(removed), false);
   // The main observer asks for it when nodes leave the page.
   assert.match(loader, /if \(this\.closedContainers\?\.size && relevantChanges\.some\(\(change\) => change\.type === 'childList' && change\.removedNodes\.length\)\) \{\s*this\.dropClosedContainersOutOfPage\(\);/u);
+});
+
+test('I6: compact below 60rem holds for a fine pointer on a page in the desktop layout only (C435)', async () => {
+  const {QUERIES, PAGE_DESKTOP} = await import('../scripts/generate-density.mjs');
+  assert.equal(PAGE_DESKTOP, ':root[data-sf-layout="desktop"]');
+  const density = read('src/core/scss/_sf_css__density.scss');
+  const below = density.slice(density.indexOf(`@media ${QUERIES[1]}`));
+  assert.ok(below.length > 0 && QUERIES[1] === '(not (min-width: 60rem)) and (pointer: fine)');
+  // Every selector of the block below the breakpoint stands under the page's desktop word.
+  const selectors = below.split('\n').filter((line) => line.includes('[data-sf-density=')).map((line) => line.trim().replace(/\s*[,{]$/u, ''));
+  assert.ok(selectors.length >= 6, selectors.join(' | '));
+  for (const selector of selectors) assert.ok(selector.startsWith(PAGE_DESKTOP), selector);
 });

@@ -21554,16 +21554,21 @@
       "rewrite": "none",
       "id": "behaviour-compact-below-breakpoint-for-a-mouse",
       "kind": "behaviour",
-      "manual": "Nothing to rewrite. A compact region in a window narrower than 60rem with a mouse now draws the desktop's compact steps (rows, buttons and fields 32); with touch it keeps the phone ladder (36) and the touch rows (44) as before. data-sf-density=\"normal\" there is the phone ladder.",
-      "summary": "core.styles (group build 20 integration I6, C435 clarifying C146 (1), DEV msg-e6aaf2ea): compact density holds below 60rem too, for a fine pointer only -- a 768 window with a mouse draws compact table rows, buttons and fields at 32 as the desktop does; a coarse pointer keeps the phone ladder and its 44 touch rows at every width (C22, C36 hold). Below 60rem the normal block writes the phone ladder back and compact keeps the phone's heading steps (C44). Written by scripts/generate-density.mjs as the exact complement of the breakpoint and (pointer: fine).",
+      "manual": "Nothing to rewrite. A compact region in a window from 600 px (the page in the desktop layout, core's data-sf-layout) to below 60rem with a mouse now draws the desktop's compact steps (rows, buttons and fields 32); with touch, or on a phone-width page with any pointer, it keeps the phone ladder (36) and the touch rows (44) as before. data-sf-density=\"normal\" there is the phone ladder. The page needs core.js for the word.",
+      "summary": "core.styles and core.runtime (group build 20 integration I6, C435 clarifying C146 (1), DEV msg-e6aaf2ea): compact density holds below 60rem too, for a fine pointer on a page in the desktop layout only (core's page layout word data-sf-layout=\"desktop\", SF.device PHONE_BELOW of the page) -- a 768 window with a mouse draws compact table rows, buttons and fields at 32 as the desktop does; a coarse pointer keeps the phone ladder and its 44 touch rows at every width, and a phone-width page keeps the phone ladder with a mouse too (C22, C36 hold). Below 60rem the normal block writes the phone ladder back and compact keeps the phone's heading steps (C44). Written by scripts/generate-density.mjs as the exact complement of the breakpoint and (pointer: fine); core writes the layout word as it boots, not each bundle's copy of device.js.",
       "items": [
         {
           "component": "core.styles",
           "from": "compact from 60rem only; a 768 mouse window drew 36",
-          "to": "compact below 60rem for a fine pointer (32); touch unchanged (36, rows 44)"
+          "to": "compact below 60rem for a fine pointer on a desktop-layout page (32); touch and phone width unchanged (36, rows 44)"
+        },
+        {
+          "component": "core.runtime",
+          "from": "device.js marked the page layout when any copy of it evaluated",
+          "to": "core marks it as it boots (index.js), one mark per document"
         }
       ],
-      "source": "scripts/generate-density.mjs; src/core/scss/_sf_css__density.scss"
+      "source": "scripts/generate-density.mjs; src/core/scss/_sf_css__density.scss; src/core/js/index.js; src/core/js/device.js"
     }
   ]
 }

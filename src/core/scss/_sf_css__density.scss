@@ -9,8 +9,9 @@
  * below; components read their steps as always, an explicit size too (C79: a
  * size is a step on the region's ladder). data-sf-density="normal" takes the
  * normal ladder back for an element or a region. From 60rem for every
- * pointer; below 60rem for a fine pointer only (C435), where normal is the
- * phone ladder: a coarse pointer keeps the phone ladder and its touch rows.
+ * pointer; below 60rem for a fine pointer on a page in the desktop layout
+ * only (C435, core's data-sf-layout), where normal is the phone ladder: a
+ * coarse pointer or a phone-width page keeps the phone ladder.
  *
  * The widths in characters (C396) follow the text: the measure ladder and
  * the popup widths on its steps are declared again here, with the same
@@ -284,10 +285,12 @@
     }
   }
 
-  /* Below the breakpoint, a fine pointer (C435): the same compact steps, the
-     headings at the phone's steps, normal is the phone ladder. */
+  /* Below the breakpoint, a fine pointer on a page in the desktop layout
+     (C435): the same compact steps, the headings at the phone's steps,
+     normal is the phone ladder. */
   @media (not (min-width: 60rem)) and (pointer: fine) {
-    [data-sf-density="compact"] {
+    :root[data-sf-layout="desktop"][data-sf-density="compact"],
+    :root[data-sf-layout="desktop"] [data-sf-density="compact"] {
       --sf-text--size-1\/3: var(--sf-b2);
       --sf-text--size-1\/2: var(--sf-b2);
       --sf-text--size-1: var(--sf-b4);
@@ -416,7 +419,8 @@
       --sf-text--height: var(--sf-text--height-1);
     }
 
-    [data-sf-density="normal"] {
+    :root[data-sf-layout="desktop"][data-sf-density="normal"],
+    :root[data-sf-layout="desktop"] [data-sf-density="normal"] {
       --sf-text--size-1\/3: var(--sf-b2);
       --sf-text--size-1\/2: var(--sf-b2);
       --sf-text--size-1: var(--sf-b4);
@@ -539,10 +543,8 @@
       --sf-text--height: var(--sf-text--height-1);
     }
 
-    /* On <html> the variables only, which body reads: a font-size on the
-       root element would move rem, and with it every step of the ladder. */
-    [data-sf-density="compact"]:not(:root),
-    [data-sf-density="normal"]:not(:root) {
+    :root[data-sf-layout="desktop"] [data-sf-density="compact"],
+    :root[data-sf-layout="desktop"] [data-sf-density="normal"] {
       font-size: var(--sf-text--size);
       line-height: var(--sf-text--height);
     }

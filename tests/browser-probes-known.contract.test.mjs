@@ -41,9 +41,12 @@ test('the probe runner reads both lists and counts known reds apart without maki
 // left, each a component fault with its triage line (a GB20 item). Group build
 // 20 area A fixed seven of them (popup widths x2, manifest defaults, public JS
 // API x2, public variable defaults, the input-color name): at most 9 now.
+// The GB20 integration (2026-11-27) closed five more: filter-window-one-step and
+// popup-head-parts/round2 (the choice panel's scrollbar room, DEV answer 1),
+// inline-code (C434), instance-scope (the Loader's closed containers): at most 4.
 test('the known reds only shrink, and each one left carries its GB19 triage', () => {
   const {known} = read('known-reds.json');
-  assert.ok(Object.keys(known).length <= 9, `${Object.keys(known).length} known reds, at most 9 since GB20 area A`);
+  assert.ok(Object.keys(known).length <= 4, `${Object.keys(known).length} known reds, at most 4 since the GB20 integration`);
   for (const gone of ['c32-addendum', 'c32-dropdown-widths', 'inherited-description', 'manifest-defaults', 'public-js-api', 'public-js-api-components', 'public-variable-defaults']) assert.ok(!(gone in known), `${gone} passes since GB20 area A`);
   for (const [name, entry] of Object.entries(known)) assert.match(entry.triage ?? '', /^group build 19 area C .*component fault\. GB20: /u, `${name}: triage`);
 });

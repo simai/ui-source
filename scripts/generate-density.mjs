@@ -24,9 +24,12 @@
 // Desktop, and below it a fine pointer (C435, 2026-11-27, clarifying C146 (1)
 // on DEV's answer to the group build 20 display question, msg-e6aaf2ea): at
 // and above 60rem compact moves the desktop ladder one step down for every
-// pointer; below 60rem it does so only for a fine pointer (a mouse), so a 768
-// window with a mouse draws compact tables, buttons and fields (32) as the
-// desktop does. A coarse pointer below 60rem keeps the phone ladder (control
+// pointer; below 60rem it does so only for a fine pointer (a mouse) on a page
+// in the desktop layout (core's page layout word, data-sf-layout="desktop":
+// SF.device PHONE_BELOW of the page, the S-A signal, no width of the sheets),
+// so a 768 window with a mouse draws compact tables, buttons and fields (32)
+// as the desktop does, and a phone-width page keeps the phone ladder with any
+// pointer (C36). A coarse pointer below 60rem keeps the phone ladder (control
 // 36, text 14) and its touch targets (owner decision C36: compact on a phone
 // does not make the buttons smaller); the touch rows stay 44 (touch screens
 // rule 12). Below 60rem the normal block writes the phone ladder back (the
@@ -62,8 +65,11 @@ const OUTPUT = 'src/core/scss/_sf_css__density.scss';
 const SIZING = JSON.parse(readFileSync(join(root, 'src/core/contracts/adaptive-sizing.v1.json'), 'utf8'));
 export const DESKTOP = `${SIZING.modes.desktop.minWidthPx / SIZING.meta.nominalRootPx}rem`;
 // Below the breakpoint, compact for a fine pointer only (C435): the exact
-// complement of the breakpoint, and the primary pointer a mouse.
+// complement of the breakpoint, and the primary pointer a mouse; the page in
+// the desktop layout by core's word.
 export const QUERIES = [`(min-width: ${DESKTOP})`, `(not (min-width: ${DESKTOP})) and (pointer: fine)`];
+export const PAGE_DESKTOP = ':root[data-sf-layout="desktop"]';
+const below = (density) => `${PAGE_DESKTOP}[data-sf-density="${density}"],\n    ${PAGE_DESKTOP} [data-sf-density="${density}"]`;
 
 // The control ladder. A step below the lowest stays at the lowest: 1/3 is a
 // 24px control, the smallest target (WCAG 2.5.8), and text under 12 is a
@@ -292,8 +298,9 @@ export function render() {
  * below; components read their steps as always, an explicit size too (C79: a
  * size is a step on the region's ladder). data-sf-density="normal" takes the
  * normal ladder back for an element or a region. From 60rem for every
- * pointer; below 60rem for a fine pointer only (C435), where normal is the
- * phone ladder: a coarse pointer keeps the phone ladder and its touch rows.
+ * pointer; below 60rem for a fine pointer on a page in the desktop layout
+ * only (C435, core's data-sf-layout), where normal is the phone ladder: a
+ * coarse pointer or a phone-width page keeps the phone ladder.
  *
  * The widths in characters (C396) follow the text: the measure ladder and
  * the popup widths on its steps are declared again here, with the same
@@ -317,18 +324,23 @@ ${block('normal', '      ')}
 ${FONT}
   }
 
-  /* Below the breakpoint, a fine pointer (C435): the same compact steps, the
-     headings at the phone's steps, normal is the phone ladder. */
+  /* Below the breakpoint, a fine pointer on a page in the desktop layout
+     (C435): the same compact steps, the headings at the phone's steps,
+     normal is the phone ladder. */
   @media ${QUERIES[1]} {
-    [data-sf-density="compact"] {
+    ${below('compact')} {
 ${block('compact', '      ', 'phone')}
     }
 
-    [data-sf-density="normal"] {
+    ${below('normal')} {
 ${block('phone', '      ')}
     }
 
-${FONT}
+    ${PAGE_DESKTOP} [data-sf-density="compact"],
+    ${PAGE_DESKTOP} [data-sf-density="normal"] {
+      font-size: var(--sf-text--size);
+      line-height: var(--sf-text--height);
+    }
   }
 }
 `;

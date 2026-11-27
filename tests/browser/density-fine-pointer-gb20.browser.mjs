@@ -13,6 +13,9 @@
 //   menu row keeps the touch target, 44;
 // - 1440 fine: compact 32 as before (C22); 1440 and 390 coarse: the menu row
 //   44 at every width (touch screens rule 12, C36);
+// - 390 fine (a phone-width window with a mouse): the page is in the phone
+//   layout (core's data-sf-layout="phone"), so compact keeps the phone ladder
+//   (36): compact on a phone does not make the controls smaller (C36);
 // - data-sf-density="normal" inside the compact region at 768 fine takes the
 //   phone ladder back (36), not the desktop's normal step (40);
 // - the body text is 14 everywhere; console clean; `loads` cold loads each.
@@ -58,7 +61,7 @@ const failures = [];
 const rows = [];
 const check = (name, pass, detail = {}) => { if (!pass) failures.push({name, ...detail}); };
 const browser = await chromium.launch({headless: true});
-for (const [width, pointer] of [[768, 'fine'], [768, 'coarse'], [1440, 'fine'], [1440, 'coarse'], [390, 'coarse']]) {
+for (const [width, pointer] of [[768, 'fine'], [768, 'coarse'], [1440, 'fine'], [1440, 'coarse'], [390, 'coarse'], [390, 'fine']]) {
   for (let load = 1; load <= LOADS; load += 1) {
     const touch = pointer === 'coarse';
     const context = await browser.newContext({viewport: {width, height: 900}, hasTouch: touch, isMobile: touch && width < 768});
@@ -74,12 +77,15 @@ for (const [width, pointer] of [[768, 'fine'], [768, 'coarse'], [1440, 'fine'], 
       const input = document.querySelector('#i input');
       return {pointer: matchMedia('(pointer: fine)').matches ? 'fine' : 'coarse', row: h(document.querySelector('#t tbody tr')), head: h(document.querySelector('#t thead tr')),
         button: h(document.querySelector('#b button')), field: h(input.closest('.sf-input-wrapper, .sf-input-field, .sf-input') || input), menu: h(document.getElementById('m')),
-        normal: h(document.querySelector('#n button')), text: getComputedStyle(document.getElementById('text')).fontSize};
+        normal: h(document.querySelector('#n button')), text: getComputedStyle(document.getElementById('text')).fontSize, layout: document.documentElement.getAttribute('data-sf-layout')};
     });
     const where = `${width} ${pointer} #${load}`;
     rows.push({width, pointer, load, ...m, errors: errors.length});
     check(`${where}: the page reports the pointer`, m.pointer === pointer, m);
-    if (pointer === 'fine') {
+    check(`${where}: core marks the page layout`, m.layout === (width < 600 ? 'phone' : 'desktop'), m);
+    if (pointer === 'fine' && width < 600) {
+      check(`${where}: a phone-width page keeps the phone ladder with a mouse (36)`, [m.row, m.head, m.button, m.field].every((value) => value === 36), m);
+    } else if (pointer === 'fine') {
       check(`${where}: compact table rows, button and field are 32`, [m.row, m.head, m.button, m.field].every((value) => value === 32), m);
       if (width < 960) check(`${where}: normal inside compact is the phone ladder (36)`, m.normal === 36, m);
     } else {

@@ -45,7 +45,12 @@ import {publishFormat} from './format.js';
 import './breakpoints.js';
 // The two device words, layout (the place's width) and pointer (coarse or
 // fine), and the item scope `devices` (study S-A, q-7097831f9f): SF.device.
-import './device.js';
+import {markPageLayout} from './device.js';
+// The page's layout word on <html> (data-sf-layout, PHONE_BELOW of the page),
+// written by core alone as it boots and followed on resize: printed items of
+// the other layout wait hidden by it (GB20 I3), and compact density below
+// 60rem reads it with a fine pointer (C435).
+if (typeof document !== 'undefined') markPageLayout(document);
 // A held touch, shared by lists, cards and boards (study S-A (4)): SF.longPress.
 import './long-press.js';
 import './clipboard.js';

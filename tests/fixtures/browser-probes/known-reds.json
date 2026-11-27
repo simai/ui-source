@@ -23,47 +23,12 @@
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
       "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the file edit control writes the newly chosen files into the value but draws an empty list: the two items the host recorded are not shown GB20 area A (2026-11-27): not taken (outside menus and touch); after removing a stored file the edit control writes all four names, not the two left, and the host's list of items stays empty."
     },
-    "filter-window-one-step": {
-      "owner": "smart.dropdown",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "the filter window (sf-filter-window, field-renderers/filter-window.js) one-step checks",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: with a 14 px scrollbar the checks, the search icon and the chevron leave the column they keep without one (the popup has no scrollbar gutter); the same cause as popup-head-parts GB20 area A (2026-11-27): measured -- in compact and phone the choice list panel's inset is 12 (4 + 8) and the scrollbar track 14, so the checks stand 2 px off (checkEnd 310 vs 312, 376 vs 378); a look question for DEV (the head follows the excess as sf-settings does, or a narrower gap), not changed."
-    },
     "icons-warm-first-frame": {
       "owner": "smart.button-icon",
       "red_since": "ui-b4f79e1c58b7",
       "why": "icon buttons on a warm origin do not draw their glyphs from the first frame",
       "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
       "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: on a warm origin the icon buttons stand 6 frames (9 to 105 ms) without their glyphs: the icon font face is not ready when the button first paints (static first paint draws them at 61 ms) GB20 area A (2026-11-27): not taken; on a warm origin icon buttons stand 6-7 frames without their glyph (drawn at 104-124 ms, shown at 9-11)."
-    },
-    "inline-code": {
-      "owner": "component.doc",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "code in running text: geometry and copy (C10)",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the label column of the code-in-text table breaks «умолчанию» onto two lines at the narrow width (the column has no min-content floor) GB20 area A (2026-11-27): two decisions meet -- C186 (7) (a table cell may break anywhere) and C10 variant A (the label column keeps whole words; the label column is 79 px at the narrow width); a question for DEV, not changed."
-    },
-    "instance-scope": {
-      "owner": "core.runtime",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "gate 36, instance scope",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: 18 components keep observers, document listeners or timers after removal (gate 36), e.g. sf-editor-overlay a MutationObserver, sf-file-upload document drop and dragend GB20 area A (2026-11-27): sf-editor-overlay, sf-file-upload, sf-input-image, sf-input-rich and sf-toast fixed; left: sf-gallery (the Loader's closed-container MutationObserver keeps a removed closed container, core/js/loader.js watchClosedContainer: the loader's owner) and, on a loaded machine only, the core icon-font wait (FontFaceSet loadingdone, interval 100 ms, timeout 10 s) counted before it settles."
-    },
-    "popup-head-parts": {
-      "owner": "smart.settings",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "the heads of the popups",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: with a 14 px scrollbar the head chevron ends 2 px past the check column (no scrollbar gutter in the popup body) GB20 area A (2026-11-27): the same 2 px scrollbar excess as filter-window-one-step; a look question for DEV."
-    },
-    "popup-head-round2": {
-      "owner": "smart.dropdown",
-      "red_since": "ui-b4f79e1c58b7",
-      "why": "popup heads, DEV round 2",
-      "seen": "group build 18 b2 (2026-11-23), red on the released pair ui-b4f79e1c58b7 too with UI_CORE_ROOT/UI_SMART_ROOT/UI_DOC_ROOT (ui-control control/evidence/2026-11-23-group-build-18/data/probes-reds-pair.txt)",
-      "triage": "group build 19 area C (2026-11-25, msg-a844079b8ba3455d9123): component fault. GB20: the same chevron and check column shift with a scrollbar as popup-head-parts GB20 area A (2026-11-27): the same 2 px scrollbar excess as filter-window-one-step; a look question for DEV."
     }
   }
 }
