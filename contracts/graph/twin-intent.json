@@ -634,6 +634,30 @@
       "reason": "recorded by the group build 19 integration (merge of feat/gb19-device 7f92c0770 over feat/gb19-render's 1.10.2): a bare Smart switch takes the 44 hit area on a coarse pointer through module.smart-helpers checkable-row.css, and 1.10.2's template path as shipped is manifest only; the class switch takes the area from the core rule _sf_css__touch_targets.scss (core.styles), so its own sheet is unchanged",
       "decision": "Touch screens rule 12, C428, DEV msg-48be8a01a7364c99a67b; GB19 render (q-b98d1c5770)",
       "date": "2026-11-25"
+    },
+    {
+      "unit": "smart.file-upload",
+      "version": "1.6.5",
+      "twin": "component.file-upload",
+      "reason": "recorded by the group build 20 integration (merge of feat/gb20-menus 6b86ad996, gate 36 instance scope): the Smart element stops its document dragend/drop listeners on removal; the class sheet draws nothing that changed",
+      "decision": "GB20 area A, known reds c28b653f (instance-scope)",
+      "date": "2026-11-27"
+    },
+    {
+      "unit": "smart.icon",
+      "version": "1.4.5",
+      "twin": "component.icons",
+      "reason": "recorded by the group build 20 integration (merge of feat/gb20-loader c432a3d1c): sf-icon passes its glyph when it asks the Loader whether a page face draws it; the class icons are marked by the Loader's page-face pass (core.runtime), so the class sheet is unchanged",
+      "decision": "GB20 area B, remark 2476c842 (icons late in Docara frames)",
+      "date": "2026-11-27"
+    },
+    {
+      "unit": "smart.menu-context",
+      "version": "1.28.0",
+      "twin": "component.context-menu",
+      "reason": "recorded by the group build 20 integration (merge of feat/gb20-menus 6b86ad996): Escape from the layer stack and entries[].devices are the element's behaviour; the class context menu has no entries model and its sheet is unchanged",
+      "decision": "GB20 area A, 96f90152 (row menu Escape), 6ce10fc0 (device scope, study S-A)",
+      "date": "2026-11-27"
     }
   ]
 }
