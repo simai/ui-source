@@ -88,7 +88,20 @@ function resumeToastTimer(root, reason) {
 const TOAST_UNDER_ATTRIBUTE = 'data-sf-toast-under';
 const TOAST_FIT_TEXT = '.sf-toast-text, .sf-toast-supporting-text';
 let toastMeasure = null;
-let toastFitObserver = null;
+// One fit watch for the page, on a shared global: the class bundle and the
+// Smart bundle each carry a copy of this module, and a toast one copy observed
+// must be unobserved by the other (GB20, gate 36: the class copy's observer
+// kept every Smart toast it had bound after the element left).
+const TOAST_FIT = Symbol.for('sf.toast.fit-observer');
+const fitObserver = (make) => {
+  const shared = globalThis;
+  if (!shared[TOAST_FIT] && make) {
+    shared[TOAST_FIT] = new ResizeObserver((entries) => {
+      for (const entry of entries) fitToastAction(entry.target);
+    });
+  }
+  return shared[TOAST_FIT] ?? null;
+};
 
 function widestWord(element) {
   const text = String(element?.textContent || '').trim();
@@ -135,16 +148,13 @@ function watchToastFit(root) {
     fitToastAction(root);
     return;
   }
-  toastFitObserver = toastFitObserver || new ResizeObserver((entries) => {
-    for (const entry of entries) fitToastAction(entry.target);
-  });
-  toastFitObserver.observe(root);
+  fitObserver(true).observe(root);
   fitToastAction(root);
   document.fonts?.ready?.then(() => fitToastAction(root));
 }
 
 function unwatchToastFit(root) {
-  toastFitObserver?.unobserve(root);
+  fitObserver(false)?.unobserve(root);
 }
 
 function bindToast(root, removalTarget = root) {

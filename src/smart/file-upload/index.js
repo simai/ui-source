@@ -683,6 +683,10 @@ class SfFileUpload extends FormField(FileUploadElement) {
   }
 
   onDisconnected() {
+    // The files drop is the connection's, not a render's: teardownRuntime
+    // runs before every render too.
+    this._drop?.stop();
+    this._drop = null;
     this.teardownRuntime();
     this._releasePictures(true);
   }
@@ -722,8 +726,6 @@ class SfFileUpload extends FormField(FileUploadElement) {
     this._onSelect = null;
     this._onRemove = null;
     this._onRetry = null;
-    this._drop?.stop();
-    this._drop = null;
   }
 }
 
