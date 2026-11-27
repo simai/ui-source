@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "title": "Pagination",
   "summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
   "kind": "smart",
@@ -71,7 +71,7 @@
       },
       "top": {
         "type": "boolean",
-        "default": true,
+        "default": false,
         "description": "Deprecated until 2027-01-01 (decision C97, change journals value-pagination-show-more-to-more and behaviour-pagination-footer-show-more-written-only): Show more of the compatible footer, drawn on a line of its own above the page row (never beside the arrows) only when an author writes top; a list end writes appearance=\"more\"."
       },
       "middle": {

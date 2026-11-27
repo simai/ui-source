@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu-context's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu-context",
   "tag": "sf-menu-context",
-  "version": "1.27.3",
+  "version": "1.28.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -205,6 +205,12 @@
           "type": "number",
           "optional": true,
           "summary": "A meter row's error threshold in per cent of the share used (C131 (7)), above warning-at. Written errorAt in a script."
+        },
+        "devices": {
+          "type": "list",
+          "optional": true,
+          "x-markup": "[\"phone\"] | [\"desktop\"]",
+          "summary": "The layouts the entry is shown in (core's SF.device, as sf-settings items): phone below 600 px of the element's place, desktop from 600. In the other layout it is left out -- hidden, not disabled."
         }
       },
       "summary": "The menu as data (set as a property, or JSON in the attribute). See item_contract. When present, it replaces items and the content slot."
@@ -1005,7 +1011,8 @@
     "version 1.27.0 (2026-11-17, queue db8793a2, the ui-view row-menu study; above 1.26.1 on every origin branch): a minor. for reaches areas inside a shadow root: an id is found in the menu's own root and in the root of the control it is open for, then in the document; the property also takes a list of the areas themselves (menu.for = [table, ...], ids may stand in it) for an area no id reaches, kept until a string is set. The right button, the menu key, Shift+F10 and a long press of such an area are read at the element they came from (event.composedPath()[0], walked up through the hosts to the area's own tree), not at the shadow host the document sees, and the focus goes back to the element focused inside the root. The events are still heard once, on the document (they are composed); an area of the document reads the same node as before (event.target), so the browser's own menu with Shift or on a link, the focus back to the opener, openFor() and toggleFor() are unchanged. ui-view's sf-view-table can drop its own shadow-root row-menu listeners. Values, events and keys unchanged.",
     "version 1.27.1 (2026-11-18, docs finding of the docs repin to ui-1ed6b6c9a040; small-defects-3): a patch. aria-label is watched: a name the page or a parent component sets again after the menu drew draws the menu again, so the role=\"menu\" box says the new name. Before, sf-pagination's page-size menu kept «На странице:» after the page switched to Arabic while its host already said «Per page:» (the parent redraws in the new language and sets the menu's aria-label; nothing redrew the menu). Settings, values and events unchanged.",
     "version 1.27.2 (2026-11-19, above 1.27.1 of integration/pair-next-15; fix/rtl-direction-icons): a patch, a look. A row's submenu chevron points to the start of the line in a right-to-left menu again: chevron_right is a directional glyph, which the icons sheet turns (C151 point 3), and the context-menu sheet (component.context-menu 1.19.1, which this element draws with) turned it back. Settings, values, events and keys unchanged.",
-    "version 1.27.3 (2026-11-19, ui-control control/evidence/2026-11-19-view-shadow-menu, the row checkbox order; above 1.27.2 on every origin branch): a patch. Only a text field keeps the browser's own menu at an object of an area: a text-like input (text, search, email, url, tel, password, number and the date and time types), a textarea, editable text and an element with the textbox or searchbox role; a combobox with text entry is one of these. A checkbox, a radio, a switch, a select and a button no longer keep it: the menu key, Shift+F10, the right button and a long press on a table row's selection checkbox open the row's menu, in the document and in a shadow root alike. The nodes are read along the composed path from the one the event came from up to the object, so a text field drawn in a component's shadow root inside a row keeps the browser's menu too. A link, selected text and the right button with Shift are unchanged. Values, events and keys unchanged."
+    "version 1.27.3 (2026-11-19, ui-control control/evidence/2026-11-19-view-shadow-menu, the row checkbox order; above 1.27.2 on every origin branch): a patch. Only a text field keeps the browser's own menu at an object of an area: a text-like input (text, search, email, url, tel, password, number and the date and time types), a textarea, editable text and an element with the textbox or searchbox role; a combobox with text entry is one of these. A checkbox, a radio, a switch, a select and a button no longer keep it: the menu key, Shift+F10, the right button and a long press on a table row's selection checkbox open the row's menu, in the document and in a shadow root alike. The nodes are read along the composed path from the one the event came from up to the object, so a text field drawn in a component's shadow root inside a row keeps the browser's menu too. A link, selected text and the right button with Shift are unchanged. Values, events and keys unchanged.",
+    "version 1.28.0 (2026-11-27, group build 20 area A; above 1.27.3 of every origin branch): a minor. Escape closes the menu wherever focus stands: the menu answers the layer stack's one Escape (onEscape) instead of its own keydown, so a menu opened by a mouse press (focus left on the row, View's row menu, msg-96f9015271b14f5e9742) closes on Escape, a drill level steps back first, and focus goes back to the opener. Device scope (msg-6ce10fc0934a4af5ac7e): an entry may carry devices: [\"phone\"] | [\"desktop\"]; the menu reads the layout of the place it opens from (SF.device.layoutOf, followed while open) and leaves the other layout's entries out, with the separators they leave at an edge or doubled. Without devices nothing changes."
   ],
   "x-registry": {
     "item_contract": {

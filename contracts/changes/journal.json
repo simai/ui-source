@@ -21119,6 +21119,86 @@
         }
       ],
       "source": "src/core/js/fragment-refresh.js; contracts/standards/simai.interface-fragment/1.1.0/standard.json; src/core/contracts/interface-fragment.v1.schema.json"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "id": "behaviour-menu-context-escape-from-the-layer-stack",
+      "kind": "behaviour",
+      "summary": "sf-menu-context 1.28.0 (group build 20 area A, msg-96f9015271b14f5e9742): Escape closes an open menu wherever focus stands. The menu answers the layer stack's one Escape (onEscape of openLayer) instead of a keydown on its own panel, so a menu opened by a mouse press, focus left on the row that opened it (View's row menu), closes on Escape; a drill level steps back first; focus goes back to the opener.",
+      "items": [
+        {
+          "component": "sf-menu-context",
+          "from": "Escape read on the menu panel only (focus inside the menu)",
+          "to": "Escape from the layer stack, wherever focus stands"
+        }
+      ],
+      "source": "src/smart/menu-context/index.js"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite: a list without devices draws as before. A host that has phone-only or desktop-only entries marks them devices: [\"phone\"] or [\"desktop\"].",
+      "id": "format-devices-on-menu-entries-tabs-and-list-actions",
+      "kind": "behaviour",
+      "summary": "sf-menu-context 1.28.0, sf-tabs 1.6.0, sf-list 1.26.0 (group build 20 area A, msg-6ce10fc0934a4af5ac7e, the device scope of GB19 sf-settings 1.11.0): a menu entry, a tab and a row action may carry devices: [\"phone\"] | [\"desktop\"] (core SF.device: phone below 600 px of the element's place). The other layout's entries are left out -- hidden, not disabled -- and a separator left at an edge or doubled is dropped; the selected tab is always drawn.",
+      "items": [
+        {
+          "component": "sf-menu-context, sf-tabs, sf-list",
+          "from": "every entry drawn in every layout",
+          "to": "an entry with devices drawn only in the layouts it names"
+        }
+      ],
+      "source": "src/smart/menu-context/js/templates/default.js; src/smart/tabs/index.js; src/smart/list/index.js"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite.",
+      "id": "behaviour-coarse-menu-rows-touch",
+      "kind": "behaviour",
+      "summary": "component.menu 1.10.6 (group build 20 area A, DEV N1 msg-f0d27a088fff46ab9c56, Touch screens rule 12 C428): on a coarse pointer the rows of a vertical sf-menu touch -- no gap between them (4 px before), so a press between two rows reaches a row instead of the gap; the rows keep 44. A fine pointer keeps its gap.",
+      "items": [
+        {
+          "component": "component.menu",
+          "from": "4 px between menu rows on a coarse pointer",
+          "to": "0: coarse rows touch"
+        }
+      ],
+      "source": "src/component/menu/scss/_css__menu_element.scss"
+    },
+    {
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "owner": "ui-source",
+      "rewrite": "manual",
+      "manual": "A custom sf-input-color template that read context.palette (the hue list) reads context.hues.",
+      "id": "behaviour-input-color-template-hues",
+      "kind": "behaviour",
+      "summary": "sf-input-color 1.20.1 (group build 20 area A, known-red manifest-defaults): the template context's hue list is named hues; palette was the same name as the palette setting with another value.",
+      "items": [
+        {
+          "component": "sf-input-color",
+          "from": "template context palette (the hue list)",
+          "to": "template context hues"
+        }
+      ],
+      "source": "src/smart/input-color/index.js"
     }
   ]
 }
