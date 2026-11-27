@@ -39,6 +39,12 @@ import './scss/index.scss';
 const SLOTS = ['brand', 'nav', 'actions', 'tools', 'sheet'];
 const TAGS = ['sf-header-site', 'sf-site-header'];
 const SWITCH_OPERATIONS = ['toggle', 'open', 'close'];
+// The tools that give way first under the bar's own fitting: sf-button
+// shrink="icon" (its glyph alone) and sf-language shrink="code" (its code and
+// arrow, no glyph; group build 20).
+const SHRINKING_TOOLS = '[shrink="icon"], sf-language[shrink="code"]';
+// The steps fit lifts the bar's own fitting above (group build 20).
+const FIT_STEPS = ['sm', 'md', 'lg', 'xl'];
 
 // A tool that is a setting of the page rather than a tool of the site: the
 // language (sf-language) and the theme switch (any element with theme-switch).
@@ -204,10 +210,13 @@ class SfSiteHeader extends SiteHeaderElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    if (name === 'collapse' && oldValue !== newValue && this._isMounted) {
+    if ((name === 'collapse' || name === 'fit') && oldValue !== newValue && this._isMounted) {
       this._collapsedNow = undefined;
       this.setFit(0);
       this.watchCollapse();
+      if (!this.fitsRow) this.setToolsCompact(false);
+      this.observeParts();
+      this.queueFit();
     }
     if (name === 'sticky' && oldValue !== newValue && this._isMounted) this.watchScroll();
   }
@@ -247,6 +256,15 @@ class SfSiteHeader extends SiteHeaderElement {
       || this._collapsedMenusDefined !== this.navMenusDefined();
   }
 
+  // The bar fits its own row (C371, C372): collapse auto at every width, or a
+  // collapse step with fit (group build 20, the docs header): below the step
+  // the sheet collapses the bar as it always did -- the menu button and its
+  // panel -- and from the step up the bar fits its row as auto does.
+  get fitsRow() {
+    if (this.collapse === 'auto') return true;
+    return Boolean(this.fit) && FIT_STEPS.includes(this.collapse);
+  }
+
   navMenusDefined() {
     return this.collapse !== 'auto' || this.navMenus().every((menu) => menu.matches(':defined'));
   }
@@ -271,7 +289,7 @@ class SfSiteHeader extends SiteHeaderElement {
     if (!header || header === this._observedHeader || typeof ResizeObserver === 'undefined') return;
     this._sizeObserver?.disconnect();
     this._sizeObserver = new ResizeObserver(() => {
-      if (this.collapse === 'auto') {
+      if (this.fitsRow) {
         this.fitRow();
         return;
       }
@@ -287,7 +305,7 @@ class SfSiteHeader extends SiteHeaderElement {
   // arrives, a word that changes, a tool that draws late change the room the
   // nav has without changing the bar's width.
   observeParts() {
-    if (!this._sizeObserver || this.collapse !== 'auto') return;
+    if (!this._sizeObserver || !this.fitsRow) return;
     const header = this.header();
     for (const part of header?.querySelectorAll(':scope > .sf-site-header-row > :is(.sf-site-header-brand, .sf-site-header-tools)') ?? []) {
       if (this._observedParts?.has(part)) continue;
@@ -359,7 +377,7 @@ class SfSiteHeader extends SiteHeaderElement {
   }
 
   syncFit() {
-    if (this.collapse === 'auto') {
+    if (this.fitsRow) {
       this.fitRow();
       return;
     }
@@ -406,12 +424,12 @@ class SfSiteHeader extends SiteHeaderElement {
   // whole row and its narrowest row (rowNeeds, one item and «Ещё»). A nav
   // without such a menu asks its content's width and moves whole.
   drivesRow(menu) {
-    return this.collapse === 'auto' && !this.collapsed && this.navMenus().includes(menu);
+    return this.fitsRow && !this.collapsed && this.navMenus().includes(menu);
   }
 
   shrinkingTools() {
     const tools = this.header()?.querySelector(':scope > .sf-site-header-row > .sf-site-header-tools');
-    return tools ? Array.from(tools.querySelectorAll('[shrink="icon"]')) : [];
+    return tools ? Array.from(tools.querySelectorAll(SHRINKING_TOOLS)) : [];
   }
 
   setToolsCompact(compact) {
@@ -443,7 +461,7 @@ class SfSiteHeader extends SiteHeaderElement {
   }
 
   fitRow() {
-    if (this.collapse !== 'auto' || this._fitting || typeof document === 'undefined') return;
+    if (!this.fitsRow || this._fitting || typeof document === 'undefined') return;
     const header = this.header();
     const row = header?.querySelector(':scope > .sf-site-header-row');
     if (!row) return;
@@ -491,8 +509,16 @@ class SfSiteHeader extends SiteHeaderElement {
     let whole = 0;
     let glyph = 0;
     for (const tool of this.shrinkingTools()) {
+      // A tool that knows its own boxes says them (sf-language: its trigger
+      // whole and without its glyph, read while whole); an sf-button's glyph
+      // is a square of its height.
+      // An sf-language whose code has not come yet is counted whole either
+      // way; its trigger's own boxes come with its first drawing, which the
+      // bar sees (the tools are watched) and decides the row again.
       const box = tool.querySelector(':scope > :is(button, a)') ?? tool;
-      const drawn = {width: layoutWidth(box), height: layoutHeight(box)};
+      const own = typeof tool.shrinkBoxes === 'function' ? tool.shrinkBoxes()
+        : tool.localName === 'sf-language' ? {width: layoutWidth(box), shrunk: layoutWidth(box)} : null;
+      const drawn = own ? {width: own.width, height: own.shrunk} : {width: layoutWidth(box), height: layoutHeight(box)};
       if (!this._toolsCompact) this._wholeWidths.set(tool, drawn.width);
       whole += this._wholeWidths.get(tool) ?? drawn.width;
       glyph += this._toolsCompact ? drawn.width : drawn.height;

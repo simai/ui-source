@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.smart-field-renderers",
   "kind": "module",
-  "version": "1.30.2",
+  "version": "1.30.3",
   "owner": "simai/ui-source",
   "summary": "The field renderers the table and the record view share (src/smart/field-renderers); not a component itself.",
   "includes": [
@@ -36,7 +36,7 @@
     "src/smart/field-renderers/templates.js",
     "src/smart/field-renderers/text-types.js"
   ],
-  "content_sha256": "49ad4fe8cb7a049f7aa36715033bf2d03a75e11c261c1c7883862ae48531762f",
+  "content_sha256": "412a4861c710ba30398b10f213321255b51466f5dca7e1fabf18595e144aa19d",
   "dependencies": [
     {
       "id": "core.runtime",

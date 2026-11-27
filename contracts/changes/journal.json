@@ -21119,6 +21119,66 @@
         }
       ],
       "source": "src/core/js/fragment-refresh.js; contracts/standards/simai.interface-fragment/1.1.0/standard.json; src/core/contracts/interface-fragment.v1.schema.json"
+    },
+    {
+      "id": "attribute-header-site-fit",
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-header-site 1.17.0 (group build 20 D; owner remark: «Наборы» hidden at 1440 in the docs header, msg-11e805f8; Docara msg-6be3107d item 1): a new boolean setting fit. With a collapse step (sm-xl) the bar is collapsed below the step as before, and from the step up it fits its row as collapse auto does (C371, C372): the tools with shrink first, then the nav's sections into «Ещё», then the menu button and the panel. Without fit nothing changes; auto, always and none ignore it.",
+      "items": [
+        {
+          "component": "sf-header-site",
+          "from": "collapse <step>: the nav's sf-menu moves sections into «Ещё» by itself, the tools stay whole",
+          "to": "collapse <step> fit: from the step up the bar fits its row in the C372 order"
+        }
+      ],
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A site that hides its own side navigation below a step (Docara below 60rem) writes collapse=\"lg\" fit and shrink on its tools, so its sections stay in the bar where they fit and the menu button stands below the step.",
+      "owner": "ui-source",
+      "source": "src/smart/header-site/index.js; src/smart/header-site/component.json"
+    },
+    {
+      "id": "attribute-language-shrink-code",
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-language 1.8.0, component.buttons 1.22.6, core.styles (fingerprint only) (group build 20 D; Docara msg-6be3107d item 2): shrink=\"code\" lets a fitting sf-header-site (collapse auto, or a step with fit) shrink the code trigger: while data-shrunk is on it, the trigger draws the code and the arrow without the translate glyph («RU ▾»), one text line narrower; the box core holds for it follows. Name, tooltip and menu unchanged; without shrink nothing changes.",
+      "items": [
+        {
+          "component": "sf-language",
+          "from": "the code trigger never shrinks",
+          "to": "shrink=\"code\": code and arrow while data-shrunk"
+        }
+      ],
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A header tool that should give way before the sections writes shrink=\"code\" on its sf-language.",
+      "owner": "ui-source",
+      "source": "src/smart/language/index.js; src/component/buttons/scss/_css__buttons_shrink.scss; src/core/scss/_sf_css__placeholder.scss"
+    },
+    {
+      "id": "behaviour-view-scale-at-value-text",
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "field renderers 1.30.3 (group build 20 D; View register VL-90, «Оценка клиента» 14 in a 16 line): a viewed number or percent drawn as a scale takes the value's text: sf-progress-scale size 2 on the view line 1 (16 on 24), size 1 on the line 1/2 (14 on 20); it was a fixed size 1 (14 on 20) whatever the row. The track is 8 at both sizes. Table cells keep their line (1/2).",
+      "items": [
+        {
+          "component": "module.smart-field-renderers",
+          "from": "renderViewField scale: sf-progress-scale size=\"1\"",
+          "to": "size=\"2\" on the view line 1, size=\"1\" on the line 1/2"
+        }
+      ],
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite. A host that enlarged the scale's text itself in a record row can drop that rule.",
+      "owner": "ui-source",
+      "source": "src/smart/field-renderers/index.js"
     }
   ]
 }

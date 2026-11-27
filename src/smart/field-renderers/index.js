@@ -3659,6 +3659,15 @@ let VIEW_LINE = '1';
 // size (sf-tag's line is one size down, the table's step); secondary by ink only.
 const VALUE_BADGE_LINE = 'text';
 
+// A viewed scale's value is the value's text (group build 20, View register
+// VL-90: «Оценка клиента» 14 in a 16 line, 2 px off the label's baseline).
+// sf-progress-scale names the text a step below its size (size 1 writes 14
+// on a 20 line), so the value's line 1 (16 on 24) is the scale's size 2 and
+// the line 1/2 (14 on 20) its size 1. The track is 8 at both sizes, so only
+// the text and its line follow the row. A table cell keeps its line (CELL_LINE).
+const SCALE_SIZE = {'1': '2', '1/2': '1'};
+const scaleSize = () => SCALE_SIZE[VIEW_LINE] ?? '2';
+
 // A scalar may arrive as the value itself or as {value, text}: the data and the
 // host's own formatting of it. The consumer asked for the second and they are
 // right -- the Framework has no locale and should not acquire one through a field
@@ -3716,7 +3725,7 @@ function levelView(field, value) {
     const raw = scalarValue(value);
     const number = Number(raw);
     if (raw === null || raw === undefined || raw === '' || !Number.isFinite(number) || number < 0 || number > 100) return null;
-    if (variant === 'scale') return html`<sf-progress-scale size="1" value=${String(number)}></sf-progress-scale>`;
+    if (variant === 'scale') return html`<sf-progress-scale size=${scaleSize()} value=${String(number)}></sf-progress-scale>`;
     const {label} = meterProps(field, number);
     return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing}></sf-progress-bar>`;
 }
@@ -3731,7 +3740,7 @@ function renderNumberView(field, value, host) {
     const number = Number(scalarValue(value));
 
     if (variant === 'scale' && Number.isFinite(number) && number >= 0 && number <= 100) {
-        return html`<sf-progress-scale size="1" value=${String(number)}></sf-progress-scale>`;
+        return html`<sf-progress-scale size=${scaleSize()} value=${String(number)}></sf-progress-scale>`;
     }
     if (variant === 'meter' && Number.isFinite(number) && number >= 0 && number <= 100) {
         const {label, status} = meterProps(field, number);

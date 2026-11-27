@@ -245,6 +245,14 @@
   :where(sf-language:not([size="1/3"], [size="1/2"], [size="2"], [size="3"])) { --sf-language--field-label: var(--sf-text-height-1); }
 }
 
+/* shrink="code" (group build 20): a bar that fits its row (sf-header-site)
+   set data-shrunk on the element, and the code trigger gives up its glyph --
+   the code and the arrow stay, one text line narrower. The button's sheet
+   hides the glyph (component.buttons, _css__buttons_shrink.scss). */
+:where(sf-language[shrink="code"][data-shrunk="true"]:not([trigger="icon"], [trigger="name"])) {
+  --sf-language--trigger: calc(2 * var(--sf-language--space-x) + 2 * var(--sf-language--text-x) + 2 * var(--sf-language--line));
+}
+
 /* trigger name (C381): the glyph and the language's own name in the words of
    its place, one line of that place high; its width is the name's, which no
    attribute gives, so before the code the host holds the line and no width. */
