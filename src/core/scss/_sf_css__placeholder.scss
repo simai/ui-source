@@ -1837,6 +1837,36 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
 :where(sf-breadcrumbs) > :where(.sf-breadcrumbs:not([data-sf-static])) > * {
   visibility: hidden;
 }
+
+/* sf-tabs before its script (GB20, Docara :::tabs: a host with its panels
+   written inside and no printed first paint drew the open panel at the top
+   and pushed it 56 px down at 1440, 48 at 390, when the row came; CLS 0.15).
+   The element knows its frame from its attributes and its direct-child
+   panels alone, so core.css (the one sheet a page links before any code)
+   holds it: a row of tabs is one control of the tabs' size high
+   (--sf-ui-<size>--control-height, the line and the pills drawn inside it),
+   the panel row stands under it with its padding above and below
+   (--sf-tabs-main-container--padding-top and -bottom, --sf-space-1 by
+   default, as the drawn panel row). The open panel stands where it will be
+   drawn; the others are hidden as the page wrote them, and a page that
+   left more than one open shows only the first. The row is empty until the
+   code draws the tabs from the panels' labels (aria-label, or items).
+   Vertical tabs stand beside their panel and hold nothing here. Static
+   markup printed inside (data-sf-static) is its own box. */
+:where(sf-tabs):not(:defined):not([type="vertical"]):not(:has(> [data-sf-static])):has(> [role="tabpanel"]) {
+  --sf-tabs--box-row: var(--sf-ui-1--control-height);
+  display: block;
+  box-sizing: border-box;
+  padding-block-start: calc(var(--sf-tabs--box-row) + var(--sf-tabs-main-container--padding-top, var(--sf-space-1)));
+  padding-block-end: var(--sf-tabs-main-container--padding-bottom, var(--sf-space-1));
+}
+
+:where(sf-tabs[size="1/2"]):not(:defined) { --sf-tabs--box-row: var(--sf-ui-1\/2--control-height); }
+:where(sf-tabs[size="2"]):not(:defined) { --sf-tabs--box-row: var(--sf-ui-2--control-height); }
+
+:where(sf-tabs):not(:defined):not(:has(> [data-sf-static])) > :where([role="tabpanel"]:not([hidden])) ~ :where([role="tabpanel"]) {
+  display: none;
+}
 }
 
 /* sf-hide-show before its script (OT 27; retired by C187 (8), a dated alias

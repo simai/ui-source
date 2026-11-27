@@ -3,9 +3,10 @@
 //
 // The contract of the first-paint render tool the build ships
 // (docs/developer/first-paint-render.md), run from the build's own copy
-// (core/js/composition/first-paint-render.mjs), over the seven components
-// Docara prints from settings (sf-badge, sf-tag, sf-tooltip, sf-avatar,
-// sf-progress-bar, sf-reference-link, sf-button-copy; or the folders named):
+// (core/js/composition/first-paint-render.mjs), over the components Docara
+// prints from settings (sf-badge, sf-tag, sf-tooltip, sf-avatar,
+// sf-progress-bar, sf-reference-link, sf-button-copy, and sf-tabs with its
+// panels since group build 20; or the folders named):
 //
 //   1. server == runtime: every example of examples.json, sent as a request
 //      with its settings, answers its committed snapshot byte for byte, names
@@ -35,9 +36,9 @@ const args = process.argv.slice(2);
 const out = args.find((one) => !one.startsWith('--')) ? resolve(args.find((one) => !one.startsWith('--'))) : null;
 if (!out) throw new Error('Build output root is required');
 const reportFile = args.find((one) => one.startsWith('--report='))?.slice('--report='.length) ?? null;
-const SEVEN = ['badge', 'tag', 'tooltip', 'avatar', 'progress-bar', 'reference-link', 'button-copy'];
+const DOCARA = ['badge', 'tag', 'tooltip', 'avatar', 'progress-bar', 'reference-link', 'button-copy', 'tabs'];
 const folders = args.filter((one) => !one.startsWith('--') && resolve(one) !== out);
-const only = folders.length ? folders : SEVEN;
+const only = folders.length ? folders : DOCARA;
 const concurrency = Number(process.env.FIRST_PAINT_CONCURRENCY || 2);
 const smartSource = join(repo, 'src', 'smart');
 const kitEntry = isDistribution(out) ? join(out, 'core', 'js', 'composition', 'first-paint-render.mjs') : join(out, 'core', 'core', 'js', 'composition', 'first-paint-render.mjs');

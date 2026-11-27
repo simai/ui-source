@@ -589,6 +589,12 @@ class SfTabs extends TabsElement {
     return loose[index] ?? null;
   }
 
+  // The label a page panel carries for its tab (aria-label), or none.
+  pagePanelLabel(key, index) {
+    const panel = this.pagePanelFor({ key }, index);
+    return String(panel?.getAttribute('aria-label') ?? '').trim();
+  }
+
   // Manual activation over deferred panels (§7.2.1): a panel holding a part
   // that starts later is opened by Enter or Space, never by the arrows alone.
   get manualActivation() {
@@ -823,9 +829,11 @@ class SfTabs extends TabsElement {
       const errors = Number(this._errors?.has(own) ? this._errors.get(own) : item.errors);
       return {
         ...item,
-        // A tab without a label is named in the page's language (R184 T14:
-        // the English «Tab N» on every page).
-        label: item.label || this.sfWord('tab', {vars: {n: index + 1}}),
+        // A tab without a label takes its page panel's aria-label (1.6.0: a
+        // server prints <div role="tabpanel" aria-label="…"> per tab and no
+        // items, Docara's :::tabs), else is named in the page's language
+        // (R184 T14: the English «Tab N» on every page).
+        label: item.label || this.pagePanelLabel?.(own, index) || this.sfWord('tab', {vars: {n: index + 1}}),
         // The entry's id (§16 item 42); key is its old name.
         key: String(item.id ?? item.key ?? index),
         // The errors in the tab's panel (C96 item 6): a count on the tab, said

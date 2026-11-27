@@ -142,5 +142,5 @@ function valuePart(context, hasAccessibleLabel) {
   const valueText = String(context.valueText ?? '');
   if (!hasValueSlot && !valueText.length) return nothing;
   const content = hasValueSlot ? context.component.getSlotContent('value') : valueText;
-  return html`<span class="sf-badge-divider" aria-hidden="true"></span><span class="sf-badge-value" aria-hidden=${hasAccessibleLabel ? 'true' : nothing}><span class="sr-only">, ${context.valueLabel} </span>${content}</span>`;
+  return html`<span class="sf-badge-divider" aria-hidden="true"></span><span class="sf-badge-value" aria-hidden=${hasAccessibleLabel ? 'true' : nothing}><span class="sf-badge-value-label sr-only">, ${context.valueLabel} </span>${content}</span>`;
 }

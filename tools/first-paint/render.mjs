@@ -89,6 +89,15 @@ function componentIndex(distr, packages) {
 
 const refuse = (reason, detail) => ({status: 'refused', reason, detail});
 
+// A setting the component retired (an alias row to nothing, mode retired):
+// the runtime still reads it and draws nothing for it, so a print would keep
+// a value that does nothing (sf-tooltip size, C160 (3): the root class
+// sf-tooltip--size-<value> no sheet reads). Refused, with the row's words.
+function retiredSetting(manifest, name) {
+  const rows = Array.isArray(manifest.aliases?.rows) ? manifest.aliases.rows : [];
+  return rows.find((row) => row?.from === name && row.to === null && row.mode === 'retired' && (row.kind ?? 'setting') === 'setting') ?? null;
+}
+
 /**
  * Checks a request against the component's manifest, without a browser.
  * Answers {component, example, template, prefix, lang} or a refusal.
@@ -117,6 +126,8 @@ function admit(request, index, languages) {
     if (name === 'template' && named !== undefined) continue;
     const member = memberOf(component.manifest, name);
     if (!member) return refuse('unknown-setting', `<${request.tag}> declares no setting or value ${name}`);
+    const retired = retiredSetting(component.manifest, name);
+    if (retired) return refuse('retired-setting', `${name} is retired${retired.section ? ` (${retired.section})` : ''}${retired.remove_after ?? retired['remove-after'] ? ` until ${retired.remove_after ?? retired['remove-after']}` : ''}: it draws nothing, leave it out`);
     if (component.late.includes(name) && value !== null && value !== undefined && !(Array.isArray(value) && !value.length)) {
       return refuse('late-setting', `${name} arrives after the first paint (§5.4): leave it out and give it to the element on the page`);
     }

@@ -87,7 +87,7 @@ function method(source, name) {
 
 test('VP-26: a tab list alone folds by the first box around it wider than its column', () => {
   const source = read('src/smart/tabs/index.js');
-  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.5.6'); // GB19 C (press wait, 1.5.5) // GB19 touch size (C428) over GB19 D2 (slots, 1.5.4) // GB18: VO-1 attribute order, panels example; // GB16-5/6: the label beside the glyph, name tooltips; // GB16 returns: the tightest row; // group build 16: G9 fold; // group build 13: 1.4.4 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item // GB19 touch size (C428)
+  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.6.0'); // GB20: panel labels // GB19 C (press wait, 1.5.5) // GB19 touch size (C428) over GB19 D2 (slots, 1.5.4) // GB18: VO-1 attribute order, panels example; // GB16-5/6: the label beside the glyph, name tooltips; // GB16 returns: the tightest row; // group build 16: G9 fold; // group build 13: 1.4.4 moved on by the merged branches or a GB11 merge // group build 14: 1.4.6 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item // GB19 touch size (C428)
   const contentWidth = (box) => box.width;
   const layoutWidth = (box) => box.width; // group build 14: the layout widths of fix/segmented-transform (1.4.7)
   const placeBox = new Function('contentWidth', 'layoutWidth', `return function () {${method(source, 'placeBox')}}`)(contentWidth, layoutWidth);

@@ -205,6 +205,27 @@
           "selected": "main"
         }
       }
+    },
+    {
+      "name": "panel-labels",
+      "title": "Подписи на панелях",
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "a server that cannot print the items list (Docara :::tabs) prints one panel per tab with the tab's label as its aria-label: the row draws from the panels' labels"
+      },
+      "attributes": {
+        "id": "labels"
+      },
+      "settings": {
+        "aria-label": "Заказ"
+      },
+      "children": "<div role=\"tabpanel\" aria-label=\"Основное\"><p>Заказ от 12 ноября, оплачен картой.</p></div><div role=\"tabpanel\" aria-label=\"Позиции\" hidden><p>Три позиции на 8 400 ₽.</p></div><div role=\"tabpanel\" aria-label=\"История\" hidden><p>Создан, оплачен, передан в доставку.</p></div>",
+      "expect": {
+        "name": "Заказ",
+        "values": {
+          "selected": "0"
+        }
+      }
     }
   ],
   "pages": [

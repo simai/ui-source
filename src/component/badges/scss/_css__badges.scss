@@ -155,6 +155,39 @@
   white-space: nowrap;
 }
 
+/* The word a screen reader says before the value (component.badges 1.15.0,
+   Docara msg-1b727506): a documented part, .sf-badge-value-label, that the
+   badge sheet hides itself, so class markup needs no utility beside it
+   (sr-only may stay). Its text is sf-badge's word value-label of the page
+   language («значение», «value»), or the page's own («версия»). */
+.sf-badge .sf-badge-value-label {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  margin: calc(var(--sf-px) * -1);
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A long name in a name and value badge stops at the width ladder's 28
+   characters (--sf-measure-28) and truncates there, wherever the badge
+   stands: inline in a line of text its container is the whole line, so the
+   name never truncated and the pair stood as wide as the name (Docara
+   msg-1b727506). The value stays whole. Internal (--sf-badge--text-max):
+   the badge offers ten public variables, the most a component may; a page
+   that wants another cap sizes .sf-badge-text. A badge without a value has
+   no cap, as before. */
+.sf-badge:has(> .sf-badge-divider) {
+  --sf-badge--text-max: var(--sf-measure-28);
+}
+
+.sf-badge .sf-badge-text {
+  max-inline-size: var(--sf-badge--text-max, none);
+}
+
 /* A badge that names no size is the 1/3 badge (24 high), and so is its
    icon: the text's size 1/3 (12), as .sf-badge--size-1/3 gives it. The icon
    sizes lived in the size classes alone, so an unsized badge's icon took the

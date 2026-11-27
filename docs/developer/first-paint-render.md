@@ -155,7 +155,7 @@ try {
 | `template` | one of the component's templates (default `default`). Another is written as the host's `template` attribute. A template given in `settings` instead (as the documented examples of `sf-avatar` give it) stays there and is written where the runtime writes it; given in both places, the two must agree. |
 | `settings` | setting and value names of its `component.json`. Scalars become attributes, and lists and objects become one JSON island. Each name and each enum value is checked against the manifest. |
 | `attributes` | what a page writes on a host that is not a setting: `aria-*`, `role`, `id`, `title`, `lang`, `dir`, `class`, `data-*` (not `data-sf-*`) |
-| `children` | markup the page gives inside the host |
+| `children` | markup the page gives inside the host: sf-tabs' panels (`<div role="tabpanel" data-entry="<item id>">`, or `aria-label="<tab label>"` without `items`), which the answer holds as the tabs' held panels |
 | `slots` | slot name → markup |
 | `markup` | the page around the element (for example, the text a copy button copies) |
 | `lang` | the page language, a language file of the build (`core/lang/<lang>.js`). Default `ru`. The component's words come from it. |
@@ -171,7 +171,9 @@ try {
   - `refused`: the request is not something the component prints. `reason`
     says what is wrong and `detail` explains it in words. The reasons are
     `unknown-field`, `tag`, `template`, `settings`, `unknown-setting`,
-    `late-setting` (the setting arrives after the first paint; give it to
+    `retired-setting` (the component retired the setting: its manifest's
+    alias row leads it to nothing, so it draws nothing, as sf-tooltip `size`;
+    leave it out), `late-setting` (the setting arrives after the first paint; give it to
     the element on the page instead), `value` (an enum value or a type the
     manifest does not allow), `attributes`, `children`, `markup`, `slots`,
     `lang`, `now`, `url`, `prefix`, `schema`, `not-a-request` and `not-json`.
