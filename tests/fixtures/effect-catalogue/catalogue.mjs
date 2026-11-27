@@ -31,13 +31,16 @@ const manifest = (id, fields) => {
 
 // Every effect the probes need: both schemes, a dark one paired with a light
 // one by id (and back), a dark one paired by a foreign address, a light one
-// alone, one without the windows capability, and two tampered ones.
+// alone, one without the windows capability, an interactive one, and two
+// tampered ones.
 export const EFFECTS = {
   'sample-bands': manifest('sample-bands', {}),
   'night-bands': manifest('night-bands', {schemes: ['dark'], pair: 'day-bands'}),
   'day-bands': manifest('day-bands', {schemes: ['light'], pair: 'night-bands'}),
   'dusk-bands': manifest('dusk-bands', {schemes: ['dark'], pair: FOREIGN_PAIR}),
   'lone-light': manifest('lone-light', {schemes: ['light'], capabilities: undefined}),
+  // simai.effect 1.5: one that answers the pointer in its own layer.
+  'touch-bands': manifest('touch-bands', {interactive: true}),
   'tampered-module': manifest('tampered-module', {}),
   'tampered-manifest': manifest('tampered-manifest', {}),
 };

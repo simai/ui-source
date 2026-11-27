@@ -16,7 +16,10 @@
 // (simai/ui-effects), every file checked against the index's SHA-256, and
 // data-sf-effect / data-sf-effect-windows place one from markup.
 // Since 1.4 a placement answers a right-click on the effect's background with
-// a small menu that says what it is (the about menu).
+// a small menu that says what it is (the about menu). Since 1.5 a manifest
+// may declare interactive: true, and the effect's host then takes pointer
+// events (hover, press, click, wheel, touch) where nothing of the page's
+// content is over it; without it the host takes none, as before.
 //
 // What lives here is the part every product would otherwise write again:
 // checking a manifest, turning stored values into checked settings with the
@@ -35,6 +38,9 @@
 // (global-sf-effects-to-package, attribute-data-sf-effect-to-sf-effect,
 // option-sf-boot-config-effects-to-package). Only security fixes land here;
 // every other change goes to the set. Each use is noted in SF.deprecations.
+// Exception (GB20, msg-e1b4fbe2): simai.effect 1.5 interactive is added here,
+// because Docara's hero places its effect with data-sf-effect through this
+// copy; the set carries the same clause in its next release.
 
 import {isSchema, schemaFields} from './composition/schema-name.mjs';
 import {noteDeprecated} from './deprecations.js';
@@ -82,7 +88,7 @@ function webAddress(value) {
 export function checkEffectManifest(manifest) {
   if (!isObject(manifest)) return ['manifest: not an object'];
   const problems = [];
-  const allowed = ['schema', 'schema_version', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'schemes', 'pair', 'capabilities', 'settings', 'needs', 'homepage'];
+  const allowed = ['schema', 'schema_version', 'id', 'version', 'label', 'author', 'entry', 'styles', 'preview', 'surfaces', 'schemes', 'pair', 'capabilities', 'settings', 'needs', 'homepage', 'interactive'];
   for (const key of Object.keys(manifest)) if (!allowed.includes(key)) problems.push(`${key}: undeclared`);
   if (!isSchema(manifest, 'simai.effect', 1)) problems.push('schema: not simai.effect, schema_version 1');
   if (typeof manifest.id !== 'string' || !ID.test(manifest.id)) problems.push('id');
@@ -103,6 +109,8 @@ export function checkEffectManifest(manifest) {
     || !manifest.capabilities.every((name) => CAPABILITIES.has(name)) || new Set(manifest.capabilities).size !== manifest.capabilities.length)) problems.push('capabilities: known names, each once');
   // simai.effect 1.4: where the effect's author shows it, named in the about menu.
   if (manifest.homepage !== undefined && webAddress(manifest.homepage) === null) problems.push('homepage: an http or https address');
+  // simai.effect 1.5: the effect takes pointer events in its own layer.
+  if (manifest.interactive !== undefined && typeof manifest.interactive !== 'boolean') problems.push('interactive: true or false');
   if (!isObject(manifest.needs) || manifest.needs.network !== false || Object.keys(manifest.needs).length !== 1) problems.push('needs: {network: false}');
   if (!Array.isArray(manifest.settings)) {
     problems.push('settings');
@@ -538,9 +546,14 @@ function mountModule(host, {manifest, module, stored = {}, locale, scheme} = {})
   if (problems.length) throw new TypeError(`Effect manifest is invalid: ${problems.join('; ')}`);
   const mount = typeof module === 'function' ? module : module?.mount;
   if (typeof mount !== 'function') throw new TypeError('An effect module exports mount(host, settings, context)');
-  // The host stands under the page: read by nobody, touched by no pointer.
+  // The host stands under the page: read by nobody, touched by no pointer --
+  // unless the manifest says the effect answers the pointer (simai.effect
+  // 1.5 interactive) and it runs in the page: then the host takes the events
+  // that reach it, which is only where no content of the page is over it.
+  // A foreign effect's sandbox frame never takes them.
   host.setAttribute('aria-hidden', 'true');
-  host.style.pointerEvents = 'none';
+  const takesPointer = manifest.interactive === true && !isSandboxed(module);
+  host.style.pointerEvents = takesPointer ? 'auto' : 'none';
   const ownsName = !host.hasAttribute('data-sf-effect');
   if (ownsName) host.setAttribute('data-sf-effect', manifest.id);
   // A mounted host is never taken for a declared placement still to mount.
@@ -630,6 +643,7 @@ function mountModule(host, {manifest, module, stored = {}, locale, scheme} = {})
       call('destroy');
       // Whatever the effect left behind goes with it.
       host.replaceChildren();
+      host.style.pointerEvents = 'none';
       if (ownsName) host.removeAttribute('data-sf-effect');
       if (ownsState) host.removeAttribute(STATE);
     },
@@ -787,7 +801,8 @@ function report(element, effect, reason, detail = {}) {
 // The effect's host and a foreign effect's sandbox frame take no pointer
 // events, so a right-click over either lands on the area in the page: the
 // test runs here for both, and the frame is told nothing it was not told
-// before.
+// before. An interactive effect's host (simai.effect 1.5) takes them: the
+// right-click lands in its layer, which counts as the background.
 
 const LISTED_REPOSITORY = 'simai/ui-effects';
 const LISTED_PAGE = 'https://effects.simai.io/effect/';
