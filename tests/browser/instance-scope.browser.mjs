@@ -67,9 +67,11 @@ const examplesOf = (component) => {
 // Page attributes the runtime sets once for the page, whatever the element:
 // the language and direction, the Loader's marks (sf-icons-loaded), the flag of
 // a page-wide delegation a classic component's script binds once
-// (data-sf-menu-events-bound, component/menu). An empty style attribute is a
-// lock that was given back: the values are restored, the attribute stays.
-const PAGE_NOISE = /^(?:class:sf-icons-loaded|lang=.*|dir=.*|style=|data-sf-[\w-]*-events-bound=true|data-sf-(?:ready|loaded|theme[\w-]*|icons?[\w-]*|core[\w-]*|utility[\w-]*|loader[\w-]*)=.*)$/u;
+// (data-sf-menu-events-bound, component/menu), core's page layout word
+// (data-sf-layout, written as core boots and on resize; GB20 I3, C435). An
+// empty style attribute is a lock that was given back: the values are
+// restored, the attribute stays.
+const PAGE_NOISE = /^(?:class:sf-icons-loaded|lang=.*|dir=.*|style=|data-sf-[\w-]*-events-bound=true|data-sf-(?:ready|loaded|layout|theme[\w-]*|icons?[\w-]*|core[\w-]*|utility[\w-]*|loader[\w-]*)=.*)$/u;
 
 const keyOf = (entry) => `${entry.kind}\t${entry.what}\t${entry.owner}`;
 // What a bundle set up while it was evaluated is the page's, made once
