@@ -75,6 +75,14 @@ class SfToast extends ToastElement {
     // (§8), so the class events stop here.
     this.addEventListener('sf-toast-close', this._onRootClose, true);
     this.addEventListener('sf-toast-action', this._onRootAction, true);
+    // Placed again without a new render, the drawn toast is bound again by the
+    // host, so the host's own removal unbinds it (the class observer would bind
+    // it with nobody to unbind it).
+    const drawn = this.querySelector('.sf-toast');
+    if (drawn && drawn !== this._boundRoot) {
+      this._boundRoot = drawn;
+      bindToast(drawn, this);
+    }
   }
 
   _onRootClose = (event) => {
@@ -136,10 +144,9 @@ class SfToast extends ToastElement {
   }
 
   onDisconnected() {
-    if (this._boundRoot) {
-      unbindToast(this._boundRoot);
-      this._boundRoot = null;
-    }
+    const root = this._boundRoot || this.querySelector('.sf-toast');
+    if (root) unbindToast(root);
+    this._boundRoot = null;
   }
 
   dismiss() {

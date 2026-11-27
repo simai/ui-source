@@ -52,9 +52,10 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
 <div class="page-row" id="b-switches"><sf-switch id="w1" size="1/2" aria-label="Первый"></sf-switch><sf-switch id="w2" size="1" aria-label="Второй"></sf-switch></div>
 <div class="page-row" id="b-radios"><sf-radio id="r1" name="r" value="1" size="1/2" aria-label="Один"></sf-radio><sf-radio id="r2" name="r" value="2" size="1/2" aria-label="Два"></sf-radio></div>
 <div class="page-toolbar" id="b-icons"><sf-button-icon id="i1" icon="add" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Добавить"></sf-button-icon><sf-button-icon id="i2" icon="edit" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Изменить"></sf-button-icon><sf-button-icon id="i3" icon="delete" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Удалить"></sf-button-icon></div>
+<div class="page-row" id="b-icons1"><sf-button-icon id="j1" icon="add" size="1" appearance="ghost" scheme="on-surface" aria-label="Добавить"></sf-button-icon><sf-button-icon id="j2" icon="edit" size="1" appearance="ghost" scheme="on-surface" aria-label="Изменить"></sf-button-icon></div>
+<!-- Last on the page: the stacking check reads styles only, and the rows above keep their places in the viewport. -->
 <div class="page-row" id="b-pop" style="position:relative"><sf-checkbox id="p1" size="1/2" aria-label="Фильтр"></sf-checkbox><div id="bad-pop" role="listbox" aria-label="Список" style="position:absolute;inset-inline-start:0;inset-block-start:100%;inline-size:120px;block-size:40px;background:var(--sf-surface-1)"></div></div>
 <div class="page-row" id="b-menu-row" style="position:relative"><sf-button-icon id="k1" icon="more_horiz" size="1/2" appearance="ghost" scheme="on-surface" aria-label="Ещё"></sf-button-icon><sf-menu-context id="row-menu" popup aria-label="Ещё" entries='[{"id":"a","text":"Изменить"},{"id":"b","text":"Удалить"}]'></sf-menu-context></div>
-<div class="page-row" id="b-icons1"><sf-button-icon id="j1" icon="add" size="1" appearance="ghost" scheme="on-surface" aria-label="Добавить"></sf-button-icon><sf-button-icon id="j2" icon="edit" size="1" appearance="ghost" scheme="on-surface" aria-label="Изменить"></sf-button-icon></div>
 <script>
 window.__events = [];
 function log(e) { window.__events.push(e); }
@@ -139,11 +140,11 @@ for (const [ws, theme] of CONF) for (let n = 1; n <= LOADS; n++) {
     const bx = await boxes(sel);
     const hs = bx.map((r) => Math.round(r.h * 10) / 10);
     if (phone) check(run, `${name}: every row is at least ${HIT} high`, bx.length >= 3 && hs.every((h) => h >= HIT - 0.01), hs);
+    else check(run, `${name}: fine pointer keeps the ladder's ${FINE_ROWS[name]}`, bx.length >= 3 && hs.every((h) => Math.abs(h - FINE_ROWS[name]) < 0.01), hs);
     if (phone && name === 'menu') {
       const gaps = bx.slice(1).map((r, i) => Math.round((r.y - (bx[i].y + bx[i].h)) * 10) / 10);
       check(run, 'menu: the rows of a column touch (no gap) under a coarse pointer', gaps.every((g) => Math.abs(g) < 0.5), gaps);
     }
-    else check(run, `${name}: fine pointer keeps the ladder's ${FINE_ROWS[name]}`, bx.length >= 3 && hs.every((h) => Math.abs(h - FINE_ROWS[name]) < 0.01), hs);
   }
   // Settings: the centre and both edges of each switch row turn that row's switch (on, then off, then on again).
   {
