@@ -173,6 +173,7 @@ for (const width of [1440, 390]) {
     for (const name of Object.keys(CASES)) {
       const label = `${name} ${width} ${theme}`;
       const {context, tab, errors} = await newTab({width, theme});
+      try {
       await load(tab, `${base}/${name}-${theme}`);
       await openWindow(tab, name);
       const m = await tab.evaluate(MEASURE);
@@ -228,6 +229,9 @@ for (const width of [1440, 390]) {
         }
       }
       ok(`${label}: no page errors`, !errors.length, errors.join(' | '));
+      } catch (error) {
+        ok(`${label}: the case ran to its end`, false, `${error.message.split('\n')[0]} ${JSON.stringify(await tab.evaluate(MEASURE).catch(() => null))}`);
+      }
       await context.close();
     }
   }
@@ -237,12 +241,16 @@ for (const width of [1440, 390]) {
 for (const name of ['drawer', 'modal', 'dialog', 'popup']) {
   const label = `${name} 390 touch`;
   const {context, tab, errors} = await newTab({width: 390, theme: 'light', touch: true});
-  await load(tab, `${base}/${name}-light`);
-  await openWindow(tab, name, {touch: true});
-  await tab.tap('#s [data-sf-close] button');
-  await tab.waitForTimeout(500);
-  const state = await tab.evaluate(`({open: ${windowOpen(name)}, events: window.__events})`);
-  ok(`${label}: a tap on the close closes the window`, !state.open && state.events[0]?.[0] === 'close' && state.events.at(-1)?.[0] === 'closed', JSON.stringify(state));
+  try {
+    await load(tab, `${base}/${name}-light`);
+    await openWindow(tab, name, {touch: true});
+    await tab.tap('#s [data-sf-close] button');
+    await tab.waitForTimeout(500);
+    const state = await tab.evaluate(`({open: ${windowOpen(name)}, events: window.__events})`);
+    ok(`${label}: a tap on the close closes the window`, !state.open && state.events[0]?.[0] === 'close' && state.events.at(-1)?.[0] === 'closed', JSON.stringify(state));
+  } catch (error) {
+    ok(`${label}: the case ran to its end`, false, `${error.message.split('\n')[0]} ${JSON.stringify(await tab.evaluate(MEASURE).catch(() => null))}`);
+  }
   ok(`${label}: no page errors`, !errors.length, errors.join(' | '));
   await context.close();
 }
@@ -250,6 +258,7 @@ for (const name of ['drawer', 'modal', 'dialog', 'popup']) {
 // remember before the first paint: choose «Крупный», then reload three times.
 {
   const {context, tab, errors} = await newTab({width: 1440, theme: 'light'});
+  try {
   await load(tab, `${base}/drawer-light`);
   const first = await tab.evaluate(() => ({early: window.__early, first: window.__first}));
   ok('remember: a first visit has nothing kept; the panel draws the declared value', first.early.values === null && first.early.body === false && first.first === 'm', JSON.stringify(first));
@@ -267,6 +276,9 @@ for (const name of ['drawer', 'modal', 'dialog', 'popup']) {
     ok(`remember reload ${load3}: the panel's first drawing already shows the kept value (no frame of the declared one)`, early.first === 'l' && early.values.size === 'l', JSON.stringify(early));
   }
   ok('remember: no page errors over the reloads', !errors.length, errors.join(' | '));
+  } catch (error) {
+    ok('remember: the case ran to its end', false, error.message.split('\n')[0]);
+  }
   await context.close();
 }
 

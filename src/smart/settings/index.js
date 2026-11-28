@@ -32,7 +32,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import BundledPreferences from '../../core/js/preferences.js';
-import {isTag, tagSelector} from '../../core/js/tag-aliases.js';
+import {tagSelector} from '../../core/js/tag-aliases.js';
 import {renderSettingsTemplate} from './js/templates/default';
 import {densityOf} from '../../core/js/density.js';
 import BundledPosition from '../../core/js/position.js';
@@ -62,19 +62,27 @@ const MENU = `:scope > .sf-settings-parts > ${tagSelector('sf-menu-context')}`;
 const PICKER = `:scope > .sf-settings-parts > .sf-settings-color > ${tagSelector('sf-input-color')}`;
 const FOCUSABLE = 'button, a[href], input, select, textarea, [tabindex]';
 // The page's window a panel in the flow may stand in (GB21, Docara K-13): the
-// Framework's window and side sheet, or the platform's <dialog>. A panel that
-// stands in one draws the close button a popup draws, and its press closes
-// that window.
-const SHELL = `${tagSelector('sf-modal')}, ${tagSelector('sf-drawer')}, dialog`;
-// Whether the window draws a close of its own (its setting, read from the
-// element when it is defined, else from its attribute): then the panel draws
-// none, so a window never shows two.
-const flag = (element, property, attribute) => (typeof element[property] === 'boolean'
-  ? element[property] : element.getAttribute(attribute) !== 'false');
+// Framework's window and side sheet, found by the panel each draws round its
+// content (data-sf-modal-panel, data-sf-drawer-panel), or the platform's
+// <dialog>. A panel that stands in one draws the close button a popup draws,
+// and its press closes that window by the window's own close.
+const SHELL = '[data-sf-modal-panel], [data-sf-drawer-panel], dialog';
+// The window element round such a panel: the element whose close it calls.
+function shellHost(marker) {
+  if (!marker) return null;
+  if (marker.localName === 'dialog') return marker;
+  for (let node = marker.parentElement; node; node = node.parentElement) {
+    if (node.localName.includes('-') && typeof node.close === 'function') return node;
+  }
+  return null;
+}
+// Whether the window draws a close of its own (its settings): then the panel
+// draws none, so a window never shows two. A window with a header
+// (showHeader, the Framework window's) draws its close in that header.
 function shellDrawsClose(shell) {
   if (shell.localName === 'dialog') return false;
-  if (isTag(shell, 'sf-modal')) return flag(shell, 'showHeader', 'show-header') && flag(shell, 'showClose', 'show-close');
-  return flag(shell, 'showClose', 'show-close');
+  if (typeof shell.showHeader === 'boolean' && !shell.showHeader) return false;
+  return shell.showClose !== false;
 }
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
@@ -1305,10 +1313,10 @@ class SfSettings extends SettingsElement {
 
   // ─── a panel in a page's window (GB21, Docara K-13)
 
-  /** The page's window this panel stands in (sf-modal, sf-drawer, <dialog>), when it is not a popup; else null. */
+  /** The page's window this panel stands in (the Framework window or side sheet, a dialog element), when it is not a popup; else null. */
   dialogShell() {
     if (!this.isPanel || this.popup) return null;
-    return this.parentElement?.closest(SHELL) ?? null;
+    return shellHost(this.parentElement?.closest(SHELL) ?? null);
   }
 
   // The window whose close the panel draws: one it stands in that draws none
@@ -1320,7 +1328,7 @@ class SfSettings extends SettingsElement {
 
   // The close button of a panel in a page's window: close is asked (reason
   // close, cancellable, unsaved as a popup's), then the window is closed by
-  // its own action -- sf-modal's and sf-drawer's close({reason: 'close'}),
+  // its own action -- the Framework window's and side sheet's close({reason: 'close'}),
   // which ask the page in their turn, or a <dialog>'s close(); closed follows
   // once the window agreed. What a draft of apply="button" held is dropped.
   closeShell() {

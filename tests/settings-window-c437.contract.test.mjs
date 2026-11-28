@@ -28,9 +28,9 @@ function fakeStorage() {
 }
 
 test('(1) a panel in a page\'s window draws the close a popup draws, unless the window draws its own', () => {
-  assert.match(source, /const SHELL = `\$\{tagSelector\('sf-modal'\)\}, \$\{tagSelector\('sf-drawer'\)\}, dialog`;/u);
+  assert.match(source, /const SHELL = '\[data-sf-modal-panel\], \[data-sf-drawer-panel\], dialog';/u, 'found by the panel each window draws round its content');
   assert.match(source, /if \(shell\.localName === 'dialog'\) return false;/u, 'a <dialog> draws no close of its own');
-  assert.match(source, /flag\(shell, 'showHeader', 'show-header'\) && flag\(shell, 'showClose', 'show-close'\)/u, 'sf-modal: its header and its close');
+  assert.match(source, /if \(typeof shell\.showHeader === 'boolean' && !shell\.showHeader\) return false;\n\s+return shell\.showClose !== false;/u, 'a window without its header, or without its close, draws none');
   assert.match(source, /shellClose: Boolean\(this\.shellCloses\(\)\)/u);
   assert.match(panel, /const close = context\.popup \|\| context\.shellClose/u);
   assert.match(source, /if \(this\._open\) this\.closePanel\(\{reason: 'close'\}\);\n\s+else this\.closeShell\(\);/u);
