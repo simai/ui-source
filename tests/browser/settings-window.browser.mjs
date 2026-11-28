@@ -24,6 +24,10 @@
 //   head reader the docs print (core PREPAINT_READER) answers them before the body
 //   is parsed -- before the first paint -- and the panel's first drawing
 //   already shows them (no frame with the declared value).
+// - a phone-wide side sheet (390, 480, 600; mouse and touch) that covers its
+//   opener with show-close="false" shows one close, the panel's: the panel
+//   marks it as the sheet's own (data-drawer="close"), so the sheet draws
+//   none (GB21 return R1, C438 (1) never two).
 // No page errors, no 404, no sideways scroll.
 import {createServer} from 'node:http';
 import {existsSync, mkdirSync, readFileSync, statSync} from 'node:fs';
@@ -170,7 +174,8 @@ const MEASURE = () => {
   probe.remove();
   return {
     closes: panel.querySelectorAll('.sf-settings-panel-close').length,
-    drawerCloses: [...document.querySelectorAll('[data-sf-drawer-portal] button[aria-label]')].filter((one) => !panel.contains(one) && /акры/u.test(one.getAttribute('aria-label'))).length,
+    drawerCloses: [...document.querySelectorAll('[data-sf-drawer-portal] button[aria-label]')].filter((one) => !panel.contains(one) && /акры/u.test(one.getAttribute('aria-label'))
+      && one.getClientRects().length > 0 && getComputedStyle(one).visibility !== 'hidden').length,
     closeName: button?.getAttribute('aria-label') ?? '',
     closeAtEnd: button && head ? Math.round(head.right - r(button).right) : null,
     closeInHead: button && head ? r(button).top >= head.top - 0.5 && r(button).bottom <= head.bottom + 0.5 : null,
@@ -185,9 +190,13 @@ const MEASURE = () => {
   };
 };
 
-for (const width of [1440, 390]) {
+// 480 and 600: a phone-wide sheet that covers its opener (GB21 return R1),
+// the side-sheet cases only, light.
+const PHONE_WIDE = [480, 600];
+for (const width of [1440, 390, ...PHONE_WIDE]) {
   for (const theme of ['light', 'dark']) {
     for (const name of Object.keys(CASES)) {
+      if (PHONE_WIDE.includes(width) && (theme === 'dark' || !name.startsWith('drawer'))) continue;
       const label = `${name} ${width} ${theme}`;
       const {context, tab, errors} = await newTab({width, theme});
       try {
@@ -196,7 +205,8 @@ for (const width of [1440, 390]) {
       const m = await tab.evaluate(MEASURE);
       const drawsClose = !['drawer-own-close', 'inline'].includes(name);
       ok(`${label}: the panel ${drawsClose ? 'draws one close button' : 'draws no close of its own'}`, m.closes === (drawsClose ? 1 : 0), JSON.stringify(m));
-      if (name === 'drawer-own-close') ok(`${label}: the sheet keeps its own close: one close in the window`, m.closes === 0 && m.drawerCloses >= 1, JSON.stringify(m));
+      if (name === 'drawer-own-close') ok(`${label}: the sheet keeps its own close: one close in the window`, m.closes === 0 && m.drawerCloses === 1, JSON.stringify(m));
+      if (name === 'drawer') ok(`${label}: the sheet draws no close beside the panel's: one close in the window`, m.closes === 1 && m.drawerCloses === 0, JSON.stringify(m));
       if (drawsClose) {
         const expected = {drawer: 'Закрыть настройки', modal: 'Закрыть окно'}[name] ?? 'Закрыть';
         ok(`${label}: the close is named by close-label (or the Framework word) and ends the head`, m.closeName === expected && m.closeInHead && m.closeAtEnd >= 0 && m.closeAtEnd <= 24, JSON.stringify(m));
@@ -254,13 +264,18 @@ for (const width of [1440, 390]) {
   }
 }
 
-// A touch: a phone at 390, each window that the panel closes.
-for (const name of ['drawer', 'modal', 'dialog', 'popup']) {
-  const label = `${name} 390 touch`;
-  const {context, tab, errors} = await newTab({width: 390, theme: 'light', touch: true});
+// A touch: a phone at 390, each window that the panel closes; the side sheet
+// at 480 and 600 too, one close in it (GB21 return R1).
+for (const [name, width] of [['drawer', 390], ['drawer', 480], ['drawer', 600], ['modal', 390], ['dialog', 390], ['popup', 390]]) {
+  const label = `${name} ${width} touch`;
+  const {context, tab, errors} = await newTab({width, theme: 'light', touch: true});
   try {
     await load(tab, `${base}/${name}-light`);
     await openWindow(tab, name, {touch: true});
+    if (name === 'drawer') {
+      const m = await tab.evaluate(MEASURE);
+      ok(`${label}: one close in the sheet, the panel's`, m.closes === 1 && m.drawerCloses === 0 && m.closeName === 'Закрыть настройки', JSON.stringify(m));
+    }
     await tab.tap(CLOSE);
     await tab.waitForTimeout(500);
     const state = await tab.evaluate(`({open: ${windowOpen(name)}, events: window.__events})`);

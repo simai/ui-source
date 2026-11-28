@@ -42,7 +42,8 @@ test('the content-actions rows of a window weigh nothing', () => {
   assert.match(body, /:where\(#\{\$body\} #\{\$row\}\) \{\n\s+background-color: var\(--sf-surface-place\);/u);
   // The question's step above its answers keeps its weight (it is no default a composite replaces).
   assert.match(body, /\n\s+#\{\$body\} \.sf-confirm--window > \* \+ \.sf-confirm__footer \{/u);
-  for (const [path, version] of [['src/smart/drawer/component.json', '1.22.1'], ['src/smart/drawer/smart.manifest.json', '1.22.1'],
+  for (const [path, version] of [['src/smart/drawer/component.json', '1.22.2'], ['src/smart/drawer/smart.manifest.json', '1.22.2'], // GB21 return R1: 1.22.2
+   
     ['src/smart/modal/component.json', '1.11.2'], ['src/smart/modal/smart.manifest.json', '1.11.2'], ['src/component/modal/passport.json', '1.8.2']]) {
     assert.equal(json(path).version, version, path);
   }

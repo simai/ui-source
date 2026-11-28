@@ -88,6 +88,13 @@ function shellHost(element) {
 // Whether the window draws a close of its own (its settings): then the panel
 // draws none, so a window never shows two. A window with a header
 // (showHeader, the Framework window's) draws its close in that header.
+// Whether the window is a side sheet (its panel marker): a sheet reads a
+// close of its content's own (data-drawer="close") and then draws none --
+// on a phone-wide sheet that covers its opener as well (C104), so the
+// panel's close is marked as the sheet's own (GB21 return R1, C438 (1)).
+function inSheet(element) {
+  return Boolean(element?.closest(SHELL)?.matches('[data-sf-drawer-panel]'));
+}
 function shellDrawsClose(shell) {
   if (shell.localName === 'dialog') return false;
   if (typeof shell.showHeader === 'boolean' && !shell.showHeader) return false;
@@ -103,6 +110,8 @@ const position = () => globalThis.SF?.Position || BundledPosition;
 // (C106 (8), C32), as sf-menu-context's forms are.
 const onPhone = () => !getComputedStyle(document.documentElement).getPropertyValue('--sf-breakpoint-md').trim();
 // The panel's own parts (templates/panel.js).
+// The element's own frame round what it draws (templates/default.js).
+const FRAME = 'sf-settings-parts';
 const PANEL = ':scope > .sf-settings-parts > .sf-settings-panel';
 const ROW = '.sf-settings-row-main';
 // A pin is sf-button-icon (ST-2, C166): the host lays out as display:contents
@@ -269,8 +278,13 @@ class SfSettings extends SettingsElement {
     super.onConnected?.();
     const live = this._liveSlotNodes;
     if (live && !live.has('trigger')) {
+      // Its own frame is not the page's: a panel drawn before a window took
+      // it into its panel (sf-drawer moves its content at its first drawing)
+      // connects again holding the frame, and the frame taken as the trigger
+      // was drawn into itself -- HierarchyRequestError, an empty panel (GB21
+      // return R2, ui-control evidence 2026-11-28-gb21-return).
       const nodes = Array.from(this.children).filter((child) => !child.hasAttribute('slot') && !child.hasAttribute('data-sf-static')
-        && child.localName !== 'script' && child.localName !== 'template');
+        && child.localName !== 'script' && child.localName !== 'template' && !child.classList.contains(FRAME));
       if (nodes.length) {
         nodes.forEach((node) => node.remove());
         live.set('trigger', nodes);
@@ -778,6 +792,9 @@ class SfSettings extends SettingsElement {
       // A panel in the flow that stands in a page's window draws the close
       // button a popup draws, unless the window draws its own (GB21, K-13).
       shellClose: Boolean(this.shellCloses()),
+      // ... marked as the side sheet's own close, so the sheet draws none at
+      // any width (C438 (1): never two).
+      sheetClose: Boolean(this.shellCloses()) && inSheet(this.parentElement),
       open: Boolean(this._open),
       search: Boolean(this.search),
       apply: this.applyMode,
@@ -916,6 +933,9 @@ class SfSettings extends SettingsElement {
   // footer's buttons.
   onPanelClick(event, target) {
     if (target.closest('[data-sf-close]')) {
+      // The press is the panel's: a side sheet's document handler of its own
+      // close (data-drawer="close") leaves it, so a cancelled close keeps it open.
+      event.preventDefault();
       if (this._open) this.closePanel({reason: 'close'});
       else this.closeShell();
       return;

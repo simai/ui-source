@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "title": "Settings",
   "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of two looks -- drill (the value under the name, the options in the same panel) or rows (the control at the row's end; a choice that does not fit beside its name drills by itself). With a trigger it opens over the page (a bottom sheet on a phone); without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. Where a product has a sign-in, the person's theme, language and text size are rows of the person menu (sf-menu-context, owner decision C176 (1)); sf-settings is the gear of a screen's view and of a site without a sign-in. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "kind": "smart",
@@ -591,7 +591,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "b6dc3c937b17eda03240f6674c51255b18ece4069c1a5e2c4871fc7538993bab"
+        "sha256": "19972ab8492f0ca3d4761460a99d66b83015c0df9999bb84bb4897d06b8bd1ed"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
@@ -603,7 +603,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "70ba11335c679a7e4ec9d724562c1dd9059f39b6f741ea15ca81963f47a88db1"
+        "sha256": "cc58b2cc64d3b28802cd80705d2424406a9b65ad239654e8c150ceb8585bcece"
       }
     ],
     "generated_runtime": []

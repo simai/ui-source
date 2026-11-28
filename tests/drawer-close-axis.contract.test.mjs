@@ -31,6 +31,7 @@ test('drawer C104 (4): the close is drawn first in the head when its side is the
 test('drawer C104: a panel covering its switch is not «switch on screen» and draws a close', () => {
   assert.match(source, /return !\(this\.openState && this\.coversElement\(element\)\);/u);
   assert.match(source, /showClose: \(this\.showClose && !this\._switchVisible\) \|\| coveredWithoutClose,/u);
-  assert.match(source, /this\._coversOpener && !this\.showClose && !this\.hasOwnClose\(\)/u);
+  // GB21 return R1: the own close read once per drawing and checked again after it.
+  assert.match(source, /this\._ownClose = typeof document !== 'undefined' && this\.hasOwnClose\(\);\n\s+const coveredWithoutClose = this\._coversOpener && !this\.showClose && !this\._ownClose;/u);
   assert.match(docs, /C104 \(4\)/u);
 });

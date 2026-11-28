@@ -109,6 +109,25 @@ test('(5) the remembered values are a public format the head reader answers', ()
 });
 
 test('the version and the decision', () => {
-  assert.equal(manifest.version, '1.12.0');
-  assert.match(manifest['x-decisions'].at(-1), /^version 1\.12\.0 \(2026-11-28, group build 21 area B; Docara K-13 msg-b3676e09bb83470e84ed, decision C438\)/u);
+  assert.equal(manifest.version, '1.12.1'); // GB21 return R1/R2
+  assert.match(manifest['x-decisions'].at(-2), /^version 1\.12\.0 \(2026-11-28, group build 21 area B; Docara K-13 msg-b3676e09bb83470e84ed, decision C438\)/u);
+  assert.match(manifest['x-decisions'].at(-1), /^version 1\.12\.1 \(2026-11-28, group build 21 return R1\/R2/u);
+});
+
+// GB21 return (DEV msg-832d7e54); measured in tests/browser/settings-window.browser.mjs
+// (390/480/600, mouse and touch) and tests/browser/settings-drawer-start.browser.mjs.
+test('R1: in a side sheet the panel\'s close is the sheet\'s own, so a phone-wide sheet draws none', () => {
+  const drawer = read('src/smart/drawer/index.js');
+  assert.match(source, /sheetClose: Boolean\(this\.shellCloses\(\)\) && inSheet\(this\.parentElement\)/u);
+  assert.match(source, /return Boolean\(element\?\.closest\(SHELL\)\?\.matches\('\[data-sf-drawer-panel\]'\)\);/u, 'a sheet is known by its panel marker, no tag named');
+  assert.match(panel, /data-sf-close data-drawer=\$\{context\.sheetClose \? 'close' : nothing\}/u, 'marked only in a sheet');
+  assert.match(source, /if \(target\.closest\('\[data-sf-close\]'\)\) \{\n(?:\s+\/\/.*\n)+\s+event\.preventDefault\(\);/u, 'the press is the panel\'s');
+  assert.match(drawer, /if \(!\(event\.target instanceof Element\) \|\| event\.defaultPrevented\) return;/u, 'the sheet leaves a press its content handled');
+  assert.match(drawer, /const coveredWithoutClose = this\._coversOpener && !this\.showClose && !this\._ownClose;/u);
+  assert.match(drawer, /\|\| own !== this\._ownClose\) \{/u, 'an own close drawn later is noticed');
+});
+
+test('R2: the element\'s own frame is never the page\'s trigger', () => {
+  assert.match(source, /const FRAME = 'sf-settings-parts';/u);
+  assert.match(source, /&& child\.localName !== 'template' && !child\.classList\.contains\(FRAME\)\);/u);
 });

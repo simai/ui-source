@@ -21699,6 +21699,51 @@
       ],
       "manual": "Nothing to rewrite.",
       "source": "src/smart/header-site/index.js"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-settings-sheet-close-one",
+      "kind": "behaviour",
+      "summary": "sf-settings 1.12.1, sf-drawer 1.22.2 (group build 21 return R1, DEV msg-832d7e54, C438 (1) never two closes): a look=\"panel\" panel in a side sheet with show-close=\"false\" marks its close as the sheet's own (data-drawer=\"close\") and handles the press itself (its default prevented, so a cancelled sf-settings-close keeps the sheet open). A phone-wide sheet that covers its opener (390, 480, 600) drew its own close beside the panel's; it now reads the panel's as the content's own close and draws none, also when that close is drawn after the sheet drew. sf-drawer's document handler leaves a data-drawer press whose default the content prevented.",
+      "items": [
+        {
+          "component": "sf-settings",
+          "from": "the panel's close unmarked; a phone-wide sheet drew a second close",
+          "to": "the panel's close is the sheet's own (data-drawer=\"close\"): one close at every width"
+        },
+        {
+          "component": "sf-drawer",
+          "from": "a data-drawer press acted on even when the content prevented its default; an own close drawn later went unseen",
+          "to": "a prevented press is left to the content; a later own close steps the drawer's close down"
+        }
+      ],
+      "manual": "Nothing to rewrite. A page whose own data-drawer button calls event.preventDefault() on its click now closes the drawer itself.",
+      "source": "src/smart/settings/index.js; src/smart/drawer/index.js"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-settings-own-frame-not-trigger",
+      "kind": "behaviour",
+      "summary": "sf-settings 1.12.1 (group build 21 return R2, DEV msg-832d7e54): a panel drawn before a window took it into its panel (sf-drawer moves its content at its own first drawing) connected again holding its own frame (.sf-settings-parts) and took the frame for the page's trigger, drawing it into itself: HierarchyRequestError (insertBefore: the new child contains the parent) and an empty panel on about one load in ten, every load when the sheet's module came late. The element's own frame is never the trigger now.",
+      "items": [
+        {
+          "component": "sf-settings",
+          "from": "its own frame taken as the trigger on a second connect",
+          "to": "only the page's children are the trigger"
+        }
+      ],
+      "manual": "Nothing to rewrite.",
+      "source": "src/smart/settings/index.js"
     }
   ]
 }

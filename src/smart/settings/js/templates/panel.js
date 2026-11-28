@@ -227,7 +227,7 @@ function renderHead(context) {
     // its own (GB21, Docara K-13): the same button, named by close-label.
     const close = context.popup || context.shellClose
         ? html`<sf-button-icon class="sf-settings-panel-close" appearance="ghost" scheme="on-surface" size=${buttonSize(context)} icon="close"
-                aria-label=${words.close} title=${words.close} data-sf-close></sf-button-icon>`
+                aria-label=${words.close} title=${words.close} data-sf-close data-drawer=${context.sheetClose ? 'close' : nothing}></sf-button-icon>`
         : nothing;
     return html`<div class="sf-settings-panel-head">${tabs}${close}</div>`;
 }

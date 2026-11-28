@@ -313,7 +313,10 @@ const drawerManager = {
   bindGlobalEvents() {
     if (this.globalBound || typeof document === 'undefined') return;
     document.addEventListener('click', (event) => {
-      if (!(event.target instanceof Element)) return;
+      // A press the content handled itself (a component's close marked as the
+      // drawer's own, data-drawer="close", that asks its page first): the
+      // drawer leaves it (GB21 return R1).
+      if (!(event.target instanceof Element) || event.defaultPrevented) return;
       const conciseTrigger = event.target.closest('[data-drawer]');
       const openTrigger = event.target.closest('[data-sf-drawer-open]');
       const toggleTrigger = event.target.closest('[data-sf-drawer-toggle]');
@@ -453,6 +456,7 @@ class SfDrawer extends DrawerElement {
     this._openerHint = null;
     this._closeAxis = '';
     this._coversOpener = false;
+    this._ownClose = false;
     this._openerRechecks = 0;
     this._dockColumn = true;
     this._declaredModal = null;
@@ -727,7 +731,11 @@ class SfDrawer extends DrawerElement {
     const side = this.closeAxisSide();
     const covers = this.coversOpener();
     const visible = this.controlled && this.hasVisibleSwitch();
-    if (side !== this._closeAxis || covers !== this._coversOpener || visible !== this._switchVisible) {
+    // A close of the content's own drawn after the drawer drew (a component
+    // in it that draws once it stands in the panel): the drawer's own steps
+    // down, so the sheet never shows two (C438 (1)).
+    const own = this.hasOwnClose();
+    if (side !== this._closeAxis || covers !== this._coversOpener || visible !== this._switchVisible || own !== this._ownClose) {
       this._openerRechecks += 1;
       this.requestComponentUpdate('opener');
     }
@@ -898,7 +906,8 @@ class SfDrawer extends DrawerElement {
     // A panel that covers the switch that opened it always offers a close
     // (C104): a phone-wide panel over its ☰ with show-close="false" and no
     // close of the page's own in it could be closed only by Escape.
-    const coveredWithoutClose = this._coversOpener && !this.showClose && !this.hasOwnClose();
+    this._ownClose = typeof document !== 'undefined' && this.hasOwnClose();
+    const coveredWithoutClose = this._coversOpener && !this.showClose && !this._ownClose;
     return this.createTemplateContext({
       drawerId: this.drawerId || this.resolveDrawerId(),
       // A path id (§7.1.1): <path>--title.

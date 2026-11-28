@@ -338,7 +338,10 @@ settings.items = [
 `sf-settings-close` с `reason: "close"`; если его не отменили, панель
 закрывает шторку её собственным `close({reason: 'close'})` — та тоже спросит
 страницу своим `sf-drawer-close`, — и после этого приходит
-`sf-settings-closed`. Escape и нажатие на подложку — шторкины.
+`sf-settings-closed`. Escape и нажатие на подложку — шторкины. Крестик
+панели помечен как собственный крестик шторки (`data-drawer="close"`): узкая
+шторка на телефоне (390–600), которая закрывает собой свою кнопку, свой
+крестик тогда не рисует, и крестик в шторке один при любой ширине.
 
 ```html
 <sf-button-icon icon="tune" aria-label="Настройки чтения" data-drawer="open" aria-controls="reader-sheet"></sf-button-icon>
