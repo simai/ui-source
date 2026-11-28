@@ -92,7 +92,7 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
   const linked = Boolean(item.href) && !item.disabled;
   // A rail row is its icon alone: its name -- with its status and count
   // words -- is the Framework's tooltip beside it on hover, keyboard focus
-  // and a long press (C59 timing, as sf-admin-menu's rail, C320; group build
+  // and a long press (C59 timing, as the admin set's rail, C320; group build
   // 21), through the icon buttons' shared name tooltip (data-sf-name-tip).
   const tip = context.rail && !placeholder ? 'inline-end' : nothing;
 

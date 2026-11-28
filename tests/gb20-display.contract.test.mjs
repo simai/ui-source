@@ -32,7 +32,7 @@ test('sf-header-site: fit lifts the auto fitting above a collapse step only', ()
 
 test('sf-language 1.8.0: shrink none|code, host state data-shrunk, shrinkBoxes', () => {
   const component = json('src/smart/language/component.json');
-  assert.equal(component.version, '1.8.0');
+  assert.ok(['1.8.0', '1.8.1'].includes(component.version)); // group build 21 A: 1.8.1 measures the drawn glyph
   assert.deepEqual(component.settings.shrink.values, ['none', 'code']);
   assert.equal(component.settings.shrink.default, 'none');
   assert.equal(component['host-states']['data-shrunk'], 'boolean');

@@ -81,7 +81,7 @@
   счётчик — на иконке; ветки не раскрываются; имя пункта вместе со
   статусом и счётчиком показывает подсказка Framework сбоку от пункта —
   через 0,5 с наведения, сразу при фокусе с клавиатуры, долгим нажатием на
-  сенсорном экране, как у полосы `sf-admin-menu`) или `navigation` (разделы
+  сенсорном экране, как у полосы меню набора администратора) или `navigation` (разделы
   сайта в шапке, см. ниже). Дерево и узкая колонка — всегда колонка;
   `navigation`, как и `default`, — строка или колонка по `orientation`.
   `default` рисуется так же, как `navigation` (решения C23, C30): у строк нет
@@ -520,7 +520,6 @@ count}`: слова без пробелов по краям (пусто, ког�
 | `--sf-menu-item-background-color` | Заливка строки | `var(--sf-transparent)` |
 | `--sf-menu-item-border-color` | Цвет тонкой рамки строки | `var(--sf-surface-container)` |
 | `--sf-menu-item-radius` | Скругление строки | `var(--sf-radius--ui)` |
-| `--sf-menu-item-padding-inline` | Боковой отступ пунктов самого ряда (первый уровень горизонтального меню), с обеих сторон; панели и колонки — со своим | `var(--sf-space-1)` |
 | `--sf-menu-submenu-background-color` | Заливка панели строки | `var(--sf-surface-popup)` |
 | `--sf-menu-submenu-border-color` | Рамка панели строки | `var(--sf-outline-variant)` |
 | `--sf-menu-submenu-radius` | Скругление панели строки | `var(--sf-radius--surface)` |

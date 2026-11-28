@@ -280,12 +280,6 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 .sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu-element {
   inline-size: auto;
   max-inline-size: none;
-  /* The row's own items take their side padding from one public variable
-     (group build 21, the docs header: --sf-space-1/2, as the rows of the
-     row's panels, C30): unset, the start is the first level's step and the
-     end --sf-space-1, as before. Panels, regions and columns keep their own. */
-  --sf-menu-element--padding-inline-start: var(--sf-menu-item-padding-inline, var(--sf-menu--row-padding, var(--sf-space-1)));
-  --sf-menu-element--padding-inline-end: var(--sf-menu-item-padding-inline, var(--sf-space-1));
 }
 
 .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item {
