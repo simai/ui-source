@@ -112,9 +112,13 @@ const results = [];
 const ok = (name, pass, detail = '') => { results.push({name, pass: Boolean(pass), detail}); };
 const browser = await chromium.launch();
 
+// The loader defines a component when it first shows: inside a closed
+// <dialog> the panel draws only after showModal(), so that page waits for the
+// opener alone and openWindow() waits for the panel.
 async function load(tab, url) {
   await tab.goto(url);
-  await tab.waitForFunction(() => customElements.get('sf-settings') && document.querySelector('#s .sf-settings-panel'), null, {timeout: 30000});
+  const closed = /\/dialog-/u.test(url);
+  await tab.waitForFunction((late) => (late ? document.getElementById('open') : customElements.get('sf-settings') && document.querySelector('#s .sf-settings-panel')), closed, {timeout: 30000});
   await tab.waitForLoadState('networkidle', {timeout: 15000}).catch(() => null);
   await tab.evaluate(() => document.fonts.ready);
   await tab.waitForTimeout(300);
@@ -142,7 +146,7 @@ async function openWindow(tab, name, {touch = false} = {}) {
     if (n === 'dialog') return document.getElementById('dlg').open && box.width > 0;
     if (n === 'modal') return box.width > 0 && document.querySelector('sf-modal').openState;
     return box.width > 0;
-  }, name, {timeout: 10000});
+  }, name, {timeout: 20000});
   await tab.waitForTimeout(400);
 }
 
