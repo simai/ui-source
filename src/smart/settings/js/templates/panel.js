@@ -30,7 +30,8 @@ const icon = (name, className) => html`<span class=${className} aria-hidden="tru
 // name, in the icon's place of the row's line (the sheet sizes it). The
 // colour reaches CSS by style.setProperty on the element, never as text in
 // a declaration; a row without one among rows with one keeps its place, so
-// the names start on one line (C105 H2).
+// the names start on one line (C105 H2). It stands on the handle's line in
+// the template: no new text node, so the first-paint markup is unchanged.
 const SWATCH_PROPERTY = '--sf-settings-row--swatch';
 function paint(color) {
     return (element) => {
@@ -67,8 +68,7 @@ function renderRow(row, context) {
             tabindex=${row.current ? '0' : '-1'}
             data-sf-setting=${row.setting}
             data-sf-option=${row.option ?? nothing}>
-            ${row.handle ? icon('drag_indicator', 'sf-settings-row-handle') : row.sorts ? icon('drag_indicator', 'sf-settings-row-handle-place') : nothing}
-            ${swatch(row)}
+            ${row.handle ? icon('drag_indicator', 'sf-settings-row-handle') : row.sorts ? icon('drag_indicator', 'sf-settings-row-handle-place') : nothing}${swatch(row)}
             <span class="sf-settings-row-text">
                 <span class="sf-settings-row-label">${row.text}</span>
                 ${row.caption ? html`<span class="sf-settings-row-caption">${row.caption}</span>` : nothing}

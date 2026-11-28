@@ -101,7 +101,7 @@ test('a list is one Tab stop with the arrows inside; Alt+arrows move a row and s
 
 test('a checked field is the light fill with a check at the end; one choice the fill alone; the handle at the start (C106 (2), (3); DP-3)', () => {
   assert.match(panel, /if \(kind === 'field'\) return icon\('check', 'sf-settings-row-check'\);/u);
-  assert.match(panel, /row\.handle \? icon\('drag_indicator', 'sf-settings-row-handle'\) : row\.sorts \? icon\('drag_indicator', 'sf-settings-row-handle-place'\) : nothing\}\n\s+\$\{swatch\(row\)\}\n\s+<span class="sf-settings-row-text">/u);
+  assert.match(panel, /row\.handle \? icon\('drag_indicator', 'sf-settings-row-handle'\) : row\.sorts \? icon\('drag_indicator', 'sf-settings-row-handle-place'\) : nothing\}\$\{swatch\(row\)\}\n\s+<span class="sf-settings-row-text">/u);
   assert.match(css, /\.sf-settings-row:is\(\.sf-settings-row--field, \.sf-settings-row--option\)\[data-checked\] \{\n\s+background-color: var\(--sf-primary-container\);/u);
   assert.match(css, /\.sf-settings-row:not\(\[data-disabled\]\):hover \{\n\s+background-color: var\(--sf-surface-state-select\);/u);
   assert.doesNotMatch(panel, /sf-checkbox/u, 'no checkboxes: a field is a check mark, a choice a fill');
