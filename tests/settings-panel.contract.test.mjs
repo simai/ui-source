@@ -101,7 +101,7 @@ test('a list is one Tab stop with the arrows inside; Alt+arrows move a row and s
 
 test('a checked field is the light fill with a check at the end; one choice the fill alone; the handle at the start (C106 (2), (3); DP-3)', () => {
   assert.match(panel, /if \(kind === 'field'\) return icon\('check', 'sf-settings-row-check'\);/u);
-  assert.match(panel, /row\.handle \? icon\('drag_indicator', 'sf-settings-row-handle'\) : row\.sorts \? icon\('drag_indicator', 'sf-settings-row-handle-place'\) : nothing\}\n\s+<span class="sf-settings-row-text">/u);
+  assert.match(panel, /row\.handle \? icon\('drag_indicator', 'sf-settings-row-handle'\) : row\.sorts \? icon\('drag_indicator', 'sf-settings-row-handle-place'\) : nothing\}\n\s+\$\{swatch\(row\)\}\n\s+<span class="sf-settings-row-text">/u);
   assert.match(css, /\.sf-settings-row:is\(\.sf-settings-row--field, \.sf-settings-row--option\)\[data-checked\] \{\n\s+background-color: var\(--sf-primary-container\);/u);
   assert.match(css, /\.sf-settings-row:not\(\[data-disabled\]\):hover \{\n\s+background-color: var\(--sf-surface-state-select\);/u);
   assert.doesNotMatch(panel, /sf-checkbox/u, 'no checkboxes: a field is a check mark, a choice a fill');
@@ -173,7 +173,7 @@ test('C166 follow-up, C144: the footer labels stay on one line; the buttons grow
   assert.doesNotMatch(share, /flex: 1 1 0;/u);
   assert.match(css, /\.sf-settings-panel-footer \.sf-button-text-container \{\s*white-space: nowrap;\s*\}/u);
   const component = JSON.parse(read('src/smart/settings/component.json'));
-  assert.equal(component.version, '1.12.1'); // GB21 return R1/R2: one close in a side sheet, own frame never the trigger // GB21 area B (C438): close in a page's window, reset-label, panel width/height, remembered format // GB19 touch size (C428): rows 44 on a coarse pointer // GB19 device scope: devices, device, phoneSwitch (S-A) // group build 16: VR11-4 head step, G10 drop line; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(component.version, '1.13.0'); // GB22: option swatches // GB21 return R1/R2: one close in a side sheet, own frame never the trigger // GB21 area B (C438): close in a page's window, reset-label, panel width/height, remembered format // GB19 touch size (C428): rows 44 on a coarse pointer // GB19 device scope: devices, device, phoneSwitch (S-A) // group build 16: VR11-4 head step, G10 drop line; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
 });
 
 // The SIMAI Framework order of the sf-view-table move (C106; ui-control

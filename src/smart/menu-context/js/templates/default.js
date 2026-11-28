@@ -1,4 +1,5 @@
 import {html, nothing} from "lit";
+import {ref} from "lit/directives/ref.js";
 import {avatarPicture} from "../../../avatar/js/picture";
 import {shortcutView} from "../../../../component/kbd/js/shortcut";
 import {warnUnknownControlStatus} from "../../../helpers/control-status";
@@ -71,11 +72,18 @@ function icon(name, className) {
 // A colour the row stands for -- a colour row of sf-settings (C85), a label's
 // colour -- drawn as a circle in the place of an icon. `swatch` is a CSS
 // colour (a code, var() of a token, light-dark() of two); anything that could
-// close the declaration is not drawn.
+// close a declaration is not drawn. The colour reaches CSS by
+// style.setProperty on the circle, never as text in a style attribute
+// (GB22).
 const SWATCH = /^[#\w\s(),.%/-]+$/u;
 const hasSwatch = (entry) => typeof entry?.swatch === "string" && SWATCH.test(entry.swatch);
+function paintSwatch(value) {
+    return (element) => {
+        if (element) element.style.setProperty("--sf-context-menu-swatch", value);
+    };
+}
 function swatch(value) {
-    return html`<span class="sf-context-menu-item-swatch" style=${`--sf-context-menu-swatch: ${value}`} aria-hidden="true"></span>`;
+    return html`<span class="sf-context-menu-item-swatch" aria-hidden="true" ${ref(paintSwatch(value))}></span>`;
 }
 
 // The pictures of a row and of the header are sf-avatar's own drawing

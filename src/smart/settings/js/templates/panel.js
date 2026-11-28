@@ -1,6 +1,7 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-import {choiceArranges, choiceOptions, fieldOptions, holdsValue, itemValue, matches, optionMoves, optionPhones, optionPins} from '../settings.js';
+import {ref} from 'lit/directives/ref.js';
+import {choiceArranges, choiceOptions, fieldOptions, holdsValue, itemValue, matches, optionMoves, optionPhones, optionPins, optionSwatch} from '../settings.js';
 
 // sf-settings' panel look (owner decision C106, 2026-11-12): the settings of a
 // list's view -- its fields, their order, the density -- in a panel of its own,
@@ -24,6 +25,22 @@ import {choiceArranges, choiceOptions, fieldOptions, holdsValue, itemValue, matc
 // roving tabindex and the keys.
 
 const icon = (name, className) => html`<span class=${className} aria-hidden="true"><i class="sf-icon">${name}</i></span>`;
+
+// An option's colour (GB22): a circle on the outline hairline before its
+// name, in the icon's place of the row's line (the sheet sizes it). The
+// colour reaches CSS by style.setProperty on the element, never as text in
+// a declaration; a row without one among rows with one keeps its place, so
+// the names start on one line (C105 H2).
+const SWATCH_PROPERTY = '--sf-settings-row--swatch';
+function paint(color) {
+    return (element) => {
+        if (element) element.style.setProperty(SWATCH_PROPERTY, color);
+    };
+}
+function swatch(row) {
+    if (row.swatch) return html`<span class="sf-settings-row-swatch" aria-hidden="true" ${ref(paint(row.swatch))}></span>`;
+    return row.swatches ? html`<span class="sf-settings-row-swatch-place" aria-hidden="true"></span>` : nothing;
+}
 
 // What a row shows after its text: the check of a checked row (a fields list,
 // C106 (2)), the switch of a switch, nothing for a choice (the fill alone).
@@ -51,6 +68,7 @@ function renderRow(row, context) {
             data-sf-setting=${row.setting}
             data-sf-option=${row.option ?? nothing}>
             ${row.handle ? icon('drag_indicator', 'sf-settings-row-handle') : row.sorts ? icon('drag_indicator', 'sf-settings-row-handle-place') : nothing}
+            ${swatch(row)}
             <span class="sf-settings-row-text">
                 <span class="sf-settings-row-label">${row.text}</span>
                 ${row.caption ? html`<span class="sf-settings-row-caption">${row.caption}</span>` : nothing}
@@ -161,8 +179,11 @@ function renderItems(items, context) {
             const arranges = choiceArranges(item);
             const options = arranges ? choiceOptions(item) : (Array.isArray(item.options) ? item.options : [])
                 .filter((option) => option && option.id !== undefined && option.id !== null);
-            const rows = options.map((option) => ({key: String(option.id), kind: 'option', role: 'radio', setting: item.id, option: String(option.id),
+            const swatches = options.map((option) => optionSwatch(option.swatch));
+            const anySwatch = swatches.some(Boolean);
+            const rows = options.map((option, at) => ({key: String(option.id), kind: 'option', role: 'radio', setting: item.id, option: String(option.id),
                     checked: option.id === value, text: option.text ?? '', disabled: Boolean(item.disabled || option.disabled),
+                    swatch: swatches[at], swatches: anySwatch,
                     pinned: arranges && Boolean(item.pinnable && option.pinned),
                     sorts: Boolean(item.sortable), pins: Boolean(item.pinnable),
                     handle: optionMoves(item, option), pin: optionPins(item, option),

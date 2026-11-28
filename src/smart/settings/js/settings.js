@@ -5,7 +5,7 @@
 // An item is a setting or what stands between settings:
 //
 //   {id, type: 'switch', text, value: true}                         a boolean
-//   {id, type: 'choice', text, value: 'dark', options: [{id, text}]} one of a few
+//   {id, type: 'choice', text, value: 'dark', options: [{id, text, icon?, swatch?}]} one of a few
 //   {id, type: 'range', text, value: 100, min, max, step, unit}      a number
 //   {id, type: 'color', text, value: 'blue', options?, custom?}       a colour
 //   {type: 'heading', text}, {type: 'separator'}
@@ -80,6 +80,56 @@ export function colorCode(value) {
 
 /** The CSS colour a colour value paints: a hue's tone for the theme (50 light, 70 dark), or the code. */
 export const colorFill = (value) => (HUES.includes(value) ? `light-dark(var(--sf-${value}-50), var(--sf-${value}-70))` : colorCode(value));
+
+// ─── an option's swatch (GB22, owner remark 2026-11-28) ──────────────────
+//
+// A choice's option may carry `swatch`: the colour it stands for -- a
+// reader's accent colour, a site's theme -- drawn as a filled circle on the
+// outline hairline before its name, where its icon would stand, in every
+// look (drill and rows through sf-menu-context, panel in this element's own
+// markup). The value is one CSS colour ('#2563eb', 'oklch(60% 0.2 260)',
+// 'var(--sf-blue-50)') or {light, dark}: one per theme, painted
+// light-dark(light, dark), so the circle follows the resolved theme -- an
+// area's too -- and changes the moment the theme does. A colour the browser
+// does not take (CSS.supports('color', ...)) is no swatch: the option shows
+// its icon, or nothing, as before; of {light, dark} both must be colours.
+// With an icon, the swatch wins. The circle is decorative (aria-hidden): the
+// name stays the option's label. The value reaches CSS as a custom property
+// set by style.setProperty, never written into a declaration.
+
+// Where there is no CSS.supports (a server printing entries, the contract
+// test), a colour is what could not close a declaration: letters, digits,
+// #, %, spaces and the punctuation of a colour function.
+const SWATCH_TEXT = /^[#\w\s(),.%/-]+$/u;
+
+function cssColor(value, supports) {
+  if (typeof value !== 'string') return '';
+  const text = value.trim();
+  if (!text || text.length > 200) return '';
+  return supports('color', text) ? text : '';
+}
+
+/** Whether a property takes a value: CSS.supports in a browser, the plain-text test elsewhere. */
+export function cssSupports(property, value) {
+  const css = globalThis.CSS;
+  if (css && typeof css.supports === 'function') return css.supports(property, value);
+  return SWATCH_TEXT.test(value);
+}
+
+/**
+ * An option's swatch as the CSS colour it paints: one colour as it is,
+ * {light, dark} as light-dark(light, dark) (the light one alone where the
+ * browser has no light-dark()), '' for anything that is not a colour.
+ */
+export function optionSwatch(swatch, supports = cssSupports) {
+  if (typeof swatch === 'string') return cssColor(swatch, supports);
+  if (!swatch || typeof swatch !== 'object' || Array.isArray(swatch)) return '';
+  const light = cssColor(swatch.light, supports);
+  const dark = cssColor(swatch.dark, supports);
+  if (!light || !dark) return '';
+  const both = `light-dark(${light}, ${dark})`;
+  return supports('color', both) ? both : light;
+}
 
 // The hues a colour row offers: its options (names, or {id, text}) that are
 // palette hues, else the default ten.
@@ -299,11 +349,15 @@ function settingEntry(item, look, word = plainWord, folded = NONE) {
   if (item.type === 'switch') return {...base, value: itemValue(item)};
   if (item.type === 'range') return {...base, ...own(item, ['min', 'max', 'step', 'unit']), value: itemValue(item)};
   const value = itemValue(item);
-  const options = optionsOf(item).map((option) => ({
-    ...own(option, ['id', 'text', 'icon']),
-    ...(option.disabled ? {disabled: true} : {}),
-    checked: option.id === value,
-  }));
+  const options = optionsOf(item).map((option) => {
+    const swatch = optionSwatch(option.swatch);
+    return {
+      ...own(option, swatch ? ['id', 'text'] : ['id', 'text', 'icon']),
+      ...(swatch ? {swatch} : {}),
+      ...(option.disabled ? {disabled: true} : {}),
+      checked: option.id === value,
+    };
+  });
   return {...base, ...(look === 'drill' ? {view: 'drill'} : {}), options};
 }
 

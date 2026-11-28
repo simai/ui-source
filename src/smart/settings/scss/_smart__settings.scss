@@ -339,6 +339,31 @@
   visibility: hidden;
 }
 
+/* An option's colour (GB22, owner remark 2026-11-28): a circle before the
+   name in the icon's place -- the row's line less a quarter step, as an
+   icon's glyph sits in its line, on the hairline every colour swatch has
+   (sf-menu-context's swatch, C85; sf-input-color, R169). The colour is the
+   element's --sf-settings-row--swatch, set by the element. A row without
+   one among rows with one keeps the place empty. */
+.sf-settings-row-swatch,
+.sf-settings-row-swatch-place {
+  box-sizing: border-box;
+  display: block;
+  flex: none;
+  inline-size: calc(var(--sf-settings-panel--line) - var(--sf-space-1\/4));
+  block-size: calc(var(--sf-settings-panel--line) - var(--sf-space-1\/4));
+  margin: calc(var(--sf-space-1\/4) / 2);
+  border-width: var(--sf-px);
+  border-style: solid;
+  border-color: transparent;
+  border-radius: var(--sf-radius-circle);
+  background-clip: padding-box;
+}
+
+.sf-settings-row-swatch-place {
+  visibility: hidden;
+}
+
 /* The check (C106 (2)): one column at the inline end, shown on a checked
    field. A choice of one has none (C106 (3)): the fill alone. */
 .sf-settings-row-check {
@@ -570,6 +595,10 @@
   }
   .sf-settings-row-handle {
     color: var(--sf-on-surface-variant);
+  }
+  .sf-settings-row-swatch {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-settings-row--swatch, transparent);
   }
   .sf-settings-row-value {
     color: var(--sf-on-surface-variant);

@@ -21744,6 +21744,46 @@
       ],
       "manual": "Nothing to rewrite.",
       "source": "src/smart/settings/index.js"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-settings-option-swatch",
+      "kind": "behaviour",
+      "summary": "sf-settings 1.13.0 (group build 22; owner remark 2026-11-28 via DEV msg-c13782cf26484519b8da, Docara reader preferences): a choice's option may carry swatch, one CSS colour or {light, dark} (painted light-dark(light, dark), so it follows the resolved theme live). It is drawn as a filled circle on the outline hairline in the icon's place before the name in the drill, rows and panel looks; with an icon the swatch wins; a value CSS.supports does not take as a colour draws none. Decorative (aria-hidden); the name stays the label; the colour is set by style.setProperty. Additive: options without swatch draw as before.",
+      "items": [
+        {
+          "component": "sf-settings",
+          "from": "options [{id, text, icon?}]: a colour option named by its word only",
+          "to": "options [{id, text, icon?, swatch?}]: a colour circle before the name in every look"
+        }
+      ],
+      "manual": "Nothing to rewrite.",
+      "source": "src/smart/settings/js/settings.js"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-menu-context-swatch-set-property",
+      "kind": "behaviour",
+      "summary": "sf-menu-context 1.28.1 (group build 22): a swatch's colour reaches CSS by style.setProperty on its circle (--sf-context-menu-swatch) instead of text written into a style attribute. Nothing drawn differently; the value test that refuses anything able to close a declaration stays.",
+      "items": [
+        {
+          "component": "sf-menu-context",
+          "from": "style=\"--sf-context-menu-swatch: <value>\" written as text",
+          "to": "style.setProperty('--sf-context-menu-swatch', <value>)"
+        }
+      ],
+      "manual": "Nothing to rewrite.",
+      "source": "src/smart/menu-context/js/templates/default.js"
     }
   ]
 }

@@ -109,9 +109,9 @@ test('(5) the remembered values are a public format the head reader answers', ()
 });
 
 test('the version and the decision', () => {
-  assert.equal(manifest.version, '1.12.1'); // GB21 return R1/R2
-  assert.match(manifest['x-decisions'].at(-2), /^version 1\.12\.0 \(2026-11-28, group build 21 area B; Docara K-13 msg-b3676e09bb83470e84ed, decision C438\)/u);
-  assert.match(manifest['x-decisions'].at(-1), /^version 1\.12\.1 \(2026-11-28, group build 21 return R1\/R2/u);
+  assert.equal(manifest.version, '1.13.0'); // GB22: option swatches // GB21 return R1/R2
+  assert.match(manifest['x-decisions'].at(-3), /^version 1\.12\.0 \(2026-11-28, group build 21 area B; Docara K-13 msg-b3676e09bb83470e84ed, decision C438\)/u);
+  assert.match(manifest['x-decisions'].at(-2), /^version 1\.12\.1 \(2026-11-28, group build 21 return R1\/R2/u);
 });
 
 // GB21 return (DEV msg-832d7e54); measured in tests/browser/settings-window.browser.mjs
