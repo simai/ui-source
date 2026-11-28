@@ -48,7 +48,7 @@ test('every port.json in ui-source passes the pinned port schema', () => {
 
 test('the port check refuses what the schema does not declare', () => {
   const {schema} = pinnedSchema();
-  const base = json('src/core/contracts/ports/simai.document-port/1.0.2/port.json');
+  const base = json('src/core/contracts/ports/simai.document-port/1.0.3/port.json');
   assert.deepEqual(validatePort(schema, base), []);
   const broken = (change) => {
     const value = structuredClone(base);

@@ -404,6 +404,14 @@ The probe `tests/browser/effect-interactive.browser.mjs` drives hover,
 press, click, wheel and a touch at a free point of an interactive and a
 default effect.
 
+The kit's accessibility check (`scripts/effect-kit.mjs`) reads `interactive`
+both ways: the host is always `aria-hidden`; with `interactive: true` it must
+take the pointer (`pointer-events: auto`, as `SF.Effects` sets it), without it
+it must take none. An effect that takes the pointer without declaring it, or
+declares it and blocks the pointer, fails accessibility. A catalogue that
+waived the check for an interactive effect drops the waiver from the pair
+that carries this kit.
+
 ## Events
 
 - `sf-effect-motion` (bubbles, on the element): the about menu paused or

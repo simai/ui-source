@@ -6,6 +6,7 @@ import { drawnBox, fitByPriority, measureShown, openRowMenu, readPriority } from
 import { breakpointMedia } from '../breakpoints.js';
 import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
 import { roving } from '../roving.js';
+import { RELATIVE } from '../density.js';
 
 // Editor canvas overlay. It draws hover and selection frames, an action toolbar
 // above the selected block and one insertion point at the seam under the pointer
@@ -1606,13 +1607,19 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     // the name, and sf-tooltip holding the label and the shortcut (its shortcut
     // setting: the kbd component's quiet keys). The tooltip is the plain one,
     // its defaults. In the DOM from setActions on, so both load before the
-    // first selection needs them.
+    // first selection needs them. Its size is the overlay's own (density, C22):
+    // marked relative here, when the overlay builds it, and not left to a
+    // Smart host above that marks what its drawing holds -- that mark came
+    // only when the toolbar was built before the host drew, so a first-paint
+    // picture of sf-mail-canvas had it on some loads and not on others (GB21,
+    // msg-d96638bc).
     createTool(action) {
       const doc = globalThis.document;
       const root = doc.createElement('span');
       root.className = 'sf-composition-overlay-tool sf-tooltip-anchor';
       const button = doc.createElement('sf-button-icon');
       button.setAttribute('size', '1/2');
+      button.setAttribute(RELATIVE, '');
       button.setAttribute('appearance', action.appearance || 'ghost');
       if (!action.appearance) button.setAttribute('scheme', 'on-surface-variant');
       if (action.id) button.setAttribute('data-action', action.id);

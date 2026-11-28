@@ -931,7 +931,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/editor-overlay/smart.manifest.json",
-      "manifest_sha256": "931482cc66e2930ba0f51aab4b6bfbbf31b175c2f4d9a4287592b20213eee09a",
+      "manifest_sha256": "0b1402170d825d3ecb907cfb08b8edce2716ea145afd4a88e6fb37407de520b4",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "0000000000000000000000000000000000000000",

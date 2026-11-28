@@ -17,7 +17,9 @@
 //   update         update() with new settings does not remount (the host keeps its nodes)
 //   cleanup        after destroy() the host is empty and no frames are asked for
 //   remount        it mounts again after destroy()
-//   accessibility  the host is out of the accessibility tree and out of the pointer's way
+//   accessibility  the host is out of the accessibility tree and out of the pointer's way;
+//                  a simai.effect 1.5 manifest with interactive: true has its host
+//                  take the pointer (pointer-events auto) and still aria-hidden
 //
 // simai.effect 1.1, run when the manifest declares them (a 1.0 manifest gets the
 // eleven checks above and nothing more):
@@ -59,6 +61,16 @@ import {existsSync, readFileSync} from 'node:fs';
 import {join, resolve, sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {chromium} from 'playwright';
+
+// The accessibility rule, both ways (simai.effect 1.5 interactive): the host is
+// always aria-hidden; it takes no pointer events unless the manifest declares
+// interactive: true, and then it takes them (pointer-events auto), as
+// SF.Effects.mountEffect sets it. An effect that takes the pointer without
+// declaring it, or declares it and stays out of the pointer's way, fails.
+export function accessibilityHolds(manifest, {hidden, pointer} = {}) {
+  if (hidden !== 'true') return false;
+  return manifest?.interactive === true ? pointer === 'auto' : pointer === 'none';
+}
 
 export async function runEffectKit(effectDirectory, outputRoot, {sandbox = false} = {}) {
   const effectRoot = resolve(effectDirectory);
@@ -134,7 +146,7 @@ export async function runEffectKit(effectDirectory, outputRoot, {sandbox = false
       return {hidden: element.getAttribute('aria-hidden'), pointer: getComputedStyle(element).pointerEvents,
         canvas: canvas ? {width: canvas.width, height: canvas.height, max: [box.width * 2, box.height * 2]} : null};
     });
-    check('accessibility', host.hidden === 'true' && host.pointer === 'none', host);
+    check('accessibility', accessibilityHolds(manifest, host), {...host, interactive: manifest.interactive === true});
     check('pixel-ratio', !host.canvas || (host.canvas.width <= host.canvas.max[0] && host.canvas.height <= host.canvas.max[1]), host.canvas);
     const kept = await plain.tab.evaluate((value) => {
       const host = document.getElementById('host');

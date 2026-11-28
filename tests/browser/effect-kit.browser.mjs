@@ -7,7 +7,10 @@
 // passes each scheme, its contrast, the switch and the windows mode; the same
 // effect made mask-unsafe (it rewrites its host's style) fails windows alone.
 // With the sandbox option the kit also runs the effect as a foreign one, in
-// the sandboxed frame.
+// the sandboxed frame. Accessibility reads interactive (simai.effect 1.5) both
+// ways: a manifest with interactive: true passes with its host taking the
+// pointer; an effect that takes the pointer without declaring it fails
+// accessibility alone, and so does one that declares it and blocks it.
 import {cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve, dirname, join} from 'node:path';
@@ -55,6 +58,38 @@ try {
   rmSync(unsafe, {recursive: true, force: true});
 }
 
-console.log(JSON.stringify({good: good.results, bad: bad.results, schemes: schemes.results, sandbox: inFrame}));
+// Variants of the rule-keeping effect in a scratch copy: the manifest's
+// interactive and the module's handling of its host's pointer-events.
+const variant = async (prefix, {interactive, hostPointer}) => {
+  const folder = mkdtempSync(join(tmpdir(), prefix));
+  try {
+    cpSync(join(fixtures, 'effect-sample'), folder, {recursive: true});
+    if (interactive !== undefined) {
+      const manifestFile = join(folder, 'effect.json');
+      writeFileSync(manifestFile, JSON.stringify({...JSON.parse(readFileSync(manifestFile, 'utf8')), interactive}));
+    }
+    if (hostPointer) {
+      const module = join(folder, 'sample-dots.js');
+      const source = readFileSync(module, 'utf8');
+      const anchor = "  host.append(canvas);\n";
+      if (!source.includes(anchor)) throw new Error('the pointer variant needs its anchor in sample-dots.js');
+      writeFileSync(module, source.replace(anchor, `${anchor}  host.style.pointerEvents = '${hostPointer}';\n`));
+    }
+    return await runEffectKit(folder, out);
+  } finally {
+    rmSync(folder, {recursive: true, force: true});
+  }
+};
+const interactive = await variant('effect-interactive-', {interactive: true});
+const reach = interactive.results.find((result) => result.id === 'accessibility');
+if (!interactive.ok || reach?.detail?.pointer !== 'auto') failures.push({case: 'an interactive effect passes with its host taking the pointer', got: interactive.results.filter((result) => !result.ok), accessibility: reach});
+const undeclared = await variant('effect-undeclared-pointer-', {hostPointer: 'auto'});
+if (failed(undeclared).join() !== 'accessibility') failures.push({case: 'taking the pointer without interactive fails accessibility alone', got: failed(undeclared)});
+const declaredFalse = await variant('effect-interactive-false-', {interactive: false, hostPointer: 'auto'});
+if (failed(declaredFalse).join() !== 'accessibility') failures.push({case: 'interactive false taking the pointer fails accessibility alone', got: failed(declaredFalse)});
+const blocked = await variant('effect-interactive-blocked-', {interactive: true, hostPointer: 'none'});
+if (failed(blocked).join() !== 'accessibility') failures.push({case: 'interactive true blocking the pointer fails accessibility alone', got: failed(blocked)});
+
+console.log(JSON.stringify({interactive: reach, good: good.results, bad: bad.results, schemes: schemes.results, sandbox: inFrame}));
 if (failures.length) { console.error(JSON.stringify(failures, null, 2)); process.exit(1); }
 console.log('EFFECT_KIT_OK');
