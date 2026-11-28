@@ -2,7 +2,7 @@
   "$comment": "The source of sf-editor-overlay's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/composition-overlay (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.editor-overlay",
   "tag": "sf-editor-overlay",
-  "version": "1.12.11",
+  "version": "1.12.12",
   "kind": "leaf",
   "family": "editor",
   "settings": {
@@ -617,7 +617,8 @@
     "version 1.12.8 (2026-11-19, group build 14; above every origin branch): a patch, probe only. fix/manifest-probes-round (ui-control control/evidence/2026-11-19-manifest-probes-round) made the manifest probe (examples.json and the probe.json generated from it) follow the decided behaviour (h p3-apply p5-icon-actions p6-placement); the pair before carried the old checks under the same number. No code, setting, word or drawing changes.",
     "version 1.12.9 (2026-11-20, fix/ru-words-vs-site-4; above 1.12.8 of every branch): a patch; the overlay's canvas, drop line and keys are unchanged. The drag module it carries (core/js/composition/sortable.mjs) is sf-sortable 1.7.4's: a list's instructions and its items' roledescription follow the page's language when the language file arrives late or the language changes.",
     "version 1.12.10 (2026-11-22, group build 17; above every origin branch): a patch, provenance only. The manifest's source hash of core/js/layer-stack.js follows sf-popover 1.11.0's Y1 (a press on a layer opened from the popover); the component's own files are unchanged.",
-    "version 1.12.11 (2026-11-27, group build 20 area A, known-red instance-scope; above 1.12.10 of every origin branch): a patch. Unbinding the overlay destroys its toolbar's roving keys (core/js/composition/overlay.mjs): a removed overlay leaves no MutationObserver on its toolbar."
+    "version 1.12.11 (2026-11-27, group build 20 area A, known-red instance-scope; above 1.12.10 of every origin branch): a patch. Unbinding the overlay destroys its toolbar's roving keys (core/js/composition/overlay.mjs): a removed overlay leaves no MutationObserver on its toolbar.",
+    "version 1.12.12 (2026-11-28, group build 21 area C, msg-d96638bc; above 1.12.11 of every origin branch): a patch, nothing drawn differently. The toolbar's icon buttons (the actions, «Ещё», «+») carry data-sf-size-relative from the moment the overlay builds them (core/js/composition/overlay.mjs createTool): their size is the overlay's own (density, C22). The mark used to come from a Smart host above (sf-mail-canvas) only when the toolbar was built before that host drew, so its first-paint picture held the mark on some loads and not on others."
   ],
   "x-registry": {
     "capabilities": [
