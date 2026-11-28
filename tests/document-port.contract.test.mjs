@@ -3,23 +3,23 @@ import {createHash} from 'node:crypto';
 import {existsSync, readdirSync, readFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import test from 'node:test';
-import {findRegion, loadCases, runKit} from '../src/core/contracts/ports/simai.document-port/1.0.2/kit/run.mjs';
+import {findRegion, loadCases, runKit} from '../src/core/contracts/ports/simai.document-port/1.0.3/kit/run.mjs';
 
-// simai.document-port 1.0.2 (draft 3 with its kit and diagnostic corrected; 1.0.1 and 1.0.0, draft 2, as released, never changed): the host storage seam of a composition
+// simai.document-port 1.0.3 (draft 3 with valid Composition case documents; 1.0.2, 1.0.1 and 1.0.0, draft 2, as released, never changed): the host storage seam of a composition
 // document. One storage element per site, section or page level, a value per
 // language, one revision for every language (owner decision 2026-11-10, item 7),
 // no record lock (item 4), areas inherited by the Recipe rule. The port is
 // modelled on simai.mail-port (ui-mail) and the Framework's chat port; the seven
 // intents are bx-simai.layout's seven document actions.
 const root = resolve(import.meta.dirname, '..');
-const at = join(root, 'src/core/contracts/ports/simai.document-port/1.0.2');
+const at = join(root, 'src/core/contracts/ports/simai.document-port/1.0.3');
 const read = (file) => JSON.parse(readFileSync(file, 'utf8'));
 const port = read(join(at, 'port.json'));
 const schema = read(join(at, 'document-port.schema.json'));
 const manifest = read(join(at, 'kit/manifest.json'));
 const cases = loadCases(join(at, 'kit'));
 const ANSWERS = ['applied', 'conflict', 'refused', 'unavailable'];
-const BASE = 'https://simai.io/contracts/ports/simai.document-port/1.0.2/';
+const BASE = 'https://simai.io/contracts/ports/simai.document-port/1.0.3/';
 
 // ui-source has no dependencies: a strict validator of the keywords these
 // schemas use, refusing any other (as scripts/manifest-schema.mjs does).
@@ -93,11 +93,11 @@ register(schema);
 const compile = (fragment, name) => validator(fragment, `${BASE}${name}`);
 const ajv = {compile: (document) => { register(document); return validator(document, document.$id); }, getSchema: (id) => validator(SCHEMAS.get(id), id)};
 
-test('the port is a composite host port of sf-editor, a draft 1.0.2 with no previous major', () => {
+test('the port is a composite host port of sf-editor, a draft 1.0.3 with no previous major', () => {
   const validate = ajv.compile(read(join(root, 'src/core/contracts/composite-host-port.v1.schema.json')));
   assert.ok(validate(port), JSON.stringify(validate.errors));
   assert.equal(port.port, 'simai.document-port');
-  assert.equal(port.version, '1.0.2');
+  assert.equal(port.version, '1.0.3');
   assert.equal(port.component, 'smart.editor');
   assert.equal(port.element, 'sf-editor');
   assert.equal(port.compatibility.previous_major, null);
@@ -168,10 +168,14 @@ test('the kit: every case a file, payloads valid, all four answers exercised, th
 
 const bytes = (value) => Buffer.byteLength(JSON.stringify(value), 'utf8');
 const countNodes = (node) => (node && typeof node === 'object' ? 1 + Object.values(node.slots ?? {}).flat().reduce((sum, child) => sum + countNodes(child), 0) : 0);
-const regionsOf = (document) => {
-  const shell = (document?.root?.slots?.default ?? []).find((node) => node.type === 'layout.regions');
-  return shell?.slots?.regions ?? [];
+// The regions shell: since 1.0.3 the kit's documents have layout.regions as their root (a main, banner or
+// contentinfo region is refused inside layout.page); a stored value of 1.0.0-1.0.2 kept it under a layout.page.
+const shellPathOf = (document) => {
+  if (document?.root?.type === 'layout.regions') return {shell: document.root, path: '/root'};
+  const index = (document?.root?.slots?.default ?? []).findIndex((node) => node.type === 'layout.regions');
+  return index < 0 ? {shell: null, path: null} : {shell: document.root.slots.default[index], path: `/root/slots/default/${index}`};
 };
+const regionsOf = (document) => shellPathOf(document).shell?.slots?.regions ?? [];
 const stateOf = (region) => (region ? (region.slots?.default?.length ? 'replaced' : 'cleared') : 'inherited');
 const validDocument = ajv.getSchema('https://simai.io/contracts/composition-document.v1.schema.json');
 // Equal, key order aside (the round-trip rule).
@@ -239,13 +243,13 @@ function memoryHost() {
   // simai:area key goes, every other extensions key stays.
   function levelValue(language, document) {
     const copy = structuredClone(document);
-    const shell = (copy.root?.slots?.default ?? []).find((node) => node.type === 'layout.regions');
+    const {shell, path} = shellPathOf(copy);
     const diagnostics = [];
     if (shell?.slots?.regions) {
       shell.slots.regions = shell.slots.regions.filter((region, index) => {
         if (region.extensions?.['simai:area']?.state !== 'inherited') return true;
         const bare = unmarked(region);
-        if (!same(bare, parentArea(language, region.props?.name))) diagnostics.push({code: 'inherited-area-changed', severity: 'error', path: `/root/slots/default/0/slots/regions/${index}`, language});
+        if (!same(bare, parentArea(language, region.props?.name))) diagnostics.push({code: 'inherited-area-changed', severity: 'error', path: `${path}/slots/regions/${index}`, language});
         return false;
       });
     }
@@ -508,7 +512,7 @@ test('draft 3 is named in the port, the schema and the kit', () => {
   assert.match(port.intents['document.save'].summary, /max-total-bytes/u);
   assert.match(port.answer.summary, /at least 7 days/u);
   assert.match(port.intents['history.list'].summary, /newest of its group/u);
-  assert.match(readFileSync(join(at, 'kit/README.md'), 'utf8'), /^# Conformance kit — document host port 1\.0\.2 \(draft 3, corrected\)/u);
+  assert.match(readFileSync(join(at, 'kit/README.md'), 'utf8'), /^# Conformance kit — document host port 1\.0\.3 \(draft 3, valid case documents\)/u);
 });
 
 // GB15-1 (DEV msg-d8ee9b8f): a released edition folder never changes, a draft
@@ -519,7 +523,7 @@ test('1.0.0 stays draft 2 as released; draft 3 is its own edition 1.0.1', () => 
   assert.equal(old.version, '1.0.0');
   assert.doesNotMatch(JSON.stringify(old), /draft 3/u);
   assert.equal(old.conformance.cases, readdirSync(join(released, 'kit/cases')).length);
-  assert.equal(port.version, '1.0.2');
+  assert.equal(port.version, '1.0.3');
   assert.ok(port.conformance.cases > old.conformance.cases);
 });
 
@@ -529,6 +533,9 @@ test('1.0.0 stays draft 2 as released; draft 3 is its own edition 1.0.1', () => 
 // own name, that one case and the diagnostic's limit and total.
 test('1.0.1 stays as released; the corrected kit and diagnostic are 1.0.2', () => {
   const released = join(root, 'src/core/contracts/ports/simai.document-port/1.0.1');
+  const corrected = join(root, 'src/core/contracts/ports/simai.document-port/1.0.2');
+  const port = read(join(corrected, 'port.json'));
+  const schema = read(join(corrected, 'document-port.schema.json'));
   const old = read(join(released, 'port.json'));
   assert.equal(old.version, '1.0.1');
   assert.equal(old.conformance.cases, port.conformance.cases);
@@ -540,11 +547,31 @@ test('1.0.1 stays as released; the corrected kit and diagnostic are 1.0.2', () =
   assert.equal(schema.$defs.diagnostic.properties.total.type, 'integer');
   const id = 'load-describes-a-publication-made-outside-the-port';
   const was = read(join(released, `kit/cases/${id}.json`));
-  const now = read(join(at, `kit/cases/${id}.json`));
+  const now = read(join(corrected, `kit/cases/${id}.json`));
   assert.equal(was.given.drafts, undefined);
   assert.equal(now.given.drafts[0].revision, '5');
-  for (const name of readdirSync(join(at, 'kit/cases'))) {
+  for (const name of readdirSync(join(corrected, 'kit/cases'))) {
     if (name === `${id}.json` || name === 'unknown-intent-is-refused.json') continue;
-    assert.equal(readFileSync(join(at, 'kit/cases', name), 'utf8'), readFileSync(join(released, 'kit/cases', name), 'utf8'), name);
+    assert.equal(readFileSync(join(corrected, 'kit/cases', name), 'utf8'), readFileSync(join(released, 'kit/cases', name), 'utf8'), name);
   }
+});
+
+// sf-editor msg-3fc545c5 (2026-11-27): 1.0.2 is released, so its case documents made valid Composition
+// documents are their own edition 1.0.3. The two differ only in the edition's name and the case documents:
+// the same cases, intents, answers and schema; the 1.0.2 case files stay byte for byte.
+test('1.0.2 stays as released; the Composition-valid case documents are 1.0.3', () => {
+  const released = join(root, 'src/core/contracts/ports/simai.document-port/1.0.2');
+  const old = read(join(released, 'port.json'));
+  assert.equal(old.version, '1.0.2');
+  assert.equal(old.conformance.sha256, 'bda0dcd01824934c4bcebf4e2f4c822fbf82f46d9e345782dd64b319e5c32c27');
+  assert.deepEqual(old.intents, port.intents);
+  assert.deepEqual(old.answer, port.answer);
+  const was = read(join(released, 'document-port.schema.json'));
+  assert.deepEqual({...was, $id: undefined, title: undefined, $defs: {...was.$defs, limits: undefined}}, {...schema, $id: undefined, title: undefined, $defs: {...schema.$defs, limits: undefined}});
+  assert.deepEqual(read(join(released, 'kit/manifest.json')).cases, manifest.cases);
+  const before = loadCases(join(released, 'kit'));
+  assert.deepEqual(before.map(({id, intent, capability, summary}) => [id, intent, capability, summary]), cases.map(({id, intent, capability, summary}) => [id, intent, capability, summary]));
+  assert.ok(before.some((kase) => JSON.stringify(kase).includes('{"text":')));
+  assert.ok(!cases.some((kase) => JSON.stringify(kase).includes('{"text":')));
+  assert.ok(!cases.some((kase) => JSON.stringify(kase).includes('"layout.page"')));
 });

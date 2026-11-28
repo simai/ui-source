@@ -1,0 +1,201 @@
+{
+  "id": "load-describes-a-publication-made-outside-the-port",
+  "intent": "document.load",
+  "capability": "publish",
+  "summary": "A publication made outside the port (the host's own publication page, a schedule) is published {id: null, revision, languages, at}; null is only an element never published (draft 3).",
+  "given": {
+    "capabilities": [
+      "publish"
+    ],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "shell",
+          "type": "layout.regions",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-main",
+                "type": "layout.region",
+                "props": {
+                  "name": "main",
+                  "landmark": "main"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "id": "main-1",
+                      "type": "content.paragraph",
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Команда"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "shell",
+          "type": "layout.regions",
+          "slots": {
+            "regions": [
+              {
+                "id": "r-main",
+                "type": "layout.region",
+                "props": {
+                  "name": "main",
+                  "landmark": "main"
+                },
+                "slots": {
+                  "default": [
+                    {
+                      "id": "main-1",
+                      "type": "content.paragraph",
+                      "data": {
+                        "content": [
+                          {
+                            "type": "text",
+                            "value": "Team"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    },
+    "drafts": [
+      {
+        "revision": "5",
+        "at": "2026-11-10T08:00:00Z",
+        "languages": [
+          "ru"
+        ],
+        "values": {
+          "ru": {
+            "schema": "simai.composition.document",
+            "schema_version": 1,
+            "id": "page",
+            "profile": "ui-layout",
+            "locale": "ru",
+            "root": {
+              "id": "shell",
+              "type": "layout.regions",
+              "slots": {
+                "regions": [
+                  {
+                    "id": "r-main",
+                    "type": "layout.region",
+                    "props": {
+                      "name": "main",
+                      "landmark": "main"
+                    },
+                    "slots": {
+                      "default": [
+                        {
+                          "id": "main-1",
+                          "type": "content.paragraph",
+                          "data": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "value": "Команда, опубликовано вне порта"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    ],
+    "publications": [],
+    "published": {
+      "id": null,
+      "revision": "5",
+      "at": "2026-11-10T08:00:00Z",
+      "languages": [
+        "ru"
+      ]
+    }
+  },
+  "when": {
+    "intent": "document.load",
+    "payload": {}
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "published"
+    ],
+    "expect": [
+      {
+        "path": "data.published.id",
+        "equals": null
+      },
+      {
+        "path": "data.published.revision",
+        "equals": "5"
+      },
+      {
+        "path": "data.published.languages",
+        "equals": [
+          "ru"
+        ]
+      }
+    ],
+    "note": "given.published as an object is the fixture of such a state: the harness puts an outside publication of revision 5 live; given.drafts carries revision 5's values, so a harness that stores a publication by its draft has them (Larena, 2026-11-22)."
+  }
+}
