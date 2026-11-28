@@ -7,7 +7,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import BundledPreferences from '../src/core/js/preferences.js';
-import {PREPAINT_READER, rememberedKey, rememberedStorageKey, rememberedValues, valueMap} from '../src/smart/settings/js/settings.js';
+import {PREPAINT_READER, STORAGE_PREFIX} from '../src/core/js/preferences.js';
+import {rememberedKey, rememberedValues, valueMap} from '../src/smart/settings/js/settings.js';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const manifest = JSON.parse(read('src/smart/settings/component.json'));
@@ -67,7 +68,7 @@ test('(4) the panel\'s public width and height: the popup step and auto by defau
 
 test('(5) the remembered values are a public format the head reader answers', () => {
   assert.equal(rememberedKey('reader'), 'sf-settings/reader');
-  assert.equal(rememberedStorageKey('reader'), 'sf-pref:sf-settings/reader');
+  assert.equal(STORAGE_PREFIX + rememberedKey('reader'), 'sf-pref:sf-settings/reader');
   assert.equal(rememberedKey('  '), '');
   // What the element writes (SF.Preferences, the browser's copy) is what the reader answers.
   const storage = fakeStorage();
@@ -83,21 +84,25 @@ test('(5) the remembered values are a public format the head reader answers', ()
     assert.equal(storage.map.has('sf-pref:sf-settings/reader'), true, 'the browser key');
     const expected = {size: 'l', dark: true, scale: 110};
     assert.deepEqual(rememberedValues('reader', storage), expected);
-    const reader = new Function(`${PREPAINT_READER}; return sfRememberedSettings;`)();
+    const read = new Function(`${PREPAINT_READER}; return sfPreference;`)();
+    const reader = (name) => read(rememberedKey(name));
     assert.deepEqual(reader('reader'), expected, 'the printed reader answers the same');
     assert.equal(reader('nothing'), null);
     storage.setItem('sf-pref:sf-settings/broken', '{not json');
     storage.setItem('sf-pref:sf-settings/list', '[1,2]');
     assert.equal(reader('broken'), null);
-    assert.equal(reader('list'), null);
+    assert.deepEqual(reader('list'), [1, 2], 'the core reader answers any kept value; the page checks its shape');
+    assert.equal(rememberedValues('list', storage), null, 'the settings values are an object');
     assert.equal(rememberedValues('broken', storage), null);
   } finally {
     Object.defineProperty(globalThis, 'localStorage', {value: before, configurable: true, writable: true});
   }
   const refused = {getItem: () => { throw new Error('SecurityError'); }};
+  assert.equal(rememberedValues('reader'), null, 'no storage given, nothing read');
   assert.equal(rememberedValues('reader', refused), null, 'a refused storage answers null');
   assert.match(source, /export const rememberKey = rememberedKey;/u, 'the element keeps the values under the same key');
-  assert.ok(docs.includes(PREPAINT_READER), 'the docs print the reader word for word');
+  assert.ok(docs.includes(PREPAINT_READER), 'the docs print the core reader word for word');
+  assert.ok(docs.includes("sfPreference('sf-settings/reader')"));
   assert.ok(/^[\x20-\x7e]+$/u.test(PREPAINT_READER) && !/=>|\blet\b|\bconst\b/u.test(PREPAINT_READER), 'ES5 ASCII, no module');
 });
 

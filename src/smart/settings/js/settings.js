@@ -536,15 +536,15 @@ export function toggledField(item, optionId, key = 'checked') {
 // ─── remembered values before the first paint (GB21, Docara K-13) ─────────
 //
 // remember="<name>" keeps the values as one SF.Preferences value under the
-// key sf-settings/<name>; the browser's copy is localStorage
-// sf-pref:sf-settings/<name>, the JSON of {<id>: <value>} -- a switch's
-// boolean, a choice's option id, a range's number, a colour's hue name or
-// #rrggbb, a fields list's [{id, checked, pinned}] -- written whole after
-// every change. That is a public format: a site reads it in <head>, before
-// the Framework has run and before the first paint, and applies what the
-// values mean (a reader's text size, a theme), as theme-first-paint does for
-// the theme class. The reader below is the one to print; the docs carry it
-// word for word (tests/settings-first-paint.contract.test.mjs).
+// key sf-settings/<name>; the browser's copy (core preferences.js, a public
+// format) is sf-pref:sf-settings/<name>, the JSON of {<id>: <value>} -- a
+// switch's boolean, a choice's option id, a range's number, a colour's hue
+// name or #rrggbb, a fields list's [{id, checked, pinned}] -- written whole
+// after every change. A site reads it in <head> with core's PREPAINT_READER,
+// sfPreference('sf-settings/<name>'), before the Framework has run and before
+// the first paint, and applies what the values mean (a reader's text size, a
+// theme). The docs print the reader word for word
+// (tests/settings-window-c437.contract.test.mjs).
 
 /** The SF.Preferences key a remember name keeps the values under. */
 export const rememberedKey = (name) => {
@@ -552,26 +552,19 @@ export const rememberedKey = (name) => {
   return text ? `sf-settings/${text}` : '';
 };
 
-/** The browser storage key of a remember name's values (SF.Preferences' own cache). */
-export const rememberedStorageKey = (name) => (rememberedKey(name) ? `sf-pref:${rememberedKey(name)}` : '');
-
 /**
- * The values a remember name keeps in this browser, {id: value}, or null:
- * nothing kept, storage refused, or not an object. What the pre-paint reader
- * answers, as a module function.
+ * The values a remember name keeps in a storage (an object with getItem: the
+ * browser's copy SF.Preferences writes), {id: value}, or null: nothing kept,
+ * storage refused, or not an object. What the head reader answers for the
+ * name, as a module function.
  */
-export function rememberedValues(name, storage = globalThis.localStorage) {
-  const key = rememberedStorageKey(name);
-  if (!key) return null;
+export function rememberedValues(name, storage) {
+  const key = rememberedKey(name);
+  if (!key || typeof storage?.getItem !== 'function') return null;
   try {
-    const value = JSON.parse(storage?.getItem(key) ?? 'null');
+    const value = JSON.parse(storage.getItem(`sf-pref:${key}`) ?? 'null');
     return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
   } catch {
     return null;
   }
 }
-
-// The reader a page prints in <head> (ES5, no module, no Framework): it
-// answers what rememberedValues answers. A Content Security Policy that
-// forbids inline scripts needs its hash or a nonce.
-export const PREPAINT_READER = "function sfRememberedSettings(name){try{var v=JSON.parse(localStorage.getItem('sf-pref:sf-settings/'+name)||'null');return v&&typeof v==='object'&&!Array.isArray(v)?v:null}catch(e){return null}}";

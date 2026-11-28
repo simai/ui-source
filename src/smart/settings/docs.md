@@ -477,16 +477,18 @@ applyTheme(settings.values.theme);
 
 ```html
 <script>
-  function sfRememberedSettings(name){try{var v=JSON.parse(localStorage.getItem('sf-pref:sf-settings/'+name)||'null');return v&&typeof v==='object'&&!Array.isArray(v)?v:null}catch(e){return null}}
+  function sfPreference(key){try{return JSON.parse(localStorage.getItem('sf-pref:'+key)||'null')}catch(e){return null}}
   (function () {
-    var values = sfRememberedSettings('reader');
+    var values = sfPreference('sf-settings/reader');
     if (values && typeof values.size === 'string') document.documentElement.dataset.readerSize = values.size;
   })();
 </script>
 ```
 
-`sfRememberedSettings(имя)` отвечает картой значений или `null` (ничего не
-сохранено, хранилище запрещено, не объект). Дальше страница применяет то же
+Читатель — ядра (`SF.Preferences`, `preferences.js` `PREPAINT_READER`): он
+читает любое предпочтение по ключу, у `sf-settings` ключ `sf-settings/<имя>`.
+`sfPreference(ключ)` отвечает сохранённым значением или `null` (ничего не
+сохранено, хранилище запрещено, не JSON). Дальше страница применяет то же
 по `sf-settings-changed`, а элемент сам хранит значения — свой ключ и свой
 код записи странице не нужны. Хост, который хранит предпочтения
 пользователя (`SF.Preferences.useHost`), печатает значения сервером. Политика

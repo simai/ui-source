@@ -99,7 +99,7 @@
       "remember": {
         "type": "string",
         "default": "",
-        "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written whole after every change and put back into the items before the first drawing. The stored value is a public format (C437 (5)): the JSON of {<id>: <value>} -- a switch's boolean, a choice's option id, a range's number, a colour's hue name or #rrggbb, a fields list's [{id, checked, pinned}] -- so a site applies it before the first paint with the documented head reader sfRememberedSettings(name) (settings.js PREPAINT_READER), which answers that object or null, without a copy of its own"
+        "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written whole after every change and put back into the items before the first drawing. The stored value is a public format (C437 (5)): the JSON of {<id>: <value>} -- a switch's boolean, a choice's option id, a range's number, a colour's hue name or #rrggbb, a fields list's [{id, checked, pinned}] -- so a site applies it before the first paint with core's documented head reader sfPreference('sf-settings/<name>') (core/js/preferences.js PREPAINT_READER), which answers that object or null, without a copy of its own"
       },
       "device": {
         "type": "string",
@@ -603,7 +603,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "2456d7d37cd4abe5a5d3cddb6a04ef078f55ba9169dd4698214437abe217116f"
+        "sha256": "6f28c264711e28553bace2e7b05556707d9417532483a2af5e03618a241525ec"
       }
     ],
     "generated_runtime": []
