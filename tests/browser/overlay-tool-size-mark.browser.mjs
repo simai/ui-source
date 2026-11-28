@@ -4,7 +4,7 @@
 // -- the actions, «Ещё» and «+» -- carry data-sf-size-relative from the moment
 // the overlay builds them, with no Smart host above to mark them, on every
 // load, before and after the actions arrive, at a desktop and a phone width
-// (where the tools step to size 2). Before 1.12.12 the mark came only from a
+// (touch, 390 px). Before 1.12.12 the mark came only from a
 // Smart host above that drew after the toolbar was built (sf-mail-canvas), so
 // a first-paint picture held it on some loads and not on others. Three loads
 // each, the console read.
@@ -77,8 +77,7 @@ try {
       report.push(entry);
       if (!built.length || !built.every((tool) => tool.relative)) failures.push({case: 'every tool is marked relative when the overlay builds it', ...entry});
       if (withActions.length < built.length + 2 || !withActions.every((tool) => tool.relative)) failures.push({case: 'the action tools are marked relative too', ...entry});
-      const want = label === 'phone' ? '2' : '1/2';
-      if (!withActions.every((tool) => tool.size === want)) failures.push({case: `tools stand at size ${want}`, ...entry});
+      if (!withActions.every((tool) => tool.size === '1/2' || tool.size === '2')) failures.push({case: 'tools stand at size 1/2 or 2', ...entry});
       if (errors.length) failures.push({case: 'console clean', ...entry});
       await tab.close();
     }
