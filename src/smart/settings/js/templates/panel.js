@@ -8,6 +8,7 @@ import {choiceArranges, choiceOptions, fieldOptions, holdsValue, itemValue, matc
 // (scss/_smart__settings.scss); the other looks stay sf-menu-context's.
 //
 //   head     the title, or the groups as tabs; the close button of a popup
+//            and of a panel in a page's window that draws none (GB21)
 //   search   the setting search: a header over the rows (C06), «from ten rows»
 //   body     the groups as sections in one scroll, or the chosen tab's rows;
 //            the only part that scrolls (the scroll-area inset rule)
@@ -222,7 +223,9 @@ function renderHead(context) {
                     context.component.chooseGroup(Number(event.detail?.current ?? 0));
                 }}></sf-tabs>`
         : html`<span class="sf-settings-panel-title">${context.label}</span>`;
-    const close = context.popup
+    // A popup's close, and a panel's in a page's window that draws none of
+    // its own (GB21, Docara K-13): the same button, named by close-label.
+    const close = context.popup || context.shellClose
         ? html`<sf-button-icon class="sf-settings-panel-close" appearance="ghost" scheme="on-surface" size=${buttonSize(context)} icon="close"
                 aria-label=${words.close} title=${words.close} data-sf-close></sf-button-icon>`
         : nothing;

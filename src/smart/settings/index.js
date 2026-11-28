@@ -32,7 +32,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import BundledPreferences from '../../core/js/preferences.js';
-import {tagSelector} from '../../core/js/tag-aliases.js';
+import {isTag, tagSelector} from '../../core/js/tag-aliases.js';
 import {renderSettingsTemplate} from './js/templates/default';
 import {densityOf} from '../../core/js/density.js';
 import BundledPosition from '../../core/js/position.js';
@@ -44,7 +44,7 @@ import {layoutOf, watchLayout} from '../../core/js/device.js';
 import {PanelScrollbar} from '../../component/panel-scrollbar.js';
 import {
   APPLY, DEFAULT_SIZE, FORMER_LOOKS, OWN_COLOR, SIZES, applyCount, choiceArranges, choiceOrder, lookOf, colorCode, entriesFor, findItem, itemValue, matches,
-  movedField, orderMap, orderPatch, panelGroups, panelLayout, placedField, rewriteValues, sameValue, toggledField, valueMap, valuePatch,
+  movedField, orderMap, orderPatch, panelGroups, panelLayout, placedField, rememberedKey, rewriteValues, sameValue, toggledField, valueMap, valuePatch,
 } from './js/settings';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -61,6 +61,21 @@ const MENU = `:scope > .sf-settings-parts > ${tagSelector('sf-menu-context')}`;
 // The colour window of the colour rows (C85): sf-input-color's own, opened on «Своё».
 const PICKER = `:scope > .sf-settings-parts > .sf-settings-color > ${tagSelector('sf-input-color')}`;
 const FOCUSABLE = 'button, a[href], input, select, textarea, [tabindex]';
+// The page's window a panel in the flow may stand in (GB21, Docara K-13): the
+// Framework's window and side sheet, or the platform's <dialog>. A panel that
+// stands in one draws the close button a popup draws, and its press closes
+// that window.
+const SHELL = `${tagSelector('sf-modal')}, ${tagSelector('sf-drawer')}, dialog`;
+// Whether the window draws a close of its own (its setting, read from the
+// element when it is defined, else from its attribute): then the panel draws
+// none, so a window never shows two.
+const flag = (element, property, attribute) => (typeof element[property] === 'boolean'
+  ? element[property] : element.getAttribute(attribute) !== 'false');
+function shellDrawsClose(shell) {
+  if (shell.localName === 'dialog') return false;
+  if (isTag(shell, 'sf-modal')) return flag(shell, 'showHeader', 'show-header') && flag(shell, 'showClose', 'show-close');
+  return flag(shell, 'showClose', 'show-close');
+}
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 const same = sameValue;
@@ -97,8 +112,8 @@ const rowKey = (main) => main?.dataset.sfOption ?? main?.dataset.sfSetting ?? ''
 // when core has published it (every bundle has its own copy).
 const preferences = () => globalThis.SF?.Preferences || BundledPreferences;
 
-/** The SF.Preferences key a remember name keeps the values under. */
-export const rememberKey = (name) => (text(name) ? `sf-settings/${text(name)}` : '');
+/** The SF.Preferences key a remember name keeps the values under (settings.js rememberedKey: a public format, read before the first paint). */
+export const rememberKey = rememberedKey;
 
 const SettingsElement = elementFromManifest(manifest, {
   base: SfBaseElement,
@@ -743,6 +758,9 @@ class SfSettings extends SettingsElement {
       .some((words) => matches(query, ...words)));
     return {
       groups, layout, tab, query, nothingFound,
+      // A panel in the flow that stands in a page's window draws the close
+      // button a popup draws, unless the window draws its own (GB21, K-13).
+      shellClose: Boolean(this.shellCloses()),
       open: Boolean(this._open),
       search: Boolean(this.search),
       apply: this.applyMode,
@@ -750,10 +768,11 @@ class SfSettings extends SettingsElement {
       // not rows of this panel), else what the panel counts.
       count: Number.isInteger(this.applyCount) && this.applyCount >= 0 ? this.applyCount : applyCount(items),
       current: this._current,
-      // The panel's words: the element's own (close-label, search-placeholder,
-      // empty-text, pin-label, unpin-label, move-label), else the page language's.
+      // The panel's words: the element's own (close-label, reset-label,
+      // search-placeholder, empty-text, pin-label, unpin-label, move-label),
+      // else the page language's.
       words: {
-        label: this.sfWord('label'), close: this.closeLabel || this.sfWord('close'), reset: this.sfWord('reset'), apply: this.sfWord('apply'),
+        label: this.sfWord('label'), close: this.closeLabel || this.sfWord('close'), reset: this.resetLabel || this.sfWord('reset'), apply: this.sfWord('apply'),
         search: this.searchPlaceholder || this.sfWord('search'), empty: this.emptyText || this.sfWord('empty'),
         pin: this.pinLabel || this.sfWord('pin'), unpin: this.unpinLabel || this.sfWord('unpin'),
         moveHint: this.moveLabel || this.sfWord('move-hint'),
@@ -880,7 +899,8 @@ class SfSettings extends SettingsElement {
   // footer's buttons.
   onPanelClick(event, target) {
     if (target.closest('[data-sf-close]')) {
-      this.closePanel({reason: 'close'});
+      if (this._open) this.closePanel({reason: 'close'});
+      else this.closeShell();
       return;
     }
     if (target.closest('[data-sf-reset]')) {
@@ -1280,6 +1300,51 @@ class SfSettings extends SettingsElement {
     this.requestComponentUpdate('open');
     if (restoreFocus) (owned.returnTo?.isConnected ? owned.returnTo : owned.anchor)?.focus?.({preventScroll: true});
     this.sfEmit('closed', {reason});
+    return true;
+  }
+
+  // ─── a panel in a page's window (GB21, Docara K-13)
+
+  /** The page's window this panel stands in (sf-modal, sf-drawer, <dialog>), when it is not a popup; else null. */
+  dialogShell() {
+    if (!this.isPanel || this.popup) return null;
+    return this.parentElement?.closest(SHELL) ?? null;
+  }
+
+  // The window whose close the panel draws: one it stands in that draws none
+  // of its own.
+  shellCloses() {
+    const shell = this.dialogShell();
+    return shell && !shellDrawsClose(shell) ? shell : null;
+  }
+
+  // The close button of a panel in a page's window: close is asked (reason
+  // close, cancellable, unsaved as a popup's), then the window is closed by
+  // its own action -- sf-modal's and sf-drawer's close({reason: 'close'}),
+  // which ask the page in their turn, or a <dialog>'s close(); closed follows
+  // once the window agreed. What a draft of apply="button" held is dropped.
+  closeShell() {
+    const shell = this.dialogShell();
+    if (!shell) return false;
+    if (!this.sfEmit('close', {reason: 'close', unsaved: this.draftMoved()}, {cancelable: true})) return false;
+    let answer;
+    try {
+      if (shell.localName === 'dialog') {
+        shell.close();
+        answer = {outcome: 'applied'};
+      } else {
+        answer = shell.close?.({reason: 'close'});
+      }
+    } catch {
+      answer = {outcome: 'refused'};
+    }
+    Promise.resolve(answer).then((result) => {
+      if (result && typeof result === 'object' && result.outcome && result.outcome !== 'applied') return;
+      this._draft = null;
+      this._query = '';
+      this.requestComponentUpdate('open');
+      this.sfEmit('closed', {reason: 'close'});
+    });
     return true;
   }
 

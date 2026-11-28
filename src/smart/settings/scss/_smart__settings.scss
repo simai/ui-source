@@ -12,7 +12,9 @@
 
    Geometry (C05-C07, C32, C77/C105 H4, the scroll-area inset rule):
    - the panel is the popup panel's step of the widths (C32): core's
-     --sf-popup-panel-width, 20rem, 18rem in compact density;
+     --sf-popup-panel-width, 20rem, 18rem in compact density; the public
+     --sf-settings-panel-width and --sf-settings-panel-height change it
+     (GB21, Docara K-13);
    - one inset I = --sf-space-1/4 on every side of the rows' plates, from the
      body's edge;
    - a row is as tall as a control of the panel's size, its plate rounded as
@@ -43,7 +45,13 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  inline-size: var(--sf-popup-panel-width);
+  /* The public width and height (GB21, Docara K-13): the popup panel's step
+     of the widths by default, and the content's height. A page that puts
+     the panel in a side sheet gives it the sheet's room
+     (--sf-settings-panel-width: 100%; --sf-settings-panel-height: 100%);
+     only the body scrolls. */
+  inline-size: var(--sf-settings-panel-width, var(--sf-popup-panel-width));
+  block-size: var(--sf-settings-panel-height, auto);
   max-inline-size: 100%;
   min-block-size: 0;
   margin: 0;

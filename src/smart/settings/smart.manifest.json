@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.11.1",
+  "version": "1.12.0",
   "title": "Settings",
   "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of two looks -- drill (the value under the name, the options in the same panel) or rows (the control at the row's end; a choice that does not fit beside its name drills by itself). With a trigger it opens over the page (a bottom sheet on a phone); without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. Where a product has a sign-in, the person's theme, language and text size are rows of the person menu (sf-menu-context, owner decision C176 (1)); sf-settings is the gear of a screen's view and of a site without a sign-in. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "kind": "smart",
@@ -99,7 +99,7 @@
       "remember": {
         "type": "string",
         "default": "",
-        "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written after every change and put back into the items before the first drawing"
+        "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written whole after every change and put back into the items before the first drawing. The stored value is a public format (C437 (5)): the JSON of {<id>: <value>} -- a switch's boolean, a choice's option id, a range's number, a colour's hue name or #rrggbb, a fields list's [{id, checked, pinned}] -- so a site applies it before the first paint with the documented head reader sfRememberedSettings(name) (settings.js PREPAINT_READER), which answers that object or null, without a copy of its own"
       },
       "device": {
         "type": "string",
@@ -121,7 +121,11 @@
       },
       "close-label": {
         "type": "string",
-        "description": "The popup panel's close button's name; «Закрыть» / «Close» in the page language when not set"
+        "description": "The close button's name -- a popup panel's, and a panel's that stands in a page's window (sf-modal, sf-drawer, <dialog>) drawing no close of its own (C437 (1)); «Закрыть» / «Close» in the page language when not set"
+      },
+      "reset-label": {
+        "type": "string",
+        "description": "The panel footer's reset button's text (C437 (3)); «Сбросить» / «Reset» in the page language when not set"
       },
       "search-placeholder": {
         "type": "string",
@@ -357,7 +361,7 @@
       }
     },
     "sf-settings-close": {
-      "summary": "The popup panel of look=\"panel\" asks to close: escape, outside (a press outside), close (the close button, the trigger again) or api (Apply, Tab out, a script); unsaved says a draft of apply=\"button\" moved something. Cancelled, it stays open",
+      "summary": "The popup panel of look=\"panel\" asks to close: escape, outside (a press outside), close (the close button, the trigger again) or api (Apply, Tab out, a script); unsaved says a draft of apply=\"button\" moved something. Cancelled, it stays open. A panel in the flow that stands in a page's window asks it too when its close button is pressed (reason close, C437 (1)); not cancelled, the window is closed by its own close",
       "payload": {
         "type": "object",
         "required": [
@@ -382,7 +386,7 @@
       }
     },
     "sf-settings-closed": {
-      "summary": "The popup panel of look=\"panel\" is closed",
+      "summary": "The popup panel of look=\"panel\" is closed; for a panel in a page's window, the window agreed to close by its close button (reason close)",
       "payload": {
         "type": "object",
         "required": [
@@ -587,7 +591,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "46c3f696bdd01a05d19dc52cd49695f7457bff8199ad1e65a8135a81d402336d"
+        "sha256": "027cdd267d0b65f3ec2dbee210403749fcabbbc73e10cbc044dcdfade63c1b91"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
@@ -599,7 +603,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "25d617a15df6ebefc4d1b780da3ed05475b914c496850fc7e201dd8585ad1dfa"
+        "sha256": "2456d7d37cd4abe5a5d3cddb6a04ef078f55ba9169dd4698214437abe217116f"
       }
     ],
     "generated_runtime": []
