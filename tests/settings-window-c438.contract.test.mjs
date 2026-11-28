@@ -1,5 +1,5 @@
 // sf-settings 1.12.0 (group build 21 area B; Docara K-13 msg-b3676e09bb83470e84ed,
-// decision C437): a panel of look="panel" in a page's window draws its close
+// decision C438): a panel of look="panel" in a page's window draws its close
 // button, reset-label, the panel's public width and height, and the
 // remembered values' public format with the head reader the docs print.
 // Measured in a browser in tests/browser/settings-window.browser.mjs.
@@ -110,5 +110,5 @@ test('(5) the remembered values are a public format the head reader answers', ()
 
 test('the version and the decision', () => {
   assert.equal(manifest.version, '1.12.0');
-  assert.match(manifest['x-decisions'].at(-1), /^version 1\.12\.0 \(2026-11-28, group build 21 area B; Docara K-13 msg-b3676e09bb83470e84ed, decision C437\)/u);
+  assert.match(manifest['x-decisions'].at(-1), /^version 1\.12\.0 \(2026-11-28, group build 21 area B; Docara K-13 msg-b3676e09bb83470e84ed, decision C438\)/u);
 });

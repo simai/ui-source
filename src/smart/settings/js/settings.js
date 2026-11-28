@@ -544,7 +544,7 @@ export function toggledField(item, optionId, key = 'checked') {
 // sfPreference('sf-settings/<name>'), before the Framework has run and before
 // the first paint, and applies what the values mean (a reader's text size, a
 // theme). The docs print the reader word for word
-// (tests/settings-window-c437.contract.test.mjs).
+// (tests/settings-window-c438.contract.test.mjs).
 
 /** The SF.Preferences key a remember name keeps the values under. */
 export const rememberedKey = (name) => {

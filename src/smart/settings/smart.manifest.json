@@ -99,7 +99,7 @@
       "remember": {
         "type": "string",
         "default": "",
-        "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written whole after every change and put back into the items before the first drawing. The stored value is a public format (C437 (5)): the JSON of {<id>: <value>} -- a switch's boolean, a choice's option id, a range's number, a colour's hue name or #rrggbb, a fields list's [{id, checked, pinned}] -- so a site applies it before the first paint with core's documented head reader sfPreference('sf-settings/<name>') (core/js/preferences.js PREPAINT_READER), which answers that object or null, without a copy of its own"
+        "description": "A name to keep the values under: they are a preference of the person (SF.Preferences key sf-settings/<name>; in the browser localStorage sf-pref:sf-settings/<name>, and a host that keeps preferences for its user gets them), written whole after every change and put back into the items before the first drawing. The stored value is a public format (C438 (5)): the JSON of {<id>: <value>} -- a switch's boolean, a choice's option id, a range's number, a colour's hue name or #rrggbb, a fields list's [{id, checked, pinned}] -- so a site applies it before the first paint with core's documented head reader sfPreference('sf-settings/<name>') (core/js/preferences.js PREPAINT_READER), which answers that object or null, without a copy of its own"
       },
       "device": {
         "type": "string",
@@ -121,11 +121,11 @@
       },
       "close-label": {
         "type": "string",
-        "description": "The close button's name -- a popup panel's, and a panel's that stands in a page's window (sf-modal, sf-drawer, <dialog>) drawing no close of its own (C437 (1)); «Закрыть» / «Close» in the page language when not set"
+        "description": "The close button's name -- a popup panel's, and a panel's that stands in a page's window (sf-modal, sf-drawer, <dialog>) drawing no close of its own (C438 (1)); «Закрыть» / «Close» in the page language when not set"
       },
       "reset-label": {
         "type": "string",
-        "description": "The panel footer's reset button's text (C437 (3)); «Сбросить» / «Reset» in the page language when not set"
+        "description": "The panel footer's reset button's text (C438 (3)); «Сбросить» / «Reset» in the page language when not set"
       },
       "search-placeholder": {
         "type": "string",
@@ -361,7 +361,7 @@
       }
     },
     "sf-settings-close": {
-      "summary": "The popup panel of look=\"panel\" asks to close: escape, outside (a press outside), close (the close button, the trigger again) or api (Apply, Tab out, a script); unsaved says a draft of apply=\"button\" moved something. Cancelled, it stays open. A panel in the flow that stands in a page's window asks it too when its close button is pressed (reason close, C437 (1)); not cancelled, the window is closed by its own close",
+      "summary": "The popup panel of look=\"panel\" asks to close: escape, outside (a press outside), close (the close button, the trigger again) or api (Apply, Tab out, a script); unsaved says a draft of apply=\"button\" moved something. Cancelled, it stays open. A panel in the flow that stands in a page's window asks it too when its close button is pressed (reason close, C438 (1)); not cancelled, the window is closed by its own close",
       "payload": {
         "type": "object",
         "required": [
@@ -603,7 +603,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "074f45a1cf382166f2e1e3aac660f562a1ab93cd659230d02d88f14b1d4a7569"
+        "sha256": "70ba11335c679a7e4ec9d724562c1dd9059f39b6f741ea15ca81963f47a88db1"
       }
     ],
     "generated_runtime": []

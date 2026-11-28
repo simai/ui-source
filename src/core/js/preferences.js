@@ -235,7 +235,7 @@ const Preferences = globalThis.SF?.Preferences;
 export default Preferences;
 export {createPreferences};
 
-// Before the first paint (GB21, Docara K-13, decision C437): the browser's
+// Before the first paint (GB21, Docara K-13, decision C438): the browser's
 // copy of a preference is a public format -- localStorage `sf-pref:<key>`,
 // the JSON of its value -- so a page reads it in <head>, before the Framework
 // has run, and applies it without a copy of its own (the theme-first-paint

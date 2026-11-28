@@ -2,7 +2,7 @@
 // Usage: node this-file /absolute/path/to/output [screenshot folder]
 // Build output root is required: the directory holding core/, smart/, component/, utility/.
 //
-// sf-settings 1.12.0 (group build 21 area B; Docara K-13, decision C437) on the
+// sf-settings 1.12.0 (group build 21 area B; Docara K-13, decision C438) on the
 // built bytes with the real Loader, at 1440 and 390 px, light and dark:
 //
 // - a panel of look="panel" in a side sheet (sf-drawer show-close="false"),

@@ -114,7 +114,7 @@ test('apply: at once with one «Сбросить»; by the button «Сброси
 });
 
 test('geometry from the systems: the C32 panel step, inset 1/4, H4 row inset, the scroll-area inset rule without a gutter (DP-9)', () => {
-  assert.match(css, /inline-size: var\(--sf-settings-panel-width, var\(--sf-popup-panel-width\)\);/u); // C437 (4): the public width, the C32 step by default
+  assert.match(css, /inline-size: var\(--sf-settings-panel-width, var\(--sf-popup-panel-width\)\);/u); // C438 (4): the public width, the C32 step by default
   assert.match(css, /--sf-settings-panel--inset: var\(--sf-space-1\\\/4\);/u);
   assert.match(css, /--sf-settings-panel--pad: var\(--sf-ui-1--space-x\);/u);
   assert.match(css, /@include panel\.scrollbar\(var\(--sf-settings-panel--inset\), --sf-settings-panel--track, var\(--sf-settings-panel--row-height\), var\(--sf-scroll-thumb-width\)\);/u);
@@ -173,7 +173,7 @@ test('C166 follow-up, C144: the footer labels stay on one line; the buttons grow
   assert.doesNotMatch(share, /flex: 1 1 0;/u);
   assert.match(css, /\.sf-settings-panel-footer \.sf-button-text-container \{\s*white-space: nowrap;\s*\}/u);
   const component = JSON.parse(read('src/smart/settings/component.json'));
-  assert.equal(component.version, '1.12.0'); // GB21 area B (C437): close in a page's window, reset-label, panel width/height, remembered format // GB19 touch size (C428): rows 44 on a coarse pointer // GB19 device scope: devices, device, phoneSwitch (S-A) // group build 16: VR11-4 head step, G10 drop line; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
+  assert.equal(component.version, '1.12.0'); // GB21 area B (C438): close in a page's window, reset-label, panel width/height, remembered format // GB19 touch size (C428): rows 44 on a coarse pointer // GB19 device scope: devices, device, phoneSwitch (S-A) // group build 16: VR11-4 head step, G10 drop line; // FF-5, FF-6: 1.9.0 above 1.8.0 // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch // group build 14: 1.9.0 moved on by the merged branches or the C278 language patch // group build 15: moved on by the merged branches or a GB15 assembly item
 });
 
 // The SIMAI Framework order of the sf-view-table move (C106; ui-control
