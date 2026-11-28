@@ -56,12 +56,15 @@ const OPTIONS = [
   {id: 'blue', text: 'Синий', swatch: BLUE},
   {id: 'green', text: 'Зелёный', swatch: '#16a34a'},
   {id: 'red', text: 'Красный', icon: 'palette', swatch: '#dc2626'},
-  {id: 'odd', text: 'Другой', icon: 'help', swatch: 'red; background: url(x)'},
+  {id: 'odd', text: 'Другой', icon: 'tune', swatch: 'red; background: url(x)'},
 ];
 const ITEMS = [
   {id: 'theme', type: 'choice', text: 'Тема', value: 'light', options: [{id: 'light', text: 'Светлая', icon: 'light_mode'}, {id: 'dark', text: 'Тёмная', icon: 'dark_mode'}]},
   {id: 'accent', type: 'choice', text: 'Акцент', value: 'blue', options: OPTIONS},
 ];
+// The rows look draws a choice beside its name only when its options fit
+// there (C176 (3)): the accent with its three circles alone.
+const ROWS_ITEMS = [{id: 'accent', type: 'choice', text: 'Акцент', value: 'blue', options: OPTIONS.slice(0, 3)}];
 const island = (items) => `<script type="application/json" data-sf-settings>${JSON.stringify({items}).replace(/</gu, '\\u003c')}</script>`;
 const LOOKS = ['drill', 'rows', 'panel'];
 
@@ -72,7 +75,7 @@ const head = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
 for (const look of LOOKS) {
   for (const theme of ['light', 'dark']) {
     pages.set(`/${look}-${theme}`, `${head(theme)}<body><main>
-<sf-settings id="s" look="${look}" label="Настройки чтения"><sf-button-icon id="open" icon="tune" aria-label="Настройки чтения"></sf-button-icon>${island(ITEMS)}</sf-settings>
+<sf-settings id="s" look="${look}" label="Настройки чтения"><sf-button-icon id="open" icon="tune" aria-label="Настройки чтения"></sf-button-icon>${island(look === 'rows' ? ROWS_ITEMS : ITEMS)}</sf-settings>
 <p>После</p></main>
 <script>window.__changed=[];document.addEventListener('sf-settings-changed',(e)=>window.__changed.push(e.detail));</script></body></html>`);
   }
@@ -109,6 +112,18 @@ async function load(tab, url) {
 // (drill level rows, rows-look quiet options) anywhere in the document (a
 // popup may stand in a portal), or the panel's rows.
 const COLLECT = (look) => {
+  // The ring's colour and the ladder's sizes where the rows stand: the outline
+  // hairline, the row's line (the icon's place) and the quarter step.
+  const REFS = (host, line) => {
+    const ring = document.createElement('span');
+    ring.style.cssText = 'position:absolute;box-sizing:content-box;border:1px solid var(--sf-outline-variant)';
+    const size = document.createElement('span');
+    size.style.cssText = `position:absolute;display:block;box-sizing:content-box;padding:0;border:0;inline-size:var(${line});block-size:var(--sf-space-1\\/4)`;
+    host.append(ring, size);
+    const out = {ring: getComputedStyle(ring).borderTopColor, line: size.getBoundingClientRect().width, quarter: size.getBoundingClientRect().height};
+    ring.remove(); size.remove();
+    return out;
+  };
   const visible = (el) => el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
   const box = (el) => { const r = el.getBoundingClientRect(); return {x: r.x, y: r.y, w: r.width, h: r.height, cx: r.x + r.width / 2, cy: r.y + r.height / 2}; };
   const names = {blue: 'Синий', green: 'Зелёный', red: 'Красный', odd: 'Другой'};
@@ -126,12 +141,7 @@ const COLLECT = (look) => {
         label: box(label), lineHeight: parseFloat(getComputedStyle(label).lineHeight)};
     }
     const panel = document.querySelector('#s .sf-settings-panel');
-    const ref = document.createElement('span');
-    ref.style.cssText = 'position:absolute;border:1px solid var(--sf-outline-variant);inline-size:var(--sf-settings-panel--line);block-size:var(--sf-space-1\\/4)';
-    panel.append(ref);
-    const refs = {ring: getComputedStyle(ref).borderTopColor, line: ref.getBoundingClientRect().width - 2, quarter: ref.getBoundingClientRect().height - 2};
-    ref.remove();
-    return {rows, refs};
+    return {rows, refs: REFS(panel, '--sf-settings-panel--line')};
   }
   const items = [...document.querySelectorAll('.sf-context-menu-item')].filter(visible);
   for (const [id, name] of Object.entries(names)) {
@@ -148,13 +158,9 @@ const COLLECT = (look) => {
   }
   // The theme row's icons: the icon place the circles stand beside (rows look).
   const themeIcons = items.filter((el) => ['Светлая', 'Тёмная'].includes((el.getAttribute('aria-label') ?? '').trim())).map((el) => el.querySelector('.sf-icon')).filter(Boolean).map(box);
-  const menu = items[0]?.closest('.sf-context-menu') ?? items[0]?.parentElement;
-  const ref = document.createElement('span');
-  ref.style.cssText = 'position:absolute;border:1px solid var(--sf-outline-variant);inline-size:var(--sf-context-menu--line);block-size:var(--sf-space-1\\/4)';
-  (menu ?? document.body).append(ref);
-  const refs = {ring: getComputedStyle(ref).borderTopColor, line: ref.getBoundingClientRect().width - 2, quarter: ref.getBoundingClientRect().height - 2};
-  ref.remove();
-  return {rows, refs, themeIcons};
+  const accentName = [...document.querySelectorAll('.sf-context-menu-item-label')].find((el) => visible(el) && el.textContent.trim() === 'Акцент');
+  const accentLabel = accentName ? box(accentName) : null;
+  return {rows, refs: REFS(items[0] ?? document.body, '--sf-context-menu--line'), themeIcons, accentLabel};
 };
 
 const openState = () => {
@@ -182,7 +188,7 @@ const near = (a, b, d = 0.75) => a !== null && b !== null && Math.abs(a - b) <= 
 function check(label, look, theme, m) {
   const {rows, refs} = m;
   const want = {blue: RGB[theme === 'dark' ? BLUE.dark : BLUE.light], green: RGB['#16a34a'], red: RGB['#dc2626']};
-  ok(`${label}: four options drawn`, Object.keys(rows).length === 4, JSON.stringify(Object.keys(rows)));
+  ok(`${label}: ${look === 'rows' ? 'three' : 'four'} options drawn`, Object.keys(rows).length === (look === 'rows' ? 3 : 4), JSON.stringify(Object.keys(rows)));
   for (const id of ['blue', 'green', 'red']) {
     const row = rows[id];
     ok(`${label}: ${id} draws its circle in ${theme === 'dark' && id === 'blue' ? 'the dark' : 'its'} colour`, row?.swatch && row.swatch.bg === want[id], JSON.stringify(row?.swatch));
@@ -201,7 +207,7 @@ function check(label, look, theme, m) {
     ok(`${label}: the names start on one line`, new Set(starts).size === 1, JSON.stringify(starts));
   } else {
     ok(`${label}: red (icon and swatch) shows the circle, no icon`, rows.red?.swatch && !rows.red.icon, JSON.stringify(rows.red));
-    ok(`${label}: odd (an invalid swatch) shows its icon, no circle`, rows.odd && !rows.odd.swatch && rows.odd.icon?.text === 'help', JSON.stringify(rows.odd));
+    if (look === 'drill') ok(`${label}: odd (an invalid swatch) shows its icon, no circle`, rows.odd && !rows.odd.swatch && rows.odd.icon?.text === 'tune', JSON.stringify(rows.odd));
     if (look === 'drill') {
       ok(`${label}: the circles share the icons' lead column (centre on the icon's)`, ['blue', 'green', 'red'].every((id) => near(rows[id]?.swatch?.box.cx, rows.odd?.icon?.box.cx)), JSON.stringify(['blue', 'green', 'red', 'odd'].map((id) => rows[id]?.swatch?.box.cx ?? rows[id]?.icon?.box.cx)));
       ok(`${label}: the names start on one line`, new Set(Object.values(rows).map((row) => Math.round(row.label.x * 2) / 2)).size === 1, JSON.stringify(Object.values(rows).map((row) => row.label?.x)));
@@ -209,9 +215,9 @@ function check(label, look, theme, m) {
     } else {
       // rows: the circle alone in a quiet option; its name is the option's label and its tooltip.
       ok(`${label}: each quiet option names itself (aria-label and tooltip)`, ['blue', 'green', 'red'].every((id) => rows[id]?.name && rows[id]?.tooltip === rows[id].name), JSON.stringify(['blue', 'green', 'red'].map((id) => [rows[id]?.name, rows[id]?.tooltip])));
-      const icon = m.themeIcons[0];
-      ok(`${label}: the circle's centre is on the theme icons' centre line of its row (option centres)`, ['blue', 'green', 'red'].every((id) => near(rows[id].swatch.box.cy, rows[id].row.cy) && near(rows.odd.icon.box.cy, rows.odd.row.cy)), JSON.stringify({blue: rows.blue?.swatch?.box, row: rows.blue?.row, icon}));
-      ok(`${label}: the circle is the theme icon's place less a quarter step`, icon && near(rows.blue.swatch.box.w, icon.w - refs.quarter, 0.5), JSON.stringify({icon, swatch: rows.blue?.swatch?.box}));
+      ok(`${label}: each circle stands in the middle of its quiet option`, ['blue', 'green', 'red'].every((id) => near(rows[id]?.swatch?.box.cy, rows[id]?.row.cy) && near(rows[id]?.swatch?.box.cx, rows[id]?.row.cx)), JSON.stringify(['blue', 'green', 'red'].map((id) => [rows[id]?.swatch?.box, rows[id]?.row])));
+      const name = m.accentLabel;
+      ok(`${label}: the circles stand on the line of the setting's name (centres)`, name && ['blue', 'green', 'red'].every((id) => near(rows[id]?.swatch?.box.cy, name.cy, 1)), JSON.stringify({name, blue: rows.blue?.swatch?.box}));
     }
   }
   ok(`${label}: the chosen option is blue`, rows.blue?.checked === 'true', JSON.stringify(rows.blue?.checked));
