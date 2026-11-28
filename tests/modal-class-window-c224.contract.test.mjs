@@ -65,5 +65,6 @@ test('class icon button: its aria-label is a Framework tooltip, data-tooltip="of
   // Lazily: nothing before the first hover, focus or long press.
   assert.match(tip, /for \(const type of \['pointerover', 'focusin', 'pointerdown'\]\)/u);
   assert.match(tip, /loader\?\.ensurePlugin\?\.\('tooltip'\);/u);
-  assert.match(tip, /tip\.className = `sf-tooltip sf-tooltip--dark \$\{NAME_TIP\}`;/u);
+  // GB21 A: a marked rail row (data-sf-name-tip="inline-end") gets the tooltip beside it.
+  assert.match(tip, /tip\.className = `sf-tooltip sf-tooltip--dark\$\{beside \? ' sf-tooltip--arrow-inline-start' : ''\} \$\{NAME_TIP\}`;/u);
 });

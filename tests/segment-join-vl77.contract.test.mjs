@@ -37,5 +37,5 @@ test('an icon ghost segment draws the group outline, as a ghost button segment d
 
 test('versions', () => {
   assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.5');
-  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.4'); // GB19 integration: 1.20.3 (VL-77) moved on by touch size (1.20.4)
+  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.21.0'); // GB21 A: rail name tooltip // GB19 integration: 1.20.3 (VL-77) moved on by touch size (1.20.4)
 });

@@ -513,7 +513,14 @@ class SfSiteHeader extends SiteHeaderElement {
     const actions = row.querySelector('.sf-site-header-actions');
     const tools = row.querySelector(':scope > .sf-site-header-tools');
     const parts = [brand, nav, actions, tools].filter((part) => part && part.getClientRects().length);
-    const besides = width(brand) + width(actions) + gap * Math.max(0, parts.length - 1);
+    // The nav's own inline margins are room it never has (group build 21,
+    // Docara msg-cd7ddadb: the docs header's nav stands --sf-space-1/4 in from
+    // the brand, and at 1290-1292 the bar counted those 4 px as the nav's,
+    // kept the language whole for a row that did not fit, and the sections
+    // went into «Ещё» with the room unused).
+    const navStyle = nav && nav.getClientRects().length ? getComputedStyle(nav) : null;
+    const navMargins = navStyle ? (parseFloat(navStyle.marginInlineStart) || 0) + (parseFloat(navStyle.marginInlineEnd) || 0) : 0;
+    const besides = width(brand) + width(actions) + gap * Math.max(0, parts.length - 1) + navMargins;
     const toolsNow = width(tools);
     // Each shrinking tool's width whole and shrunk, and the tools' row
     // without them as they are drawn now.

@@ -10,10 +10,10 @@ const json = (path) => JSON.parse(read(path));
 
 test('sf-header-site 1.17.0: fit is a boolean setting, default off, documented', () => {
   const component = json('src/smart/header-site/component.json');
-  assert.equal(component.version, '1.17.0');
+  assert.ok(['1.17.0', '1.17.1'].includes(component.version));
   assert.deepEqual({type: component.settings.fit.type, default: component.settings.fit.default}, {type: 'boolean', default: false});
   const manifest = json('src/smart/header-site/smart.manifest.json');
-  assert.equal(manifest.version, '1.17.0');
+  assert.equal(manifest.version, component.version);
   assert.ok(manifest.props?.fit ?? manifest.attributes?.fit ?? JSON.stringify(manifest).includes('"fit"'));
   assert.match(read('src/smart/header-site/docs.md'), /collapse="lg" fit/u);
 });
@@ -32,7 +32,7 @@ test('sf-header-site: fit lifts the auto fitting above a collapse step only', ()
 
 test('sf-language 1.8.0: shrink none|code, host state data-shrunk, shrinkBoxes', () => {
   const component = json('src/smart/language/component.json');
-  assert.equal(component.version, '1.8.0');
+  assert.ok(['1.8.0', '1.8.1'].includes(component.version)); // group build 21 A: 1.8.1 measures the drawn glyph
   assert.deepEqual(component.settings.shrink.values, ['none', 'code']);
   assert.equal(component.settings.shrink.default, 'none');
   assert.equal(component['host-states']['data-shrunk'], 'boolean');

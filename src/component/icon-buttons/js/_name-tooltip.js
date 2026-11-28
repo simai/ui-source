@@ -81,8 +81,24 @@ function hasVisibleLabel(button) {
   return false;
 }
 
+// What a reader takes from a control's content, roughly: its text, without
+// what is hidden from assistive technology (a glyph, a badge's digits) and
+// with the visually hidden words that close it (a status, a count's phrase).
+function readableName(node) {
+  if (node.nodeType === 3) return node.data;
+  if (node.nodeType !== 1) return '';
+  if (node.getAttribute('aria-hidden') === 'true' || node.hidden || node.localName === 'template') return '';
+  if (node.hasAttribute('aria-label')) return ` ${node.getAttribute('aria-label')} `;
+  return Array.from(node.childNodes).map((child) => readableName(child)).join(' ');
+}
+
 function nameOf(button) {
-  return String(button.getAttribute('data-sf-shrink-tip') || button.getAttribute('aria-label') || '').replace(/\s+/gu, ' ').trim();
+  const own = button.getAttribute('data-sf-shrink-tip') || button.getAttribute('aria-label') || '';
+  // A marked control with no name of its own (a rail row of sf-menu: an
+  // icon, its words out of sight) shows the name read from its content, its
+  // status and count words included (group build 21).
+  const name = own || (button.matches(MARKED) ? readableName(button) : '');
+  return String(name).replace(/\s+/gu, ' ').replace(/\s+([,.;:])/gu, '$1').trim();
 }
 
 // An sf-button drawn as its glyph by its bar (shrink="icon", data-shrunk;
@@ -94,7 +110,12 @@ const SHRUNK = 'sf-button[shrink="icon"][data-shrunk="true"] > .sf-button[data-s
 // A control a component draws with no words of its own and marks with
 // data-sf-name-tip (a role=button part, not an .sf-icon-button: the phone
 // field's country flag, sf-input-country, FS-11) shows its name the same way.
+// The value inline-end stands the tooltip beside the control, at its inline
+// end, its tail pointing back at it: a vertical rail's rows (sf-menu
+// appearance rail, group build 21), as sf-admin-menu's rail tooltips stand
+// (arrow inline-start, C320), so the tooltip does not cover the next row.
 const MARKED = '[data-sf-name-tip]';
+const BESIDE = 'inline-end';
 
 // The button a name tooltip is for, or null.
 function nameTarget(node) {
@@ -145,7 +166,8 @@ function wake(event) {
   }
   const doc = button.ownerDocument;
   const tip = doc.createElement('span');
-  tip.className = `sf-tooltip sf-tooltip--dark ${NAME_TIP}`;
+  const beside = button.matches(MARKED) && button.getAttribute('data-sf-name-tip') === BESIDE;
+  tip.className = `sf-tooltip sf-tooltip--dark${beside ? ' sf-tooltip--arrow-inline-start' : ''} ${NAME_TIP}`;
   tip.id = button.id ? `${button.id}--tooltip` : nextTipId(doc);
   tip.hidden = true;
   const content = doc.createElement('span');
@@ -155,6 +177,12 @@ function wake(event) {
   text.textContent = nameOf(button);
   content.append(text);
   tip.append(content);
+  if (beside) {
+    const tail = doc.createElement('span');
+    tail.className = 'sf-tooltip-tail';
+    tail.setAttribute('aria-hidden', 'true');
+    tip.append(tail);
+  }
   button.after(tip);
   button.setAttribute('data-tooltip', tip.id);
   const kind = event.type;

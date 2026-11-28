@@ -90,6 +90,11 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
     item.disabled ? 'disabled' : '',
   );
   const linked = Boolean(item.href) && !item.disabled;
+  // A rail row is its icon alone: its name -- with its status and count
+  // words -- is the Framework's tooltip beside it on hover, keyboard focus
+  // and a long press (C59 timing, as the admin set's rail, C320; group build
+  // 21), through the icon buttons' shared name tooltip (data-sf-name-tip).
+  const tip = context.rail && !placeholder ? 'inline-end' : nothing;
 
   if (!branch) {
     // A destination is a link; an unavailable one keeps its place as a link
@@ -98,10 +103,10 @@ function renderRow(context, item, level, branch, open, submenuId, placeholder = 
     if (linked) {
       return html`<a class=${classes} href=${item.href} aria-current=${current ? 'page' : nothing}
                      target=${targetOf(item)} rel=${relOf(item)}
-                     data-sf-menu-link=${own(item.id)}>${renderWrap(context, item)}</a>`;
+                     data-sf-menu-link=${own(item.id)} data-sf-name-tip=${tip}>${renderWrap(context, item)}</a>`;
     }
     if (item.disabled) return html`<a class=${classes} aria-disabled="true">${renderWrap(context, item)}</a>`;
-    return html`<span class=${classes} aria-current=${current ? 'page' : nothing}>${renderWrap(context, item)}</span>`;
+    return html`<span class=${classes} aria-current=${current ? 'page' : nothing} data-sf-name-tip=${tip}>${renderWrap(context, item)}</span>`;
   }
 
   const glyph = branchGlyph(context, level, open);

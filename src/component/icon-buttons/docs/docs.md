@@ -143,6 +143,15 @@ to get the Framework's), is left alone, as is a close
 button (`sf-button-close`, C14), a disabled or hidden button, and the button
 inside `<sf-button-icon>`, which shows its own.
 
+A control a component draws with no words of its own marks itself
+`data-sf-name-tip` and shows its name the same way: its `aria-label`, or, with
+none, the name read from its content -- what a reader takes from it, glyphs
+and a badge's digits left out, its visually hidden words (a status, a count's
+phrase) kept (1.21.0). `data-sf-name-tip="inline-end"` stands the tooltip
+beside the control at its inline end with its tail pointing back at it, for a
+vertical rail of rows (`sf-menu appearance="rail"`, as sf-admin-menu's rail
+tooltips stand): it does not cover the next row.
+
 ```html
 <button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1" aria-label="Курсив">
   <i class="sf-icon" aria-hidden="true">format_italic</i>

@@ -174,6 +174,7 @@ try {
       if (row.bad.length) failures.push(`fit sweep ${width}: ${row.bad.join('; ')}`);
       if (row.sideways) failures.push(`fit sweep ${width}: sideways ${row.sideways}`);
       if (row.state === 'menu') failures.push(`fit sweep ${width}: the menu button above the step`);
+      if (row.more && row.shrunk < 2) failures.push(`fit sweep ${width}: ${row.state}, a section in «Ещё» with a tool still whole (GB21)`);
       if (rank(row.state) < last) failures.push(`fit sweep ${width}: ${row.state} comes back after a narrower state`);
       last = Math.max(last, rank(row.state));
     }
@@ -181,6 +182,28 @@ try {
     if (![...seen].some((state) => /\+more\/2$/u.test(state))) failures.push(`fit sweep: sections went into «Ещё» before both tools shrank (${[...seen].join(', ')})`);
     if (errors.length) failures.push(`fit sweep: ${errors.join(' | ').slice(0, 300)}`);
     await page.close();
+  }
+
+  // GB21 (sf-header-site 1.17.1, Docara msg-cd7ddadb): around the width
+  // where sections first go into «Ещё», every 2 px after a fresh load: the
+  // tools give way before any section moves. 1.17.0 counted the nav's own
+  // margin (the brand gap over the row's gap) as room and kept the language
+  // whole for a row that did not fit, so the menu moved a section first.
+  {
+    const first = report.sweep.find((row) => /\+more/u.test(row.state));
+    report.fine = [];
+    if (first) {
+      for (let width = first.width + 40; width >= first.width - 24; width -= 2) {
+        const {page, child, errors} = await openHost({width});
+        const row = await child.evaluate(() => window.__read());
+        report.fine.push({width, state: row.state});
+        if (row.more && row.shrunk < 2) failures.push(`fit fine ${width} (fresh load): ${row.state}, a section in «Ещё» with a tool still whole`);
+        if (row.bad.length) failures.push(`fit fine ${width}: ${row.bad.join('; ')}`);
+        if (errors.length) failures.push(`fit fine ${width}: ${errors.join(' | ').slice(0, 300)}`);
+        await page.close();
+      }
+      for (let i = 1; i < report.fine.length; i += 1) if (rank(report.fine[i].state) < rank(report.fine[i - 1].state)) failures.push(`fit fine ${report.fine[i].width}: ${report.fine[i].state} after ${report.fine[i - 1].state} at ${report.fine[i - 1].width}`);
+    }
   }
 
   // Below the step: the menu button and its panel, by real clicks.
@@ -295,7 +318,13 @@ for (const row of report.sweep) {
   if (last && last.state === row.state) last.to = row.width;
   else ranges.push({from: row.width, to: row.width, state: row.state});
 }
-console.log(JSON.stringify({wide: report.wide?.state, sweep: ranges.map((r) => `${r.from}-${r.to} ${r.state}`), below: report.below, language: report.language, nofit: report.nofit,
+const fineRanges = [];
+for (const row of report.fine ?? []) {
+  const last = fineRanges.at(-1);
+  if (last && last.state === row.state) last.to = row.width;
+  else fineRanges.push({from: row.width, to: row.width, state: row.state});
+}
+console.log(JSON.stringify({wide: report.wide?.state, sweep: ranges.map((r) => `${r.from}-${r.to} ${r.state}`), fine: fineRanges.map((r) => `${r.from}-${r.to} ${r.state}`), below: report.below, language: report.language, nofit: report.nofit,
   loads: {count: report.loads.length, maxCls: Math.max(...report.loads.map((row) => row.cls)), states: [...new Set(report.loads.map((row) => `${row.width} ${row.state}`))]}}, null, 1));
 if (failures.length) {
   console.error(failures.slice(0, 60).join('\n'));

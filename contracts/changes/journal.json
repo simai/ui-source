@@ -21589,6 +21589,71 @@
         }
       ],
       "source": "src/smart/theme-generator/static/default/framework.html"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-language-shrink-boxes-drawn-glyph",
+      "kind": "behaviour",
+      "summary": "sf-language 1.8.1 (group build 21 A; Docara msg-cd7ddadb): shrinkBoxes() measures the translate glyph as it is drawn. The sf-icon host is display: contents and read 0, so a fitting sf-header-site counted no gain from shrinking the language and moved a section into «Ещё» first (the docs header at 1290-1292: four or five sections and the language whole). Now whole 120 and shrunk 96 at size 1.",
+      "items": [
+        {
+          "component": "sf-language",
+          "from": "shrinkBoxes() shrunk = whole (glyph read 0)",
+          "to": "shrunk = whole less the drawn glyph"
+        }
+      ],
+      "manual": "Nothing to rewrite.",
+      "source": "src/smart/language/index.js"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-menu-rail-name-tooltip",
+      "kind": "behaviour",
+      "summary": "sf-menu 1.16.0, component.icon-buttons 1.21.0 (group build 21 A; DEV msg-a5141634): a rail row (appearance rail) shows its name with its status and count words as the Framework's tooltip beside it (data-sf-name-tip=\"inline-end\", the tail at the row), C59 timing: 0.5 s on hover, at once on keyboard focus, a long press on touch shown while held and 1.5 s after. A marked control without aria-label shows the name read from its content. Nothing is drawn or fetched before the first hover, focus or long press.",
+      "items": [
+        {
+          "component": "sf-menu",
+          "from": "a rail row's name only in its accessible name",
+          "to": "the name tooltip beside the row"
+        },
+        {
+          "component": "component.icon-buttons",
+          "from": "data-sf-name-tip: aria-label, below the control",
+          "to": "also the content's name; inline-end stands it beside"
+        }
+      ],
+      "manual": "Nothing to rewrite. A page that drew its own tooltips for sf-menu rail rows (data-tooltip on the links) keeps them: a link with its own data-tooltip or title is left alone.",
+      "source": "src/smart/menu/js/templates/default.js; src/component/icon-buttons/js/_name-tooltip.js"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-header-site-fit-nav-margins",
+      "kind": "behaviour",
+      "summary": "sf-header-site 1.17.1 (group build 21 A; Docara msg-cd7ddadb): the row fitting counts the nav's inline margins (--sf-site-header-brand-gap over the row's gap) as room the nav does not have. It counted them as the nav's, kept a tool whole for a row that did not fit, and the menu moved sections into «Ещё» with the room unused (the docs header at 1290-1292, after a reload and after a widen).",
+      "items": [
+        {
+          "component": "sf-header-site",
+          "from": "the nav's room includes its own margins",
+          "to": "the nav's margins are taken off its room"
+        }
+      ],
+      "manual": "Nothing to rewrite.",
+      "source": "src/smart/header-site/index.js"
     }
   ]
 }
