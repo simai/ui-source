@@ -729,7 +729,7 @@
     "--sf-settings-panel-width": {
       "type": "length",
       "state": "default",
-      "x-summary": "The panel look's width (C437 (4)); the popup panel's step of the widths by default, --sf-popup-panel-width (20rem, 18rem in a compact region). 100% fills a page's window or side sheet the panel stands in."
+      "x-summary": "The panel look's width (C437 (4)); the popup panel's step of the widths by default, --sf-popup-panel-width (C32). 100% fills a page's window or side sheet the panel stands in."
     },
     "--sf-settings-panel-height": {
       "type": "length",

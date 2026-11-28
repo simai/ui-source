@@ -63,18 +63,27 @@ const PICKER = `:scope > .sf-settings-parts > .sf-settings-color > ${tagSelector
 const FOCUSABLE = 'button, a[href], input, select, textarea, [tabindex]';
 // The page's window a panel in the flow may stand in (GB21, Docara K-13): the
 // Framework's window and side sheet, found by the panel each draws round its
-// content (data-sf-modal-panel, data-sf-drawer-panel), or the platform's
-// <dialog>. A panel that stands in one draws the close button a popup draws,
-// and its press closes that window by the window's own close.
+// content (data-sf-modal-panel, data-sf-drawer-panel) and the portal each
+// moves that panel into (data-sf-modal-portal, data-sf-drawer-portal, named
+// by the window's id), or the platform's <dialog>. A panel that stands in one
+// draws the close button a popup draws, and its press closes that window by
+// the window's own close.
 const SHELL = '[data-sf-modal-panel], [data-sf-drawer-panel], dialog';
-// The window element round such a panel: the element whose close it calls.
-function shellHost(marker) {
+const PORTAL = '[data-sf-modal-portal], [data-sf-drawer-portal]';
+const closes = (node) => node instanceof HTMLElement && node.localName.includes('-') && typeof node.close === 'function';
+// The window element round the element: the element whose close it calls.
+function shellHost(element) {
+  const marker = element?.closest(SHELL);
   if (!marker) return null;
   if (marker.localName === 'dialog') return marker;
-  for (let node = marker.parentElement; node; node = node.parentElement) {
-    if (node.localName.includes('-') && typeof node.close === 'function') return node;
-  }
-  return null;
+  for (let node = marker.parentElement; node; node = node.parentElement) if (closes(node)) return node;
+  // Moved into the window's portal: the window that carries the portal's name.
+  const portal = marker.closest(PORTAL);
+  const name = portal?.getAttribute('data-sf-modal-portal') ?? portal?.getAttribute('data-sf-drawer-portal');
+  if (!name) return null;
+  const quoted = CSS.escape(name);
+  return [...document.querySelectorAll(`[modal-id="${quoted}"], [drawer-id="${quoted}"], [id="${quoted}"]`)]
+    .find((node) => closes(node) && (node.modalId === name || node.drawerId === name)) ?? null;
 }
 // Whether the window draws a close of its own (its settings): then the panel
 // draws none, so a window never shows two. A window with a header
@@ -1316,7 +1325,7 @@ class SfSettings extends SettingsElement {
   /** The page's window this panel stands in (the Framework window or side sheet, a dialog element), when it is not a popup; else null. */
   dialogShell() {
     if (!this.isPanel || this.popup) return null;
-    return shellHost(this.parentElement?.closest(SHELL) ?? null);
+    return shellHost(this.parentElement);
   }
 
   // The window whose close the panel draws: one it stands in that draws none

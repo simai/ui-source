@@ -100,6 +100,14 @@ for (const [name, body] of Object.entries(CASES)) {
 <script>window.__events=[];for(const type of ['close','closed']){document.addEventListener('sf-settings-'+type,(e)=>window.__events.push([type,e.detail&&e.detail.reason]));}</script></body></html>`);
 }
 
+// PROBE_SERVE_ONLY=1: serve the pages and wait (a person looks at them).
+if (process.env.PROBE_SERVE_ONLY) {
+  console.log(`serving ${base}/<case>-<theme>: ${[...pages.keys()].join(' ')}`);
+  await new Promise(() => {});
+}
+
+// The close's native button (sf-button-icon hands its data-* to it).
+const CLOSE = '#s .sf-settings-panel-close button';
 const results = [];
 const ok = (name, pass, detail = '') => { results.push({name, pass: Boolean(pass), detail}); };
 const browser = await chromium.launch();
@@ -145,24 +153,29 @@ const windowOpen = (name) => (name === 'dialog' ? `document.getElementById('dlg'
 
 const MEASURE = () => {
   const panel = document.querySelector('#s .sf-settings-panel');
-  const close = panel.querySelector('[data-sf-close]');
-  const button = close?.querySelector('button') ?? close;
+  const button = panel.querySelector('.sf-settings-panel-close button');
   const r = (el) => el && el.getBoundingClientRect();
   const head = r(panel.querySelector('.sf-settings-panel-head'));
   const reset = panel.querySelector('[data-sf-reset]');
   const body = panel.querySelector('.sf-settings-panel-body');
-  const sheet = document.querySelector('#sheet [data-sf-drawer-body], #sheet .sf-drawer-body, #sheet [data-sf-drawer-panel]');
+  const sheet = panel.closest('[data-sf-drawer-body]');
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;inline-size:var(--sf-popup-panel-width)';
+  document.body.append(probe);
+  const step = Math.round(probe.getBoundingClientRect().width);
+  probe.remove();
   return {
-    closes: panel.querySelectorAll('[data-sf-close]').length,
-    drawerCloses: document.querySelectorAll('#sheet .sf-drawer-close, #sheet [data-sf-drawer-close], #sheet button[aria-label*="акры"]').length - panel.querySelectorAll('[data-sf-close]').length,
+    closes: panel.querySelectorAll('.sf-settings-panel-close').length,
+    drawerCloses: [...document.querySelectorAll('[data-sf-drawer-portal] button[aria-label]')].filter((one) => !panel.contains(one) && /акры/u.test(one.getAttribute('aria-label'))).length,
     closeName: button?.getAttribute('aria-label') ?? '',
     closeAtEnd: button && head ? Math.round(head.right - r(button).right) : null,
     closeInHead: button && head ? r(button).top >= head.top - 0.5 && r(button).bottom <= head.bottom + 0.5 : null,
     reset: (reset?.querySelector('button') ?? reset)?.textContent.trim() ?? '',
     width: Math.round(r(panel).width),
     height: Math.round(r(panel).height),
-    sheetWidth: sheet ? Math.round(r(sheet).width) : null,
-    sheetHeight: sheet ? Math.round(r(sheet).height) : null,
+    step,
+    sheetWidth: sheet ? Math.round(sheet.clientWidth - parseFloat(getComputedStyle(sheet).paddingLeft) - parseFloat(getComputedStyle(sheet).paddingRight)) : null,
+    sheetHeight: sheet ? Math.round(sheet.clientHeight - parseFloat(getComputedStyle(sheet).paddingTop) - parseFloat(getComputedStyle(sheet).paddingBottom)) : null,
     body: body ? getComputedStyle(body).overflowY : '',
     sideways: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
   };
@@ -188,14 +201,14 @@ for (const width of [1440, 390]) {
       if (name === 'drawer' || name === 'drawer-own-close') {
         ok(`${label}: --sf-settings-panel-width/-height 100% fill the sheet; only the body scrolls`, m.sheetWidth && Math.abs(m.width - m.sheetWidth) <= 1 && m.sheetHeight && Math.abs(m.height - m.sheetHeight) <= 1 && m.body === 'auto', JSON.stringify(m));
       }
-      if (name === 'popup' && width === 1440) ok(`${label}: the default width is the popup step (20rem)`, m.width === 320, JSON.stringify(m));
-      if (name === 'inline' && width === 1440) ok(`${label}: the default width is the popup step (20rem), height its content's`, m.width === 320 && m.height > 100 && m.height < 600, JSON.stringify(m));
+      if (name === 'popup' && width === 1440) ok(`${label}: the default width is the popup step (--sf-popup-panel-width)`, m.width === m.step, JSON.stringify(m));
+      if (name === 'inline' && width === 1440) ok(`${label}: the default width is the popup step (--sf-popup-panel-width), height its content's`, m.width === m.step && m.height > 100 && m.height < 600, JSON.stringify(m));
       ok(`${label}: no sideways scroll`, !m.sideways, JSON.stringify(m));
       if (shots) await tab.screenshot({path: join(shots, `${name}-${width}-${theme}.png`)});
 
       if (drawsClose) {
         // The mouse.
-        await tab.click('#s [data-sf-close] button');
+        await tab.click(CLOSE);
         await tab.waitForTimeout(500);
         let state = await tab.evaluate(`({open: ${windowOpen(name)}, events: window.__events})`);
         ok(`${label}: a click on the close asks close (reason close), closes the window, then closed`, !state.open
@@ -204,7 +217,7 @@ for (const width of [1440, 390]) {
         for (const key of ['Enter', 'Space']) {
           await tab.evaluate(() => { window.__events = []; });
           await openWindow(tab, name);
-          await tab.focus('#s [data-sf-close] button');
+          await tab.focus(CLOSE);
           await tab.keyboard.press(key);
           await tab.waitForTimeout(500);
           state = await tab.evaluate(`({open: ${windowOpen(name)}, events: window.__events})`);
@@ -213,7 +226,7 @@ for (const width of [1440, 390]) {
         // A cancelled request keeps the window open.
         await tab.evaluate(() => { window.__events = []; window.__stop = (e) => e.preventDefault(); document.addEventListener('sf-settings-close', window.__stop); });
         await openWindow(tab, name);
-        await tab.click('#s [data-sf-close] button');
+        await tab.click(CLOSE);
         await tab.waitForTimeout(400);
         state = await tab.evaluate(`({open: ${windowOpen(name)}, events: window.__events})`);
         ok(`${label}: a cancelled close keeps the window open, no closed`, state.open && !state.events.some((one) => one[0] === 'closed'), JSON.stringify(state));
@@ -224,7 +237,7 @@ for (const width of [1440, 390]) {
           state = await tab.evaluate(`({open: ${windowOpen(name)}})`);
           ok(`${label}: Escape closes the popup`, !state.open, JSON.stringify(state));
         } else {
-          await tab.click('#s [data-sf-close] button');
+          await tab.click(CLOSE);
           await tab.waitForTimeout(400);
         }
       }
@@ -244,7 +257,7 @@ for (const name of ['drawer', 'modal', 'dialog', 'popup']) {
   try {
     await load(tab, `${base}/${name}-light`);
     await openWindow(tab, name, {touch: true});
-    await tab.tap('#s [data-sf-close] button');
+    await tab.tap(CLOSE);
     await tab.waitForTimeout(500);
     const state = await tab.evaluate(`({open: ${windowOpen(name)}, events: window.__events})`);
     ok(`${label}: a tap on the close closes the window`, !state.open && state.events[0]?.[0] === 'close' && state.events.at(-1)?.[0] === 'closed', JSON.stringify(state));

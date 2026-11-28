@@ -531,5 +531,5 @@ applyTheme(settings.values.theme);
 
 | Переменная | По умолчанию | |
 |---|---|---|
-| `--sf-settings-panel-width` | `--sf-popup-panel-width` (20rem, плотно 18rem) | Ширина панели; `100%` — во всю ширину окна или шторки. |
+| `--sf-settings-panel-width` | `--sf-popup-panel-width` (шаг ширины всплывающей панели, C32) | Ширина панели; `100%` — во всю ширину окна или шторки. |
 | `--sf-settings-panel-height` | `auto` | Высота панели; `100%` — во всю высоту шторки, прокручивается только тело. |
