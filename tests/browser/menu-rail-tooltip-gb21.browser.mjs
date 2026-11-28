@@ -53,6 +53,7 @@ const pageOf = (theme, dir) => `<!doctype html><html lang="ru" dir="${dir}" clas
 window.__tipAsked = 0; addEventListener('Tooltip:ready', () => { window.__tipAsked += 1; });</script>
 <script src="/distr/core/js/core.js"></script></head><body class="bg-surface" style="margin:0">
 <div style="display:flex;gap:24px;padding:24px">
+  <button id="before" type="button">До меню</button>
   <div style="inline-size:64px"><sf-menu id="rail" appearance="rail" aria-label="Разделы" current="home" items='${JSON.stringify(items)}'></sf-menu></div>
   <main style="flex:1"><p>Страница</p><button id="after" type="button">Дальше</button></main>
 </div>
@@ -61,6 +62,7 @@ window.__tipAsked = 0; addEventListener('Tooltip:ready', () => { window.__tipAsk
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://x');
   const path = decodeURIComponent(url.pathname);
+  if (path === '/favicon.ico') { response.writeHead(204); return response.end(); }
   if (path === '/rail.html') {
     response.writeHead(200, {'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store'});
     return response.end(pageOf(url.searchParams.get('theme') || 'light', url.searchParams.get('dir') || 'ltr'));
@@ -139,10 +141,12 @@ try {
       await page.mouse.move(700, 600); await page.waitForTimeout(500);
       m.leaveHides = !(await page.evaluate(READ_TIP, 'tasks')).shown;
       // Keyboard: the focus walks from the page into the rail.
-      await page.evaluate(() => document.body.focus());
+      // The core's skip link comes first on the page: start from a button just before the rail.
+      await page.focus('#before');
       await page.mouse.move(1400, 880); await page.waitForTimeout(700);
       await page.keyboard.press('Tab'); await page.waitForTimeout(80);
       const focused = await page.evaluate(() => document.activeElement?.getAttribute('data-sf-menu-link'));
+      m.focused = focused ?? await page.evaluate(() => (document.activeElement?.outerHTML ?? '').slice(0, 160));
       m.focusAtOnce = focused === 'home' && (await page.evaluate(READ_TIP, 'home')).shown;
       m.homeText = (await page.evaluate(READ_TIP, 'home')).text;
       await page.keyboard.press('Escape'); await page.waitForTimeout(80);
