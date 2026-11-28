@@ -532,3 +532,39 @@ export function toggledField(item, optionId, key = 'checked') {
   if (key === 'phone' && (option.disabled || !optionPhones(item, option))) return null;
   return arranged(item, options.map((one) => (one.id === optionId ? {...one, [key]: !one[key]} : one)));
 }
+
+// ─── remembered values before the first paint (GB21, Docara K-13) ─────────
+//
+// remember="<name>" keeps the values as one SF.Preferences value under the
+// key sf-settings/<name>; the browser's copy (core preferences.js, a public
+// format) is sf-pref:sf-settings/<name>, the JSON of {<id>: <value>} -- a
+// switch's boolean, a choice's option id, a range's number, a colour's hue
+// name or #rrggbb, a fields list's [{id, checked, pinned}] -- written whole
+// after every change. A site reads it in <head> with core's PREPAINT_READER,
+// sfPreference('sf-settings/<name>'), before the Framework has run and before
+// the first paint, and applies what the values mean (a reader's text size, a
+// theme). The docs print the reader word for word
+// (tests/settings-window-c438.contract.test.mjs).
+
+/** The SF.Preferences key a remember name keeps the values under. */
+export const rememberedKey = (name) => {
+  const text = String(name ?? '').trim();
+  return text ? `sf-settings/${text}` : '';
+};
+
+/**
+ * The values a remember name keeps in a storage (an object with getItem: the
+ * browser's copy SF.Preferences writes), {id: value}, or null: nothing kept,
+ * storage refused, or not an object. What the head reader answers for the
+ * name, as a module function.
+ */
+export function rememberedValues(name, storage) {
+  const key = rememberedKey(name);
+  if (!key || typeof storage?.getItem !== 'function') return null;
+  try {
+    const value = JSON.parse(storage.getItem(`sf-pref:${key}`) ?? 'null');
+    return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
