@@ -21591,6 +21591,51 @@
       "source": "src/smart/theme-generator/static/default/framework.html"
     },
     {
+      "id": "port-document-1-0-3-kit-composition-valid",
+      "recorded_on": "2026-11-27",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "simai.document-port 1.0.3 (sf-editor msg-3fc545c5): every case document of the 1.0.0-1.0.2 kits was refused whole by Composition validate and render (inline nodes {text} without type: schema_one_of at data.content; main, banner and contentinfo regions inside layout.page: region_landmark_context), so a page a host built from the kit drew an empty canvas. 1.0.3 holds the same 44 cases as valid Composition documents, and run.mjs checkDocuments with tests/document-port-kit-composition.contract.test.mjs keeps every edition from 1.0.3 valid. No intent, answer, reason or schema changes; 1.0.2, 1.0.1 and 1.0.0 stay as released.",
+      "items": [
+        {
+          "component": "simai.document-port",
+          "attribute": "version",
+          "from": "1.0.2 (draft 3, corrected)",
+          "to": "1.0.3 (draft 3, valid case documents)"
+        },
+        {
+          "component": "simai.document-port",
+          "attribute": "kit inline text node",
+          "from": "{\"text\": X}",
+          "to": "{\"type\": \"text\", \"value\": X}"
+        },
+        {
+          "component": "simai.document-port",
+          "attribute": "kit document root",
+          "from": "{\"id\": \"root\", \"type\": \"layout.page\", \"slots\": {\"default\": [S]}} with S the layout.regions shell",
+          "to": "S, the layout.regions shell, as the root"
+        },
+        {
+          "component": "simai.document-port",
+          "attribute": "kit text over 100000 characters",
+          "from": "one text node",
+          "to": "consecutive text nodes of at most 100000 characters"
+        },
+        {
+          "component": "simai.document-port",
+          "attribute": "kit unknown keys on a known type",
+          "from": "x-source in a paragraph's data, x-align in its props",
+          "to": "the paragraph's foreign key as an inline extension key of its text node (\"source\": \"crm\"); unknown props only on the undeclared vendor.poll"
+        }
+      ],
+      "deprecated_on": "2026-11-27",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Case documents were invalid in 1.0.0-1.0.2: stored pages built from them are rebuilt from the 1.0.3 cases or migrated: every inline {\"text\": X} becomes {\"type\": \"text\", \"value\": X}; a layout.page root whose one child is the layout.regions shell is replaced by that shell; a text over 100000 characters is split into consecutive text nodes; a key a known type does not declare is moved to an inline extension key or dropped. A host that finds the areas at root.slots.default[0] also reads a root that is layout.regions. An adapter accepted against 1.0.2 announces 1.0.3 after it passes the 1.0.3 kit (the node-limit case now counts 199 paragraphs, the total-byte case announces 854 for a save of 1155).",
+      "owner": "ui-source",
+      "source": "src/core/contracts/ports/simai.document-port/1.0.3"
+    },
+    {
       "recorded_on": "2026-11-28",
       "stage": "compat",
       "deprecated_on": "2026-11-28",
@@ -21654,51 +21699,6 @@
       ],
       "manual": "Nothing to rewrite.",
       "source": "src/smart/header-site/index.js"
-    },
-    {
-      "id": "port-document-1-0-3-kit-composition-valid",
-      "recorded_on": "2026-11-27",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "simai.document-port 1.0.3 (sf-editor msg-3fc545c5): every case document of the 1.0.0-1.0.2 kits was refused whole by Composition validate and render (inline nodes {text} without type: schema_one_of at data.content; main, banner and contentinfo regions inside layout.page: region_landmark_context), so a page a host built from the kit drew an empty canvas. 1.0.3 holds the same 44 cases as valid Composition documents, and run.mjs checkDocuments with tests/document-port-kit-composition.contract.test.mjs keeps every edition from 1.0.3 valid. No intent, answer, reason or schema changes; 1.0.2, 1.0.1 and 1.0.0 stay as released.",
-      "items": [
-        {
-          "component": "simai.document-port",
-          "attribute": "version",
-          "from": "1.0.2 (draft 3, corrected)",
-          "to": "1.0.3 (draft 3, valid case documents)"
-        },
-        {
-          "component": "simai.document-port",
-          "attribute": "kit inline text node",
-          "from": "{\"text\": X}",
-          "to": "{\"type\": \"text\", \"value\": X}"
-        },
-        {
-          "component": "simai.document-port",
-          "attribute": "kit document root",
-          "from": "{\"id\": \"root\", \"type\": \"layout.page\", \"slots\": {\"default\": [S]}} with S the layout.regions shell",
-          "to": "S, the layout.regions shell, as the root"
-        },
-        {
-          "component": "simai.document-port",
-          "attribute": "kit text over 100000 characters",
-          "from": "one text node",
-          "to": "consecutive text nodes of at most 100000 characters"
-        },
-        {
-          "component": "simai.document-port",
-          "attribute": "kit unknown keys on a known type",
-          "from": "x-source in a paragraph's data, x-align in its props",
-          "to": "the paragraph's foreign key as an inline extension key of its text node (\"source\": \"crm\"); unknown props only on the undeclared vendor.poll"
-        }
-      ],
-      "deprecated_on": "2026-11-27",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Case documents were invalid in 1.0.0-1.0.2: stored pages built from them are rebuilt from the 1.0.3 cases or migrated: every inline {\"text\": X} becomes {\"type\": \"text\", \"value\": X}; a layout.page root whose one child is the layout.regions shell is replaced by that shell; a text over 100000 characters is split into consecutive text nodes; a key a known type does not declare is moved to an inline extension key or dropped. A host that finds the areas at root.slots.default[0] also reads a root that is layout.regions. An adapter accepted against 1.0.2 announces 1.0.3 after it passes the 1.0.3 kit (the node-limit case now counts 199 paragraphs, the total-byte case announces 854 for a save of 1155).",
-      "owner": "ui-source",
-      "source": "src/core/contracts/ports/simai.document-port/1.0.3"
     }
   ]
 }
