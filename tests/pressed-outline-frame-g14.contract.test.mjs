@@ -19,7 +19,7 @@ for (const [file, block] of [['src/component/icon-buttons/scss/_css_icon_buttons
 }
 
 test('G14: versions', () => {
-  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.20.4'); // FS-11: the name tooltip serves a marked control // GB19 touch size (C428)
+  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.21.0'); // GB21 A: the name tooltip beside a rail row // FS-11: the name tooltip serves a marked control // GB19 touch size (C428)
   assert.equal(JSON.parse(read('src/component/buttons/passport.json')).version, '1.22.5'); // GB19 VL-77: the join line
 });
 
