@@ -22,6 +22,10 @@ import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-
 import {BREAKPOINTS, breakpointMedia} from '../../core/js/breakpoints.js';
 import {layoutRowRoom, layoutWidth} from '../../core/js/overflow-row.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
+// The icon buttons' shared name tooltip: a rail row (data-sf-name-tip) shows
+// its name beside it on hover, keyboard focus and a long press (group build
+// 21). One listener set per page, whatever bundles carry the file.
+import '../../component/icon-buttons/js/_name-tooltip.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
   HOVER_CLOSE_DELAY,

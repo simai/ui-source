@@ -1554,6 +1554,13 @@
           "since": "2026-10-25"
         },
         {
+          "name": "--sf-menu-item-padding-inline",
+          "role": "padding-inline",
+          "summary": "The side padding of a row's own items (a horizontal menu's first level), both ends; its panels and columns keep their own.",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-28"
+        },
+        {
           "name": "--sf-menu-submenu-background-color",
           "role": "background",
           "summary": "The fill of a horizontal menu's panel, which the counters in it are ringed with.",

@@ -37,6 +37,15 @@ import {SIZES, canonicalCode, languageRows, lookFor, matchLanguage, normalizeLan
 import names from './data/names.json';
 import manifest from './component.json';
 import {files as languageFiles} from './lang/index.mjs';
+
+// The width an element is drawn at: its own layout box, or -- an element
+// with display: contents (the sf-icon host) has none -- the boxes of what it
+// draws, side by side. 0 when nothing is drawn.
+function renderedWidth(element) {
+  if (!element || !element.getClientRects().length && getComputedStyle(element).display !== 'contents') return 0;
+  if (getComputedStyle(element).display !== 'contents') return layoutWidth(element);
+  return Array.from(element.children).reduce((sum, child) => sum + renderedWidth(child), 0);
+}
 // Only the words on screen ship in the bundle, English only (owner decision
 // C282): Russian and every other language come from a language file. The
 // title, settings and events stay in the language files for the Studio and the
@@ -325,7 +334,11 @@ class SfLanguage extends FormField(LanguageElement) {
    * code trigger less its translate glyph (shrink="code", group build 20).
    * Read while whole, the glyph is drawn; read while shrunk, both widths are
    * the drawn one. Layout boxes, as the bar reads its row. A trigger that
-   * does not shrink says the same width twice.
+   * does not shrink says the same width twice. The glyph is measured as it
+   * is drawn (group build 21, Docara msg-cd7ddadb): the sf-icon host is
+   * display: contents and has no box of its own, so its width read 0, the
+   * bar counted no gain from shrinking the language and moved a section into
+   * «Ещё» first (the docs header at 1280); its drawn face is the box now.
    */
   shrinkBoxes() {
     const host = this.triggerButton;
@@ -333,8 +346,7 @@ class SfLanguage extends FormField(LanguageElement) {
     const width = layoutWidth(box);
     const shrinks = this.getAttribute('shrink') === 'code' && host?.matches(tagSelector('sf-button'));
     const glyph = shrinks ? box.querySelector(':scope > sf-icon:first-child') : null;
-    const glyphWidth = glyph && glyph.getClientRects().length ? layoutWidth(glyph) : 0;
-    return {width, shrunk: width - glyphWidth};
+    return {width, shrunk: width - renderedWidth(glyph)};
   }
 
   /**

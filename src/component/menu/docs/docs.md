@@ -275,10 +275,12 @@ a branch and nested it.
 `sf-menu` (src/smart/menu) builds this markup from data or from a nested list
 of links and keeps its state itself; it marks what it draws with
 `data-sf-menu-owned`, and this runtime leaves that markup alone. The menu
-offers nine public variables (src/core/contracts/public-variables.v1.json),
+offers its public variables (src/core/contracts/public-variables.v1.json),
 each wrapping the value it drew before: `--sf-menu-background-color`,
 `--sf-menu-gap`, `--sf-menu-item-color`, `--sf-menu-item-background-color`,
 `--sf-menu-item-border-color`, `--sf-menu-item-radius`,
+`--sf-menu-item-padding-inline` (a row's own items, both sides, group build
+21: the docs header sets `var(--sf-space-1/2)`),
 `--sf-menu-submenu-background-color`, `--sf-menu-submenu-border-color` and
 `--sf-menu-submenu-radius`. Hover, an open branch, focus and disabled keep
 their own.
