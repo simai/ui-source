@@ -21634,6 +21634,26 @@
       ],
       "manual": "Nothing to rewrite. A page that drew its own tooltips for sf-menu rail rows (data-tooltip on the links) keeps them: a link with its own data-tooltip or title is left alone.",
       "source": "src/smart/menu/js/templates/default.js; src/component/icon-buttons/js/_name-tooltip.js"
+    },
+    {
+      "recorded_on": "2026-11-28",
+      "stage": "compat",
+      "deprecated_on": "2026-11-28",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "owner": "ui-source",
+      "id": "behaviour-header-site-fit-nav-margins",
+      "kind": "behaviour",
+      "summary": "sf-header-site 1.17.1 (group build 21 A; Docara msg-cd7ddadb): the row fitting counts the nav's inline margins (--sf-site-header-brand-gap over the row's gap) as room the nav does not have. It counted them as the nav's, kept a tool whole for a row that did not fit, and the menu moved sections into «Ещё» with the room unused (the docs header at 1290-1292, after a reload and after a widen).",
+      "items": [
+        {
+          "component": "sf-header-site",
+          "from": "the nav's room includes its own margins",
+          "to": "the nav's margins are taken off its room"
+        }
+      ],
+      "manual": "Nothing to rewrite.",
+      "source": "src/smart/header-site/index.js"
     }
   ]
 }
